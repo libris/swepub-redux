@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:OAI-PMH="http://www.openarchives.org/OAI/2.0/" exclude-result-prefixes="OAI-PMH mods">
+    <xsl:output method="xml" indent="yes" encoding="UTF-8" omit-xml-declaration="no" media-type="text/xml"/>
+    <xsl:template match="/">
+        <xsl:apply-templates select="OAI-PMH:record"/>
+    </xsl:template>
+    <xsl:template match="OAI-PMH:OAI-PMH">
+        <OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/">
+            <xsl:copy-of select="OAI-PMH:responseDate"/>
+            <xsl:copy-of select="OAI-PMH:request"/>
+            <xsl:apply-templates select="OAI-PMH:ListRecords"/>
+        </OAI-PMH>
+    </xsl:template>
+    <xsl:template match="OAI-PMH:ListRecords">
+        <xsl:element name="ListRecords" xmlns="http://www.openarchives.org/OAI/2.0/">
+            <xsl:apply-templates select="OAI-PMH:record"/>
+            <xsl:copy-of select="OAI-PMH:resumptionToken"/>
+        </xsl:element>
+    </xsl:template>
+    <xsl:template match="OAI-PMH:record">
+        <xsl:element name="record" xmlns="http://www.openarchives.org/OAI/2.0/">
+            <xsl:copy-of select="OAI-PMH:header"/>
+            <xsl:element name="metadata" xmlns="http://www.openarchives.org/OAI/2.0/">
+                <xsl:apply-templates select="OAI-PMH:metadata"/>
+            </xsl:element>
+        </xsl:element>
+    </xsl:template>
+    <xsl:template match="OAI-PMH:metadata">
+        <xsl:param name="org" select="mods:mods/mods:name[@type = 'corporate'][string-length(@authority) &gt; 0][mods:role/mods:roleTerm = 'pbl']/mods:namePart[1]"></xsl:param>
+        <!-- Bibliografisk beskrivning - Swepub - MODS 2.5 -->
+        <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd">
+            <xsl:for-each select="mods:mods">
+                <!-- Upphovsman -->
+                <xsl:for-each select="mods:name"> 
+                    <!-- Författare/redaktör/upphovsman -->
+                    <!-- Ta bort övriga roller (opponent, handledare, examinator etc.) -->
+                    <xsl:if test="mods:role/mods:roleTerm = 'aut' or mods:role/mods:roleTerm = 'edt' or mods:role/mods:roleTerm = 'cre'">
+                        <xsl:element name="name">
+                            <xsl:for-each select="@type">
+                                <xsl:attribute name="type"><xsl:value-of select="../@type"/></xsl:attribute>
+                            </xsl:for-each>
+                            <!-- Attribut kan ev. också tas bort -->
+                            <xsl:for-each select="@authority">
+                                <xsl:attribute name="authority"><xsl:value-of select="../@authority"/></xsl:attribute>
+                            </xsl:for-each>
+                            <xsl:for-each select="@xlink:href">
+                                <xsl:attribute name="xlink:href"><xsl:value-of select="../@xlink:href"/></xsl:attribute>
+                            </xsl:for-each>
+                            <xsl:copy-of select="mods:namePart"/>
+                            <xsl:copy-of select="mods:role"/>
+                            <xsl:for-each select="mods:affiliation">
+                                <xsl:choose>                  
+                                    <xsl:when test="starts-with(.,$org) and string-length($org) &gt; 1">
+                                        <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority"> 
+                                            <xsl:attribute name="valueURI">
+                                                <xsl:value-of select="../../mods:recordInfo/mods:recordContentSource"/>
+                                                <xsl:text>.se</xsl:text>
+                                            </xsl:attribute>
+                                            <xsl:value-of select="$org"/>
+                                        </affiliation>
+                                        <xsl:if test="contains(.,', ')">
+                                            <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority"> 
+                                                <xsl:attribute name="authority">
+                                                    <xsl:value-of select="../../mods:recordInfo/mods:recordContentSource"/>
+                                                    <xsl:text>.se</xsl:text>
+                                                </xsl:attribute>
+                                                <xsl:attribute name="valueURI">
+                                                    <xsl:value-of select="substring-after(.,', ')"/>
+                                                </xsl:attribute>
+                                                <xsl:value-of select="substring-after(.,', ')"/>
+                                            </affiliation>                                         
+                                        </xsl:if>                     
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:element name="affiliation">
+                                            <xsl:value-of select="."/>
+                                        </xsl:element>                                        
+                                    </xsl:otherwise>                                    
+                                </xsl:choose>    
+                            </xsl:for-each>
+                            <xsl:for-each select="mods:description">
+                                <xsl:if test="contains(.,'orcid.org')">
+                                    <description xsi:type="identifierDefinition" type="orcid">
+                                        <xsl:value-of select="substring-after(.,'orcid.org=')"/>
+                                    </description>
+                                </xsl:if>
+                            </xsl:for-each>
+                        </xsl:element>
+                    </xsl:if>
+                </xsl:for-each>
+                <!-- Ansvarig institution -->
+                <!-- Rensar dubbletter -->
+                <xsl:for-each select="mods:name[@type = 'corporate' and not(@xlink:href = preceding-sibling::mods:name/@xlink:href)]">
+                    <!-- Ta bort de som inte är det egna lärosätets kontrollerade -->
+                    <xsl:if test="mods:role/mods:roleTerm = 'pbl' and @authority">
+                        <xsl:element name="name">
+                            <xsl:attribute name="type"><xsl:text>corporate</xsl:text></xsl:attribute>
+                            <xsl:for-each select="@authority">
+                                <xsl:attribute name="authority"><xsl:value-of select="../@authority"/></xsl:attribute>
+                            </xsl:for-each>
+                            <xsl:for-each select="@xlink:href">
+                                <xsl:attribute name="xlink:href"><xsl:value-of select="../@xlink:href"/></xsl:attribute>
+                            </xsl:for-each>
+                            <xsl:copy-of select="mods:namePart"/>
+                            <xsl:element name="role">
+                                <xsl:element name="roleTerm">
+                                    <xsl:attribute name="type">
+                                        <xsl:text>code</xsl:text>
+                                    </xsl:attribute>
+                                    <xsl:attribute name="authority">
+                                        <xsl:text>marcrelator</xsl:text>
+                                    </xsl:attribute>
+                                    <xsl:text>org</xsl:text>
+                                </xsl:element>
+                            </xsl:element>
+                        </xsl:element>
+                    </xsl:if>
+                </xsl:for-each>
+                <!-- Titel -->
+                <xsl:copy-of select="mods:titleInfo"/>
+                <!-- Publikationstyp -->
+                <xsl:for-each select="mods:genre[@authority= 'svep'][@ type='publicationType'][. = 'kfa']">
+                    <xsl:element name="genre">
+                        <xsl:attribute name="authority"><xsl:text>svep</xsl:text></xsl:attribute>
+                        <xsl:attribute name="type"><xsl:text>publicationType</xsl:text></xsl:attribute>
+                        <xsl:text>kfu</xsl:text>
+                    </xsl:element>
+                    <genre authority="kb.se" type="outputType">ArtisticPerformance/VisualArtworks</genre>
+                </xsl:for-each>
+                <xsl:for-each select="mods:genre[@authority= 'svep'][@ type='publicationType']"> 
+                    <xsl:if test="not(. = 'kfa')">
+                        <xsl:element name="genre">
+                            <xsl:attribute name="authority"><xsl:text>svep</xsl:text></xsl:attribute>
+                            <xsl:attribute name="type"><xsl:text>publicationType</xsl:text></xsl:attribute>
+                            <xsl:value-of select="."/>
+                        </xsl:element>
+                    </xsl:if>
+                </xsl:for-each>
+                <xsl:for-each select="mods:genre[@authority= 'diva'][@ type='publicationTypeCode'][. = 'dataset']">
+                    <xsl:element name="genre">
+                        <xsl:attribute name="authority"><xsl:text>svep</xsl:text></xsl:attribute>
+                        <xsl:attribute name="type"><xsl:text>publicationType</xsl:text></xsl:attribute>
+                        <xsl:text>ovr</xsl:text>
+                    </xsl:element>
+                    <xsl:element name="genre">
+                        <xsl:attribute name="authority"><xsl:text>svep</xsl:text></xsl:attribute>
+                        <xsl:attribute name="type"><xsl:text>contentType</xsl:text></xsl:attribute>
+                        <xsl:text>vet</xsl:text>
+                    </xsl:element>
+                </xsl:for-each>
+                <!-- Innehållstyp  -->
+                <xsl:for-each select="mods:genre[@authority= 'svep'][@ type='contentType']">
+                    <xsl:choose>
+                        <xsl:when test=". = 'ref'">
+                            <xsl:choose>
+                                <xsl:when test="../mods:genre[@authority= 'svep'][@ type='publicationType'] = 'art'">
+                                    <xsl:element name="genre">
+                                        <xsl:attribute name="authority"><xsl:text>svep</xsl:text></xsl:attribute>
+                                        <xsl:attribute name="type"><xsl:text>contentType</xsl:text></xsl:attribute>
+                                        <xsl:text>ref</xsl:text>
+                                    </xsl:element>
+                                </xsl:when>
+                                <xsl:when test="../mods:genre[@authority= 'svep'][@ type='publicationType'] = 'kon'">
+                                    <xsl:element name="genre">
+                                        <xsl:attribute name="authority"><xsl:text>svep</xsl:text></xsl:attribute>
+                                        <xsl:attribute name="type"><xsl:text>contentType</xsl:text></xsl:attribute>
+                                        <xsl:text>ref</xsl:text>
+                                    </xsl:element>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:element name="genre">
+                                        <xsl:attribute name="authority"><xsl:text>svep</xsl:text></xsl:attribute>
+                                        <xsl:attribute name="type"><xsl:text>contentType</xsl:text></xsl:attribute>
+                                        <xsl:text>vet</xsl:text>
+                                    </xsl:element>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:element name="genre">
+                                <xsl:attribute name="authority"><xsl:text>svep</xsl:text></xsl:attribute>
+                                <xsl:attribute name="type"><xsl:text>contentType</xsl:text></xsl:attribute>
+                                <xsl:value-of select="."/>
+                            </xsl:element>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:for-each>
+                <!-- Ämne hsv -->
+                <xsl:for-each select="mods:subject[@authority = 'hsv']">
+                    <xsl:element name="subject">
+                        <xsl:attribute name="lang"><xsl:value-of select="@lang"></xsl:value-of></xsl:attribute>
+                        <xsl:attribute name="authority"><xsl:text>uka.se</xsl:text></xsl:attribute>
+                        <xsl:attribute name="xlink:href"><xsl:value-of select="@xlink:href"></xsl:value-of></xsl:attribute> 
+                        <xsl:copy-of select="mods:topic"/>
+                    </xsl:element>
+                </xsl:for-each>
+                <!-- Ämne ej hsv -->
+                <xsl:for-each select="mods:subject[not(@authority = 'hsv')]">
+                    <xsl:copy-of select="."/>
+                </xsl:for-each>
+                <!-- Utgivningsuppgift -->
+                <xsl:for-each select="mods:originInfo">
+                    <xsl:element name="originInfo">
+                        <xsl:copy-of select="mods:place"/>
+                        <xsl:copy-of select="mods:publisher"/>
+                        <!-- Ta bort övriga datum -->
+                        <xsl:for-each select="mods:dateIssued">
+                            <xsl:element name="dateIssued">
+                                <xsl:value-of select="."/>
+                            </xsl:element>
+                        </xsl:for-each>
+                    </xsl:element>
+                </xsl:for-each>
+                <!-- Serie -->
+                <xsl:for-each select="mods:relatedItem[@type = 'series']">
+                    <!-- Ta bort tomma -->
+                    <xsl:if test="string-length(mods:titleInfo/mods:title) &gt; 0">
+                        <xsl:element name="relatedItem">
+                            <xsl:attribute name="type"><xsl:text>series</xsl:text></xsl:attribute>
+                            <xsl:copy-of select="mods:titleInfo"/>
+                            <xsl:if test="string-length(mods:identifier[@type = 'issn']) &gt; 0">
+                                <xsl:element name="identifier">
+                                    <xsl:attribute name="type"><xsl:text>issn</xsl:text></xsl:attribute>
+                                    <xsl:value-of select="mods:identifier[@type = 'issn']"/>
+                                </xsl:element>
+                            </xsl:if>
+                            <xsl:if test="string-length(mods:identifier[@type = 'issue number']) &gt; 0">
+                                <xsl:element name="identifier">
+                                    <xsl:attribute name="type"><xsl:text>issue number</xsl:text></xsl:attribute>
+                                    <xsl:value-of select="mods:identifier[@type = 'issue number']"/>
+                                </xsl:element>
+                            </xsl:if>
+                        </xsl:element>
+                    </xsl:if>
+                </xsl:for-each>
+                <!-- Värdpublikation -->
+                <xsl:for-each select="mods:relatedItem[@type = 'host']">
+                    <!-- Ta bort tomma -->
+                    <xsl:if test="string-length(mods:titleInfo/mods:title) &gt; 0">
+                        <xsl:element name="relatedItem">
+                            <xsl:attribute name="type"><xsl:text>host</xsl:text></xsl:attribute>
+                            <xsl:copy-of select="mods:titleInfo"/>
+                            <xsl:copy-of select="mods:identifier"/>
+                            <xsl:copy-of select="mods:part"/>
+                            <xsl:for-each select="../mods:identifier[@type = 'isbn']">
+                                <xsl:copy-of select="."/>
+                            </xsl:for-each>
+                        </xsl:element>
+                    </xsl:if>
+                </xsl:for-each>
+                <!-- Identifikatorer -->
+                <xsl:for-each select="mods:identifier">
+                    <xsl:choose>
+                        <xsl:when test="@type = 'isbn'">
+                            <xsl:if test="not(../mods:relatedItem[@type = 'host'])">
+                                <xsl:element name="identifier">
+                                    <xsl:attribute name="type"><xsl:text>isbn</xsl:text></xsl:attribute>
+                                    <xsl:value-of select="."/>
+                                </xsl:element>
+                            </xsl:if>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:copy-of select="."/>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:for-each>
+                <!-- Lägg till patent -->
+                <xsl:for-each select="mods:note[@type = 'patent']">
+                    <xsl:element name="identifier">
+                        <xsl:attribute name="type"><xsl:text>patent_number</xsl:text></xsl:attribute>
+                        <xsl:value-of select="."/>
+                    </xsl:element>
+                </xsl:for-each>
+                <!-- Språk -->
+                <xsl:choose>
+                    <xsl:when test="mods:language">
+                        <xsl:for-each select="mods:language">
+                            <!-- Ta bort sammanfattings- och disputationsspråk -->
+                            <xsl:if test="not(@objectPart)">
+                                <xsl:element name="language">
+                                    <xsl:copy-of select="mods:languageTerm"/>
+                                </xsl:element>
+                            </xsl:if>
+                        </xsl:for-each>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:element name="language">
+                            <xsl:element name="languageTerm">
+                                <xsl:attribute name="type">
+                                    <xsl:text>code</xsl:text>
+                                </xsl:attribute>
+                                <xsl:attribute name="authority">
+                                    <xsl:text>iso639-2b</xsl:text>
+                                </xsl:attribute>
+                                <xsl:text>und</xsl:text>
+                            </xsl:element>
+                        </xsl:element>  
+                    </xsl:otherwise>   
+                </xsl:choose>
+                <!-- Abstract -->
+                <xsl:for-each select="mods:abstract">
+                    <xsl:element name="abstract">
+                        <xsl:for-each select="@lang">
+                            <xsl:attribute name="lang"><xsl:value-of select="../@lang"/></xsl:attribute>
+                        </xsl:for-each>
+                        <xsl:value-of select="." disable-output-escaping="no"/>
+                    </xsl:element>
+                </xsl:for-each>
+                <!-- Anmärkning -->
+                <!-- Ta bort specifika -->
+                <xsl:for-each select="mods:note[not(@type)]">
+                    <xsl:if test="not(contains(.,'Part of urn:nbn:se:'))">
+                        <xsl:element name="note">
+                            <xsl:value-of select="."/>
+                        </xsl:element>
+                    </xsl:if>
+                </xsl:for-each>
+                <!-- Antal författare -->
+                <xsl:choose>
+                    <xsl:when test="mods:note[@type = 'creatorCount']">
+                        <xsl:copy-of select="mods:note[@type = 'creatorCount']"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:choose>
+                            <xsl:when test="mods:genre[@authority= 'svep'][@ type='publicationType'][. = 'sam']">
+                                <xsl:choose>
+                                    <xsl:when test="count(mods:name[mods:role/mods:roleTerm = 'edt']) &gt; 0">
+                                        <xsl:element name="note">
+                                            <xsl:attribute name="type">
+                                                <xsl:text>creatorCount</xsl:text>  
+                                            </xsl:attribute> 
+                                            <xsl:value-of select="count(mods:name[mods:role/mods:roleTerm = 'edt'])"/>
+                                        </xsl:element>
+                                    </xsl:when>                      
+                                </xsl:choose> 
+                            </xsl:when>
+                            <xsl:when test="mods:genre[@authority= 'svep'][@ type='publicationType'][. = 'pro']">
+                                <xsl:choose>
+                                    <xsl:when test="count(mods:name[mods:role/mods:roleTerm = 'edt']) &gt; 0">
+                                        <xsl:element name="note">
+                                            <xsl:attribute name="type">
+                                                <xsl:text>creatorCount</xsl:text>  
+                                            </xsl:attribute>
+                                            <xsl:value-of select="count(mods:name[mods:role/mods:roleTerm = 'edt'])"/>
+                                        </xsl:element>
+                                    </xsl:when>                      
+                                </xsl:choose> 
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:choose>
+                                    <xsl:when test="count(mods:name[mods:role/mods:roleTerm = 'aut' or mods:role/mods:roleTerm = 'cre']) &gt; 0">
+                                        <xsl:element name="note">
+                                            <xsl:attribute name="type">
+                                                <xsl:text>creatorCount</xsl:text>  
+                                            </xsl:attribute> 
+                                            <xsl:value-of select="count(mods:name[mods:role/mods:roleTerm = 'aut' or mods:role/mods:roleTerm = 'cre'])"/>
+                                        </xsl:element>
+                                    </xsl:when>                      
+                                </xsl:choose> 
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:otherwise>   
+                </xsl:choose>
+                <!-- Fysisk beskrivning-->
+                <xsl:for-each select="mods:physicalDescription">
+                    <xsl:element name="physicalDescription">
+                        <xsl:copy-of select="mods:form "/>
+                        <xsl:for-each select="mods:extent">
+                            <xsl:element name="extent">
+                                <xsl:value-of select="."/>
+                                <xsl:text> s.</xsl:text>
+                            </xsl:element>
+                        </xsl:for-each>
+                    </xsl:element>
+                </xsl:for-each>
+                <!-- Status -->
+                <xsl:choose>
+                    <xsl:when test="string-length(mods:note[@type = 'publicationStatus']) &gt; 0">
+                        <xsl:for-each select="mods:note[@type = 'publicationStatus']">
+                            <xsl:choose>
+                                <xsl:when test=". = 'Accepted'">
+                                    <xsl:element name="note">
+                                        <xsl:attribute name="type">
+                                            <xsl:text>publicationStatus</xsl:text>  
+                                        </xsl:attribute> 
+                                        <xsl:text>Accepted</xsl:text>
+                                    </xsl:element>  
+                                </xsl:when>
+                                <xsl:when test=". = 'In press' or . = 'In progress'">
+                                    <xsl:element name="note">
+                                        <xsl:attribute name="type">
+                                            <xsl:text>publicationStatus</xsl:text>  
+                                        </xsl:attribute> 
+                                        <xsl:text>In press</xsl:text>
+                                    </xsl:element>  
+                                </xsl:when>
+                                <xsl:when test=". = 'Epub ahead of print'">
+                                    <xsl:element name="note">
+                                        <xsl:attribute name="type">
+                                            <xsl:text>publicationStatus</xsl:text>  
+                                        </xsl:attribute> 
+                                        <xsl:text>Epub ahead of print/Online first</xsl:text>
+                                    </xsl:element>  
+                                </xsl:when>
+                                <xsl:when test=". = 'Submitted'">
+                                    <xsl:element name="note">
+                                        <xsl:attribute name="type">
+                                            <xsl:text>publicationStatus</xsl:text>  
+                                        </xsl:attribute> 
+                                        <xsl:text>Submitted</xsl:text>
+                                    </xsl:element>  
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:element name="note">
+                                        <xsl:attribute name="type">
+                                            <xsl:text>publicationStatus</xsl:text>  
+                                        </xsl:attribute> 
+                                        <xsl:text>Published</xsl:text>
+                                    </xsl:element> 
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:for-each>   
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:choose>
+                            <xsl:when test="mods:genre[@authority= 'diva'][@ type='publicationTypeCode'] = 'manuscript'">
+                                <xsl:element name="note">
+                                    <xsl:attribute name="type">
+                                        <xsl:text>publicationStatus</xsl:text>  
+                                    </xsl:attribute> 
+                                    <xsl:text>Preprint</xsl:text>
+                                </xsl:element>  
+                            </xsl:when> 
+                            <xsl:otherwise>
+                                <xsl:element name="note">
+                                    <xsl:attribute name="type">
+                                        <xsl:text>publicationStatus</xsl:text>  
+                                    </xsl:attribute> 
+                                    <xsl:text>Published</xsl:text>
+                                </xsl:element>   
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:otherwise>   
+                </xsl:choose>
+                <!-- Länkar -->
+                <xsl:for-each select="mods:location">
+                    <xsl:element name="location">
+                        <xsl:for-each select="mods:url">
+                            <xsl:element name="url">
+                                <xsl:if test="string-length(@displayLabel) &gt; 0 and @displayLabel = 'fulltext'">
+                                    <xsl:attribute name="displayLabel"><xsl:text>FULLTEXT</xsl:text></xsl:attribute>
+                                    <xsl:if test="contains(.,'diva-portal.org')">
+                                        <xsl:attribute name="usage"><xsl:text>primary</xsl:text></xsl:attribute>  
+                                    </xsl:if>
+                                </xsl:if>
+                                <xsl:if test="string-length(@displayLabel) &gt; 0 and not(@displayLabel = 'fulltext')">
+                                    <xsl:attribute name="displayLabel"><xsl:value-of select="@displayLabel"/></xsl:attribute>
+                                </xsl:if>
+                                <xsl:if test="string-length(@note) &gt; 0">
+                                    <xsl:attribute name="note"><xsl:value-of select="@note"/></xsl:attribute>
+                                </xsl:if>
+                                <xsl:value-of select="."/>
+                            </xsl:element>
+                        </xsl:for-each>
+                    </xsl:element>
+                </xsl:for-each>
+                <!-- Lärosäte -->
+                <xsl:for-each select="mods:recordInfo">
+                    <xsl:element name="recordInfo">
+                        <xsl:copy-of select="mods:recordContentSource"/>
+                    </xsl:element>
+                </xsl:for-each>
+            </xsl:for-each>
+        </mods>
+    </xsl:template>
+</xsl:stylesheet>
