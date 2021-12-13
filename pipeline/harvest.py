@@ -3,6 +3,7 @@ from modsstylesheet import ModsStylesheet
 import hashlib
 import requests
 from uuid import uuid1
+from convert import convert
 
 from sickle.oaiexceptions import (
     BadArgument, BadVerb, BadResumptionToken,
@@ -145,8 +146,8 @@ def harvest(source):
                 status = check_record(record)
                 print(f'Harvest item {status}, harvest_item_id {record.harvest_item_id}')
                 if status == 'OK':
-                    #self.sender.send_record(record)
-                    print(record)
+                    converted = convert(record.xml)
+                    print(f"converted someting, now with @id = {converted['@id']}")
             logger.info(
                 f"Harvest of {harvest_info} completed with {self._get_stats()}.",
                 extra=source.dict)
