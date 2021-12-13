@@ -11,6 +11,7 @@ from sickle.oaiexceptions import (
     NoMetadataFormat, NoRecordsMatch, OAIError
 )
 from modsstylesheet import ModsStylesheet
+from validate import validate
 
 OAIExceptions = (
     BadArgument, BadVerb, BadResumptionToken,
@@ -147,7 +148,8 @@ def harvest(source):
                 print(f'Harvest item {status}, harvest_item_id {record.harvest_item_id}')
                 if status == 'OK':
                     converted = convert(record.xml)
-                    print(f"converted someting, now with @id = {converted['@id']}")
+                    validate(record.xml, converted)
+                    #print(f"converted someting, now with @id = {converted['@id']}")
             logger.info(
                 f"Harvest of {harvest_info} completed with {self._get_stats()}.",
                 extra=source.dict)
