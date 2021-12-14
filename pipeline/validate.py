@@ -4,6 +4,8 @@ from log import log_for_OAI_id
 from jsonpath_rw_ext import parse
 import itertools
 
+from validators.isbn import validate_isbn
+
 MINIMUM_LEVEL_FILTER = et.XSLT(et.parse('./pipeline/minimumlevelfilter.xsl'))
 
 PATHS = {
@@ -59,8 +61,22 @@ def validate(raw_xml, body):
         matches = itertools.chain.from_iterable(jp.find(body) for jp in jpath)
         for match in matches:
             if match.value:
-                print( id_type )
-                print( str(match.full_path) )
-                print( match.value )
+                #print( id_type )
+                #print( str(match.full_path) )
+                #print( match.value )
+
+                #cv.add('ISBN', ISBNFormatValidator())
+                #cv.add('ISI', ISIFormatValidator())
+                #cv.add('ORCID', ORCIDValidator())
+                #cv.add('ISSN', ISSNValidator(session=session))
+                #cv.add('DOI', DoiValidator(session=session))
+                #cv.add('free_text', AcceptingValidator())
+                #cv.add('URI', UnicodeValidator())
+                #cv.add('publication_year', DateTimeValidator())
+                #cv.add('creator_count', CreatorCountValidator())
+                #cv.add('UKA', UKAValidator())
+
+                if id_type == 'ISBN':
+                    validate_isbn(match.value, body["@id"])
     
-    # NOTE: More than 10 "validations" should short cut to normalizer
+    # NOTE: More than 10 "validations" should short cut to normalizer? WTF?
