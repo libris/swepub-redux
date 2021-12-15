@@ -1,7 +1,8 @@
 import json
+import sys
 
 def log_for_OAI_id(id, message):
     if isinstance(message, str):
-        print(f"{id} : {message}")
+        print(f"{id} : {message}", file=sys.stderr)
     else:
-        print(f"{id} : {json.dumps(message)}")
+        print(f"{id} : {json.dumps(message)}", file=sys.stderr)

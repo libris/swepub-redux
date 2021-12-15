@@ -3,8 +3,16 @@ from io import StringIO
 from log import log_for_OAI_id
 from jsonpath_rw_ext import parse
 import itertools
+import requests
 
+from validators.datetime import validate_date_time
+from validators.doi import validate_doi
+from validators.issn import validate_issn
+from validators.shared import validate_base_unicode
 from validators.isbn import validate_isbn
+from validators.isi import validate_isi
+from validators.orcid import validate_orcid
+from validators.uka import validate_uka
 
 MINIMUM_LEVEL_FILTER = et.XSLT(et.parse('./pipeline/minimumlevelfilter.xsl'))
 
@@ -57,6 +65,8 @@ def validate(raw_xml, body):
     else:
         log_for_OAI_id(body["@id"], "Converted OK!")
     
+    session = requests.Session()
+
     for id_type, jpath in PRECOMPILED_PATHS.items():
         matches = itertools.chain.from_iterable(jp.find(body) for jp in jpath)
         for match in matches:
@@ -78,5 +88,25 @@ def validate(raw_xml, body):
 
                 if id_type == 'ISBN':
                     validate_isbn(match.value, body["@id"])
+                if id_type == 'ISI':
+                    validate_isi(match.value, body["@id"])
+                if id_type == 'ORCID':
+                    validate_orcid(match.value, body["@id"])
+                if id_type == 'ISSN':
+                    validate_issn(match.value, body["@id"], session)
+                if id_type == 'DOI':
+                    validate_doi(match.value, body["@id"], session)
+                if id_type == 'URI':
+                    result = validate_base_unicode(match.value)
+                    if result == False:
+                        log_for_OAI_id(body["@id"], 'URI validation failed: unicode')
+                if id_type == 'publication_year':
+                    validate_date_time(match.value, body["@id"])
+                if id_type == 'creator_count':
+                    if not (match.value.isnumeric() and int(match.value) > 0):
+                        log_for_OAI_id(body["@id"], 'creator_count validation failed: numeric')
+                if id_type == 'UKA':
+                    validate_uka(match.value, body["@id"])
+                    
     
     # NOTE: More than 10 "validations" should short cut to normalizer? WTF?

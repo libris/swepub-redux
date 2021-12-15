@@ -1,6 +1,7 @@
 import os
 import lxml
 import lxml.etree as et
+import sys
 
 class ModsStylesheet:
     parsed_stylesheets = {}
@@ -23,7 +24,7 @@ class ModsStylesheet:
             print(
                 f'Failed to parse XML from "{self.url}" for stylesheet '
                 'transform. Continuing harvest without transform, even though '
-                'a stylesheet to be applied exists.'
+                'a stylesheet to be applied exists.', file=sys.stderr
             )
             return raw_xml
         transform = et.XSLT(self.stylesheet)
@@ -58,4 +59,4 @@ class ModsStylesheet:
 
     def _add_to_cache(self):
         self.parsed_stylesheets[self.url] = self.stylesheet
-        print('Stylesheet for "{}" added to cache'.format(self.url))
+        #print('Stylesheet for "{}" added to cache'.format(self.url))
