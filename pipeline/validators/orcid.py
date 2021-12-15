@@ -23,7 +23,7 @@ def validate_orcid(orcid, id):
         return False
     
     hit = orcid_regex.fullmatch(orcid)
-    if hit is not None:
+    if hit is None:
         log_for_OAI_id(id, 'ORCID validation failed: format')
         return False
 

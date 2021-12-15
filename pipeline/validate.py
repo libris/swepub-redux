@@ -62,11 +62,10 @@ def _should_be_rejected(raw_xml, body):
 def validate(raw_xml, body):
     if _should_be_rejected(raw_xml, body):
         return False
-    else:
-        log_for_OAI_id(body["@id"], "Converted OK!")
     
     session = requests.Session()
 
+    passesValidation = True
     for id_type, jpath in PRECOMPILED_PATHS.items():
         matches = itertools.chain.from_iterable(jp.find(body) for jp in jpath)
         for match in matches:
@@ -75,38 +74,27 @@ def validate(raw_xml, body):
                 #print( str(match.full_path) )
                 #print( match.value )
 
-                #cv.add('ISBN', ISBNFormatValidator())
-                #cv.add('ISI', ISIFormatValidator())
-                #cv.add('ORCID', ORCIDValidator())
-                #cv.add('ISSN', ISSNValidator(session=session))
-                #cv.add('DOI', DoiValidator(session=session))
-                #cv.add('free_text', AcceptingValidator())
-                #cv.add('URI', UnicodeValidator())
-                #cv.add('publication_year', DateTimeValidator())
-                #cv.add('creator_count', CreatorCountValidator())
-                #cv.add('UKA', UKAValidator())
-
                 if id_type == 'ISBN':
-                    validate_isbn(match.value, body["@id"])
+                    passesValidation &= validate_isbn(match.value, body["@id"])
                 if id_type == 'ISI':
-                    validate_isi(match.value, body["@id"])
+                    passesValidation &= validate_isi(match.value, body["@id"])
                 if id_type == 'ORCID':
-                    validate_orcid(match.value, body["@id"])
+                    passesValidation &= validate_orcid(match.value, body["@id"])
                 if id_type == 'ISSN':
-                    validate_issn(match.value, body["@id"], session)
+                    passesValidation &= validate_issn(match.value, body["@id"], session)
                 if id_type == 'DOI':
-                    validate_doi(match.value, body["@id"], session)
+                    passesValidation &= validate_doi(match.value, body["@id"], session)
                 if id_type == 'URI':
                     result = validate_base_unicode(match.value)
                     if result == False:
                         log_for_OAI_id(body["@id"], 'URI validation failed: unicode')
+                        passesValidation = False
                 if id_type == 'publication_year':
-                    validate_date_time(match.value, body["@id"])
+                    passesValidation &= validate_date_time(match.value, body["@id"])
                 if id_type == 'creator_count':
                     if not (match.value.isnumeric() and int(match.value) > 0):
                         log_for_OAI_id(body["@id"], 'creator_count validation failed: numeric')
+                        passesValidation = False
                 if id_type == 'UKA':
-                    validate_uka(match.value, body["@id"])
-                    
-    
-    # NOTE: More than 10 "validations" should short cut to normalizer? WTF?
+                    passesValidation &= validate_uka(match.value, body["@id"])
+    return passesValidation

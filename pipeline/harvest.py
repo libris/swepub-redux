@@ -138,10 +138,12 @@ def harvest(source):
     """Harvest a source and publish event when complete"""
     
     for set in source["sets"]:
-        #self._clear_count()
         harvest_info = f'{set["url"]} ({set["subset"]}, {set["metadata_prefix"]})'
         record_iterator = RecordIterator(source["code"], set, None, None)
         try:
+            # The point of using threads here is not CPU parallellism (as that doesn't
+            # work in python anyway). The point is concurrency, which lets any number
+            # of HTTP requests be in flight at once without blocking.
             batch = []
             threads = []
             for record in record_iterator:
@@ -173,8 +175,10 @@ def threaded_handle_harvested(batch):
     for xml in batch:
         #print(f'Harvest harvest_item_id {record.harvest_item_id}')
         converted = convert(xml)
-        validate(xml, converted)
-        print(f"converted someting, now with @id = {converted['@id']}")
+        if validate(xml, converted):
+            print(f"Validation passed for {converted['@id']}")
+        else:
+            print(f"Validation failed for {converted['@id']}")
 
 #
 #   - name: Chalmers tekniska högskola
