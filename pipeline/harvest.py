@@ -4,6 +4,8 @@ import hashlib
 import requests
 from uuid import uuid1
 from convert import convert
+import threading
+import time
 
 from sickle.oaiexceptions import (
     BadArgument, BadVerb, BadResumptionToken,
@@ -29,7 +31,6 @@ class RecordIterator:
 
     def __init__(self, code, source_set, harvest_from, harvest_to):
         self.set = source_set
-        #self.stylesheet = ModsStylesheet(code, self.set.url)
         self.stylesheet = ModsStylesheet(code, self.set["url"])
         self.records = None
         self.publication_ids = set()
@@ -141,36 +142,39 @@ def harvest(source):
         harvest_info = f'{set["url"]} ({set["subset"]}, {set["metadata_prefix"]})'
         record_iterator = RecordIterator(source["code"], set, None, None)
         try:
-            #self.published_records = PublishedRecords(
-            #    set.url, PREVENT_DUPLICATE_HARVESTS and not source.forced)
+            batch = []
+            threads = []
             for record in record_iterator:
-                status = check_record(record)
-                print(f'Harvest item {status}, harvest_item_id {record.harvest_item_id}')
-                if status == 'OK':
-                    converted = convert(record.xml)
-                    validate(record.xml, converted)
-                    #print(f"converted someting, now with @id = {converted['@id']}")
-            logger.info(
-                f"Harvest of {harvest_info} completed with {self._get_stats()}.",
-                extra=source.dict)
+                if record.is_successful():
+                    batch.append(record.xml)
+                    if (len(batch) >= 128):
+                        while (len(threads) >= 128):
+                            n = len(threads)
+                            i = n
+                            while i > 0:
+                                if not threads[i].is_alive:
+                                    del threads[i]
+                                i -= 1
+                            time.sleep(0)
+                        t = threading.Thread(target=threaded_handle_harvested, args=(batch,))
+                        t.start()
+                        threads.append( t )
+                        batch = []
+            t = threading.Thread(target=threaded_handle_harvested, args=(batch,))
+            t.start()
+            threads.append( t )
+            for t in threads:
+                t.join()
         except HarvestFailed as e:
             print ("FAILED HARVEST")
             exit -1
 
-def check_record(record):
-    if not record.is_successful():
-        #self.harvest_stats.incr_failed()
-        #self.failures += 1
-        return 'fail'
-    # This seems irrelevant for full harvests (only useful for the increment-and-already-done case)
-    #elif self.published_records.has_been_published(record):
-        #self.harvest_stats.incr_prevented()
-        #self.prevented += 1
-    #    return 'prevented'
-    else:
-        #self.harvest_stats.incr_successful()
-        #self.successes += 1
-        return 'OK'
+def threaded_handle_harvested(batch):
+    for xml in batch:
+        #print(f'Harvest harvest_item_id {record.harvest_item_id}')
+        converted = convert(xml)
+        validate(xml, converted)
+        print(f"converted someting, now with @id = {converted['@id']}")
 
 #
 #   - name: Chalmers tekniska högskola
