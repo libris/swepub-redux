@@ -14,6 +14,8 @@ from validators.isi import validate_isi
 from validators.orcid import validate_orcid
 from validators.uka import validate_uka
 
+from enrichers.isbn import recover_isbn
+
 MINIMUM_LEVEL_FILTER = et.XSLT(et.parse('./pipeline/minimumlevelfilter.xsl'))
 
 PATHS = {
@@ -65,6 +67,24 @@ def validate(raw_xml, body):
     
     session = requests.Session()
 
+    # Enrichment
+    for id_type, jpath in PRECOMPILED_PATHS.items():
+        matches = itertools.chain.from_iterable(jp.find(body) for jp in jpath)
+        for match in matches:
+            if match.value:
+
+                if id_type == 'ISBN':
+                    recover_isbn(match.value, body, str(match.full_path), body["@id"])
+                #if id_type == 'ISI':
+                #if id_type == 'ORCID':
+                #if id_type == 'ISSN':
+                #if id_type == 'DOI':
+                #if id_type == 'URI':
+                #if id_type == 'publication_year':
+                #if id_type == 'creator_count':
+                #if id_type == 'UKA':
+
+    # Validation
     passesValidation = True
     for id_type, jpath in PRECOMPILED_PATHS.items():
         matches = itertools.chain.from_iterable(jp.find(body) for jp in jpath)
@@ -97,4 +117,5 @@ def validate(raw_xml, body):
                         passesValidation = False
                 if id_type == 'UKA':
                     passesValidation &= validate_uka(match.value, body["@id"])
+                
     return passesValidation

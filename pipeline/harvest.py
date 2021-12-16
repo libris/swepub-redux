@@ -143,7 +143,7 @@ def harvest(source):
         try:
             # The point of using threads here is not CPU parallellism (as that doesn't
             # work in python anyway). The point is concurrency, which lets any number
-            # of HTTP requests be in flight at once without blocking.
+            # of outbound HTTP requests be in flight at once without blocking.
             batch = []
             threads = []
             for record in record_iterator:
@@ -151,13 +151,13 @@ def harvest(source):
                     batch.append(record.xml)
                     if (len(batch) >= 128):
                         while (len(threads) >= 128):
+                            time.sleep(0)
                             n = len(threads)
                             i = n
-                            while i > 0:
+                            while i > -1:
                                 if not threads[i].is_alive:
                                     del threads[i]
                                 i -= 1
-                            time.sleep(0)
                         t = threading.Thread(target=threaded_handle_harvested, args=(batch,))
                         t.start()
                         threads.append( t )
