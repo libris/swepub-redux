@@ -15,6 +15,7 @@ from validators.orcid import validate_orcid
 from validators.uka import validate_uka
 
 from enrichers.isbn import recover_isbn
+from enrichers.isi import recover_isi
 
 MINIMUM_LEVEL_FILTER = et.XSLT(et.parse('./pipeline/minimumlevelfilter.xsl'))
 
@@ -75,7 +76,8 @@ def validate(raw_xml, body):
 
                 if id_type == 'ISBN':
                     recover_isbn(match.value, body, str(match.full_path), body["@id"])
-                #if id_type == 'ISI':
+                if id_type == 'ISI':
+                    recover_isi(match.value, body, str(match.full_path), body["@id"])
                 #if id_type == 'ORCID':
                 #if id_type == 'ISSN':
                 #if id_type == 'DOI':
