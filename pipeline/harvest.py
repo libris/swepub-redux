@@ -153,9 +153,10 @@ def harvest(source):
                         while (len(threads) >= 16):
                             time.sleep(0)
                             n = len(threads)
-                            i = n
+                            i = n-1
                             while i > -1:
-                                if not threads[i].is_alive:
+                                if not threads[i].is_alive():
+                                    print("* CLEARING A THREAD")
                                     del threads[i]
                                 i -= 1
                         t = threading.Thread(target=threaded_handle_harvested, args=(batch,))

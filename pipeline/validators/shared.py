@@ -1,4 +1,4 @@
-from requests.exceptions import Timeout
+from requests.exceptions import Timeout, ReadTimeout
 from log import log_for_OAI_id
 import rfc3987
 
@@ -19,5 +19,8 @@ def remote_verification(url, session):
 
     #r = session.get(url, verify = False, timeout = 8) # Use a timeout and don't waste time veryfing certificates
     #print(f" * got {r.status_code} on call to: {url}")
-    r = session.get(url, timeout = 8)
+    try:
+        r = session.get(url, timeout = 8)
+    except Timeout: # ReadTimeout ?
+        return False
     return r.status_code == 200

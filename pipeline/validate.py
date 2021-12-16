@@ -1,5 +1,6 @@
 import lxml.etree as et
 from io import StringIO
+from enrichers.issn import recover_issn
 from log import log_for_OAI_id
 from jsonpath_rw_ext import parse
 import itertools
@@ -17,6 +18,7 @@ from validators.uka import validate_uka
 from enrichers.isbn import recover_isbn
 from enrichers.isi import recover_isi
 from enrichers.orcid import recover_orcid
+from enrichers.doi import recover_doi
 
 MINIMUM_LEVEL_FILTER = et.XSLT(et.parse('./pipeline/minimumlevelfilter.xsl'))
 
@@ -69,7 +71,7 @@ def validate(raw_xml, body):
     
     session = requests.Session()
 
-    # Enrichment
+    # "Enrichment".. ?
     for id_type, jpath in PRECOMPILED_PATHS.items():
         matches = itertools.chain.from_iterable(jp.find(body) for jp in jpath)
         for match in matches:
@@ -81,8 +83,10 @@ def validate(raw_xml, body):
                     recover_isi(match.value, body, str(match.full_path), body["@id"])
                 if id_type == 'ORCID':
                     recover_orcid(match.value, body, str(match.full_path), body["@id"])
-                #if id_type == 'ISSN':
-                #if id_type == 'DOI':
+                if id_type == 'ISSN':
+                    recover_issn(match.value, body, str(match.full_path), body["@id"])
+                if id_type == 'DOI':
+                    recover_doi(match.value, body, str(match.full_path), body["@id"])
                 #if id_type == 'URI':
                 #if id_type == 'publication_year':
                 #if id_type == 'creator_count':
