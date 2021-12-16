@@ -1,5 +1,5 @@
 import re
-from util import update_at_path
+from util import update_at_path, unicode_translate
 from log import log_for_OAI_id
 
     # flake8: noqa W504
@@ -12,6 +12,11 @@ isi_regex = re.compile(
 )
 
 def recover_isi(isi, body, path, id):
+    translated = unicode_translate(isi)
+    if translated != isi:
+        isi = translated
+        update_at_path(body, path, isi)
+
     hit = isi_regex.search(isi)
     if hit and hit.group() != isi:
         update_at_path(body, path, hit.group())

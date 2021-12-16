@@ -149,8 +149,8 @@ def harvest(source):
             for record in record_iterator:
                 if record.is_successful():
                     batch.append(record.xml)
-                    if (len(batch) >= 128):
-                        while (len(threads) >= 128):
+                    if (len(batch) >= 32):
+                        while (len(threads) >= 16):
                             time.sleep(0)
                             n = len(threads)
                             i = n
