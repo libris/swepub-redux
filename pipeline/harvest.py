@@ -4,8 +4,9 @@ import hashlib
 import requests
 from uuid import uuid1
 from convert import convert
-import threading
+#import threading
 import time
+from multiprocessing import Pool, Process
 
 from sickle.oaiexceptions import (
     BadArgument, BadVerb, BadResumptionToken,
@@ -46,13 +47,13 @@ class RecordIterator:
                 self._get_records()
             return self._get_next_record()
         except NoRecordsMatch:
-            logger.info("OAI-PMH query returned no matches.")
+            #logger.info("OAI-PMH query returned no matches.")
             raise StopIteration
         except OAIExceptions + RequestExceptions + (AttributeError,) as e:
-            logger.exception(e, extra={
-                'metadata_prefix': self.set.metadata_prefix,
-                'subset': self.set.subset,
-            })
+            #logger.exception(e, extra={
+            #    'metadata_prefix': self.set.metadata_prefix,
+            #    'subset': self.set.subset,
+            #})
             if isinstance(e, AttributeError):
                 return Record()
             else:
@@ -141,42 +142,42 @@ def harvest(source):
         harvest_info = f'{set["url"]} ({set["subset"]}, {set["metadata_prefix"]})'
         record_iterator = RecordIterator(source["code"], set, None, None)
         try:
-            # The point of using threads here is not CPU parallellism (as that doesn't
-            # work in python anyway). The point is concurrency, which lets any number
-            # of outbound HTTP requests be in flight at once without blocking.
             batch = []
-            threads = []
+            processes = []
             count = 0
-            t0 = time.clock()
+            total = 0
+            t0 = time.time()
+            
             for record in record_iterator:
                 if record.is_successful():
                     batch.append(record.xml)
                     count += 1
+                    total += 1
                     if count > 200:
                         count = 0
-                        t1 = time.clock()
+                        t1 = time.time()
                         diff = t1 - t0
                         t0 = t1
-                        print(f"{200/diff} per sec, for last 200")
-                    if (len(batch) >= 32):
-                        while (len(threads) >= 16):
+                        print(f"{200/diff} per sec, for last 200 , {total} done in total.")
+                    if (len(batch) >= 512):
+                        while (len(processes) >= 16):
                             time.sleep(0)
-                            n = len(threads)
+                            n = len(processes)
                             i = n-1
                             while i > -1:
-                                if not threads[i].is_alive():
-                                    print("* CLEARING A THREAD")
-                                    del threads[i]
+                                if not processes[i].is_alive():
+                                    print("* CLEARING A PROCESS")
+                                    del processes[i]
                                 i -= 1
-                        t = threading.Thread(target=threaded_handle_harvested, args=(batch,))
-                        t.start()
-                        threads.append( t )
+                        p = Process(target=threaded_handle_harvested, args=(batch,))
+                        p.start()
+                        processes.append( p )
                         batch = []
-            t = threading.Thread(target=threaded_handle_harvested, args=(batch,))
-            t.start()
-            threads.append( t )
-            for t in threads:
-                t.join()
+            p = Process(target=threaded_handle_harvested, args=(batch,))
+            p.start()
+            processes.append( p )
+            for p in processes:
+                p.join()
         except HarvestFailed as e:
             print ("FAILED HARVEST")
             exit -1
