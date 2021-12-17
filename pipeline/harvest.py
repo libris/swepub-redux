@@ -146,9 +146,18 @@ def harvest(source):
             # of outbound HTTP requests be in flight at once without blocking.
             batch = []
             threads = []
+            count = 0
+            t0 = time.clock()
             for record in record_iterator:
                 if record.is_successful():
                     batch.append(record.xml)
+                    count += 1
+                    if count > 200:
+                        count = 0
+                        t1 = time.clock()
+                        diff = t1 - t0
+                        t0 = t1
+                        print(f"{200/diff} per sec, for last 200")
                     if (len(batch) >= 32):
                         while (len(threads) >= 16):
                             time.sleep(0)
@@ -177,9 +186,11 @@ def threaded_handle_harvested(batch):
         #print(f'Harvest harvest_item_id {record.harvest_item_id}')
         converted = convert(xml)
         if validate(xml, converted):
-            print(f"Validation passed for {converted['@id']}")
+            pass
+            #print(f"Validation passed for {converted['@id']}")
         else:
-            print(f"Validation failed for {converted['@id']}")
+            pass
+            #print(f"Validation failed for {converted['@id']}")
 
 #
 #   - name: Chalmers tekniska högskola
