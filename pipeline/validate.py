@@ -6,6 +6,8 @@ from jsonpath_rw_ext import parse
 import itertools
 import requests
 
+from util import update_at_path, unicode_translate
+
 from validators.datetime import validate_date_time
 from validators.doi import validate_doi
 from validators.issn import validate_issn
@@ -87,10 +89,10 @@ def validate(raw_xml, body):
                     recover_issn(match.value, body, str(match.full_path), body["@id"])
                 if id_type == 'DOI':
                     recover_doi(match.value, body, str(match.full_path), body["@id"])
-                #if id_type == 'URI':
-                #if id_type == 'publication_year':
-                #if id_type == 'creator_count':
-                #if id_type == 'UKA':
+                if id_type == 'publication_year' or id_type == 'creator_count':
+                    translated = unicode_translate(match.value)
+                    if translated != match.value:
+                        update_at_path(body, str(match.full_path), translated)
 
     # Validation
     passesValidation = True

@@ -153,7 +153,7 @@ def harvest(source):
                     batch.append(record.xml)
                     count += 1
                     total += 1
-                    if count > 200:
+                    if count == 200:
                         count = 0
                         t1 = time.time()
                         diff = t1 - t0
