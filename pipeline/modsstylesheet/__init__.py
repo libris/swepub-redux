@@ -43,12 +43,12 @@ class ModsStylesheet:
         self._add_to_cache()
 
     def _get_xsl_file_path(self):
-        xsl = f"/app/application/modsstylesheet/{self.code}_stylesheet.xml"
+        xsl = f"./pipeline/modsstylesheet/{self.code}_stylesheet.xml"
         if os.path.isfile(xsl):
             return xsl
 
         if 'diva' in self.url:
-            return '/app/application/modsstylesheet/general_stylesheet_v3_1.xml'
+            return './pipeline/modsstylesheet/general_stylesheet_v3_1.xml'
 
         return None
 

@@ -193,6 +193,8 @@ def threaded_handle_harvested(batch):
             pass
             #print(f"Validation failed for {converted['@id']}")
 
+sources = [
+
 #
 #   - name: Chalmers tekniska högskola
 #    code: cth
@@ -201,12 +203,30 @@ def threaded_handle_harvested(batch):
 #        subset: CHALMERS_SWEPUB
 #        metadata_prefix: mods
 #
-source = {
+{
     "name" : "Chalmers tekniska högskola",
     "code": "cth",
     "sets": [
         {"url": "http://research.chalmers.se/oai-pmh/swepub", "subset": "CHALMERS_SWEPUB", "metadata_prefix": "mods"}
     ]
+},
+
+#
+#   - name: Uppsala universitet
+#    code: uu
+#    sets:
+#      - url: http://uu.diva-portal.org/dice/oai
+#        subset: SwePub-uu
+#        metadata_prefix: swepub_mods
+#
+{
+    "name" : "Uppsala universitet",
+    "code": "uu",
+    "sets": [
+        {"url": "http://uu.diva-portal.org/dice/oai", "subset": "SwePub-uu", "metadata_prefix": "swepub_mods"}
+    ]
 }
 
-harvest(source)
+]
+
+harvest(sources[1])
