@@ -128,4 +128,5 @@ def validate(raw_xml, body):
                 if id_type == 'UKA':
                     passesValidation &= validate_uka(match.value, body["@id"])
                 
-    return passesValidation
+    #return passesValidation
+    return True # LOL? It's backwards, but this is the way they want it, "validate, but trust".

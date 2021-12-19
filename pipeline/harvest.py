@@ -1,3 +1,4 @@
+from pathlib import Path
 import sickle
 from modsstylesheet import ModsStylesheet
 import hashlib
@@ -136,25 +137,26 @@ class HarvestFailed(Exception):
 
 
 def harvest(source):
-    """Harvest a source and publish event when complete"""
+    Path("./output/raw/").mkdir(parents=True, exist_ok=True)
     
     for set in source["sets"]:
         harvest_info = f'{set["url"]} ({set["subset"]}, {set["metadata_prefix"]})'
         record_iterator = RecordIterator(source["code"], set, None, None)
         try:
+            batch_count = 0
             batch = []
             processes = []
-            count = 0
+            records_in_batch = 0
             total = 0
             t0 = time.time()
             
             for record in record_iterator:
                 if record.is_successful():
                     batch.append(record.xml)
-                    count += 1
+                    records_in_batch += 1
                     total += 1
-                    if count == 200:
-                        count = 0
+                    if records_in_batch == 200:
+                        records_in_batch = 0
                         t1 = time.time()
                         diff = t1 - t0
                         t0 = t1
@@ -169,7 +171,8 @@ def harvest(source):
                                     print("* CLEARING A PROCESS")
                                     del processes[i]
                                 i -= 1
-                        p = Process(target=threaded_handle_harvested, args=(batch,))
+                        p = Process(target=threaded_handle_harvested, args=(batch,f'./output/raw/{source["code"]}{batch_count}'))
+                        batch_count += 1
                         p.start()
                         processes.append( p )
                         batch = []
@@ -182,16 +185,17 @@ def harvest(source):
             print ("FAILED HARVEST")
             exit -1
 
-def threaded_handle_harvested(batch):
-    for xml in batch:
-        #print(f'Harvest harvest_item_id {record.harvest_item_id}')
-        converted = convert(xml)
-        if validate(xml, converted):
-            pass
-            #print(f"Validation passed for {converted['@id']}")
-        else:
-            pass
-            #print(f"Validation failed for {converted['@id']}")
+def threaded_handle_harvested(batch, batch_file):
+    with open(batch_file, "w") as f:
+        for xml in batch:
+            #print(f'Harvest harvest_item_id {record.harvest_item_id}')
+            converted = convert(xml)
+            if validate(xml, converted):
+                #print(f"Validation passed for {converted['@id']}")
+                f.write(f"{converted}\n")
+            else:
+                pass
+                #print(f"Validation failed for {converted['@id']}")
 
 sources = [
 
