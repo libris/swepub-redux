@@ -5,9 +5,10 @@ import hashlib
 import requests
 from uuid import uuid1
 from convert import convert
-#import threading
+from deduplicate import deduplicate
 import time
-from multiprocessing import Pool, Process
+from multiprocessing import Process
+import shutil
 
 from sickle.oaiexceptions import (
     BadArgument, BadVerb, BadResumptionToken,
@@ -137,6 +138,7 @@ class HarvestFailed(Exception):
 
 
 def harvest(source):
+    shutil.rmtree("./output")
     Path("./output/raw/").mkdir(parents=True, exist_ok=True)
     
     for set in source["sets"]:
@@ -171,21 +173,23 @@ def harvest(source):
                                     print("* CLEARING A PROCESS")
                                     del processes[i]
                                 i -= 1
-                        p = Process(target=threaded_handle_harvested, args=(batch,f'./output/raw/{source["code"]}{batch_count}'))
+                        p = Process(target=threaded_handle_harvested, args=(batch,f'./output/raw/{batch_count}'))
                         batch_count += 1
                         p.start()
                         processes.append( p )
                         batch = []
-            p = Process(target=threaded_handle_harvested, args=(batch,))
+            p = Process(target=threaded_handle_harvested, args=(batch,f'./output/raw/{batch_count}'))
             p.start()
             processes.append( p )
             for p in processes:
                 p.join()
+            deduplicate()
         except HarvestFailed as e:
             print ("FAILED HARVEST")
             exit -1
 
 def threaded_handle_harvested(batch, batch_file):
+    print(f"RUNNING WITH FILE: {batch_file}")
     with open(batch_file, "w") as f:
         for xml in batch:
             #print(f'Harvest harvest_item_id {record.harvest_item_id}')
@@ -229,8 +233,21 @@ sources = [
     "sets": [
         {"url": "http://uu.diva-portal.org/dice/oai", "subset": "SwePub-uu", "metadata_prefix": "swepub_mods"}
     ]
+},
+#  - name: Enskilda Högskolan Stockholm
+#    code: ths
+#    sets:
+#      - url: http://ths.diva-portal.org/dice/oai
+#        subset: SwePub-ths
+#        metadata_prefix: swepub_mods
+{
+    "name" : "Enskilda Högskolan Stockholm",
+    "code": "ths",
+    "sets": [
+        {"url": "http://ths.diva-portal.org/dice/oai", "subset": "SwePub-ths", "metadata_prefix": "swepub_mods"}
+    ]
 }
 
 ]
 
-harvest(sources[1])
+harvest(sources[2])
