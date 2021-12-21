@@ -9,6 +9,7 @@ from deduplicate import deduplicate
 import time
 from multiprocessing import Process
 import shutil
+import json
 
 from sickle.oaiexceptions import (
     BadArgument, BadVerb, BadResumptionToken,
@@ -196,7 +197,7 @@ def threaded_handle_harvested(batch, batch_file):
             converted = convert(xml)
             if validate(xml, converted):
                 #print(f"Validation passed for {converted['@id']}")
-                f.write(f"{converted}\n")
+                f.write(f"{json.dumps(converted)}\n")
             else:
                 pass
                 #print(f"Validation failed for {converted['@id']}")
