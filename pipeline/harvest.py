@@ -10,6 +10,7 @@ import time
 from multiprocessing import Process
 import shutil
 import json
+from storage import *
 
 from sickle.oaiexceptions import (
     BadArgument, BadVerb, BadResumptionToken,
@@ -139,8 +140,6 @@ class HarvestFailed(Exception):
 
 
 def harvest(source):
-    shutil.rmtree("./output")
-    Path("./output/raw/").mkdir(parents=True, exist_ok=True)
     
     for set in source["sets"]:
         harvest_info = f'{set["url"]} ({set["subset"]}, {set["metadata_prefix"]})'
@@ -174,12 +173,12 @@ def harvest(source):
                                     print("* CLEARING A PROCESS")
                                     del processes[i]
                                 i -= 1
-                        p = Process(target=threaded_handle_harvested, args=(batch,f'./output/raw/{batch_count}'))
+                        p = Process(target=threaded_handle_harvested, args=(batch,))
                         batch_count += 1
                         p.start()
                         processes.append( p )
                         batch = []
-            p = Process(target=threaded_handle_harvested, args=(batch,f'./output/raw/{batch_count}'))
+            p = Process(target=threaded_handle_harvested, args=(batch,))
             p.start()
             processes.append( p )
             for p in processes:
@@ -189,18 +188,16 @@ def harvest(source):
             print ("FAILED HARVEST")
             exit -1
 
-def threaded_handle_harvested(batch, batch_file):
-    print(f"RUNNING WITH FILE: {batch_file}")
-    with open(batch_file, "w") as f:
-        for xml in batch:
-            #print(f'Harvest harvest_item_id {record.harvest_item_id}')
-            converted = convert(xml)
-            if validate(xml, converted):
-                #print(f"Validation passed for {converted['@id']}")
-                f.write(f"{json.dumps(converted)}\n")
-            else:
-                pass
-                #print(f"Validation failed for {converted['@id']}")
+def threaded_handle_harvested(batch):
+    for xml in batch:
+        #print(f'Harvest harvest_item_id {record.harvest_item_id}')
+        converted = convert(xml)
+        if validate(xml, converted):
+            #print(f"Validation passed for {converted['@id']}")
+            store_converted(converted)
+        else:
+            pass
+            #print(f"Validation failed for {converted['@id']}")
 
 sources = [
 
@@ -251,4 +248,7 @@ sources = [
 
 ]
 
+#shutil.rmtree("./output")
+#Path("./output").mkdir(parents=True, exist_ok=True)
+clean_and_init_storage()
 harvest(sources[2])
