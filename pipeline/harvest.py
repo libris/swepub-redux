@@ -200,55 +200,324 @@ def threaded_handle_harvested(batch):
             #print(f"Validation failed for {converted['@id']}")
 
 sources = [
-
-#
-#   - name: Chalmers tekniska högskola
-#    code: cth
-#    sets:
-#      - url: http://research.chalmers.se/oai-pmh/swepub
-#        subset: CHALMERS_SWEPUB
-#        metadata_prefix: mods
-#
-{
-    "name" : "Chalmers tekniska högskola",
-    "code": "cth",
-    "sets": [
-        {"url": "http://research.chalmers.se/oai-pmh/swepub", "subset": "CHALMERS_SWEPUB", "metadata_prefix": "mods"}
-    ]
-},
-
-#
-#   - name: Uppsala universitet
-#    code: uu
-#    sets:
-#      - url: http://uu.diva-portal.org/dice/oai
-#        subset: SwePub-uu
-#        metadata_prefix: swepub_mods
-#
-{
-    "name" : "Uppsala universitet",
-    "code": "uu",
-    "sets": [
-        {"url": "http://uu.diva-portal.org/dice/oai", "subset": "SwePub-uu", "metadata_prefix": "swepub_mods"}
-    ]
-},
-#  - name: Enskilda Högskolan Stockholm
-#    code: ths
-#    sets:
-#      - url: http://ths.diva-portal.org/dice/oai
-#        subset: SwePub-ths
-#        metadata_prefix: swepub_mods
-{
-    "name" : "Enskilda Högskolan Stockholm",
-    "code": "ths",
-    "sets": [
-        {"url": "http://ths.diva-portal.org/dice/oai", "subset": "SwePub-ths", "metadata_prefix": "swepub_mods"}
-    ]
-}
-
+    {
+        "name" : "Örebro universitet",
+        "code": "oru",
+        "sets": [
+            {"url": "http://oru.diva-portal.org/dice/oai", "subset": "SwePub-oru", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Umeå universitet",
+        "code": "umu",
+        "sets": [
+            {"url": "http://umu.diva-portal.org/dice/oai", "subset": "SwePub-umu", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Södertörns högskola",
+        "code": "sh",
+        "sets": [
+            {"url": "http://sh.diva-portal.org/dice/oai", "subset": "SwePub-sh", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Sveriges lantbruksuniversitet",
+        "code": "slu",
+        "sets": [
+            {"url": "http://slubar.slu.se/sps/cgi/oai2", "subset": "swepub", "metadata_prefix": "mods_sp30_sp3"}
+        ]
+    },
+    {
+        "name" : "Stockholms universitet",
+        "code": "su",
+        "sets": [
+            {"url": "http://su.diva-portal.org/dice/oai", "subset": "SwePub-su", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Stockholms konstnärliga högskola",
+        "code": "uniarts",
+        "sets": [
+            {"url": "http://uniarts.diva-portal.org/dice/oai", "subset": "SwePub-uniarts", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Statens väg- och transportforskningsinstitut",
+        "code": "vti",
+        "sets": [
+            {"url": "http://vti.diva-portal.org/dice/oai", "subset": "SwePub-vti", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Sophiahemmet Högskola",
+        "code": "shh",
+        "sets": [
+            {"url": "http://shh.diva-portal.org/dice/oai", "subset": "SwePub-shh", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Röda Korsets Högskola",
+        "code": "rkh",
+        "sets": [
+            {"url": "http://rkh.diva-portal.org/dice/oai", "subset": "SwePub-rkh", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "RISE Research Institutes of Sweden",
+        "code": "ri",
+        "sets": [
+            {"url": "http://ri.diva-portal.org/dice/oai", "subset": "SwePub-ri", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Riksantikvarieämbetet",
+        "code": "raa",
+        "sets": [
+            {"url": "http://raa.diva-portal.org/dice/oai", "subset": "SwePub-raa", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Nordiska Afrikainstitutet",
+        "code": "nai",
+        "sets": [
+            {"url": "http://nai.diva-portal.org/dice/oai", "subset": "SwePub-nai", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Naturvårdsverket",
+        "code": "naturvardsverket",
+        "sets": [
+            {"url": "http://naturvardsverket.diva-portal.org/dice/oai", "subset": "SwePub-naturvardsverket", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Naturhistoriska riksmuseet",
+        "code": "nrm",
+        "sets": [
+            {"url": "http://nrm.diva-portal.org/dice/oai", "subset": "SwePub-nrm", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Nationalmuseum",
+        "code": "nationalmuseum",
+        "sets": [
+            {"url": "http://nationalmuseum.diva-portal.org/dice/oai", "subset": "SwePub-nationalmuseum", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Mälardalens högskola",
+        "code": "mdh",
+        "sets": [
+            {"url": "http://mdh.diva-portal.org/dice/oai", "subset": "SwePub-mdh", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Mittuniversitetet",
+        "code": "miun",
+        "sets": [
+            {"url": "http://miun.diva-portal.org/dice/oai", "subset": "SwePub-miun", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Malmö universitet",
+        "code": "mau",
+        "sets": [
+            {"url": "http://mau.diva-portal.org/dice/oai", "subset": "SwePub-mau", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Lunds universitet",
+        "code": "lu",
+        "sets": [
+            {"url": "http://lup.lub.lu.se/oai", "subset": "LU_SWEPUB", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Luleå tekniska universitet",
+        "code": "ltu",
+        "sets": [
+            {"url": "http://ltu.diva-portal.org/dice/oai", "subset": "SwePub-ltu", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Linnéuniversitetet",
+        "code": "lnu",
+        "sets": [
+            {"url": "http://lnu.diva-portal.org/dice/oai", "subset": "SwePub-lnu", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Linköpings universitet",
+        "code": "liu",
+        "sets": [
+            {"url": "http://liu.diva-portal.org/dice/oai", "subset": "SwePub-liu", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Kungl. Musikhögskolan",
+        "code": "kmh",
+        "sets": [
+            {"url": "http://kmh.diva-portal.org/dice/oai", "subset": "SwePub-kmh", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Kungl. Konsthögskolan",
+        "code": "kkh",
+        "sets": [
+            {"url": "http://kkh.diva-portal.org/dice/oai", "subset": "SwePub-kkh", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Kungliga Tekniska högskolan",
+        "code": "kth",
+        "sets": [
+            {"url": "http://kth.diva-portal.org/dice/oai", "subset": "SwePub-kth", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Konstfack",
+        "code": "konstfack",
+        "sets": [
+            {"url": "http://konstfack.diva-portal.org/dice/oai", "subset": "SwePub-konstfack", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Karolinska Institutet",
+        "code": "ki",
+        "sets": [
+            {"url": "http://openarchive.ki.se/oai/request", "subset": "com_10616_46998", "metadata_prefix": "swepub"},
+            {"url": "http://prod.swepub.kib.ki.se", "subset": None, "metadata_prefix": "mods"}
+        ]
+    },
+    {
+        "name" : "Karlstads universitet",
+        "code": "kau",
+        "sets": [
+            {"url": "http://kau.diva-portal.org/dice/oai", "subset": "SwePub-kau", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Jönköping University",
+        "code": "hj",
+        "sets": [
+            {"url": "http://hj.diva-portal.org/dice/oai", "subset": "SwePub-hj", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Institutet för språk och folkminnen",
+        "code": "sprakochfolkminnen",
+        "sets": [
+            {"url": "http://sprakochfolkminnen.diva-portal.org/dice/oai", "subset": "SwePub-sprakochfolkminnen", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Högskolan Väst",
+        "code": "hv",
+        "sets": [
+            {"url": "http://hv.diva-portal.org/dice/oai", "subset": "SwePub-hv", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Högskolan Kristianstad",
+        "code": "hkr",
+        "sets": [
+            {"url": "http://hkr.diva-portal.org/dice/oai", "subset": "SwePub-hkr", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Högskolan i Skövde",
+        "code": "his",
+        "sets": [
+            {"url": "http://his.diva-portal.org/dice/oai", "subset": "SwePub-his", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Högskolan i Halmstad",
+        "code": "hh",
+        "sets": [
+            {"url": "http://hh.diva-portal.org/dice/oai", "subset": "SwePub-hh", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Högskolan i Gävle",
+        "code": "hig",
+        "sets": [
+            {"url": "http://hig.diva-portal.org/dice/oai", "subset": "SwePub-hig", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Högskolan i Borås",
+        "code": "hb",
+        "sets": [
+            {"url": "http://hb.diva-portal.org/dice/oai", "subset": "SwePub-hb", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Högskolan Dalarna",
+        "code": "du",
+        "sets": [
+            {"url": "http://du.diva-portal.org/dice/oai", "subset": "SwePub-du", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Göteborgs universitet",
+        "code": "gu",
+        "sets": [
+            {"url": "https://gup.ub.gu.se/oai", "subset": None, "metadata_prefix": "mods"}
+        ]
+    },
+    {
+        "name" : "Gymnastik- och idrottshögskolan",
+        "code": "gih",
+        "sets": [
+            {"url": "http://gih.diva-portal.org/dice/oai", "subset": "SwePub-gih", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Försvarshögskolan",
+        "code": "fhs",
+        "sets": [
+            {"url": "http://fhs.diva-portal.org/dice/oai", "subset": "SwePub-fhs", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Ersta Sköndal Bräcke högskola",
+        "code": "esh",
+        "sets": [
+            {"url": "http://ths.diva-portal.org/dice/oai", "subset": "SwePub-ths", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Blekinge Tekniska Högskola",
+        "code": "bth",
+        "sets": [
+            {"url": "http://bth.diva-portal.org/dice/oai", "subset": "SwePub-bth", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Chalmers tekniska högskola",
+        "code": "cth",
+        "sets": [
+            {"url": "http://research.chalmers.se/oai-pmh/swepub", "subset": "CHALMERS_SWEPUB", "metadata_prefix": "mods"}
+        ]
+    },
+    {
+        "name" : "Uppsala universitet",
+        "code": "uu",
+        "sets": [
+            {"url": "http://uu.diva-portal.org/dice/oai", "subset": "SwePub-uu", "metadata_prefix": "swepub_mods"}
+        ]
+    },
+    {
+        "name" : "Enskilda Högskolan Stockholm",
+        "code": "ths",
+        "sets": [
+            {"url": "http://ths.diva-portal.org/dice/oai", "subset": "SwePub-ths", "metadata_prefix": "swepub_mods"}
+        ]
+    }
 ]
 
-#shutil.rmtree("./output")
-#Path("./output").mkdir(parents=True, exist_ok=True)
-clean_and_init_storage()
-harvest(sources[2])
+if __name__ == "__main__":    
+    clean_and_init_storage()
+    harvest(sources[2])
