@@ -6,7 +6,7 @@ from validators.shared import validate_base_unicode, remote_verification
 issn_regex = re.compile('[0-9]{4}-?[0-9]{3}[0-9xX]')
     
 def validate_issn(issn, id, session):
-    if issn is not None:
+    if issn is not None and isinstance(issn, str):
         hit = issn_regex.fullmatch(issn)
         if hit is None:
             return False

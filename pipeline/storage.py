@@ -11,7 +11,7 @@ def clean_and_init_storage():
     if os.path.exists(sqlite_path):
         os.remove(sqlite_path)
     global connection
-    connection = sqlite3.connect(sqlite_path)
+    connection = sqlite3.connect(sqlite_path, timeout=(5*60))
     cursor = connection.cursor()
     cursor.execute("""
     CREATE TABLE converted (
@@ -37,14 +37,14 @@ def open_existing_storage():
 def store_converted(converted):
     cursor = connection.cursor()
 
-    print(f'Inserting with oai_id {converted["@id"]}')
+    #print(f'Inserting with oai_id {converted["@id"]}')
 
-    converted_id = connection.execute("""
+    converted_id = cursor.execute("""
     INSERT INTO converted(cluster, oai_id, data) VALUES(?, ?, ?);
     """, (-1, converted["@id"], json.dumps(converted))).lastrowid
 
     for title in converted["instanceOf"]["hasTitle"]:
-        connection.execute("""
+        cursor.execute("""
         INSERT INTO maintitle VALUES (?, ?)
         """, (title["mainTitle"], converted_id))
 

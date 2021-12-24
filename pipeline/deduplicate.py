@@ -16,7 +16,8 @@ def deduplicate():
     GROUP BY
         maintitle.maintitle;
     """):
-        print(row)                
+        pass
+        #print(row)                
 
 # For debugging
 if __name__ == "__main__":    

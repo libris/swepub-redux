@@ -140,6 +140,8 @@ class HarvestFailed(Exception):
 
 
 def harvest(source):
+
+    start_time = time.time()
     
     for set in source["sets"]:
         harvest_info = f'{set["url"]} ({set["subset"]}, {set["metadata_prefix"]})'
@@ -162,7 +164,7 @@ def harvest(source):
                         t1 = time.time()
                         diff = t1 - t0
                         t0 = t1
-                        print(f"{200/diff} per sec, for last 200 , {total} done in total.")
+                        #print(f"{200/diff} per sec, for last 200 , {total} done in total.")
                     if (len(batch) >= 512):
                         while (len(processes) >= 16):
                             time.sleep(0)
@@ -170,7 +172,7 @@ def harvest(source):
                             i = n-1
                             while i > -1:
                                 if not processes[i].is_alive():
-                                    print("* CLEARING A PROCESS")
+                                    #print("* CLEARING A PROCESS")
                                     del processes[i]
                                 i -= 1
                         p = Process(target=threaded_handle_harvested, args=(batch,))
@@ -183,7 +185,8 @@ def harvest(source):
             processes.append( p )
             for p in processes:
                 p.join()
-            deduplicate()
+            finish_time = time.time()
+            print(f'Harvest of {source["code"]} took {finish_time-start_time} seconds.')
         except HarvestFailed as e:
             print ("FAILED HARVEST")
             exit -1
@@ -520,4 +523,12 @@ sources = [
 
 if __name__ == "__main__":    
     clean_and_init_storage()
-    harvest(sources[2])
+    processes = []
+    for source in sources:
+        p = Process(target=harvest, args=(source,))
+        p.start()
+        processes.append( p )
+    for p in processes:
+        p.join()
+    deduplicate()
+    #harvest(sources[2])
