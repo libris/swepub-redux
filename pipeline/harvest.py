@@ -188,7 +188,7 @@ def harvest(source):
             finish_time = time.time()
             print(f'Harvest of {source["code"]} took {finish_time-start_time} seconds.')
         except HarvestFailed as e:
-            print ("FAILED HARVEST")
+            print (f'FAILED HARVEST: {source["code"]}')
             exit -1
 
 def threaded_handle_harvested(batch):

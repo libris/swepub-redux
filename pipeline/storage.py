@@ -44,9 +44,10 @@ def store_converted(converted):
     """, (-1, converted["@id"], json.dumps(converted))).lastrowid
 
     for title in converted["instanceOf"]["hasTitle"]:
-        cursor.execute("""
-        INSERT INTO maintitle VALUES (?, ?)
-        """, (title["mainTitle"], converted_id))
+        if title["mainTitle"] is not None and isinstance(title["mainTitle"], str):
+            cursor.execute("""
+            INSERT INTO maintitle VALUES (?, ?)
+            """, (title["mainTitle"], converted_id))
 
     connection.commit()
 
