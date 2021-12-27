@@ -1,9 +1,10 @@
 import os
 import json
 import re
+import sqlite3
 import random # TEMP!
 
-from storage import get_cursor, open_existing_storage
+from storage import commit_sqlite, get_cursor, open_existing_storage
 
 # Are publications 'a' and 'b' similiar enough to justify clustering them?
 # 'a' and 'b' are row IDs into the 'converted' table.
@@ -61,11 +62,16 @@ def deduplicate():
             inner_cursor = get_cursor()
             for cluster in clusters:
                 for publication in cluster:
-                    print(f"Writing converted:{candidates[publication]} into cluster: {next_cluster_id}")
-                    inner_cursor.execute("""
-                    INSERT INTO cluster(cluster_id, converted_id) VALUES(?, ?);
-                    """, (next_cluster_id, candidates[publication]))
+                    #print(f"publication:{publication}, cluster:{cluster}, candidates:{candidates}")
+                    #print(f"Writing converted:{candidates[publication]} into cluster: {next_cluster_id}")
+                    try:
+                        inner_cursor.execute("""
+                        INSERT INTO cluster(cluster_id, converted_id) VALUES(?, ?);
+                        """, (next_cluster_id, candidates[publication]))
+                    except sqlite3.IntegrityError as e: # A publication with, for example, duplicated ISSN can cause a UNIQUE violation.
+                        pass
                 next_cluster_id += 1
+            commit_sqlite()
 
             #inner_cursor = get_cursor()
             #inner_cursor.execute("SELECT data FROM converted LIMIT 1;")

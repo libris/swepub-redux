@@ -110,3 +110,6 @@ def store_converted(xml, converted):
 
 def get_cursor():
     return connection.cursor()
+
+def commit_sqlite():
+    connection.commit()
