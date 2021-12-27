@@ -197,7 +197,7 @@ def threaded_handle_harvested(batch):
         converted = convert(xml)
         if validate(xml, converted):
             #print(f"Validation passed for {converted['@id']}")
-            store_converted(converted)
+            store_converted(xml, converted)
         else:
             pass
             #print(f"Validation failed for {converted['@id']}")
@@ -524,7 +524,8 @@ sources = [
 if __name__ == "__main__":    
     clean_and_init_storage()
     processes = []
-    for source in sources:
+    #for source in sources:
+    for source in sources[15:18]: # TEMP!
         p = Process(target=harvest, args=(source,))
         p.start()
         processes.append( p )

@@ -17,11 +17,11 @@ def deduplicate():
     SELECT
         group_concat(converted.data, "\n")
     FROM
-        maintitle
+        clusteringidentifiers
     LEFT JOIN
-        converted ON maintitle.converted_id = converted.id
+        converted ON clusteringidentifiers.converted_id = converted.id
     GROUP BY
-        maintitle.maintitle;
+        clusteringidentifiers.identifier;
     """):
         candidates = candidatelist_row[0].split('\n')
         if len(candidates) > 1:
