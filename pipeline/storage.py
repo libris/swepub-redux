@@ -14,7 +14,7 @@ def clean_and_init_storage():
     connection = sqlite3.connect(sqlite_path, timeout=(5*60))
     cursor = connection.cursor()
 
-    # Because the APIs expose publications as originally harvestes, these must be kept.
+    # Because Swepub APIs expose publications as originally harvested, these must be kept.
     cursor.execute("""
     CREATE TABLE original (
         id INTEGER PRIMARY KEY,
@@ -45,6 +45,31 @@ def clean_and_init_storage():
         converted_id INTEGER,
         FOREIGN KEY (converted_id) REFERENCES converted(id)
     );
+    """)
+
+    # Deduplicated clusters, multiple rows per cluster. So for example, a cluster consisting
+    # of publications A, B and C would look something like:
+    # cluster_id | converted_id
+    #---------------------------
+    # 123        | A
+    # 123        | B
+    # 123        | C
+    #---------------------------
+    # These may initially overlap (publication A may be in more than one cluster).
+    # But any overlaps should have been joined into a single cluster by the end of deduplication.
+    cursor.execute("""
+    CREATE TABLE cluster (
+        cluster_id INTEGER,
+        converted_id INTEGER,
+        UNIQUE(cluster_id, converted_id),
+        FOREIGN KEY (converted_id) REFERENCES converted(id)
+    );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_clusters_clusterid ON cluster (cluster_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_clusters_convertedid ON cluster (converted_id);
     """)
 
     connection.commit()
