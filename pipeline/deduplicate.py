@@ -11,13 +11,15 @@ from storage import commit_sqlite, get_cursor, open_existing_storage
 def _is_close_enough(a, b):
     return bool(random.getrandbits(1))
 
-def deduplicate():
-
+# Generate clusters of publications, based on some shared piece of data
+# (a title or an ID). Sharing this information is only enough to be considered
+# a "candidate". To actually be clustered, one must also pass the
+# _is_close_enough(a, b) test.
+# This function _will_ generate overlapping clusters.
+def _generate_clusters():
     next_cluster_id = 0
 
     cursor = get_cursor()
-    # Note that unescaped \n is illegal within json, therefore
-    # splitting on it is safe to do.
     for candidatelist_row in cursor.execute("""
     SELECT
         group_concat(converted.id, "\n")
@@ -62,19 +64,82 @@ def deduplicate():
             inner_cursor = get_cursor()
             for cluster in clusters:
                 for publication in cluster:
-                    #print(f"publication:{publication}, cluster:{cluster}, candidates:{candidates}")
-                    #print(f"Writing converted:{candidates[publication]} into cluster: {next_cluster_id}")
-                    try:
-                        inner_cursor.execute("""
-                        INSERT INTO cluster(cluster_id, converted_id) VALUES(?, ?);
-                        """, (next_cluster_id, candidates[publication]))
-                    except sqlite3.IntegrityError as e: # A publication with, for example, duplicated ISSN can cause a UNIQUE violation.
-                        pass
+                    inner_cursor.execute("""
+                    INSERT INTO cluster(cluster_id, converted_id) VALUES(?, ?);
+                    """, (next_cluster_id, candidates[publication]))
                 next_cluster_id += 1
             commit_sqlite()
 
-            #inner_cursor = get_cursor()
-            #inner_cursor.execute("SELECT data FROM converted LIMIT 1;")
+# Join any clusters that have one or more common publications.
+# This _will_ result in duplicate rows in the cluster table,
+# Which must be filtered out eventually.
+def _join_overlapping_clusters():
+    cursor = get_cursor()
+    cursor.execute("""
+    SELECT
+        count(cluster_id), group_concat(cluster_id, "\n")
+    FROM
+        cluster
+    GROUP BY
+        converted_id;
+    """)
+    rows = cursor.fetchall() # This is necessary in order to allow modification of the table while iterating
+
+    # Holds information on already merged clusters, so for example 1 -> 2 means cluster 1 no longer exists,
+    # but it's publications are now in 2 instead.
+    merged_into = {}
+
+    for cluster_row in rows:
+        cluster_count = cluster_row[0]
+        if cluster_count > 1:
+            clusters = cluster_row[1].split('\n')
+
+            print(f"-----\nNow considering merging: {clusters}")
+
+            cluster_a = clusters.pop()
+
+            while len(clusters) > 0:
+                cluster_b = clusters.pop()
+
+                print(f"  To be merged: {cluster_a} into {cluster_b}")
+
+                # Replace cluster_a and cluster_b with where ever their contents are now
+                while cluster_a in merged_into:
+                    cluster_a = merged_into[cluster_a]
+                while cluster_b in merged_into:
+                    cluster_b = merged_into[cluster_b]
+
+                print(f"  After following history: {cluster_a} into {cluster_b}")
+
+                if cluster_a == cluster_b:
+                    continue
+
+                # Merge cluster_a into cluster_b
+                cursor.execute("""
+                UPDATE
+                    cluster
+                SET
+                    cluster_id = ?
+                WHERE
+                    cluster_id = ?;
+                """, (cluster_b, cluster_a))
+                merged_into[cluster_a] = cluster_b
+
+                print(f"Merged cluster {cluster_a} into {cluster_b}")
+
+                cluster_a = cluster_b
+
+            print("\n")
+
+            commit_sqlite()
+
+
+
+
+def deduplicate():
+    _generate_clusters()
+    _join_overlapping_clusters()
+
             
 
 # For debugging

@@ -61,7 +61,6 @@ def clean_and_init_storage():
     CREATE TABLE cluster (
         cluster_id INTEGER,
         converted_id INTEGER,
-        UNIQUE(cluster_id, converted_id),
         FOREIGN KEY (converted_id) REFERENCES converted(id)
     );
     """)
