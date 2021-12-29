@@ -71,8 +71,6 @@ def _generate_clusters():
             commit_sqlite()
 
 # Join any clusters that have one or more common publications.
-# This _will_ result in duplicate rows in the cluster table,
-# Which must be filtered out eventually.
 def _join_overlapping_clusters():
     cursor = get_cursor()
     cursor.execute("""
@@ -132,6 +130,24 @@ def _join_overlapping_clusters():
             print("\n")
 
             commit_sqlite()
+    
+    # Given two clusters (A,B,C) and (B,C,D) which have now been joined, there will now be duplicate
+    # rows for B and C. These must (should) be cleared:
+    cursor.execute("""
+    DELETE FROM
+        cluster
+    WHERE
+        rowid NOT IN
+        (
+            SELECT
+                MIN(rowid)
+            FROM
+                cluster
+            GROUP BY
+                cluster_id, converted_id
+        );
+    """)
+    commit_sqlite()
 
 
 
