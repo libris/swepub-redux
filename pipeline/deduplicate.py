@@ -6,10 +6,169 @@ import random # TEMP!
 
 from storage import commit_sqlite, get_cursor, open_existing_storage
 
+def _get_ids(body, path, type):
+    if type:
+        ids = []
+        ids_array = body.get(path, [])
+        for id in ids_array:
+            if isinstance(id, dict) and id.get('@type') == type:
+                ids.append(id.get('value'))
+        return [id for id in ids if id]
+    else:
+        if body.get(path):
+            return body[path]
+    return []
+
+def _same_ids(master_ids, candidate_ids):
+    if len(master_ids) == 0 or len(candidate_ids) == 0:
+        return False
+    return set(master_ids) == set(candidate_ids)
+
+def _get_identifiedby_ids(body, identifier=''):
+    """Return either identifiedBy ids values if identifier is set otherwise whole identifiedBy array """
+    return _get_ids(body, 'identifiedBy', identifier)
+
+def _get_indirectly_identifiedby_ids(body, identifier=''):
+    """Return either indirectlyIdentifiedBy ids values if identifier is set
+    otherwise whole indirectlyIdentifiedBy array """
+    return _get_ids(body, 'indirectlyIdentifiedBy', identifier)
+
+#def _has_same_main_title(self, publication):
+#    """True if publication has the same main title"""
+#    return compare_text(self.main_title, publication.main_title, self.STRING_MATCH_RATIO_MAIN_TITLE)
+
+#def _has_same_sub_title(self, publication):
+#    """True if publication has the same sub title"""
+#    return compare_text(self.sub_title, publication.sub_title, self.STRING_MATCH_RATIO_SUB_TITLE)
+
+#def _has_same_summary(self, publication):
+#    """True if publication has the same summary"""
+#    return compare_text(self.summary, publication.summary, self.STRING_MATCH_RATIO_SUMMARY)
+
+#def _has_same_partof_main_title(self, publication):
+#    """ Returns True if partOf has the same main title """
+#    if self.part_of_with_title and publication.part_of_with_title:
+#        return self.part_of_with_title.has_same_main_title(publication.part_of_with_title)
+#    else:
+#        return False
+
+#def _has_same_genre_form(self, publication):
+#    """True if publication has all the genreform the same"""
+#    if self.genre_form and publication.genre_form:
+#        return set(self.genre_form) == set(publication.genre_form)
+#    return False
+
+#def _has_same_publication_date(self, publication):
+#    """True if publication dates are the same by comparing the shortest date"""
+#    master_pub_date_str = self.publication_date
+#    candidate_pub_date_str = publication.publication_date
+#    if empty_string(master_pub_date_str) or empty_string(candidate_pub_date_str):
+#        return False
+#    master_pub_date_str = master_pub_date_str.strip()
+#    candidate_pub_date_str = candidate_pub_date_str.strip()
+#    if len(master_pub_date_str) > len(candidate_pub_date_str):
+#        master_pub_date_str = master_pub_date_str[:len(candidate_pub_date_str)]
+#    elif len(master_pub_date_str) < len(candidate_pub_date_str):
+#        candidate_pub_date_str = candidate_pub_date_str[:len(master_pub_date_str)]
+#    return master_pub_date_str == candidate_pub_date_str
+
+def _has_same_ids(a, b):
+    """ True if one of ids DOI, PMID, ISI, ScopusID and ISBN are the same for identifiedBy
+    or if ISBN id are the same for indirectlyIdentifiedBy"""
+    if _same_ids(_get_identifiedby_ids(a, 'DOI'), _get_identifiedby_ids(b, 'DOI')):
+        return True
+    if _same_ids(_get_identifiedby_ids(a, 'PMID'), _get_identifiedby_ids(b, 'PMID')):
+        return True
+    if _same_ids(_get_identifiedby_ids(a, 'ISI'), _get_identifiedby_ids(b, 'ISI')):
+        return True
+    if _same_ids(_get_identifiedby_ids(a, 'ScopusID'), _get_identifiedby_ids(b, 'ScopusID')):
+        return True
+    if _same_ids(_get_identifiedby_ids(a, 'ISBN'), _get_identifiedby_ids(b, 'ISBN')):
+        return True
+    if _same_ids(_get_indirectly_identifiedby_ids(a, 'ISBN'), _get_indirectly_identifiedby_ids(b, 'ISBN')):
+        return True
+    return False
+
+def _has_compatible_doi_set(a, b):
+    l1 = _get_identifiedby_ids(a, 'DOI')
+    l2 = _get_identifiedby_ids(b, 'DOI')
+
+    # If either set is empty, they're compatible
+    if (not l1) or (not l2):
+        return True
+
+    l1.sort()
+    l2.sort()
+    if l1 == l2:
+        return True
+    return False
+
 # Are publications 'a' and 'b' similiar enough to justify clustering them?
 # 'a' and 'b' are row IDs into the 'converted' table.
-def _is_close_enough(a, b):
-    return bool(random.getrandbits(1))
+def _is_close_enough(a_rowid, b_rowid):
+    
+    """Two publications are duplicates if they have (
+    1. Have the same (oai) id
+        _or_
+    2. Same title and one of directly identified ids (DOI, PMID, ISI, ScopusID, ISBN)
+        or indirectly identified ISBN
+        _or_
+    3. None are conferancepaper -> Same title, subtitle, summary, publication date and genreform
+        _or_
+    4. One or both are conferancepaper -> Same title, subtitle, summary, publication date and partof.maintitle )
+        _and_
+    5. Their respective sets of DOIs (if any) are compatible
+    """
+
+    cursor = get_cursor()
+    cursor.execute("""
+    SELECT
+        data
+    FROM
+        converted
+    WHERE
+        rowid = ? OR rowid = ?;
+    """, (a_rowid, b_rowid))
+    candidate_rows = cursor.fetchall() # Will give exactly 2 rows, per definition
+    a = candidate_rows[0][0]
+    b = candidate_rows[1][0]
+
+    # 5.
+    if not _has_compatible_doi_set(a, b):
+        return False
+
+    # 1. # THIS IS POINTLESS, CANT HAPPEN
+    if a["@id"] == b["@id"]:
+        return True
+
+    # 2.
+    #print(f"*** {b.id} now to be checked for duplicity (2) with {a.id}")
+    #if a.has_same_main_title(b) \
+    #        and a.has_same_ids(b):
+    #    print(f"*** {b.id} was (type 2) duplicate of {a.id}")
+    #    return True
+    #print(f"*** {b.id} was NOT (type 2) duplicate of {a.id}")
+
+    # 3.
+    #if a.has_same_main_title(b) \
+    #        and CONFERENCE_PAPER_GENREFORM not in a.genre_form \
+    #        and CONFERENCE_PAPER_GENREFORM not in b.genre_form \
+    #        and a.has_same_sub_title(b) \
+    #        and a.has_same_summary(b) \
+    #        and a.has_same_publication_date(b) \
+    #        and a.has_same_genre_form(b):
+    #    return True
+
+    # 4.
+    #if a.has_same_main_title(b) \
+    #        and (CONFERENCE_PAPER_GENREFORM in a.genre_form or CONFERENCE_PAPER_GENREFORM in b.genre_form) \
+    #        and a.has_same_sub_title(b) \
+    #        and a.has_same_summary(b) \
+    #        and a.has_same_publication_date(b) \
+    #        and a.has_same_partof_main_title(b):
+    #    return True
+
+    return False
 
 # Generate clusters of publications, based on some shared piece of data
 # (a title or an ID). Sharing this information is only enough to be considered
