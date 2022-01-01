@@ -1,10 +1,41 @@
-import os
+#import os
 import json
-import re
-import sqlite3
-import random # TEMP!
-
+#import re
+#import sqlite3
+from difflib import SequenceMatcher
 from storage import commit_sqlite, get_cursor, open_existing_storage
+
+"""Max length in characters to compare text"""
+MAX_LENGTH_STRING_TO_COMPARE = 1000
+
+"""Match ratios for various pubications fields, see SequenceMatcher """
+STRING_MATCH_RATIO_MAIN_TITLE = 0.9
+STRING_MATCH_RATIO_SUB_TITLE = 0.9
+STRING_MATCH_RATIO_SUMMARY = 0.9
+
+def _compare_text(master_text, candidate_text, match_ratio):
+    if _empty_string(master_text) and _empty_string(candidate_text):
+        return True
+    if _empty_string(master_text) or _empty_string(candidate_text):
+        return False
+    master_text = master_text[0:MAX_LENGTH_STRING_TO_COMPARE]
+    candidate_text = candidate_text[0:MAX_LENGTH_STRING_TO_COMPARE]
+    master_text = master_text.lower()
+    candidate_text = candidate_text.lower()
+    sequence_matcher = SequenceMatcher(a=master_text,
+                                       b=candidate_text)
+    sequence_matcher_ratio = sequence_matcher.quick_ratio()
+    return sequence_matcher_ratio >= match_ratio
+
+
+def _empty_string(s):
+    if s:
+        if not s.strip():
+            return True
+        else:
+            return False
+    return True
+
 
 def _get_ids(body, path, type):
     if type:
@@ -18,6 +49,58 @@ def _get_ids(body, path, type):
         if body.get(path):
             return body[path]
     return []
+
+def _split_title_subtitle_first_colon(title):
+    try:
+        parts = title.split(':', 1)
+        maintitle = parts[0]
+        subtitle = None
+        if len(parts) == 2:
+            subtitle = parts[1]
+            subtitle = subtitle.strip()
+        return maintitle, subtitle
+    except AttributeError:
+        return title, None
+
+
+def _main_title(body):
+    """Return value of instanceOf.hasTitle[?(@.@type=="Title")].mainTitle if it exists and
+    there is no subtitle.
+    If a subtitle exist then the return value is split at the first colon and the first string
+    is returned,
+    i.e 'main:sub' returns main.
+    None otherwise """
+    has_title_array = body.get('instanceOf', {}).get('hasTitle', [])
+    for h_t in has_title_array:
+        if isinstance(h_t, dict) and h_t.get('@type') == 'Title':
+            main_title_raw = h_t.get('mainTitle')
+            sub_title_raw = h_t.get('subtitle')
+            break
+    if not _empty_string(sub_title_raw):
+        return main_title_raw
+    main_title, sub_title = _split_title_subtitle_first_colon(main_title_raw)
+    if not _empty_string(main_title):
+        return main_title
+    else:
+        return None
+
+def _sub_title(self):
+    """Return value for instanceOf.hasTitle[?(@.@type=="Title")].subtitle if it exists,
+    if it does not exist then the value of instanceOf.hasTitle[?(@.@type=="Title")].mainTitle
+    is split at the first colon and the second string is returned, i.e 'main:sub' returns sub.
+    None otherwise """
+    sub_title_array = self.body.get('instanceOf', {}).get('hasTitle', [])
+    for h_t in sub_title_array:
+        if isinstance(h_t, dict) and h_t.get('@type') == 'Title' and h_t.get('subtitle'):
+            return h_t.get('subtitle')
+        else:
+            main_title_raw = h_t.get('mainTitle')
+            break
+    main_title, sub_title = _split_title_subtitle_first_colon(main_title_raw)
+    if not _empty_string(sub_title):
+        return sub_title
+    else:
+        return None
 
 def _same_ids(master_ids, candidate_ids):
     if len(master_ids) == 0 or len(candidate_ids) == 0:
@@ -33,9 +116,9 @@ def _get_indirectly_identifiedby_ids(body, identifier=''):
     otherwise whole indirectlyIdentifiedBy array """
     return _get_ids(body, 'indirectlyIdentifiedBy', identifier)
 
-#def _has_same_main_title(self, publication):
-#    """True if publication has the same main title"""
-#    return compare_text(self.main_title, publication.main_title, self.STRING_MATCH_RATIO_MAIN_TITLE)
+def _has_same_main_title(a, b):
+    """True if publication has the same main title"""
+    return _compare_text(_main_title(a), _main_title(b), STRING_MATCH_RATIO_MAIN_TITLE)
 
 #def _has_same_sub_title(self, publication):
 #    """True if publication has the same sub title"""
@@ -106,7 +189,6 @@ def _has_compatible_doi_set(a, b):
 # Are publications 'a' and 'b' similiar enough to justify clustering them?
 # 'a' and 'b' are row IDs into the 'converted' table.
 def _is_close_enough(a_rowid, b_rowid):
-    
     """Two publications are duplicates if they have (
     1. Have the same (oai) id
         _or_
@@ -130,24 +212,24 @@ def _is_close_enough(a_rowid, b_rowid):
         rowid = ? OR rowid = ?;
     """, (a_rowid, b_rowid))
     candidate_rows = cursor.fetchall() # Will give exactly 2 rows, per definition
-    a = candidate_rows[0][0]
-    b = candidate_rows[1][0]
+    a = json.loads(candidate_rows[0][0])
+    b = json.loads(candidate_rows[1][0])
 
     # 5.
     if not _has_compatible_doi_set(a, b):
         return False
 
-    # 1. # THIS IS POINTLESS, CANT HAPPEN
+    # 1. # THIS IS POINTLESS, CANT HAPPEN ANYMORE
     if a["@id"] == b["@id"]:
         return True
 
     # 2.
-    #print(f"*** {b.id} now to be checked for duplicity (2) with {a.id}")
-    #if a.has_same_main_title(b) \
+    #print(f'*** {b["@id"]} now to be checked for duplicity (2) with {a["@id"]}')
+    #if _has_same_main_title(a, b) \
     #        and a.has_same_ids(b):
-    #    print(f"*** {b.id} was (type 2) duplicate of {a.id}")
+        #print(f'*** {b["@id"]} was (type 2) duplicate of {a["@id"]}')
     #    return True
-    #print(f"*** {b.id} was NOT (type 2) duplicate of {a.id}")
+    #print(f'*** {b["@id"]} was NOT (type 2) duplicate of {a["@id"]}')
 
     # 3.
     #if a.has_same_main_title(b) \
@@ -192,6 +274,7 @@ def _generate_clusters():
         candidates = candidatelist_row[0].split('\n')
         if len(candidates) > 1:
             #print(json.dumps(candidates))
+            print(f"Will now check candidate list of size: {len(candidates)}")
 
             # Pre-place the first candidate in a cluster of its own.
             clusters = [[0]] # A list of clusters, each cluster a list of record ids
@@ -200,12 +283,16 @@ def _generate_clusters():
             while len(unclustered_indices) > 0:
 
                 progress = False
+
+                # candidate_index and in_cluster_index are both integer indexes into the "candidates" list.
+                # The "candidates" list in turn, contains rowids to the actual records.
         
                 try:
                     for cluster in clusters:
                         for candidate_index in unclustered_indices:
                             for in_cluster_index in cluster:
-                                if _is_close_enough(candidates[in_cluster_index], candidates[candidate_index]):
+                                if in_cluster_index != candidate_index and \
+                                _is_close_enough(candidates[in_cluster_index], candidates[candidate_index]):
                                     cluster.append(candidate_index)
                                     unclustered_indices.remove(candidate_index)
                                     progress = True
@@ -218,7 +305,7 @@ def _generate_clusters():
                 if not progress:
                     clusters.append([unclustered_indices.pop()])
 
-            print(json.dumps(clusters))
+            #print(json.dumps(clusters))
 
             inner_cursor = get_cursor()
             for cluster in clusters:
