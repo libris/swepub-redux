@@ -96,9 +96,10 @@ def store_converted(xml, converted):
             identifiers.append(title["mainTitle"]) # TODO: STRIP AWAY WHITESPACE ETC
     
     for id_object in converted["identifiedBy"]:
-        identifier = id_object["value"]
-        if identifier is not None and isinstance(identifier, str):
-            identifiers.append(identifier)
+        if id_object["@type"] != "Local":
+            identifier = id_object["value"]
+            if identifier is not None and isinstance(identifier, str):
+                identifiers.append(identifier)
             
     for identifier in identifiers:
         cursor.execute("""
