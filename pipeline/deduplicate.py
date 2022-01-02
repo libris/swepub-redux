@@ -256,7 +256,7 @@ def _is_close_enough(a_rowid, b_rowid):
 # (a title or an ID). Sharing this information is only enough to be considered
 # a "candidate". To actually be clustered, one must also pass the
 # _is_close_enough(a, b) test.
-# This function _will_ generate overlapping clusters.
+# This function _will_ generate overlapping clusters (pairs really).
 def _generate_clusters():
     next_cluster_id = 0
 
@@ -274,46 +274,19 @@ def _generate_clusters():
         candidates = candidatelist_row[0].split('\n')
         if len(candidates) > 1:
             #print(json.dumps(candidates))
-            print(f"Will now check candidate list of size: {len(candidates)}")
+            #print(f"Will now check candidate list of size: {len(candidates)}")
 
-            # Pre-place the first candidate in a cluster of its own.
-            clusters = [[0]] # A list of clusters, each cluster a list of record ids
-            unclustered_indices = [*range(1, len(candidates))] # All but first
-
-            while len(unclustered_indices) > 0:
-
-                progress = False
-
-                # candidate_index and in_cluster_index are both integer indexes into the "candidates" list.
-                # The "candidates" list in turn, contains rowids to the actual records.
-        
-                try:
-                    for cluster in clusters:
-                        for candidate_index in unclustered_indices:
-                            for in_cluster_index in cluster:
-                                if in_cluster_index != candidate_index and \
-                                _is_close_enough(candidates[in_cluster_index], candidates[candidate_index]):
-                                    cluster.append(candidate_index)
-                                    unclustered_indices.remove(candidate_index)
-                                    progress = True
-                                    raise "Python bullshit" # Goto? break-to-label? Anything but this? Really Python...
-                except Exception as e:
-                    pass
-
-                
-                # If no more records could be placed in an existing cluster, create a new one
-                if not progress:
-                    clusters.append([unclustered_indices.pop()])
-
-            #print(json.dumps(clusters))
-
-            inner_cursor = get_cursor()
-            for cluster in clusters:
-                for publication in cluster:
-                    inner_cursor.execute("""
-                    INSERT INTO cluster(cluster_id, converted_id) VALUES(?, ?);
-                    """, (next_cluster_id, candidates[publication]))
-                next_cluster_id += 1
+            for a in candidates:
+                for b in candidates:
+                    if a != b and _is_close_enough(a, b):
+                        inner_cursor = get_cursor()
+                        inner_cursor.execute("""
+                        INSERT INTO cluster(cluster_id, converted_id) VALUES(?, ?);
+                        """, (next_cluster_id, a))
+                        inner_cursor.execute("""
+                        INSERT INTO cluster(cluster_id, converted_id) VALUES(?, ?);
+                        """, (next_cluster_id, b))
+                        next_cluster_id += 1
             commit_sqlite()
 
 # Join any clusters that have one or more common publications.
