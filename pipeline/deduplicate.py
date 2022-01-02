@@ -224,12 +224,12 @@ def _is_close_enough(a_rowid, b_rowid):
         return True
 
     # 2.
-    #print(f'*** {b["@id"]} now to be checked for duplicity (2) with {a["@id"]}')
-    #if _has_same_main_title(a, b) \
-    #        and a.has_same_ids(b):
-        #print(f'*** {b["@id"]} was (type 2) duplicate of {a["@id"]}')
-    #    return True
-    #print(f'*** {b["@id"]} was NOT (type 2) duplicate of {a["@id"]}')
+    print(f'*** {b["@id"]} now to be checked for duplicity (2) with {a["@id"]}')
+    if _has_same_main_title(a, b) \
+            and _has_same_ids(a, b):
+        print(f'*** {b["@id"]} was (type 2) duplicate of {a["@id"]}')
+        return True
+    print(f'*** {b["@id"]} was NOT (type 2) duplicate of {a["@id"]}')
 
     # 3.
     #if a.has_same_main_title(b) \
