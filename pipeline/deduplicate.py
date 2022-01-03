@@ -84,12 +84,12 @@ def _main_title(body):
     else:
         return None
 
-def _sub_title(self):
+def _sub_title(body):
     """Return value for instanceOf.hasTitle[?(@.@type=="Title")].subtitle if it exists,
     if it does not exist then the value of instanceOf.hasTitle[?(@.@type=="Title")].mainTitle
     is split at the first colon and the second string is returned, i.e 'main:sub' returns sub.
     None otherwise """
-    sub_title_array = self.body.get('instanceOf', {}).get('hasTitle', [])
+    sub_title_array = body.get('instanceOf', {}).get('hasTitle', [])
     for h_t in sub_title_array:
         if isinstance(h_t, dict) and h_t.get('@type') == 'Title' and h_t.get('subtitle'):
             return h_t.get('subtitle')
@@ -120,13 +120,30 @@ def _has_same_main_title(a, b):
     """True if publication has the same main title"""
     return _compare_text(_main_title(a), _main_title(b), STRING_MATCH_RATIO_MAIN_TITLE)
 
-#def _has_same_sub_title(self, publication):
-#    """True if publication has the same sub title"""
-#    return compare_text(self.sub_title, publication.sub_title, self.STRING_MATCH_RATIO_SUB_TITLE)
+def _genre_form(body):
+    """ Return array of values from instanceOf.genreForm.[*].@id """
+    genre_forms = []
+    genre_form_array = body.get('instanceOf', {}).get('genreForm', [])
+    for g_f in genre_form_array:
+        if isinstance(g_f, dict):
+            genre_forms.append(g_f.get('@id'))
+    return [gf for gf in genre_forms if gf]
 
-#def _has_same_summary(self, publication):
-#    """True if publication has the same summary"""
-#    return compare_text(self.summary, publication.summary, self.STRING_MATCH_RATIO_SUMMARY)
+def _has_same_sub_title(a, b):
+    """True if publication has the same sub title"""
+    return _compare_text(_sub_title(a), _sub_title(b), STRING_MATCH_RATIO_SUB_TITLE)
+
+def _summary(body):
+    """ Return value for instanceOf.summary[?(@.@type=="Summary")].label if exist, None otherwise """
+    summary_array = body.get('instanceOf', {}).get('summary', [])
+    for s in summary_array:
+        if isinstance(s, dict) and s.get('@type') == 'Summary':
+            return s.get('label')
+    return None
+
+def _has_same_summary(a, b):
+    """True if publication has the same summary"""
+    return _compare_text(_summary(a), _summary(b), STRING_MATCH_RATIO_SUMMARY)
 
 #def _has_same_partof_main_title(self, publication):
 #    """ Returns True if partOf has the same main title """
@@ -135,25 +152,45 @@ def _has_same_main_title(a, b):
 #    else:
 #        return False
 
-#def _has_same_genre_form(self, publication):
-#    """True if publication has all the genreform the same"""
-#    if self.genre_form and publication.genre_form:
-#        return set(self.genre_form) == set(publication.genre_form)
-#    return False
+def _has_same_genre_form(a, b):
+    """True if a and b have the same genreforms"""
+    if _genre_form(a) and _genre_form(b):
+        return set(_genre_form(a)) == set(_genre_form(b))
+    return False
 
-#def _has_same_publication_date(self, publication):
-#    """True if publication dates are the same by comparing the shortest date"""
-#    master_pub_date_str = self.publication_date
-#    candidate_pub_date_str = publication.publication_date
-#    if empty_string(master_pub_date_str) or empty_string(candidate_pub_date_str):
-#        return False
-#    master_pub_date_str = master_pub_date_str.strip()
-#    candidate_pub_date_str = candidate_pub_date_str.strip()
-#    if len(master_pub_date_str) > len(candidate_pub_date_str):
-#        master_pub_date_str = master_pub_date_str[:len(candidate_pub_date_str)]
-#    elif len(master_pub_date_str) < len(candidate_pub_date_str):
-#        candidate_pub_date_str = candidate_pub_date_str[:len(master_pub_date_str)]
-#    return master_pub_date_str == candidate_pub_date_str
+def _publication_information(body):
+    """ Return first occurrence of PublicationInformation from publication field"""
+    # TODO: Remove check for provisionActivity (see https://jira.kb.se/browse/SWEPUB2-718)
+    if "publication" not in body and "provisionActivity" in body:
+        provision_activity_array = body.get('provisionActivity', [])
+        publication_array = [p for p in provision_activity_array if p.get('@type') == 'Publication']
+    else:
+        publication_array = body.get('publication', [])
+    for p in publication_array:
+        if isinstance(p, dict) and p.get('@type') == 'Publication':
+            return p
+    return None
+
+def _publication_date(body):
+    """ Return value for publication[?(@.@type=="Publication")].date if exist, None otherwise """
+    publication_information = _publication_information(body)
+    if publication_information:
+        return publication_information.get("date")
+    return None
+
+def _has_same_publication_date(a, b):
+    """True if publication dates are the same by comparing the shortest date"""
+    master_pub_date_str = _publication_date(a)
+    candidate_pub_date_str = _publication_date(b)
+    if _empty_string(master_pub_date_str) or _empty_string(candidate_pub_date_str):
+        return False
+    master_pub_date_str = master_pub_date_str.strip()
+    candidate_pub_date_str = candidate_pub_date_str.strip()
+    if len(master_pub_date_str) > len(candidate_pub_date_str):
+        master_pub_date_str = master_pub_date_str[:len(candidate_pub_date_str)]
+    elif len(master_pub_date_str) < len(candidate_pub_date_str):
+        candidate_pub_date_str = candidate_pub_date_str[:len(master_pub_date_str)]
+    return master_pub_date_str == candidate_pub_date_str
 
 def _has_same_ids(a, b):
     """ True if one of ids DOI, PMID, ISI, ScopusID and ISBN are the same for identifiedBy
@@ -224,22 +261,22 @@ def _is_close_enough(a_rowid, b_rowid):
         return True
 
     # 2.
-    print(f'*** {b["@id"]} now to be checked for duplicity (2) with {a["@id"]}')
+    #print(f'*** {b["@id"]} now to be checked for duplicity (2) with {a["@id"]}')
     if _has_same_main_title(a, b) \
             and _has_same_ids(a, b):
-        print(f'*** {b["@id"]} was (type 2) duplicate of {a["@id"]}')
+        #print(f'*** {b["@id"]} was (type 2) duplicate of {a["@id"]}')
         return True
-    print(f'*** {b["@id"]} was NOT (type 2) duplicate of {a["@id"]}')
+    #print(f'*** {b["@id"]} was NOT (type 2) duplicate of {a["@id"]}')
 
     # 3.
-    #if a.has_same_main_title(b) \
-    #        and CONFERENCE_PAPER_GENREFORM not in a.genre_form \
-    #        and CONFERENCE_PAPER_GENREFORM not in b.genre_form \
-    #        and a.has_same_sub_title(b) \
-    #        and a.has_same_summary(b) \
-    #        and a.has_same_publication_date(b) \
-    #        and a.has_same_genre_form(b):
-    #    return True
+    if _has_same_main_title(a, b) \
+            and "https://id.kb.se/term/swepub/ConferencePaper" not in _genre_form(a) \
+            and "https://id.kb.se/term/swepub/ConferencePaper" not in _genre_form(b) \
+            and _has_same_sub_title(a, b) \
+            and _has_same_summary(a, b) \
+            and _has_same_publication_date(a, b) \
+            and _has_same_genre_form(a, b):
+        return True
 
     # 4.
     #if a.has_same_main_title(b) \
