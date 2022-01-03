@@ -1,7 +1,4 @@
-#import os
 import json
-#import re
-#import sqlite3
 from difflib import SequenceMatcher
 from storage import commit_sqlite, get_cursor, open_existing_storage
 
@@ -362,9 +359,10 @@ def _generate_clusters():
                         """, (next_cluster_id, b))
                         next_cluster_id += 1
             commit_sqlite()
+    return next_cluster_id
 
 # Join any clusters that have one or more common publications.
-def _join_overlapping_clusters():
+def _join_overlapping_clusters(next_cluster_id):
     cursor = get_cursor()
     cursor.execute("""
     SELECT
@@ -442,15 +440,36 @@ def _join_overlapping_clusters():
     """)
     commit_sqlite()
 
-
+    # Add single member clusters for solitary publications (those that are not part of any other clusters)
+    cursor.execute("""
+    SELECT
+        id
+    FROM
+        converted
+    WHERE
+        id NOT IN (
+            SELECT DISTINCT
+                converted_id
+            FROM
+                cluster
+        );
+    """)
+    rows = cursor.fetchall() # This is necessary in order to allow modification of the table while iterating
+    for solitary_row in rows:
+        solitary_converted_id = solitary_row[0]
+        inner_cursor = get_cursor()
+        inner_cursor.execute("""
+        INSERT INTO cluster(cluster_id, converted_id) VALUES(?, ?);
+        """, (next_cluster_id, solitary_converted_id))
+        next_cluster_id += 1
+    commit_sqlite()
 
 
 def deduplicate():
-    _generate_clusters()
-    _join_overlapping_clusters()
+    next_cluster_id = _generate_clusters()
+    _join_overlapping_clusters(next_cluster_id)
 
             
-
 # For debugging
 if __name__ == "__main__":    
     open_existing_storage()
