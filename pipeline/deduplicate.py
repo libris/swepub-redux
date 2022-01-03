@@ -466,6 +466,9 @@ def _join_overlapping_clusters(next_cluster_id):
 
 
 def deduplicate():
+    # The job of the "deduplication" is to correctly populate the "cluster"-table.
+    # That table (the clusters) will then form the basis for the resulting swepub
+    # records, which are merged manifestations of each cluster.
     next_cluster_id = _generate_clusters()
     _join_overlapping_clusters(next_cluster_id)
 
