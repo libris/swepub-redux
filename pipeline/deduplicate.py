@@ -13,6 +13,10 @@ STRING_MATCH_RATIO_MAIN_TITLE = 0.9
 STRING_MATCH_RATIO_SUB_TITLE = 0.9
 STRING_MATCH_RATIO_SUMMARY = 0.9
 
+STRING_MATCH_PARTOF_MAIN_TITLE = 0.8
+
+CONFERENCE_PAPER_GENREFORM = "https://id.kb.se/term/swepub/ConferencePaper"
+
 def _compare_text(master_text, candidate_text, match_ratio):
     if _empty_string(master_text) and _empty_string(candidate_text):
         return True
@@ -145,12 +149,45 @@ def _has_same_summary(a, b):
     """True if publication has the same summary"""
     return _compare_text(_summary(a), _summary(b), STRING_MATCH_RATIO_SUMMARY)
 
-#def _has_same_partof_main_title(self, publication):
-#    """ Returns True if partOf has the same main title """
-#    if self.part_of_with_title and publication.part_of_with_title:
-#        return self.part_of_with_title.has_same_main_title(publication.part_of_with_title)
-#    else:
-#        return False
+def _part_of(body):
+    """ Return array of PartOf objects from partOf """
+    part_of = []
+    part_of_json_array = body.get('partOf', [])
+    if part_of_json_array is not None:
+        for p in part_of_json_array:
+            if isinstance(p, dict):
+                part_of.append(p)
+    return part_of
+
+def _part_of_with_title(body):
+    """ Return partOf object that has @type Title, None otherwise"""
+    part_of_with_title = [p for p in _part_of(body) if p.main_title]
+    if len(part_of_with_title) > 0:
+        return part_of_with_title[0]
+    else:
+        return None
+
+def _partof_main_title(body):
+    """Return value for hasTitle[?(@.@type=="Title")].mainTitle, None if not exist """
+    main_title_array = body.get('hasTitle', [])
+    for m_t in main_title_array:
+        if isinstance(m_t, dict) and m_t.get('@type') == 'Title':
+            return m_t.get('mainTitle')
+    return None
+
+def _partof_has_same_main_title(partof_a, partof_b):
+    """True if part_of has the same main title"""
+    # partOf w/o main title should never match
+    if _partof_main_title(partof_a) is None and _partof_main_title(partof_b) is None:
+        return False
+    return _compare_text(_partof_main_title(partof_a), _partof_main_title(partof_b), STRING_MATCH_PARTOF_MAIN_TITLE)
+
+def _has_same_partof_main_title(a, b):
+    """ Returns True if partOf has the same main title """
+    if _part_of_with_title(a) and _part_of_with_title(b):
+        return self.part_of_with_title.has_same_main_title(publication.part_of_with_title)
+    else:
+        return False
 
 def _has_same_genre_form(a, b):
     """True if a and b have the same genreforms"""
@@ -270,8 +307,8 @@ def _is_close_enough(a_rowid, b_rowid):
 
     # 3.
     if _has_same_main_title(a, b) \
-            and "https://id.kb.se/term/swepub/ConferencePaper" not in _genre_form(a) \
-            and "https://id.kb.se/term/swepub/ConferencePaper" not in _genre_form(b) \
+            and CONFERENCE_PAPER_GENREFORM not in _genre_form(a) \
+            and CONFERENCE_PAPER_GENREFORM not in _genre_form(b) \
             and _has_same_sub_title(a, b) \
             and _has_same_summary(a, b) \
             and _has_same_publication_date(a, b) \
@@ -279,13 +316,13 @@ def _is_close_enough(a_rowid, b_rowid):
         return True
 
     # 4.
-    #if a.has_same_main_title(b) \
-    #        and (CONFERENCE_PAPER_GENREFORM in a.genre_form or CONFERENCE_PAPER_GENREFORM in b.genre_form) \
-    #        and a.has_same_sub_title(b) \
-    #        and a.has_same_summary(b) \
-    #        and a.has_same_publication_date(b) \
-    #        and a.has_same_partof_main_title(b):
-    #    return True
+    if _has_same_main_title(a, b) \
+            and (CONFERENCE_PAPER_GENREFORM in _genre_form(a) or CONFERENCE_PAPER_GENREFORM in _genre_form(b)) \
+            and _has_same_sub_title(a, b) \
+            and _has_same_summary(a, b) \
+            and _has_same_publication_date(a, b) \
+            and _has_same_partof_main_title(a, b):
+        return True
 
     return False
 
