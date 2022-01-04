@@ -71,6 +71,17 @@ def clean_and_init_storage():
     CREATE INDEX idx_clusters_convertedid ON cluster (converted_id);
     """)
 
+    # The final form of a publication in swepub. Each row in this table contains a merged
+    # publication, that represents one of the clusters found in the deduplication process.
+    cursor.execute("""
+    CREATE TABLE finalized (
+        id INTEGER PRIMARY KEY,
+        cluster_id INTEGER,
+        data TEXT,
+        FOREIGN KEY (cluster_id) REFERENCES cluster(cluster_id)
+    );
+    """)
+
     connection.commit()
 
 def open_existing_storage():

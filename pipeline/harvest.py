@@ -1,4 +1,5 @@
 from pathlib import Path
+from merge import merge
 import sickle
 from modsstylesheet import ModsStylesheet
 import hashlib
@@ -532,4 +533,5 @@ if __name__ == "__main__":
     for p in processes:
         p.join()
     deduplicate()
+    merge()
     #harvest(sources[2])
