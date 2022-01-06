@@ -227,6 +227,23 @@ def _merge_genre_forms(base, candidate):
     if _should_merge_genre_form(base) and _should_merge_genre_form(candidate):
         _add_genre_form(base, _genre_form(candidate))
 
+def _subjects(body):
+    """ Return array of subjects from instanceOf.subject """
+    subjects_json_array = body.get('instanceOf', {}).get('subject', [])
+    if subjects_json_array is None:
+        return []
+    return subjects_json_array
+
+def _merge_subjects(base, candidate):
+    """ Merge subjects if code or prefLabel is new """
+    base_subjects = _subjects(base)
+    candidate_subjects = _subjects(candidate)
+    for cs in candidate_subjects:
+        if not any(ms.get('prefLabel', None) == cs.get('prefLabel') for ms in base_subjects) \
+            or not any(ms.get('code', None) == cs.get('code') and ms.get('language', None) == cs.get('language') for ms in base_subjects):
+            base_subjects.append(cs)
+    base['instanceOf']['subject'] = base_subjects
+
 def _element_size(body):
     size = 0
     if 'instanceOf' in body:
@@ -272,7 +289,7 @@ def merge():
             _merge_contribution(base_element, element) # NEEDS SPECIAL TESTING! CONVERSION WAS MESSY!
             _merge_has_notes(base_element, element)
             _merge_genre_forms(base_element, element)
-            #master = self._merge_subjects(master, candidate)
+            _merge_subjects(base_element, element)
             #master = self._merge_has_series(master, candidate)
             #master = self._merge_identifiedby_ids(master, candidate)
             #master = self._merge_indirectly_identifiedby_ids(master, candidate)
