@@ -3,6 +3,15 @@ from storage import commit_sqlite, get_cursor, open_existing_storage
 from collections import OrderedDict
 import json
 
+PUBLICATION_STATUS_RANKING = {
+        'https://id.kb.se/term/swepub/Published': 1,
+        'https://id.kb.se/term/swepub/EpubAheadOfPrint/OnlineFirst': 2,
+        'https://id.kb.se/term/swepub/InPrint': 3,
+        'https://id.kb.se/term/swepub/Accepted': 4,
+        'https://id.kb.se/term/swepub/Submitted': 5,
+        'https://id.kb.se/term/swepub/Preprint': 6
+    }
+
 def _safe_concat(first, second, separator=' '):
     if first and second:
         return first + separator + second
@@ -109,6 +118,88 @@ def _merge_contribution(base, candidate):
         base_contribs[contrib_name] = candidate_contribs[contrib_name]
     base['contribution'] = list(base_contribs.values())
 
+def _publication_status(body):
+    """ Return value for instanceOf.hasNote[?(@.@type=="PublicationStatus")].@id if exist, None otherwise """
+    publication_date_array = body.get('instanceOf', {}).get('hasNote', [])
+    for p_d in publication_date_array:
+        if isinstance(p_d, dict) and p_d.get('@type') == 'PublicationStatus':
+            return p_d.get('@id')
+    return None
+
+def _set_publication_status(body, new_status):
+    """ Sets status value in instanceOf.hasNote[?(@.@type=="PublicationStatus")].@id """
+    i = 0
+    for n in body.get('instanceOf', {}).get('hasNote', []):
+        if n['@type'] == 'PublicationStatus':
+            body['instanceOf']['hasNote'][i]['@id'] = new_status
+            break
+        else:
+            i += 1
+
+def _has_worse_publication_status_ranking(base, candidate):
+    try:
+        base_ranking = PUBLICATION_STATUS_RANKING[_publication_status(base)]
+    except KeyError:
+        base_ranking = len(PUBLICATION_STATUS_RANKING) + 1
+    try:
+        candidate_ranking = PUBLICATION_STATUS_RANKING[_publication_status(candidate)]
+    except KeyError:
+        candidate_ranking = len(PUBLICATION_STATUS_RANKING) + 1
+    return candidate_ranking < base_ranking
+
+def _creator_count(body):
+    """ Return value for instanceOf.[*].hasNote[?(@.@type=="CreatorCount")].label """
+    creator_count_array = body.get('instanceOf', {}).get('hasNote', [])
+    for c_c in creator_count_array:
+        if isinstance(c_c, dict) and c_c.get('@type') == 'CreatorCount':
+            return c_c.get('label')
+    return None
+
+def _set_creator_count(body, new_creator_count):
+    """ Sets status value in instanceOf.[*].hasNote[?(@.@type=="CreatorCount")].label """
+    i = 0
+    for n in body.get('instanceOf', {}).get('hasNote', []):
+        if n['@type'] == 'CreatorCount':
+            body['instanceOf']['hasNote'][i]['label'] = new_creator_count
+            break
+        else:
+            i += 1
+
+def _notes(body):
+    """ Return array of notes from instanceOf.[*].hasNote[?(@.@type=="Note")].label """
+    notes = []
+    notes_array = body.get('instanceOf', {}).get('hasNote', [])
+    for n in notes_array:
+        if isinstance(n, dict) and n.get('@type') == 'Note':
+            notes.append(n.get('label'))
+
+    return [n for n in notes if n]
+
+def _add_notes(body, new_notes):
+    """ Sets array of notes for instanceOf.[*].hasNote[?(@.@type=="Note")].label """
+    new_notes = list(set(new_notes) - set(_notes(body)))
+    for new_note in new_notes:
+        body['instanceOf']['hasNote'].append({'@type': 'Note', 'label': new_note})
+
+def _merge_has_notes(base, candidate):
+    """ Merge hasNotes by keeping pubicationstatus and creator_count from master if it exist
+    otherwise try to get from candidate. Merge new notes from candidate.
+    """
+    base_publication_status = _publication_status(base)
+    candidate_publication_status = _publication_status(candidate)
+
+    if base_publication_status is None and candidate_publication_status is not None:
+        _set_publication_status(base, candidate_publication_status)
+    if _has_worse_publication_status_ranking(base, candidate):
+        _set_publication_status(base, candidate_publication_status)
+
+    base_creator_count = _creator_count(base)
+    candidate_creator_count = _creator_count(candidate)
+    if base_creator_count is None and candidate_creator_count is not None:
+        _set_creator_count(base, candidate_creator_count)
+    _add_notes(base, _notes(candidate))
+    return base
+
 def _element_size(body):
     size = 0
     if 'instanceOf' in body:
@@ -152,7 +243,7 @@ def merge():
 
         for element in other_elements:
             _merge_contribution(base_element, element) # NEEDS SPECIAL TESTING! CONVERSION WAS MESSY!
-            #master = self._merge_has_notes(master, candidate)
+            _merge_has_notes(base_element, element)
             #master = self._merge_genre_forms(master, candidate)
             #master = self._merge_subjects(master, candidate)
             #master = self._merge_has_series(master, candidate)
