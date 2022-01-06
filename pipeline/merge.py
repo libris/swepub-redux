@@ -3,6 +3,8 @@ from storage import commit_sqlite, get_cursor, open_existing_storage
 from collections import OrderedDict
 import json
 
+GENRE_FORMS_TO_MERGE = ['https://id.kb.se/term/swepub/ArtisticWork']
+
 PUBLICATION_STATUS_RANKING = {
         'https://id.kb.se/term/swepub/Published': 1,
         'https://id.kb.se/term/swepub/EpubAheadOfPrint/OnlineFirst': 2,
@@ -198,7 +200,32 @@ def _merge_has_notes(base, candidate):
     if base_creator_count is None and candidate_creator_count is not None:
         _set_creator_count(base, candidate_creator_count)
     _add_notes(base, _notes(candidate))
-    return base
+
+
+def _genre_form(body):
+    """ Return array of values from instanceOf.genreForm.[*].@id """
+    genre_forms = []
+    genre_form_array = body.get('instanceOf', {}).get('genreForm', [])
+    for g_f in genre_form_array:
+        if isinstance(g_f, dict):
+            genre_forms.append(g_f.get('@id'))
+    return [gf for gf in genre_forms if gf]
+
+def _add_genre_form(body, new_genre_forms):
+    """ Sets array of genreforms for instanceOf.genreForm.[*].@id """
+    genre_forms = list(set(new_genre_forms) - set(_genre_form(body)))
+    for genre_form in genre_forms:
+        body['instanceOf']['genreForm'].append({'@id': genre_form})
+
+def _should_merge_genre_form(publication):
+    for genre_forms_to_merge in GENRE_FORMS_TO_MERGE:
+        if genre_forms_to_merge in _genre_form(publication):
+            return True
+    return False
+
+def _merge_genre_forms(base, candidate):
+    if _should_merge_genre_form(base) and _should_merge_genre_form(candidate):
+        _add_genre_form(base, _genre_form(candidate))
 
 def _element_size(body):
     size = 0
@@ -244,7 +271,7 @@ def merge():
         for element in other_elements:
             _merge_contribution(base_element, element) # NEEDS SPECIAL TESTING! CONVERSION WAS MESSY!
             _merge_has_notes(base_element, element)
-            #master = self._merge_genre_forms(master, candidate)
+            _merge_genre_forms(base_element, element)
             #master = self._merge_subjects(master, candidate)
             #master = self._merge_has_series(master, candidate)
             #master = self._merge_identifiedby_ids(master, candidate)
