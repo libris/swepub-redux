@@ -1,3 +1,4 @@
+from audit import audit
 from storage import commit_sqlite, get_cursor, open_existing_storage
 from merger import PublicationMerger
 from publication import Publication
@@ -27,7 +28,7 @@ def merge():
         merger = PublicationMerger()
         union_publication = merger.merge(publications)
 
-        # TODO: "VALIDATION" HERE!
+        audit(union_publication.body)
 
         # Write the now merged base element to storage
         inner_cursor = get_cursor()
