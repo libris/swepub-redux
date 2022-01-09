@@ -18,7 +18,7 @@ AUDITORS = [
     ContributorAuditor(),
     UKAAuditor(),
     ISSNAuditor(),
-    AutoClassifier(),
+    #AutoClassifier(),
     SubjectsAuditor(),
 ]
 

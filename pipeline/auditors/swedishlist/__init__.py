@@ -31,15 +31,16 @@ class SwedishListAuditor(BaseAuditor):
         # Publications with invalid year are considered not audited
         if year and year in self.list:
             for issn in publication.issns:
-                issn = issn.upper()
-                if issn in self.list[year]:
-                    new_level = self.list[year][issn]
-                    # We try our best to find an audited level
-                    if new_level is not None:
-                        level = new_level
-                    # If we find a peer-reviewed level, we stop looking
-                    if level == Level.PEERREVIEWED:
-                        break
+                if isinstance(issn, str):
+                    issn = issn.upper()
+                    if issn in self.list[year]:
+                        new_level = self.list[year][issn]
+                        # We try our best to find an audited level
+                        if new_level is not None:
+                            level = new_level
+                        # If we find a peer-reviewed level, we stop looking
+                        if level == Level.PEERREVIEWED:
+                            break
 
         if level:
             msg = 'Setting publication level to "{}"'.format(level.value)

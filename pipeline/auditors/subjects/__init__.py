@@ -1,9 +1,41 @@
 import requests
 from auditors import BaseAuditor
 from os import environ
+import json
 
-INFO_API = environ.get("SWEPUB_INFO_API")
-SUBJECTS_ENDPOINT = environ.get("SWEPUB_INFO_API_SUBJECTS")
+#INFO_API = environ.get("SWEPUB_INFO_API")
+#SUBJECTS_ENDPOINT = environ.get("SWEPUB_INFO_API_SUBJECTS")
+
+def sort_mappings(unsorted):
+    """Create a tree given a dict
+    We expect the dict to contain keys of length 1, 3, or 5. These lengths
+    correspond to different levels in the tree. A longer key must have a
+    shorter key as "parent".
+    """
+    sorted_subjects = {}
+    # We iterate over the keys sorted by first prefix and then length
+    # `1` comes first, `101` comes before `10101`, which comes before `2`
+    for k in sorted(unsorted.keys(), key=lambda k: len(k)):
+        v = unsorted[k]
+        if len(k) == 1:
+            if k not in sorted_subjects:
+                sorted_subjects[k] = v
+        elif len(k) == 3:
+            assert k[:1] in sorted_subjects
+            if 'subcategories' not in sorted_subjects[k[:1]]:
+                sorted_subjects[k[:1]]['subcategories'] = {}
+            sorted_subjects[k[:1]]['subcategories'][k] = v
+        elif len(k) == 5:
+            assert k[:1] in sorted_subjects
+            # `subcategories` key should have been added in the previous case
+            assert 'subcategories' in sorted_subjects[k[:1]]
+            assert k[:3] in sorted_subjects[k[:1]]['subcategories']
+            if 'subcategories' not in sorted_subjects[k[:1]]['subcategories'][k[:3]]:
+                sorted_subjects[k[:1]]['subcategories'][k[:3]]['subcategories'] = {}
+            sorted_subjects[k[:1]]['subcategories'][k[:3]]['subcategories'][k] = v
+    return sorted_subjects
+
+mappings = sort_mappings(json.load(open("./pipeline/ssif_research_subjects.json")))
 
 
 class SubjectsAuditor(BaseAuditor):
@@ -33,24 +65,25 @@ class SubjectsAuditor(BaseAuditor):
         return (publication, new_audit_events)
 
     def _load_subject_codes(self):
-        """Try to load subjects from Info API"""
-        try:
-            response = requests.get(INFO_API + SUBJECTS_ENDPOINT)
-            if response.status_code != 200:
-                #logger.error(f"Bad response from Info API: {response.status_code}")
-                print.error(f"Bad response from Info API: {response.status_code}")
-                exit(-1)
-                return
-            self.subjects = response.json()
-        except requests.exceptions.ConnectionError as e:
+        self.subjects = mappings
+        #"""Try to load subjects from Info API"""
+        #try:
+        #    response = requests.get(INFO_API + SUBJECTS_ENDPOINT)
+        #    if response.status_code != 200:
+        #        #logger.error(f"Bad response from Info API: {response.status_code}")
+        #        print.error(f"Bad response from Info API: {response.status_code}")
+        #        exit(-1)
+        #        return
+        #    self.subjects = response.json()
+        #except requests.exceptions.ConnectionError as e:
             #logger.error(
             #    f"Could not access Info API: {e}", extra={"auditor": self.name}
             #)
-            print(
-                f"Could not access Info API: {e}", extra={"auditor": self.name}
-            )
-            exit(-1)
-            return
+        #    print(
+        #        f"Could not access Info API: {e}", extra={"auditor": self.name}
+        #    )
+        #    exit(-1)
+        #    return
 
     def _get_complimentary_subjects(self, publication):
         """Find and add complimentary research subjects"""
