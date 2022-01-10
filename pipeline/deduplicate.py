@@ -72,6 +72,8 @@ def _main_title(body):
     i.e 'main:sub' returns main.
     None otherwise """
     has_title_array = body.get('instanceOf', {}).get('hasTitle', [])
+    main_title_raw = None
+    sub_title_raw = None
     for h_t in has_title_array:
         if isinstance(h_t, dict) and h_t.get('@type') == 'Title':
             main_title_raw = h_t.get('mainTitle')
@@ -156,9 +158,17 @@ def _part_of(body):
                 part_of.append(p)
     return part_of
 
+def _part_of_main_title(body):
+    """Return value for hasTitle[?(@.@type=="Title")].mainTitle, None if not exist """
+    main_title_array = body.get('hasTitle', [])
+    for m_t in main_title_array:
+        if isinstance(m_t, dict) and m_t.get('@type') == 'Title':
+            return m_t.get('mainTitle')
+    return None
+
 def _part_of_with_title(body):
     """ Return partOf object that has @type Title, None otherwise"""
-    part_of_with_title = [p for p in _part_of(body) if p.main_title]
+    part_of_with_title = [p for p in _part_of(body) if _part_of_main_title(p)]
     if len(part_of_with_title) > 0:
         return part_of_with_title[0]
     else:
@@ -182,7 +192,7 @@ def _partof_has_same_main_title(partof_a, partof_b):
 def _has_same_partof_main_title(a, b):
     """ Returns True if partOf has the same main title """
     if _part_of_with_title(a) and _part_of_with_title(b):
-        return self.part_of_with_title.has_same_main_title(publication.part_of_with_title)
+        return _has_same_main_title(_part_of_with_title(a), _part_of_with_title(b))
     else:
         return False
 
@@ -383,14 +393,14 @@ def _join_overlapping_clusters(next_cluster_id):
         if cluster_count > 1:
             clusters = cluster_row[1].split('\n')
 
-            print(f"-----\nNow considering merging: {clusters}")
+            #print(f"-----\nNow considering merging: {clusters}")
 
             cluster_a = clusters.pop()
 
             while len(clusters) > 0:
                 cluster_b = clusters.pop()
 
-                print(f"  To be merged: {cluster_a} into {cluster_b}")
+                #print(f"  To be merged: {cluster_a} into {cluster_b}")
 
                 # Replace cluster_a and cluster_b with where ever their contents are now
                 while cluster_a in merged_into:
@@ -398,7 +408,7 @@ def _join_overlapping_clusters(next_cluster_id):
                 while cluster_b in merged_into:
                     cluster_b = merged_into[cluster_b]
 
-                print(f"  After following history: {cluster_a} into {cluster_b}")
+                #print(f"  After following history: {cluster_a} into {cluster_b}")
 
                 if cluster_a == cluster_b:
                     continue
@@ -414,11 +424,11 @@ def _join_overlapping_clusters(next_cluster_id):
                 """, (cluster_b, cluster_a))
                 merged_into[cluster_a] = cluster_b
 
-                print(f"Merged cluster {cluster_a} into {cluster_b}")
+                #print(f"Merged cluster {cluster_a} into {cluster_b}")
 
                 cluster_a = cluster_b
 
-            print("\n")
+            #print("\n")
 
             commit_sqlite()
     
