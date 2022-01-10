@@ -175,6 +175,7 @@ def harvest(source):
                             while i > -1:
                                 if not processes[i].is_alive():
                                     #print("* CLEARING A PROCESS")
+                                    processes[i].join()
                                     del processes[i]
                                 i -= 1
                         p = Process(target=threaded_handle_harvested, args=(batch,))

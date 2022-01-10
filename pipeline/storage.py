@@ -86,7 +86,7 @@ def clean_and_init_storage():
 
 def open_existing_storage():
     global connection
-    connection = sqlite3.connect(sqlite_path)
+    connection = sqlite3.connect(sqlite_path, timeout=(5*60))
 
 def store_converted(xml, converted):
     cursor = connection.cursor()
