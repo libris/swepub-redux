@@ -11,6 +11,7 @@ import time
 from multiprocessing import Process
 import shutil
 import json
+import sys
 from storage import *
 
 from sickle.oaiexceptions import (
@@ -522,11 +523,16 @@ sources = [
     }
 ]
 
-if __name__ == "__main__":    
+if __name__ == "__main__":
+    args = sys.argv[1:]
+
+    sources_to_harvest = sources
+    if "devdata" in args:
+        sources_to_harvest = sources[15:18]
+
     clean_and_init_storage()
     processes = []
-    #for source in sources:
-    for source in sources[15:18]: # TEMP!
+    for source in sources_to_harvest:
         p = Process(target=harvest, args=(source,))
         p.start()
         processes.append( p )
@@ -534,4 +540,3 @@ if __name__ == "__main__":
         p.join()
     deduplicate()
     merge()
-    #harvest(sources[2])
