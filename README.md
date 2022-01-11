@@ -28,11 +28,12 @@ There is no state to be considered here and no running "services". Each time the
 
 The resulting sqlite3 database has roughly the following structure (see storage.py for details):
 
-tables:
-original: XML data for every harvested record unchanged. These are kept only because the swepub API exposes them under "/original".
-converted: Converted+validated+normalized versions of each record, foreign key for each row references the 'original' table
-cluster: Clusters of converted records that are all considered to be duplicates of the same publication, contains foreign key rowids into the 'converted' table.
-finalized: A union or "master" record for each cluster, containing a merger of all the records in the cluster. foreign key references which cluster the union record is for.
+| Table | Description |
+| --- | --- |
+|original| XML data for every harvested record unchanged. These are kept only because the swepub API exposes them under "/original". |
+|converted| Converted+validated+normalized versions of each record, foreign key for each row references the 'original' table |
+|cluster| Clusters of converted records that are all considered to be duplicates of the same publication, contains foreign key rowids into the 'converted' table. |
+|finalized| A union or "master" record for each cluster, containing a merger of all the records in the cluster. foreign key references which cluster the union record is for. |
 
 
 ## Service
