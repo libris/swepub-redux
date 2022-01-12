@@ -7,10 +7,8 @@ FLOAT_SCALE = 10000000
 def generate_frequency_tables():
     cursor = get_cursor()
 
-    # First populate the abstract_total_word_frequencies
-    # So that we know the frequency of ech word (within all combined
-    # abstracts).
-    total_word_count = 0 # Across ALL abstracts in swepub!
+    # First populate the abstract_total_word_counts, so that we know how many
+    # times each word occurs (within all combined abstracts).
     count_per_word = {}
     for finalized_row in cursor.execute("""
     SELECT
@@ -24,32 +22,19 @@ def generate_frequency_tables():
             words = re.findall(r'\w+', abstract)
             for word in words:
                 word = word.lower()
-                total_word_count += 1
                 if not word in count_per_word:
                     count_per_word[word] = 1
                 else:
                     count_per_word[word] = 1 + count_per_word[word]
     for word in count_per_word:
         cursor.execute("""
-        INSERT INTO abstract_total_word_frequencies(word, frequency) VALUES(?, ?);
-        """, (word, FLOAT_SCALE * (count_per_word[word]/total_word_count)))
+        INSERT INTO abstract_total_word_counts(word, occurrences) VALUES(?, ?);
+        """, (word, count_per_word[word]) )
     commit_sqlite()
 
-    # Then go over the data again, and record the _relative_ frequency of
-    # each word in each abstract. So for example:
-    # Say that the word "mathematics" has a total frequency of 70490 (out
-    # of every 10 million), as calculated above.
-    # Now calculate the corresponding frequency _within_ each abstract.
-    # Say that one abstract has the word mathematics in a frequency of 170490
-    # (again per 10 million), which is higher. It means that:
-    # For this abstract, the relative frequency for that word is:
-    # 170490 / 70490 = 2.4. An elevated frequency (higher than 1.0)!
-    # Let's then record the relative frequency of "mathematics" for this
-    # publication/abstract as 2.4 (but again converted to points per 10 million
-    # as we can't store floats).
-    #
-    # We should store only the few highest relative frequencies that's all we're
-    # interested in, and storing everything will be very expensive.
+    # Then go over the data again, and select the N rarest words out of each
+    # abstract, which we can now calculate given the table populated above.
+    # Put these rare words in the abstract_rarest_words table.
     second_cursor = get_cursor()
     for finalized_row in cursor.execute("""
     SELECT
@@ -63,25 +48,31 @@ def generate_frequency_tables():
             abstract = summary.get("label", "")
 
             words = re.findall(r'\w+', abstract)
-            word_count = len(words)
-            for word in set(words):
-                word = word.lower()
-                freq_int = int(( FLOAT_SCALE * abstract.count(word) ) / word_count)
-                for total_freq_row in second_cursor.execute("""
-                SELECT
-                    frequency
-                FROM
-                    abstract_total_word_frequencies
-                WHERE
-                    word = ?;
-                """, (word,) ): # Should only ever be one row
-                    total_freq_int = total_freq_row[0]
-                    relative_freq = freq_int / total_freq_int
-                    #print(f"The relative frequency for '{word}' within (the abstract of) {finalized['@id']} is {relative_freq}")
-                    second_cursor.execute("""
-                    INSERT INTO abstract_word_frequencies(word, frequency, finalized_id) VALUES(?, ?, ?);
-                    """, (word, FLOAT_SCALE * relative_freq, finalized_rowid))
+            words_set = set()
+            for word in words:
+                words_set.add(word.lower())
+            words = list(words_set)
+            for total_count_row in second_cursor.execute(f"""
+            SELECT
+                word, occurrences
+            FROM
+                abstract_total_word_counts
+            WHERE
+                word IN ({','.join('?'*len(words))})
+            ORDER BY
+                occurrences ASC
+            LIMIT
+                5;
+            """, words):
+                word = total_count_row[0]
+                total_occurrences = total_count_row[1]
+                
+                second_cursor.execute("""
+                INSERT INTO abstract_rarest_words(word, finalized_id) VALUES(?, ?);
+                """, (word, finalized_rowid))
         commit_sqlite()
+
+    # Now, go over the data a third time, this time grouping on rare words.
 
 # For debugging
 if __name__ == "__main__":
