@@ -82,6 +82,52 @@ def clean_and_init_storage():
     );
     """)
 
+    # To facilitate "auto classification", store each word in each publications abstract
+    # together with the realtive frequency (integer) of that word within the abstract,
+    # divided by the frequency of that word across all abstracts.
+    #
+    # The idea here, is that searching for other records having similar elevated frequencies
+    # of certain words (whatever is most elevated in you abstract) will (hopefully) give you
+    # publications talking about "the same sorts of things". In other words, "the same subject".
+    # If these found publications appear to have a "better" explicit subject, we try to copy the
+    # subject to our own publication.
+    #
+    # This is a temporary table, it should be dropped after AutoClassification
+    cursor.execute("""
+    CREATE TABLE abstract_word_frequencies (
+        id INTEGER PRIMARY KEY,
+        word TEXT,
+        frequency INTEGER,
+        finalized_id INTEGER,
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+    );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_abstract_word_frequencies ON abstract_word_frequencies (word, frequency);
+    """)
+    # In order to calculate values for the above table, we also need an answer to the question:
+    #
+    # What is the frequency of each word that appears in an abstract, as seen over all of
+    # swepubs abstracts? 
+    # 
+    # So for example if all abstracts together consists of 1500000*100 word, and "mathematics"
+    # appears 500 times total, across a bunch of publications.
+    # The total frequency for mathematics is then 500 / 1500000*100.
+    # As we can't use floating point numbers in sqlite, we encode this as 10000000 / 500 / 1500000*100
+    # (points per 10 million instead of [0.0,1.0] )
+    #
+    # This is a temporary table, it should be dropped after AutoClassification
+    cursor.execute("""
+    CREATE TABLE abstract_total_word_frequencies (
+        id INTEGER PRIMARY KEY,
+        word TEXT,
+        frequency INTEGER
+    );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_abstract_total_word_frequencies ON abstract_total_word_frequencies (word);
+    """)
+
     connection.commit()
 
 def open_existing_storage():
