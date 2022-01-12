@@ -2,8 +2,6 @@ from storage import commit_sqlite, get_cursor, open_existing_storage
 import json
 import re
 
-FLOAT_SCALE = 10000000
-
 def generate_frequency_tables():
     cursor = get_cursor()
     second_cursor = get_cursor()
@@ -64,7 +62,7 @@ def generate_frequency_tables():
             ORDER BY
                 occurrences ASC
             LIMIT
-                10;
+                7;
             """, words):
                 rare_word = total_count_row[0]
                 #print(f"Writing rare word {rare_word} for id: {finalized_rowid}")
@@ -73,7 +71,34 @@ def generate_frequency_tables():
                 """, (rare_word, finalized_rowid))
         commit_sqlite()
 
-    # Now, go over the data a third time, this time grouping on rare words.
+    # Now, go over the data a third time, this time, for each publication retrieving
+    # candidates that _plausibly_ have the same subject.
+    for finalized_row in cursor.execute("""
+    SELECT
+        id
+    FROM
+        finalized;
+    """):
+        finalized_rowid = finalized_row[0]
+
+        for candidate_row in second_cursor.execute("""
+            SELECT
+                finalized.data
+            FROM
+                abstract_rarest_words
+            LEFT JOIN
+                finalized
+            ON
+                finalized.id = abstract_rarest_words.finalized_id
+            WHERE
+                abstract_rarest_words.word IN (SELECT word FROM abstract_rarest_words where finalized_id = ?);
+            """, (finalized_rowid,)):
+                finalized = json.loads(candidate_row[0])
+                for summary in finalized.get("instanceOf", {}).get("summary", []):
+                    abstract = summary.get("label", "")
+                    print(f"abstract: {abstract}")
+        print("\n\n")
+
 
 # For debugging
 if __name__ == "__main__":
