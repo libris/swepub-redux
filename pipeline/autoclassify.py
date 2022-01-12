@@ -6,6 +6,8 @@ FLOAT_SCALE = 10000000
 
 def generate_frequency_tables():
     cursor = get_cursor()
+    second_cursor = get_cursor()
+    third_cursor = get_cursor()
 
     # First populate the abstract_total_word_counts, so that we know how many
     # times each word occurs (within all combined abstracts).
@@ -35,7 +37,6 @@ def generate_frequency_tables():
     # Then go over the data again, and select the N rarest words out of each
     # abstract, which we can now calculate given the table populated above.
     # Put these rare words in the abstract_rarest_words table.
-    second_cursor = get_cursor()
     for finalized_row in cursor.execute("""
     SELECT
         id, data
@@ -52,9 +53,10 @@ def generate_frequency_tables():
             for word in words:
                 words_set.add(word.lower())
             words = list(words_set)
+
             for total_count_row in second_cursor.execute(f"""
             SELECT
-                word, occurrences
+                word
             FROM
                 abstract_total_word_counts
             WHERE
@@ -62,14 +64,13 @@ def generate_frequency_tables():
             ORDER BY
                 occurrences ASC
             LIMIT
-                5;
+                10;
             """, words):
-                word = total_count_row[0]
-                total_occurrences = total_count_row[1]
-                
-                second_cursor.execute("""
+                rare_word = total_count_row[0]
+                #print(f"Writing rare word {rare_word} for id: {finalized_rowid}")
+                third_cursor.execute("""
                 INSERT INTO abstract_rarest_words(word, finalized_id) VALUES(?, ?);
-                """, (word, finalized_rowid))
+                """, (rare_word, finalized_rowid))
         commit_sqlite()
 
     # Now, go over the data a third time, this time grouping on rare words.
