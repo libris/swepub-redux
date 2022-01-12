@@ -1,4 +1,6 @@
 import json
+import time
+from multiprocessing import Pool
 from difflib import SequenceMatcher
 from storage import commit_sqlite, get_cursor, open_existing_storage
 
@@ -341,35 +343,74 @@ def _is_close_enough(a_rowid, b_rowid):
 def _generate_clusters():
     next_cluster_id = 0
 
-    cursor = get_cursor()
-    for candidatelist_row in cursor.execute("""
-    SELECT
-        group_concat(converted.id, "\n")
-    FROM
-        clusteringidentifiers
-    LEFT JOIN
-        converted ON clusteringidentifiers.converted_id = converted.id
-    GROUP BY
-        clusteringidentifiers.identifier;
-    """):
-        candidates = candidatelist_row[0].split('\n')
-        if len(candidates) > 1:
-            #print(json.dumps(candidates))
-            #print(f"Will now check candidate list of size: {len(candidates)}")
+    # Set up batching
+    batch = []
+    tasks = []
 
-            for a in candidates:
-                for b in candidates:
-                    if a != b and _is_close_enough(a, b):
-                        inner_cursor = get_cursor()
-                        inner_cursor.execute("""
-                        INSERT INTO cluster(cluster_id, converted_id) VALUES(?, ?);
-                        """, (next_cluster_id, a))
-                        inner_cursor.execute("""
-                        INSERT INTO cluster(cluster_id, converted_id) VALUES(?, ?);
-                        """, (next_cluster_id, b))
-                        next_cluster_id += 1
-            commit_sqlite()
-    return next_cluster_id
+    with Pool(processes=16) as pool:
+
+        cursor = get_cursor()
+        inner_cursor = get_cursor()
+        for candidatelist_row in cursor.execute("""
+        SELECT
+            group_concat(converted.id, "\n")
+        FROM
+            clusteringidentifiers
+        LEFT JOIN
+            converted ON clusteringidentifiers.converted_id = converted.id
+        GROUP BY
+            clusteringidentifiers.identifier;
+        """):
+            candidates = candidatelist_row[0].split('\n')
+            if len(candidates) > 1:
+                #print(json.dumps(candidates))
+                batch.append(candidates)
+
+                if (len(batch) >= 32):
+                    while (len(tasks) >= 32):
+                        time.sleep(0)
+                        n = len(tasks)
+                        i = n-1
+                        while i > -1:
+                            if tasks[i].ready():
+                                result = tasks[i].get()
+                                write_detected_duplicate_pairs(result, inner_cursor, next_cluster_id)
+                                next_cluster_id += len(result[0])
+                                del(tasks[i])
+                            i -= 1
+                    tasks.append(pool.map_async(_check_candidate_groups, (batch,)))
+                    batch = []
+
+        if len(batch) > 0:
+            tasks.append(pool.map_async(_check_candidate_groups, (batch,)))
+        for task in tasks:
+            while not task.ready():
+                time.sleep(0)
+            result = task.get()
+            write_detected_duplicate_pairs(result, inner_cursor, next_cluster_id)
+            next_cluster_id += len(result[0])
+
+        return next_cluster_id
+
+def _check_candidate_groups(batch):
+    pairs = []
+    for candidate_list in batch:
+        for a in candidate_list:
+            for b in candidate_list:
+                if a != b and _is_close_enough(a, b):
+                    pairs.append( (a,b) )
+    return pairs
+
+def write_detected_duplicate_pairs(result, inner_cursor, next_cluster_id):
+    for pair in result[0]:
+        inner_cursor.execute("""
+        INSERT INTO cluster(cluster_id, converted_id) VALUES(?, ?);
+        """, (next_cluster_id, pair[0]))
+        inner_cursor.execute("""
+        INSERT INTO cluster(cluster_id, converted_id) VALUES(?, ?);
+        """, (next_cluster_id, pair[1]))
+        next_cluster_id += 1
+    commit_sqlite()
 
 # Join any clusters that have one or more common publications.
 def _join_overlapping_clusters(next_cluster_id):

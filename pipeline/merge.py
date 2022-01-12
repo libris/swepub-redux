@@ -10,7 +10,6 @@ def merge():
     # Set up batching
     batch = []
     tasks = []
-    in_batch = 0
 
     with Pool(processes=16) as pool:
 
@@ -29,7 +28,6 @@ def merge():
             cluster_id;
         """):
             batch.append(cluster_row)
-            in_batch += 1
 
             if (len(batch) >= 64):
                 while (len(tasks) >= 32):
@@ -38,7 +36,6 @@ def merge():
                     i = n-1
                     while i > -1:
                         if tasks[i].ready():
-                            #print("* CLEARING A PROCESS")
                             result = tasks[i].get()
                             write_results(result, inner_cursor)
 
@@ -59,7 +56,6 @@ def write_results(result, inner_cursor):
     for cluster in result[0]:
         cluster_id = cluster[0]
         merged_data = cluster[1]
-        #print(f"really? {cluster_id} -> {isinstance(merged_data, str)} {merged_data} \n\n")
         inner_cursor.execute("""
         INSERT INTO finalized(cluster_id, data) VALUES(?, ?);
         """, (cluster_id, json.dumps(merged_data)))
