@@ -364,23 +364,6 @@ def _generate_clusters():
             candidates = candidatelist_row[0].split('\n')
             if len(candidates) > 1:
                 #print(json.dumps(candidates))
-                #print(f"Will now check candidate list of size: {len(candidates)}")
-
-                # for a in candidates:
-                #    for b in candidates:
-                #        if a != b and _is_close_enough(a, b):
-                #            print(f"Writing pair {a},{b}")
-                #            inner_cursor.execute("""
-                #            INSERT INTO cluster(cluster_id, converted_id) VALUES(?, ?);
-                #            """, (next_cluster_id, a))
-                #            inner_cursor.execute("""
-                #            INSERT INTO cluster(cluster_id, converted_id) VALUES(?, ?);
-                #            """, (next_cluster_id, b))
-                #            next_cluster_id += 1
-                # commit_sqlite()
-
-
-
                 batch.append(candidates)
 
                 if (len(batch) >= 32):
@@ -393,7 +376,6 @@ def _generate_clusters():
                                 result = tasks[i].get()
                                 write_detected_duplicate_pairs(result, inner_cursor, next_cluster_id)
                                 next_cluster_id += len(result[0])
-                                #print(f"next_cluster_id:{next_cluster_id}")
                                 del(tasks[i])
                             i -= 1
                     tasks.append(pool.map_async(_check_candidate_groups, (batch,)))
@@ -407,7 +389,6 @@ def _generate_clusters():
             result = task.get()
             write_detected_duplicate_pairs(result, inner_cursor, next_cluster_id)
             next_cluster_id += len(result[0])
-            #print(f"next_cluster_id:{next_cluster_id}")
 
         return next_cluster_id
 
@@ -416,14 +397,11 @@ def _check_candidate_groups(batch):
     for candidate_list in batch:
         for a in candidate_list:
             for b in candidate_list:
-                #print(f"Comparing pair: {a}, {b}")
                 if a != b and _is_close_enough(a, b):
                     pairs.append( (a,b) )
-    #print(f"Returning pairs: {pairs}")
     return pairs
 
 def write_detected_duplicate_pairs(result, inner_cursor, next_cluster_id):
-    #print(f"Writing pairs: {result[0]}")
     for pair in result[0]:
         inner_cursor.execute("""
         INSERT INTO cluster(cluster_id, converted_id) VALUES(?, ?);
