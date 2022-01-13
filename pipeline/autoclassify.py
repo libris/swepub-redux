@@ -87,11 +87,16 @@ def generate_frequency_tables():
     """):
         finalized_rowid = finalized_row[0]
         finalized = json.loads(finalized_row[1])
-        selected_words = finalized_row[2].split("\n")
+        selected_words = []
+        if isinstance(finalized_row[2], str):
+            selected_words = finalized_row[2].split("\n")
+        else:
+            print(f"lol? {finalized_row[2]}")
+
 
         for candidate_row in second_cursor.execute("""
             SELECT
-                finalized.data
+                finalized.id, finalized.data, group_concat(abstract_rarest_words.word, '\n')
             FROM
                 abstract_rarest_words
             LEFT JOIN
@@ -99,11 +104,21 @@ def generate_frequency_tables():
             ON
                 finalized.id = abstract_rarest_words.finalized_id
             WHERE
-                abstract_rarest_words.word IN (SELECT word FROM abstract_rarest_words WHERE finalized_id = ?);
+                abstract_rarest_words.word IN (SELECT word FROM abstract_rarest_words WHERE finalized_id = ?)
+            GROUP BY
+                abstract_rarest_words.finalized_id;
             """, (finalized_rowid,)):
-                candidate = json.loads(candidate_row[0])
+                candidate_rowid = candidate_row[0]
+                candidate = json.loads(candidate_row[1])
+                candidate_matched_words = []
+                if isinstance(candidate_row[2], str):
+                    candidate_matched_words = candidate_row[2].split("\n")
+
+                print(f"Matched {finalized_rowid} with {candidate_rowid} based on shared: {candidate_matched_words}")
                 for summary in candidate.get("instanceOf", {}).get("summary", []):
                     abstract = summary.get("label", "")
+
+
                 
                     #print(f"abstract: {abstract}")
         #print("\n\n")
