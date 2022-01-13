@@ -62,7 +62,7 @@ def generate_frequency_tables():
             ORDER BY
                 occurrences ASC
             LIMIT
-                5;
+                6;
             """, words):
                 rare_word = total_count_row[0]
                 #print(f"Writing rare word {rare_word} for id: {finalized_rowid}")
@@ -72,14 +72,22 @@ def generate_frequency_tables():
         commit_sqlite()
 
     # Now, go over the data a third time, this time, for each publication retrieving
-    # candidates that _plausibly_ have the same subject.
+    # candidates that plausibly have the same subject.
     for finalized_row in cursor.execute("""
     SELECT
-        id
+        finalized.id, finalized.data, group_concat(abstract_rarest_words.word, '\n')
     FROM
-        finalized;
+        finalized
+    LEFT JOIN
+        abstract_rarest_words
+    ON
+        finalized.id = abstract_rarest_words.finalized_id
+    GROUP BY
+        finalized.id;
     """):
         finalized_rowid = finalized_row[0]
+        finalized = json.loads(finalized_row[1])
+        selected_words = finalized_row[2].split("\n")
 
         for candidate_row in second_cursor.execute("""
             SELECT
@@ -93,9 +101,10 @@ def generate_frequency_tables():
             WHERE
                 abstract_rarest_words.word IN (SELECT word FROM abstract_rarest_words WHERE finalized_id = ?);
             """, (finalized_rowid,)):
-                finalized = json.loads(candidate_row[0])
-                for summary in finalized.get("instanceOf", {}).get("summary", []):
+                candidate = json.loads(candidate_row[0])
+                for summary in candidate.get("instanceOf", {}).get("summary", []):
                     abstract = summary.get("label", "")
+                
                     #print(f"abstract: {abstract}")
         #print("\n\n")
 
