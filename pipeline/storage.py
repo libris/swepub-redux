@@ -106,6 +106,9 @@ def clean_and_init_storage():
     cursor.execute("""
     CREATE INDEX idx_abstract_rarest_words ON abstract_rarest_words (word);
     """)
+    cursor.execute("""
+    CREATE INDEX idx_abstract_rarest_words_id ON abstract_rarest_words (finalized_id);
+    """)
     # In order to calculate values (rarity) for the above table, we also need an answer
     # to the question:
     #

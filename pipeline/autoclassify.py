@@ -62,7 +62,7 @@ def generate_frequency_tables():
             ORDER BY
                 occurrences ASC
             LIMIT
-                7;
+                5;
             """, words):
                 rare_word = total_count_row[0]
                 #print(f"Writing rare word {rare_word} for id: {finalized_rowid}")
@@ -91,13 +91,13 @@ def generate_frequency_tables():
             ON
                 finalized.id = abstract_rarest_words.finalized_id
             WHERE
-                abstract_rarest_words.word IN (SELECT word FROM abstract_rarest_words where finalized_id = ?);
+                abstract_rarest_words.word IN (SELECT word FROM abstract_rarest_words WHERE finalized_id = ?);
             """, (finalized_rowid,)):
                 finalized = json.loads(candidate_row[0])
                 for summary in finalized.get("instanceOf", {}).get("summary", []):
                     abstract = summary.get("label", "")
-                    print(f"abstract: {abstract}")
-        print("\n\n")
+                    #print(f"abstract: {abstract}")
+        #print("\n\n")
 
 
 # For debugging
