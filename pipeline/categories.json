@@ -1,0 +1,1234 @@
+{
+    "60201": {
+        "swe": "Jämförande språkvetenskap och allmän lingvistik",
+        "eng": "General Language Studies and Linguistics"
+    },
+    "60203": {
+        "swe": "Litteraturvetenskap",
+        "eng": "General Literary studies"
+    },
+    "60202": {
+        "swe": "Studier av enskilda språk",
+        "eng": "Specific Languages"
+    },
+    "10299": {
+        "swe": "Annan data- och informationsvetenskap",
+        "eng": "Other Computer and Information Science"
+    },
+    "30599": {
+        "swe": "Övrig annan medicin och hälsovetenskap",
+        "eng": "Other Medical and Health Sciences not elsewhere specified"
+    },
+    "210": {
+        "swe": "Nanoteknik",
+        "eng": "Nano-technology"
+    },
+    "211": {
+        "swe": "Annan teknik",
+        "eng": "Other Engineering and Technologies"
+    },
+    "40302": {
+        "swe": "Patobiologi",
+        "eng": "Pathobiology"
+    },
+    "21001": {
+        "swe": "Nanoteknik",
+        "eng": "Nano-technology"
+    },
+    "30224": {
+        "swe": "Allmänmedicin",
+        "eng": "General Practice"
+    },
+    "40301": {
+        "swe": "Medicinsk biovetenskap",
+        "eng": "Medical Bioscience"
+    },
+    "30222": {
+        "swe": "Geriatrik",
+        "eng": "Geriatrics"
+    },
+    "30223": {
+        "swe": "Klinisk laboratoriemedicin",
+        "eng": "Clinical Laboratory Medicine"
+    },
+    "30220": {
+        "swe": "Reproduktionsmedicin och gynekologi",
+        "eng": "Obstetrics, Gynaecology and Reproductive Medicine"
+    },
+    "30221": {
+        "swe": "Pediatrik",
+        "eng": "Pediatrics"
+    },
+    "10699": {
+        "swe": "Annan biologi",
+        "eng": "Other Biological Topics"
+    },
+    "60204": {
+        "swe": "Litteraturstudier",
+        "eng": "Specific Literatures"
+    },
+    "10105": {
+        "swe": "Beräkningsmatematik",
+        "eng": "Computational Mathematics"
+    },
+    "10104": {
+        "swe": "Diskret matematik",
+        "eng": "Discrete Mathematics"
+    },
+    "10106": {
+        "swe": "Sannolikhetsteori och statistik",
+        "eng": "Probability Theory and Statistics"
+    },
+    "10101": {
+        "swe": "Matematisk analys",
+        "eng": "Mathematical Analysis"
+    },
+    "50402": {
+        "swe": "Socialt arbete",
+        "eng": "Social Work"
+    },
+    "10103": {
+        "swe": "Algebra och logik",
+        "eng": "Algebra and Logic"
+    },
+    "10102": {
+        "swe": "Geometri",
+        "eng": "Geometry"
+    },
+    "40108": {
+        "swe": "Landskapsarkitektur",
+        "eng": "Landscape Architecture"
+    },
+    "60501": {
+        "swe": "Antikvetenskap",
+        "eng": "Classical Archaeology and Ancient History"
+    },
+    "405": {
+        "swe": "Annan lantbruksvetenskap",
+        "eng": "Other Agricultural Sciences"
+    },
+    "30104": {
+        "swe": "Samhällsfarmaci och klinisk farmaci",
+        "eng": "Social and Clinical Pharmacy"
+    },
+    "403": {
+        "swe": "Veterinärmedicin",
+        "eng": "Veterinary Science"
+    },
+    "4": {
+        "swe": "Lantbruksvetenskap och veterinärmedicin",
+        "eng": "Agricultural and Veterinary sciences"
+    },
+    "401": {
+        "swe": "Lantbruksvetenskap, skogsbruk och fiske",
+        "eng": "Agriculture, Forestry and Fisheries"
+    },
+    "30304": {
+        "swe": "Näringslära",
+        "eng": "Nutrition and Dietetics"
+    },
+    "50904": {
+        "swe": "Internationell migration och etniska relationer (IMER)",
+        "eng": "International Migration and Ethnic Relations"
+    },
+    "30502": {
+        "swe": "Gerontologi, medicinsk/hälsovetenskaplig inriktning",
+        "eng": "Gerontology, specialising in Medical and Health Sciences"
+    },
+    "30501": {
+        "swe": "Rättsmedicin",
+        "eng": "Forensic Science"
+    },
+    "40503": {
+        "swe": "Lantbrukets arbetsmiljö och säkerhet",
+        "eng": "Agricultural Occupational Health and Safety"
+    },
+    "30307": {
+        "swe": "Sjukgymnastik",
+        "eng": "Physiotherapy"
+    },
+    "20601": {
+        "swe": "Medicinsk laboratorie- och mätteknik",
+        "eng": "Medical Laboratory and Measurements Technologies"
+    },
+    "20907": {
+        "swe": "Bioteknisk apparatteknik",
+        "eng": "Bioengineering Equipment"
+    },
+    "20603": {
+        "swe": "Medicinsk bildbehandling",
+        "eng": "Medical Image Processing"
+    },
+    "20602": {
+        "swe": "Medicinsk material- och protesteknik",
+        "eng": "Medical Materials"
+    },
+    "20605": {
+        "swe": "Medicinsk ergonomi",
+        "eng": "Medical Ergonomics"
+    },
+    "20604": {
+        "swe": "Medicinsk apparatteknik",
+        "eng": "Medical Equipment Engineering"
+    },
+    "20901": {
+        "swe": "Bioprocessteknik",
+        "eng": "Bioprocess Technology"
+    },
+    "30213": {
+        "swe": "Gastroenterologi",
+        "eng": "Gastroenterology and Hepatology"
+    },
+    "30199": {
+        "swe": "Andra medicinska och farmaceutiska grundvetenskaper",
+        "eng": "Other Basic Medicine"
+    },
+    "30211": {
+        "swe": "Ortopedi",
+        "eng": "Orthopaedics"
+    },
+    "30210": {
+        "swe": "Reumatologi och inflammation",
+        "eng": "Rheumatology and Autoimmunity"
+    },
+    "30217": {
+        "swe": "Oftalmologi",
+        "eng": "Ophthalmology"
+    },
+    "30216": {
+        "swe": "Odontologi",
+        "eng": "Dentistry"
+    },
+    "20908": {
+        "swe": "Medicinsk bioteknik",
+        "eng": "Medical Biotechnology"
+    },
+    "30214": {
+        "swe": "Urologi och njurmedicin",
+        "eng": "Urology and Nephrology"
+    },
+    "10206": {
+        "swe": "Datorteknik",
+        "eng": "Computer Engineering"
+    },
+    "10207": {
+        "swe": "Datorseende och robotik (autonoma system)",
+        "eng": "Computer Vision and Robotics (Autonomous Systems)"
+    },
+    "10204": {
+        "swe": "Människa-datorinteraktion (interaktionsdesign)",
+        "eng": "Human Computer Interaction"
+    },
+    "10205": {
+        "swe": "Programvaruteknik",
+        "eng": "Software Engineering"
+    },
+    "10202": {
+        "swe": "Systemvetenskap, informationssystem och informatik",
+        "eng": "Information Systems"
+    },
+    "10203": {
+        "swe": "Bioinformatik (beräkningsbiologi)",
+        "eng": "Bioinformatics (Computational Biology)"
+    },
+    "10201": {
+        "swe": "Datavetenskap (datalogi)",
+        "eng": "Computer Sciences"
+    },
+    "60102": {
+        "swe": "Teknikhistoria",
+        "eng": "History of Technology"
+    },
+    "60103": {
+        "swe": "Arkeologi",
+        "eng": "Archaeology"
+    },
+    "30299": {
+        "swe": "Annan klinisk medicin",
+        "eng": "Other Clinical Medicine"
+    },
+    "60101": {
+        "swe": "Historia",
+        "eng": "History"
+    },
+    "50101": {
+        "swe": "Psykologi",
+        "eng": "Psychology"
+    },
+    "10208": {
+        "swe": "Språkteknologi (språkvetenskaplig databehandling)",
+        "eng": "Language Technology (Computational Linguistics)"
+    },
+    "10209": {
+        "swe": "Medieteknik",
+        "eng": "Media and Communication Technology"
+    },
+    "20205": {
+        "swe": "Signalbehandling",
+        "eng": "Signal Processing"
+    },
+    "20204": {
+        "swe": "Telekommunikation",
+        "eng": "Telecommunications"
+    },
+    "20207": {
+        "swe": "Inbäddad systemteknik",
+        "eng": "Embedded Systems"
+    },
+    "20206": {
+        "swe": "Datorsystem",
+        "eng": "Computer Systems"
+    },
+    "20201": {
+        "swe": "Robotteknik och automation",
+        "eng": "Robotics"
+    },
+    "30208": {
+        "swe": "Radiologi och bildbehandling",
+        "eng": "Radiology, Nuclear Medicine and Medical Imaging"
+    },
+    "20203": {
+        "swe": "Kommunikationssystem",
+        "eng": "Communication Systems"
+    },
+    "20202": {
+        "swe": "Reglerteknik",
+        "eng": "Control Engineering"
+    },
+    "50801": {
+        "swe": "Medievetenskap",
+        "eng": "Media Studies"
+    },
+    "404": {
+        "swe": "Bioteknologi med applikationer på växter och djur",
+        "eng": "Agricultural Biotechnology"
+    },
+    "60599": {
+        "swe": "Övrig annan humaniora",
+        "eng": "Other Humanities not elsewhere specified"
+    },
+    "60405": {
+        "swe": "Arkitektur",
+        "eng": "Architecture"
+    },
+    "10199": {
+        "swe": "Annan matematik",
+        "eng": "Other Mathematics"
+    },
+    "10611": {
+        "swe": "Ekologi",
+        "eng": "Ecology"
+    },
+    "10610": {
+        "swe": "Bioinformatik och systembiologi",
+        "eng": "Bioinformatics and Systems Biology"
+    },
+    "10613": {
+        "swe": "Etologi",
+        "eng": "Behavioural Sciences Biology"
+    },
+    "10612": {
+        "swe": "Biologisk systematik",
+        "eng": "Biological Systematics"
+    },
+    "10615": {
+        "swe": "Evolutionsbiologi",
+        "eng": "Evolutionary Biology"
+    },
+    "10614": {
+        "swe": "Utvecklingsbiologi",
+        "eng": "Developmental Biology"
+    },
+    "30109": {
+        "swe": "Mikrobiologi inom det medicinska området",
+        "eng": "Microbiology in the medical area"
+    },
+    "30108": {
+        "swe": "Cell- och molekylärbiologi",
+        "eng": "Cell and Molecular Biology"
+    },
+    "30107": {
+        "swe": "Medicinskgenetik",
+        "eng": "Medical Genetics"
+    },
+    "30106": {
+        "swe": "Fysiologi",
+        "eng": "Physiology"
+    },
+    "30105": {
+        "swe": "Neurovetenskaper",
+        "eng": "Neurosciences"
+    },
+    "10599": {
+        "swe": "Annan geovetenskap och miljövetenskap",
+        "eng": "Other Earth and Related Environmental Sciences"
+    },
+    "30103": {
+        "swe": "Läkemedelskemi",
+        "eng": "Medicinal Chemistry"
+    },
+    "30102": {
+        "swe": "Farmakologi och toxikologi",
+        "eng": "Pharmacology and Toxicology"
+    },
+    "30101": {
+        "swe": "Farmaceutiska vetenskaper",
+        "eng": "Pharmaceutical Sciences"
+    },
+    "60402": {
+        "swe": "Musik",
+        "eng": "Music"
+    },
+    "21101": {
+        "swe": "Livsmedelsteknik",
+        "eng": "Food Engineering"
+    },
+    "21103": {
+        "swe": "Interaktionsteknik",
+        "eng": "Interaction Technologies"
+    },
+    "21102": {
+        "swe": "Mediateknik",
+        "eng": "Media Engineering"
+    },
+    "30219": {
+        "swe": "Lungmedicin och allergi",
+        "eng": "Respiratory Medicine and Allergy"
+    },
+    "50802": {
+        "swe": "Kommunikationsvetenskap",
+        "eng": "Communication Studies"
+    },
+    "20404": {
+        "swe": "Farmaceutisk synteskemi",
+        "eng": "Pharmaceutical Chemistry"
+    },
+    "60404": {
+        "swe": "Scenkonst",
+        "eng": "Performing Arts"
+    },
+    "40303": {
+        "swe": "Klinisk vetenskap",
+        "eng": "Clinical Science"
+    },
+    "20299": {
+        "swe": "Annan elektroteknik och elektronik",
+        "eng": "Other Electrical Engineering, Electronic Engineering, Information Engineering"
+    },
+    "20502": {
+        "swe": "Kompositmaterial och -teknik",
+        "eng": "Composite Science and Engineering"
+    },
+    "20503": {
+        "swe": "Pappers-, massa- och fiberteknik",
+        "eng": "Paper, Pulp and Fiber Technology"
+    },
+    "20501": {
+        "swe": "Keramteknik",
+        "eng": "Ceramics"
+    },
+    "20506": {
+        "swe": "Metallurgi och metalliska material",
+        "eng": "Metallurgy and Metallic Materials"
+    },
+    "60503": {
+        "swe": "Etnologi",
+        "eng": "Ethnology"
+    },
+    "20504": {
+        "swe": "Textil-, gummi- och polymermaterial",
+        "eng": "Textile, Rubber and Polymeric Materials"
+    },
+    "20505": {
+        "swe": "Bearbetnings-, yt- och fogningsteknik",
+        "eng": "Manufacturing, Surface and Joining Technology"
+    },
+    "30218": {
+        "swe": "Oto-rhino-laryngologi",
+        "eng": "Otorhinolaryngology"
+    },
+    "20699": {
+        "swe": "Annan medicinteknik",
+        "eng": "Other Medical Engineering"
+    },
+    "50803": {
+        "swe": "Mänsklig interaktion med IKT",
+        "eng": "Human Aspects of ICT"
+    },
+    "60407": {
+        "swe": "Konstvetenskap",
+        "eng": "Art History"
+    },
+    "20199": {
+        "swe": "Annan samhällsbyggnadsteknik",
+        "eng": "Other Civil Engineering"
+    },
+    "10602": {
+        "swe": "Biokemi och molekylärbiologi",
+        "eng": "Biochemistry and Molecular Biology"
+    },
+    "10603": {
+        "swe": "Biofysik",
+        "eng": "Biophysics"
+    },
+    "3": {
+        "swe": "Medicin och hälsovetenskap",
+        "eng": "Medical and Health Sciences"
+    },
+    "10601": {
+        "swe": "Strukturbiologi",
+        "eng": "Structural Biology"
+    },
+    "10606": {
+        "swe": "Mikrobiologi",
+        "eng": "Microbiology"
+    },
+    "10607": {
+        "swe": "Botanik",
+        "eng": "Botany"
+    },
+    "10604": {
+        "swe": "Cellbiologi",
+        "eng": "Cell Biology"
+    },
+    "10605": {
+        "swe": "Immunologi",
+        "eng": "Immunology"
+    },
+    "20599": {
+        "swe": "Annan materialteknik",
+        "eng": "Other Materials Engineering"
+    },
+    "20999": {
+        "swe": "Annan industriell bioteknik",
+        "eng": "Other Industrial Biotechnology"
+    },
+    "10608": {
+        "swe": "Zoologi",
+        "eng": "Zoology"
+    },
+    "10609": {
+        "swe": "Genetik",
+        "eng": "Genetics"
+    },
+    "50804": {
+        "swe": "Systemvetenskap, informationssystem och informatik med samhällsvetenskaplig inriktning",
+        "eng": "Information Systems, Social aspects"
+    },
+    "50805": {
+        "swe": "Biblioteks-och informationsvetenskap",
+        "eng": "Information Studies"
+    },
+    "50501": {
+        "swe": "Juridik",
+        "eng": "Law"
+    },
+    "301": {
+        "swe": "Medicinska och farmaceutiska grundvetenskaper",
+        "eng": "Basic Medicine"
+    },
+    "302": {
+        "swe": "Klinisk medicin",
+        "eng": "Clinical Medicine"
+    },
+    "303": {
+        "swe": "Hälsovetenskap",
+        "eng": "Health Sciences"
+    },
+    "304": {
+        "swe": "Medicinsk bioteknologi",
+        "eng": "Medical Biotechnology"
+    },
+    "305": {
+        "swe": "Annan medicin och hälsovetenskap",
+        "eng": "Other Medical and Health Sciences"
+    },
+    "501": {
+        "swe": "Psykologi",
+        "eng": "Psychology"
+    },
+    "20108": {
+        "swe": "Miljöanalys och bygginformationsteknik",
+        "eng": "Environmental Analysis and Construction Information Technology"
+    },
+    "20106": {
+        "swe": "Geoteknik",
+        "eng": "Geotechnical Engineering"
+    },
+    "103": {
+        "swe": "Fysik",
+        "eng": "Physical Sciences"
+    },
+    "20104": {
+        "swe": "Infrastrukturteknik",
+        "eng": "Infrastructure Engineering"
+    },
+    "20105": {
+        "swe": "Transportteknik och logistik",
+        "eng": "Transport Systems and Logistics"
+    },
+    "106": {
+        "swe": "Biologi",
+        "eng": "Biological Sciences"
+    },
+    "107": {
+        "swe": "Annan naturvetenskap",
+        "eng": "Other Natural Sciences"
+    },
+    "104": {
+        "swe": "Kemi",
+        "eng": "Chemical Sciences"
+    },
+    "105": {
+        "swe": "Geovetenskap och miljövetenskap",
+        "eng": "Earth and Related Environmental Sciences"
+    },
+    "21199": {
+        "swe": "Övrig annan teknik",
+        "eng": "Other Engineering and Technologies not elsewhere specified"
+    },
+    "30204": {
+        "swe": "Dermatologi och venereologi",
+        "eng": "Dermatology and Venereal Diseases"
+    },
+    "30205": {
+        "swe": "Endokrinologi och diabetes",
+        "eng": "Endocrinology and Diabetes"
+    },
+    "30206": {
+        "swe": "Kardiologi",
+        "eng": "Cardiac and Cardiovascular Systems"
+    },
+    "30207": {
+        "swe": "Neurologi",
+        "eng": "Neurology"
+    },
+    "30201": {
+        "swe": "Anestesi och intensivvård",
+        "eng": "Anesthesiology and Intensive Care"
+    },
+    "30202": {
+        "swe": "Hematologi",
+        "eng": "Hematology"
+    },
+    "30203": {
+        "swe": "Cancer och onkologi",
+        "eng": "Cancer and Oncology"
+    },
+    "20402": {
+        "swe": "Korrosionsteknik",
+        "eng": "Corrosion Engineering"
+    },
+    "30209": {
+        "swe": "Infektionsmedicin",
+        "eng": "Infectious Medicine"
+    },
+    "50502": {
+        "swe": "Juridik och samhälle",
+        "eng": "Law and Society"
+    },
+    "30499": {
+        "swe": "Annan medicinsk bioteknologi",
+        "eng": "Other Medical Biotechnology"
+    },
+    "6": {
+        "swe": "Humaniora och konst",
+        "eng": "Humanities and the Arts"
+    },
+    "40599": {
+        "swe": "Övrig annan lantbruksvetenskap",
+        "eng": "Other Agricultural Sciences not elsewhere specified"
+    },
+    "30309": {
+        "swe": "Beroendelära",
+        "eng": "Substance Abuse"
+    },
+    "30308": {
+        "swe": "Idrottsvetenskap",
+        "eng": "Sport and Fitness Sciences"
+    },
+    "604": {
+        "swe": "Konst",
+        "eng": "Arts"
+    },
+    "30305": {
+        "swe": "Omvårdnad",
+        "eng": "Nursing"
+    },
+    "10306": {
+        "swe": "Acceleratorfysik och instrumentering",
+        "eng": "Accelerator Physics and Instrumentation"
+    },
+    "10305": {
+        "swe": "Astronomi, astrofysik och kosmologi",
+        "eng": "Astronomy, Astrophysics and Cosmology"
+    },
+    "10304": {
+        "swe": "Den kondenserade materiens fysik",
+        "eng": "Condensed Matter Physics"
+    },
+    "10303": {
+        "swe": "Fusion, plasma och rymdfysik",
+        "eng": "Fusion, Plasma and Space Physics"
+    },
+    "10302": {
+        "swe": "Atom- och molekylfysik och optik",
+        "eng": "Atom and Molecular Physics and Optics"
+    },
+    "10301": {
+        "swe": "Subatomär fysik",
+        "eng": "Subatomic Physics"
+    },
+    "30302": {
+        "swe": "Folkhälsovetenskap, global hälsa, socialmedicin och epidemiologi",
+        "eng": "Public Health, Global Health, Social Medicine and Epidemiology"
+    },
+    "20403": {
+        "swe": "Polymerteknologi",
+        "eng": "Polymer Technologies"
+    },
+    "102": {
+        "swe": "Data- och informationsvetenskap (Datateknik)",
+        "eng": "Computer and Information Sciences"
+    },
+    "20401": {
+        "swe": "Kemiska processer",
+        "eng": "Chemical Process Engineering"
+    },
+    "50201": {
+        "swe": "Nationalekonomi",
+        "eng": "Economics"
+    },
+    "60403": {
+        "swe": "Litterär gestaltning",
+        "eng": "Literary Composition"
+    },
+    "10799": {
+        "swe": "Övrig annan naturvetenskap",
+        "eng": "Other Natural Sciences not elsewhere specified"
+    },
+    "60401": {
+        "swe": "Bildkonst",
+        "eng": "Visual Arts"
+    },
+    "20107": {
+        "swe": "Vattenteknik",
+        "eng": "Water Engineering"
+    },
+    "60409": {
+        "swe": "Teatervetenskap",
+        "eng": "Performing Art Studies"
+    },
+    "40105": {
+        "swe": "Trävetenskap",
+        "eng": "Wood Science"
+    },
+    "101": {
+        "swe": "Matematik",
+        "eng": "Mathematics"
+    },
+    "603": {
+        "swe": "Filosofi, etik och religion",
+        "eng": "Philosophy, Ethics and Religion"
+    },
+    "20102": {
+        "swe": "Byggproduktion",
+        "eng": "Construction Management"
+    },
+    "20103": {
+        "swe": "Husbyggnad",
+        "eng": "Building Technologies"
+    },
+    "50901": {
+        "swe": "Tvärvetenskapliga studier inom samhällsvetenskap",
+        "eng": "Social Sciences Interdisciplinary"
+    },
+    "60406": {
+        "swe": "Design",
+        "eng": "Design"
+    },
+    "50903": {
+        "swe": "Arbetslivsstudier",
+        "eng": "Work Sciences"
+    },
+    "2": {
+        "swe": "Teknik",
+        "eng": "Engineering and Technology"
+    },
+    "50602": {
+        "swe": "Studier av offentlig förvaltning",
+        "eng": "Public Administration Studies"
+    },
+    "50102": {
+        "swe": "Tillämpad psykologi",
+        "eng": "Applied Psychology"
+    },
+    "508": {
+        "swe": "Medie- och kommunikationsvetenskap",
+        "eng": "Media and Communications"
+    },
+    "50601": {
+        "swe": "Statsvetenskap",
+        "eng": "Political Science"
+    },
+    "30306": {
+        "swe": "Arbetsterapi",
+        "eng": "Occupational Therapy"
+    },
+    "507": {
+        "swe": "Social och ekonomisk geografi",
+        "eng": "Social and Economic Geography"
+    },
+    "504": {
+        "swe": "Sociologi",
+        "eng": "Sociology"
+    },
+    "20101": {
+        "swe": "Arkitekturteknik",
+        "eng": "Architectural Engineering"
+    },
+    "502": {
+        "swe": "Ekonomi och näringsliv",
+        "eng": "Economics and Business"
+    },
+    "503": {
+        "swe": "Utbildningsvetenskap",
+        "eng": "Educational Sciences"
+    },
+    "402": {
+        "swe": "Husdjursvetenskap",
+        "eng": "Animal and Dairy Sience"
+    },
+    "10401": {
+        "swe": "Analytisk kemi",
+        "eng": "Analytical Chemistry"
+    },
+    "10402": {
+        "swe": "Fysikalisk kemi",
+        "eng": "Physical Chemistry"
+    },
+    "10403": {
+        "swe": "Materialkemi",
+        "eng": "Materials Chemistry"
+    },
+    "10404": {
+        "swe": "Oorganisk kemi",
+        "eng": "Inorganic Chemistry"
+    },
+    "10405": {
+        "swe": "Organisk kemi",
+        "eng": "Organic Chemistry"
+    },
+    "10406": {
+        "swe": "Polymerkemi",
+        "eng": "Polymer Chemistry"
+    },
+    "10407": {
+        "swe": "Teoretisk kemi",
+        "eng": "Theoretical Chemistry"
+    },
+    "20899": {
+        "swe": "Annan miljöbioteknik",
+        "eng": "Other Environmental Biotechnology"
+    },
+    "509": {
+        "swe": "Annan samhällsvetenskap",
+        "eng": "Other Social Sciences"
+    },
+    "30310": {
+        "swe": "Medicinsk etik",
+        "eng": "Medical Ethics"
+    },
+    "60305": {
+        "swe": "Idé- och lärdomshistoria",
+        "eng": "History of Ideas"
+    },
+    "60410": {
+        "swe": "Filmvetenskap",
+        "eng": "Studies on Film"
+    },
+    "506": {
+        "swe": "Statsvetenskap",
+        "eng": "Political Science"
+    },
+    "30301": {
+        "swe": "Hälso- och sjukvårdsorganisation, hälsopolitik och hälsoekonomi",
+        "eng": "Health Care Service and Management, Health Policy and Services and Health Economy"
+    },
+    "40504": {
+        "swe": "Miljö- och naturvårdsvetenskap",
+        "eng": "Environmental Sciences related to Agriculture and Land-use"
+    },
+    "10399": {
+        "swe": "Annan fysik",
+        "eng": "Other Physics Topics"
+    },
+    "40501": {
+        "swe": "Förnyelsebar bioenergi",
+        "eng": "Renewable Bioenergy Research"
+    },
+    "40502": {
+        "swe": "Vilt- och fiskeförvaltning",
+        "eng": "Fish and Wildlife Management"
+    },
+    "30399": {
+        "swe": "Annan hälsovetenskap",
+        "eng": "Other Health Sciences"
+    },
+    "505": {
+        "swe": "Juridik",
+        "eng": "Law"
+    },
+    "60408": {
+        "swe": "Musikvetenskap",
+        "eng": "Musicology"
+    },
+    "50404": {
+        "swe": "Socialantropologi",
+        "eng": "Social Anthropology"
+    },
+    "30303": {
+        "swe": "Arbetsmedicin och miljömedicin",
+        "eng": "Occupational Health and Environmental Health"
+    },
+    "30110": {
+        "swe": "Immunologi inom det medicinska området",
+        "eng": "Immunology in the medical area"
+    },
+    "50203": {
+        "swe": "Ekonomisk historia",
+        "eng": "Economic History"
+    },
+    "50902": {
+        "swe": "Genusstudier",
+        "eng": "Gender Studies"
+    },
+    "10499": {
+        "swe": "Annan kemi",
+        "eng": "Other Chemistry Topics"
+    },
+    "20804": {
+        "swe": "Bioteknisk etik",
+        "eng": "Bioethics"
+    },
+    "20803": {
+        "swe": "Vattenbehandling",
+        "eng": "Water Treatment"
+    },
+    "20802": {
+        "swe": "Diagnostisk bioteknologi",
+        "eng": "Diagnostic Biotechnology"
+    },
+    "20801": {
+        "swe": "Biosanering",
+        "eng": "Bioremediation"
+    },
+    "605": {
+        "swe": "Annan humaniora",
+        "eng": "Other Humanities"
+    },
+    "20906": {
+        "swe": "Biokatalys och enzymteknik",
+        "eng": "Biocatalysis and Enzyme Technology"
+    },
+    "601": {
+        "swe": "Historia och arkeologi",
+        "eng": "History and Archaeology"
+    },
+    "40201": {
+        "swe": "Husdjursvetenskap",
+        "eng": "Animal and Dairy Science."
+    },
+    "602": {
+        "swe": "Språk och litteratur",
+        "eng": "Languages and Literature"
+    },
+    "50999": {
+        "swe": "Övrig annan samhällsvetenskap",
+        "eng": "Other Social Sciences not elsewhere specified"
+    },
+    "60301": {
+        "swe": "Filosofi",
+        "eng": "Philosophy"
+    },
+    "60302": {
+        "swe": "Etik",
+        "eng": "Ethics"
+    },
+    "60303": {
+        "swe": "Religionsvetenskap",
+        "eng": "Religious Studies"
+    },
+    "60304": {
+        "swe": "Religionshistoria",
+        "eng": "History of Religions"
+    },
+    "20904": {
+        "swe": "Bioenergi",
+        "eng": "Bioenergy"
+    },
+    "50702": {
+        "swe": "Ekonomisk geografi",
+        "eng": "Economic Geography"
+    },
+    "20399": {
+        "swe": "Annan maskinteknik",
+        "eng": "Other Mechanical Engineering"
+    },
+    "20905": {
+        "swe": "Läkemedelsbioteknik",
+        "eng": "Pharmaceutical Biotechnology"
+    },
+    "50701": {
+        "swe": "Kulturgeografi",
+        "eng": "Human Geography"
+    },
+    "50202": {
+        "swe": "Företagsekonomi",
+        "eng": "Business Administration"
+    },
+    "20902": {
+        "swe": "Biokemikalier",
+        "eng": "Biochemicals"
+    },
+    "20799": {
+        "swe": "Annan naturresursteknik",
+        "eng": "Other Environmental Engineering"
+    },
+    "20903": {
+        "swe": "Biomaterial",
+        "eng": "Bio Materials"
+    },
+    "30402": {
+        "swe": "Biomedicinsk laboratorievetenskap/teknologi",
+        "eng": "Biomedical Laboratory Science/Technology"
+    },
+    "30403": {
+        "swe": "Biomaterialvetenskap",
+        "eng": "Biomaterials Science"
+    },
+    "30401": {
+        "swe": "Medicinsk bioteknologi",
+        "eng": "Medical Biotechnology"
+    },
+    "50303": {
+        "swe": "Lärande",
+        "eng": "Learning"
+    },
+    "50302": {
+        "swe": "Didaktik",
+        "eng": "Didactics"
+    },
+    "50301": {
+        "swe": "Pedagogik",
+        "eng": "Pedagogy"
+    },
+    "50304": {
+        "swe": "Pedagogiskt arbete",
+        "eng": "Pedagogical Work"
+    },
+    "1": {
+        "swe": "Naturvetenskap",
+        "eng": "Natural sciences"
+    },
+    "5": {
+        "swe": "Samhällsvetenskap",
+        "eng": "Social Sciences"
+    },
+    "30212": {
+        "swe": "Kirurgi",
+        "eng": "Surgery"
+    },
+    "40101": {
+        "swe": "Jordbruksvetenskap",
+        "eng": "Agricultural Science"
+    },
+    "40102": {
+        "swe": "Trädgårdsvetenskap/hortikultur",
+        "eng": "Horticulture"
+    },
+    "40103": {
+        "swe": "Livsmedelsvetenskap",
+        "eng": "Food Science"
+    },
+    "40104": {
+        "swe": "Skogsvetenskap",
+        "eng": "Forest Science"
+    },
+    "20499": {
+        "swe": "Annan kemiteknik",
+        "eng": "Other Chemical Engineering"
+    },
+    "40106": {
+        "swe": "Markvetenskap",
+        "eng": "Soil Science"
+    },
+    "40107": {
+        "swe": "Fisk- och akvakulturforskning",
+        "eng": "Fish and Aquacultural Science"
+    },
+    "201": {
+        "swe": "Samhällsbyggnadsteknik",
+        "eng": "Civil Engineering"
+    },
+    "203": {
+        "swe": "Maskinteknik",
+        "eng": "Mechanical Engineering"
+    },
+    "202": {
+        "swe": "Elektroteknik och elektronik",
+        "eng": "Electrical Engineering, Electronic Engineering, Information Engineering"
+    },
+    "205": {
+        "swe": "Materialteknik",
+        "eng": "Materials Engineering"
+    },
+    "204": {
+        "swe": "Kemiteknik",
+        "eng": "Chemical Engineering"
+    },
+    "207": {
+        "swe": "Naturresursteknik",
+        "eng": "Environmental Engineering"
+    },
+    "206": {
+        "swe": "Medicinteknik",
+        "eng": "Medical Engineering"
+    },
+    "209": {
+        "swe": "Industriell bioteknik",
+        "eng": "Industrial Biotechnology"
+    },
+    "20701": {
+        "swe": "Geofysisk teknik",
+        "eng": "Geophysical Engineering"
+    },
+    "20702": {
+        "swe": "Energisystem",
+        "eng": "Energy Systems"
+    },
+    "20703": {
+        "swe": "Fjärranalysteknik",
+        "eng": "Remote Sensing"
+    },
+    "20704": {
+        "swe": "Mineral- och gruvteknik",
+        "eng": "Mineral and Mine Engineering"
+    },
+    "20705": {
+        "swe": "Marin teknik",
+        "eng": "Marine Engineering"
+    },
+    "20706": {
+        "swe": "Havs- och vattendragsteknik",
+        "eng": "Ocean and River Engineering"
+    },
+    "20707": {
+        "swe": "Miljöledning",
+        "eng": "Environmental Management"
+    },
+    "10509": {
+        "swe": "Oceanografi, hydrologi och vattenresurser",
+        "eng": "Oceanography, Hydrology and Water Resources"
+    },
+    "10508": {
+        "swe": "Meteorologi och atmosfärforskning",
+        "eng": "Meteorology and Atmospheric Sciences"
+    },
+    "60502": {
+        "swe": "Kulturstudier",
+        "eng": "Cultural Studies"
+    },
+    "40401": {
+        "swe": "Växtbioteknologi",
+        "eng": "Plant Biotechnology"
+    },
+    "30215": {
+        "swe": "Psykiatri",
+        "eng": "Psychiatry"
+    },
+    "40402": {
+        "swe": "Genetik och förädling inom lantbruksvetenskap",
+        "eng": "Genetics and Breeding in Agricultural Sciences"
+    },
+    "10501": {
+        "swe": "Klimatforskning",
+        "eng": "Climate Research"
+    },
+    "40304": {
+        "swe": "Annan veterinärmedicin",
+        "eng": "Other Veterinary Science"
+    },
+    "10503": {
+        "swe": "Multidisciplinär geovetenskap",
+        "eng": "Geosciences, Multidisciplinary"
+    },
+    "10502": {
+        "swe": "Miljövetenskap",
+        "eng": "Environmental Sciences"
+    },
+    "10505": {
+        "swe": "Geofysik",
+        "eng": "Geophysics"
+    },
+    "10504": {
+        "swe": "Geologi",
+        "eng": "Geology"
+    },
+    "10507": {
+        "swe": "Naturgeografi",
+        "eng": "Physical Geography"
+    },
+    "10506": {
+        "swe": "Geokemi",
+        "eng": "Geochemistry"
+    },
+    "20308": {
+        "swe": "Tribologi",
+        "eng": "Tribology"
+    },
+    "20304": {
+        "swe": "Energiteknik",
+        "eng": "Energy Engineering"
+    },
+    "20305": {
+        "swe": "Tillförlitlighets- och kvalitetsteknik",
+        "eng": "Reliability and Maintenance"
+    },
+    "20306": {
+        "swe": "Strömningsmekanik och akustik",
+        "eng": "Fluid Mechanics and Acoustics"
+    },
+    "20307": {
+        "swe": "Produktionsteknik, arbetsvetenskap och ergonomi",
+        "eng": "Production Engineering, Human Work Science and Ergonomics"
+    },
+    "20301": {
+        "swe": "Teknisk mekanik",
+        "eng": "Applied Mechanics"
+    },
+    "20302": {
+        "swe": "Rymd- och flygteknik",
+        "eng": "Aerospace Engineering"
+    },
+    "20303": {
+        "swe": "Farkostteknik",
+        "eng": "Vehicle Engineering"
+    },
+    "208": {
+        "swe": "Miljöbioteknik",
+        "eng": "Environmental Biotechnology"
+    },
+    "50603": {
+        "swe": "Globaliseringsstudier",
+        "eng": "Globalisation Studies"
+    },
+    "50403": {
+        "swe": "Socialpsykologi",
+        "eng": "Social Psychology"
+    },
+    "50401": {
+        "swe": "Sociologi",
+        "eng": "Sociology"
+    }
+}

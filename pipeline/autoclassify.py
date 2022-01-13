@@ -2,6 +2,10 @@ from storage import commit_sqlite, get_cursor, open_existing_storage
 from collections import Counter
 import json
 import re
+from json import load
+from os import path
+
+categories = load(open(path.join(path.dirname(__file__), 'categories.json')))
 
 def generate_occurrence_table():
     cursor = get_cursor()
@@ -134,7 +138,51 @@ def find_subjects():
                 score = len(candidate_matched_words)
                 for sub in publication_subjects:
                     subjects[sub] += score
-        print(f"most common subjects: {subjects.most_common(classes)}")
+        #print(f"most common subjects: {subjects.most_common(classes)}")
+        subjects = subjects.most_common(classes)
+        if len(subjects) > 0:
+            enriched_subjects =_enrich_subject(subjects)
+            print(f"enriched subjects for {finalized_rowid}: {str(enriched_subjects)}")
+
+
+def _enrich_subject(subjects):
+    ret = []
+    for code, score in subjects:
+        r = {
+            'score': score,
+            'swe': _create_subject(code, 'swe'),
+            'eng': _create_subject(code, 'eng')
+        }
+        ret += [r]
+    return ret
+
+
+def _create_subject(code, lang):
+    category_level = {
+        1: (1, ),
+        3: (1, 3),
+        5: (1, 3, 5)
+    }
+
+    return {
+        "@type": "Topic",
+        "@id": "https://id.kb.se/term/uka/{}".format(code),
+        "inScheme": {
+            "@id": "https://id.kb.se/term/uka/",
+            "@type": "ConceptScheme",
+            "code": "uka.se"
+        },
+        "code": code,
+        "prefLabel": categories.get(code, {}).get(lang),
+        "language": {
+            "@type": "Language",
+            "@id": f"https://id.kb.se/language/{lang}",
+            "code": lang
+        },
+        "_topic_tree": [
+            categories.get(code[:x], {}).get(lang) for x in category_level[len(code)]
+        ]
+    }
 
 
 
