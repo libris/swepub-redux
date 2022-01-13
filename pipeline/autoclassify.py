@@ -1,4 +1,5 @@
 from storage import commit_sqlite, get_cursor, open_existing_storage
+from collections import Counter
 import json
 import re
 
@@ -86,6 +87,9 @@ def generate_frequency_tables():
         finalized_rowid = finalized_row[0]
         finalized = json.loads(finalized_row[1])
 
+        subjects = Counter()
+        publication_subjects = set()
+
         for candidate_row in second_cursor.execute("""
             SELECT
                 finalized.id, finalized.data, group_concat(abstract_rarest_words.word, '\n')
@@ -110,19 +114,31 @@ def generate_frequency_tables():
                     continue
                 
                 # This is a vital tweaking point. How many _rare_ words do two abstracts need to share
-                # in order to be considered of the same subject. 2 seems a balanced choice. 1 "works" too,
+                # in order to be considered on the same subject. 2 seems a balanced choice. 1 "works" too,
                 # but may be a bit too aggressive (providing a bit too many false positive matches)
                 if len(candidate_matched_words) < 2:
                     continue
 
+                level = 3
+                classes = 5
+
                 print(f"Matched {finalized_rowid} with {candidate_rowid} based on shared rare words: {candidate_matched_words}")
-                for summary in candidate.get("instanceOf", {}).get("summary", []):
-                    abstract = summary.get("label", "")
+        
+                for subject in candidate.get("instanceOf", {}).get("subject", []):
+                    try:
+                        authority, subject_id = subject['inScheme']['code'], subject['code']
+                    except KeyError:
+                        continue
 
+                    if authority not in ('hsv', 'uka.se') or len(subject_id) < level:
+                        continue
 
-                
-                    #print(f"abstract: {abstract}")
-        #print("\n\n")
+                    publication_subjects.add(subject_id[:level])
+                score = len(candidate_matched_words)
+                for sub in publication_subjects:
+                    subjects[sub] += score
+        print(f"most common subjects: {subjects.most_common(classes)}")
+
 
 
 # For debugging
