@@ -3,13 +3,8 @@ from collections import Counter
 import json
 import re
 
-def generate_frequency_tables():
+def generate_occurrence_table():
     cursor = get_cursor()
-    second_cursor = get_cursor()
-    third_cursor = get_cursor()
-
-    # First populate the abstract_total_word_counts, so that we know how many
-    # times each word occurs (within all combined abstracts).
     count_per_word = {}
     for finalized_row in cursor.execute("""
     SELECT
@@ -35,9 +30,10 @@ def generate_frequency_tables():
         """, (word, count_per_word[word]) )
     commit_sqlite()
 
-    # Then go over the data again, and select the N rarest words out of each
-    # abstract, which we can now calculate given the table populated above.
-    # Put these rare words in the abstract_rarest_words table.
+def select_rarest_words():
+    cursor = get_cursor()
+    second_cursor = get_cursor()
+    third_cursor = get_cursor()
     for finalized_row in cursor.execute("""
     SELECT
         id, data
@@ -76,8 +72,9 @@ def generate_frequency_tables():
                 """, (rare_word, finalized_rowid))
         commit_sqlite()
 
-    # Now, go over the data a third time, this time, for each publication retrieving
-    # candidates that plausibly have the same subject.
+def find_subjects():
+    cursor = get_cursor()
+    second_cursor = get_cursor()
     for finalized_row in cursor.execute("""
     SELECT
         finalized.id, finalized.data
@@ -144,4 +141,19 @@ def generate_frequency_tables():
 # For debugging
 if __name__ == "__main__":
     open_existing_storage()
-    generate_frequency_tables()
+
+    # First populate the abstract_total_word_counts table, so that we know
+    # how many times each word occurs (within all combined abstracts).
+    generate_occurrence_table()
+
+    # Then go over the data again, and select the N _rarest_ words out of each
+    # abstract, which we can now calculate given the table populated above.
+    # Put these rare words in the abstract_rarest_words table.
+    select_rarest_words()
+
+    # Now, go over the data a third time, this time, for each publication retrieving
+    # candidates that share rare words, and thereby plausibly have the same subject.
+    # Selectively copy good subjects over
+    find_subjects()
+
+    
