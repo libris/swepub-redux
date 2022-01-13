@@ -1,5 +1,6 @@
 from storage import commit_sqlite, get_cursor, open_existing_storage
 from collections import Counter
+from audit import Publication
 import json
 import re
 from json import load
@@ -138,11 +139,30 @@ def find_subjects():
                 score = len(candidate_matched_words)
                 for sub in publication_subjects:
                     subjects[sub] += score
-        #print(f"most common subjects: {subjects.most_common(classes)}")
         subjects = subjects.most_common(classes)
         if len(subjects) > 0:
             enriched_subjects =_enrich_subject(subjects)
-            print(f"enriched subjects for {finalized_rowid}: {str(enriched_subjects)}")
+            #print(f"enriched subjects for {finalized_rowid}: {str(enriched_subjects)}")
+
+            LANGS = ['eng', 'swe']
+            classifications = []
+            for item in enriched_subjects:
+                for lang in LANGS:
+                    if lang in item:
+                        classifications.append(item[lang])
+            
+            publication = Publication(finalized)
+            #initial_value = publication.uka_swe_classification_list
+            publication.add_subjects(classifications)
+            print(f"added subjects {classifications} into publication: {publication.data}")
+            #result = True
+            #code = "autoclassified"
+            #value = publication.uka_swe_classification_list
+            #logger.info(
+                #f"Autoclassifying publication {publication.id}", extra={'auditor': self.name})
+        #new_audit_events = self._add_audit_event(audit_events, result, code, initial_value, value)
+
+        #return (publication, new_audit_events)
 
 
 def _enrich_subject(subjects):
