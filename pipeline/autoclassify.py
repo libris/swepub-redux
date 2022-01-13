@@ -75,24 +75,12 @@ def generate_frequency_tables():
     # candidates that plausibly have the same subject.
     for finalized_row in cursor.execute("""
     SELECT
-        finalized.id, finalized.data, group_concat(abstract_rarest_words.word, '\n')
+        finalized.id, finalized.data
     FROM
-        finalized
-    LEFT JOIN
-        abstract_rarest_words
-    ON
-        finalized.id = abstract_rarest_words.finalized_id
-    GROUP BY
-        finalized.id;
+        finalized;
     """):
         finalized_rowid = finalized_row[0]
         finalized = json.loads(finalized_row[1])
-        selected_words = []
-        if isinstance(finalized_row[2], str):
-            selected_words = finalized_row[2].split("\n")
-        else:
-            print(f"lol? {finalized_row[2]}")
-
 
         for candidate_row in second_cursor.execute("""
             SELECT
@@ -113,6 +101,15 @@ def generate_frequency_tables():
                 candidate_matched_words = []
                 if isinstance(candidate_row[2], str):
                     candidate_matched_words = candidate_row[2].split("\n")
+
+                if candidate_rowid == finalized_rowid:
+                    continue
+                
+                # This is a vital tweaking point. How many _rare_ words do two abstracts need to share
+                # in order to be considered of the same subject. 2 seems a balanced choice. 1 "works" too,
+                # but may be a bit too aggressive (providing a bit too many false positive matches)
+                if len(candidate_matched_words) < 2:
+                    continue
 
                 print(f"Matched {finalized_rowid} with {candidate_rowid} based on shared: {candidate_matched_words}")
                 for summary in candidate.get("instanceOf", {}).get("summary", []):
