@@ -21,6 +21,8 @@ def generate_frequency_tables():
             abstract = summary.get("label", "")
             words = re.findall(r'\w+', abstract)
             for word in words:
+                if word.isnumeric():
+                    continue
                 word = word.lower()
                 if not word in count_per_word:
                     count_per_word[word] = 1
@@ -49,6 +51,8 @@ def generate_frequency_tables():
             words = re.findall(r'\w+', abstract)
             words_set = set()
             for word in words:
+                if word.isnumeric():
+                    continue
                 words_set.add(word.lower())
             words = list(words_set)
 
@@ -111,7 +115,7 @@ def generate_frequency_tables():
                 if len(candidate_matched_words) < 2:
                     continue
 
-                print(f"Matched {finalized_rowid} with {candidate_rowid} based on shared: {candidate_matched_words}")
+                print(f"Matched {finalized_rowid} with {candidate_rowid} based on shared rare words: {candidate_matched_words}")
                 for summary in candidate.get("instanceOf", {}).get("summary", []):
                     abstract = summary.get("label", "")
 
