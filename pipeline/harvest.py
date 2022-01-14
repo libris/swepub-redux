@@ -10,8 +10,6 @@ from convert import convert
 from deduplicate import deduplicate
 import time
 from multiprocessing import Process
-import shutil
-import json
 import sys
 from storage import *
 
@@ -179,12 +177,12 @@ def harvest(source):
                                     processes[i].join()
                                     del processes[i]
                                 i -= 1
-                        p = Process(target=threaded_handle_harvested, args=(batch,))
+                        p = Process(target=threaded_handle_harvested, args=(batch,source["code"]))
                         batch_count += 1
                         p.start()
                         processes.append( p )
                         batch = []
-            p = Process(target=threaded_handle_harvested, args=(batch,))
+            p = Process(target=threaded_handle_harvested, args=(batch,source["code"]))
             p.start()
             processes.append( p )
             for p in processes:
@@ -195,13 +193,13 @@ def harvest(source):
             print (f'FAILED HARVEST: {source["code"]}')
             exit -1
 
-def threaded_handle_harvested(batch):
+def threaded_handle_harvested(batch, source):
     for xml in batch:
         #print(f'Harvest harvest_item_id {record.harvest_item_id}')
         converted = convert(xml)
         if validate(xml, converted):
             #print(f"Validation passed for {converted['@id']}")
-            store_converted(xml, converted)
+            store_converted(converted, source)
         else:
             pass
             #print(f"Validation failed for {converted['@id']}")

@@ -14,10 +14,14 @@ def clean_and_init_storage():
     connection = sqlite3.connect(sqlite_path, timeout=(5*60*60))
     cursor = connection.cursor()
 
+    # Use sqlite WAL mode
+    #cursor.execute("PRAGMA journal_mode=WAL;")
+
     # Because Swepub APIs expose publications as originally harvested, these must be kept.
     cursor.execute("""
     CREATE TABLE original (
         id INTEGER PRIMARY KEY,
+        source TEXT,
         data TEXT
     );
     """)
@@ -132,14 +136,14 @@ def open_existing_storage():
     global connection
     connection = sqlite3.connect(sqlite_path, timeout=(5*60*60))
 
-def store_converted(xml, converted):
+def store_converted(converted, source):
     cursor = connection.cursor()
 
     #print(f'Inserting with oai_id {converted["@id"]}')
 
     original_rowid = cursor.execute("""
-    INSERT INTO original(data) VALUES(?);
-    """, (json.dumps(converted),)).lastrowid
+    INSERT INTO original(source, data) VALUES(?, ?);
+    """, (source, json.dumps(converted),)).lastrowid
 
     converted_rowid = cursor.execute("""
     INSERT INTO converted(data, original_id) VALUES(?, ?);
