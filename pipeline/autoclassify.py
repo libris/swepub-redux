@@ -8,7 +8,7 @@ from os import path
 
 categories = load(open(path.join(path.dirname(__file__), 'categories.json')))
 
-def generate_occurrence_table():
+def _generate_occurrence_table():
     cursor = get_cursor()
     count_per_word = {}
     for finalized_row in cursor.execute("""
@@ -35,7 +35,7 @@ def generate_occurrence_table():
         """, (word, count_per_word[word]) )
     commit_sqlite()
 
-def select_rarest_words():
+def _select_rarest_words():
     cursor = get_cursor()
     second_cursor = get_cursor()
     third_cursor = get_cursor()
@@ -77,15 +77,18 @@ def select_rarest_words():
                 """, (rare_word, finalized_rowid))
         commit_sqlite()
 
-def find_subjects():
+def _find_and_add_subjects():
     cursor = get_cursor()
     second_cursor = get_cursor()
-    for finalized_row in cursor.execute("""
+    third_cursor = get_cursor()
+    cursor.execute("""
     SELECT
         finalized.id, finalized.data
     FROM
         finalized;
-    """):
+    """)
+    rows = cursor.fetchall() # This is necessary in order to allow modification of the table while iterating
+    for finalized_row in rows:
         finalized_rowid = finalized_row[0]
         finalized = json.loads(finalized_row[1])
 
@@ -116,15 +119,15 @@ def find_subjects():
                     continue
                 
                 # This is a vital tweaking point. How many _rare_ words do two abstracts need to share
-                # in order to be considered on the same subject. 2 seems a balanced choice. 1 "works" too,
-                # but may be a bit too aggressive (providing a bit too many false positive matches)
+                # in order to be considered on the same subject? 2 seems a balanced choice. 1 "works" too,
+                # but may be a bit too aggressive (providing a bit too many false positive matches).
                 if len(candidate_matched_words) < 2:
                     continue
 
                 level = 3
                 classes = 5
 
-                print(f"Matched {finalized_rowid} with {candidate_rowid} based on shared rare words: {candidate_matched_words}")
+                #print(f"Matched {finalized_rowid} with {candidate_rowid} based on shared rare words: {candidate_matched_words}")
         
                 for subject in candidate.get("instanceOf", {}).get("subject", []):
                     try:
@@ -154,15 +157,23 @@ def find_subjects():
             publication = Publication(finalized)
             #initial_value = publication.uka_swe_classification_list
             publication.add_subjects(classifications)
-            print(f"added subjects {classifications} into publication: {publication.data}")
-            #result = True
+            third_cursor.execute("""
+            UPDATE
+                finalized
+            SET
+                data = ?
+            WHERE
+                id = ? ;
+            """, (json.dumps(publication.data), finalized_rowid) )
+            #print(f"added subjects {classifications} into publication: {finalized_rowid}")
+            
             #code = "autoclassified"
             #value = publication.uka_swe_classification_list
             #logger.info(
                 #f"Autoclassifying publication {publication.id}", extra={'auditor': self.name})
-        #new_audit_events = self._add_audit_event(audit_events, result, code, initial_value, value)
+            #new_audit_events = self._add_audit_event(audit_events, result, code, initial_value, value)
 
-        #return (publication, new_audit_events)
+    commit_sqlite()
 
 
 def _enrich_subject(subjects):
@@ -204,24 +215,22 @@ def _create_subject(code, lang):
         ]
     }
 
-
-
-# For debugging
-if __name__ == "__main__":
-    open_existing_storage()
-
+def auto_classify():
     # First populate the abstract_total_word_counts table, so that we know
     # how many times each word occurs (within all combined abstracts).
-    generate_occurrence_table()
+    _generate_occurrence_table()
 
     # Then go over the data again, and select the N _rarest_ words out of each
     # abstract, which we can now calculate given the table populated above.
     # Put these rare words in the abstract_rarest_words table.
-    select_rarest_words()
+    _select_rarest_words()
 
     # Now, go over the data a third time, this time, for each publication retrieving
     # candidates that share rare words, and thereby plausibly have the same subject.
     # Selectively copy good subjects over
-    find_subjects()
+    _find_and_add_subjects()
 
-    
+# For debugging
+if __name__ == "__main__":
+    open_existing_storage()
+    auto_classify()

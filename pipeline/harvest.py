@@ -1,4 +1,5 @@
 from pathlib import Path
+from autoclassify import auto_classify
 from merge import merge
 import sickle
 from modsstylesheet import ModsStylesheet
@@ -541,3 +542,4 @@ if __name__ == "__main__":
         p.join()
     deduplicate()
     merge()
+    auto_classify()
