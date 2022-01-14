@@ -81,6 +81,8 @@ def _find_and_add_subjects():
     cursor = get_cursor()
     second_cursor = get_cursor()
     third_cursor = get_cursor()
+    level = 3
+    classes = 5
     cursor.execute("""
     SELECT
         finalized.id, finalized.data
@@ -123,9 +125,6 @@ def _find_and_add_subjects():
                 # but may be a bit too aggressive (providing a bit too many false positive matches).
                 if len(candidate_matched_words) < 2:
                     continue
-
-                level = 3
-                classes = 5
 
                 #print(f"Matched {finalized_rowid} with {candidate_rowid} based on shared rare words: {candidate_matched_words}")
         
