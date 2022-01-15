@@ -5,6 +5,7 @@ from log import log_for_OAI_id
 from jsonpath_rw_ext import parse
 import itertools
 import requests
+from normalize import normalize_issn
 
 from util import update_at_path, unicode_translate
 
@@ -127,6 +128,24 @@ def validate(raw_xml, body):
                         passesValidation = False
                 if id_type == 'UKA':
                     passesValidation &= validate_uka(match.value, body["@id"])
-                
-    #return passesValidation
+
+    # Normalization
+    for id_type, jpath in PRECOMPILED_PATHS.items():
+        matches = itertools.chain.from_iterable(jp.find(body) for jp in jpath)
+        for match in matches:
+            if match.value:
+
+                #if id_type == 'ISBN':
+                    
+                #if id_type == 'ISI':
+                    
+                #if id_type == 'ORCID':
+                    
+                if id_type == 'ISSN':
+                    normalize_issn(match.value, body, str(match.full_path), body["@id"])
+                    
+                #if id_type == 'DOI':
+                    
+                #if id_type == 'free_text':
+
     return True # LOL? It's backwards, but this is the way they want it, "validate, but trust".
