@@ -5,7 +5,7 @@ from log import log_for_OAI_id
 from jsonpath_rw_ext import parse
 import itertools
 import requests
-from normalize import normalize_issn
+from normalize import *
 
 from util import update_at_path, unicode_translate
 
@@ -135,9 +135,11 @@ def validate(raw_xml, body):
         for match in matches:
             if match.value:
 
-                #if id_type == 'ISBN':
+                if id_type == 'ISBN':
+                    normalize_isbn(match.value, body, str(match.full_path), body["@id"])
                     
-                #if id_type == 'ISI':
+                if id_type == 'ISI':
+                    normalize_isi(match.value, body, str(match.full_path), body["@id"])
                     
                 #if id_type == 'ORCID':
                     

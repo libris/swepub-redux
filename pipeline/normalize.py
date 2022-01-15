@@ -7,4 +7,15 @@ def normalize_issn(issn, body, path, id):
     if new_value != issn:
         update_at_path(body, path, new_value)
         log_for_OAI_id(id, "ISSN normalized")
-        print(f"Fixed up {issn} -> {new_value}")
+
+def normalize_isbn(isbn, body, path, id):
+    new_value = isbn.replace('-', '').upper()
+    if new_value != isbn:
+        update_at_path(body, path, new_value)
+        log_for_OAI_id(id, "ISBN normalized")
+
+def normalize_isi(isi, body, path, id):
+    new_value = isi.upper()
+    if new_value != isi:
+        update_at_path(body, path, new_value)
+        log_for_OAI_id(id, "ISI normalized")
