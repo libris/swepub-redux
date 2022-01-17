@@ -141,13 +141,16 @@ def validate(raw_xml, body):
                 if id_type == 'ISI':
                     normalize_isi(match.value, body, str(match.full_path), body["@id"])
                     
-                #if id_type == 'ORCID':
+                if id_type == 'ORCID':
+                    normalize_orcid(match.value, body, str(match.full_path), body["@id"])
                     
                 if id_type == 'ISSN':
                     normalize_issn(match.value, body, str(match.full_path), body["@id"])
                     
-                #if id_type == 'DOI':
+                if id_type == 'DOI':
+                    normalize_doi(match.value, body, str(match.full_path), body["@id"])
                     
-                #if id_type == 'free_text':
+                if id_type == 'free_text':
+                    normalize_free_text(match.value, body, str(match.full_path), body["@id"])
 
     return True # LOL? It's backwards, but this is the way they want it, "validate, but trust".
