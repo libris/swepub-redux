@@ -56,7 +56,7 @@ def _select_rarest_words():
                 if word.isnumeric():
                     continue
                 words_set.add(word.lower())
-            words = list(words_set)
+            words = list(words_set)[0:300]
 
             for total_count_row in second_cursor.execute(f"""
             SELECT
