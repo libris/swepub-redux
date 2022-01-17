@@ -22,7 +22,23 @@ def clean_and_init_storage():
     CREATE TABLE original (
         id INTEGER PRIMARY KEY,
         source TEXT,
+        oai_id, TEXT,
+        accepted INTEGER, -- (fake boolean 1/0)
         data TEXT
+    );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_original_oai_id ON original (oai_id);
+    """)
+
+    # This table is used to store log entries (validation/normalization errors etc) for
+    # each original publication
+    cursor.execute("""
+    CREATE TABLE original_log (
+        original_id INTEGER,
+        code TEXT,
+        message TEXT,
+        FOREIGN KEY (original_id) REFERENCES original(id)
     );
     """)
 
@@ -136,14 +152,17 @@ def open_existing_storage():
     global connection
     connection = sqlite3.connect(sqlite_path, timeout=(5*60*60))
 
-def store_converted(converted, source):
+def store_original_and_converted(original, converted, source, accepted):
     cursor = connection.cursor()
 
-    #print(f'Inserting with oai_id {converted["@id"]}')
+    #print(f'Inserting with oai_id {converted["@id"]} : \n\n{json.dumps(converted)}\n\n')
 
     original_rowid = cursor.execute("""
-    INSERT INTO original(source, data) VALUES(?, ?);
-    """, (source, json.dumps(converted),)).lastrowid
+    INSERT INTO original(source, data, accepted, oai_id) VALUES(?, ?, ?, ?);
+    """, (source, json.dumps(original), accepted, converted["@id"])).lastrowid
+
+    if not accepted:
+        return
 
     converted_rowid = cursor.execute("""
     INSERT INTO converted(data, original_id) VALUES(?, ?);
