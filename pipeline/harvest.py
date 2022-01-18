@@ -140,17 +140,10 @@ class HarvestFailed(Exception):
 
 
 
-def harvest(source):
+def harvest(source, lock):
 
     start_time = time.time()
 
-    # Initially synchronization was left up to sqlite3's file locking to handle,
-    # which was fine, except that the try/sleep is somewhat inefficient and risks
-    # starving some processes for a long time.
-    # Instead, using an explicit lock should instead allow the kernel to fairly
-    # distribute the database between the processes.
-    lock = Lock()
-    
     for set in source["sets"]:
         harvest_info = f'{set["url"]} ({set["subset"]}, {set["metadata_prefix"]})'
         record_iterator = RecordIterator(source["code"], set, None, None)
@@ -543,8 +536,16 @@ if __name__ == "__main__":
 
     clean_and_init_storage()
     processes = []
+
+    # Initially synchronization was left up to sqlite3's file locking to handle,
+    # which was fine, except that the try/sleep is somewhat inefficient and risks
+    # starving some processes for a long time.
+    # Instead, using an explicit lock should instead allow the kernel to fairly
+    # distribute the database between the processes.
+    lock = Lock()
+
     for source in sources_to_harvest:
-        p = Process(target=harvest, args=(source,))
+        p = Process(target=harvest, args=(source,lock))
         p.start()
         processes.append( p )
     for p in processes:
