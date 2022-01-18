@@ -2,3 +2,4 @@
 __pycache__/
 .idea/
 swepub.sqlite3
+venv/
