@@ -11,7 +11,7 @@ def clean_and_init_storage():
     if os.path.exists(sqlite_path):
         os.remove(sqlite_path)
     global connection
-    connection = sqlite3.connect(sqlite_path, timeout=(5*60*60))
+    connection = sqlite3.connect(sqlite_path)
     cursor = connection.cursor()
 
     # Use sqlite WAL mode
@@ -134,7 +134,7 @@ def clean_and_init_storage():
 
 def open_existing_storage():
     global connection
-    connection = sqlite3.connect(sqlite_path, timeout=(5*60*60))
+    connection = sqlite3.connect(sqlite_path)
 
 def store_converted(converted, source):
     cursor = connection.cursor()

@@ -9,7 +9,7 @@ from uuid import uuid1
 from convert import convert
 from deduplicate import deduplicate
 import time
-from multiprocessing import Process
+from multiprocessing import Process, Lock
 import sys
 from storage import *
 
@@ -143,6 +143,13 @@ class HarvestFailed(Exception):
 def harvest(source):
 
     start_time = time.time()
+
+    # Initially synchronization was left up to sqlite3's file locking to handle,
+    # which was fine, except that the try/sleep is somewhat inefficient and risks
+    # starving some processes for a long time.
+    # Instead, using an explicit lock should instead allow the kernel to fairly
+    # distribute the database between the processes.
+    lock = Lock()
     
     for set in source["sets"]:
         harvest_info = f'{set["url"]} ({set["subset"]}, {set["metadata_prefix"]})'
@@ -177,12 +184,12 @@ def harvest(source):
                                     processes[i].join()
                                     del processes[i]
                                 i -= 1
-                        p = Process(target=threaded_handle_harvested, args=(batch,source["code"]))
+                        p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock))
                         batch_count += 1
                         p.start()
                         processes.append( p )
                         batch = []
-            p = Process(target=threaded_handle_harvested, args=(batch,source["code"]))
+            p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock))
             p.start()
             processes.append( p )
             for p in processes:
@@ -193,13 +200,17 @@ def harvest(source):
             print (f'FAILED HARVEST: {source["code"]}')
             exit -1
 
-def threaded_handle_harvested(batch, source):
+def threaded_handle_harvested(batch, source, lock):
     for xml in batch:
         #print(f'Harvest harvest_item_id {record.harvest_item_id}')
         converted = convert(xml)
         if validate(xml, converted):
             #print(f"Validation passed for {converted['@id']}")
-            store_converted(converted, source)
+            lock.acquire()
+            try:
+                store_converted(converted, source)
+            finally:
+                lock.release()
         else:
             pass
             #print(f"Validation failed for {converted['@id']}")
