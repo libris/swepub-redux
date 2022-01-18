@@ -166,8 +166,8 @@ def harvest(source, lock):
                         diff = t1 - t0
                         t0 = t1
                         #print(f"{200/diff} per sec, for last 200 , {total} done in total.")
-                    if (len(batch) >= 512):
-                        while (len(processes) >= 16):
+                    if (len(batch) >= 128):
+                        while (len(processes) >= 4):
                             time.sleep(0)
                             n = len(processes)
                             i = n-1
@@ -534,6 +534,7 @@ if __name__ == "__main__":
     if "devdata" in args:
         sources_to_harvest = sources[15:18]
 
+    t0 = time.time()
     clean_and_init_storage()
     processes = []
 
@@ -550,6 +551,23 @@ if __name__ == "__main__":
         processes.append( p )
     for p in processes:
         p.join()
+
+    t1 = time.time()
+    diff = t1-t0
+    print(f"Phase 1 (harvesting) ran for {diff} seconds")
+    t0 = t1
     deduplicate()
+    t1 = time.time()
+    diff = t1-t0
+    print(f"Phase 2 (deduplication) ran for {diff} seconds")
+    t0 = t1
     merge()
+    t1 = time.time()
+    diff = t1-t0
+    print(f"Phase 3 (merging) ran for {diff} seconds")
+    t0 = t1
     auto_classify()
+    t1 = time.time()
+    diff = t1-t0
+    print(f"Phase 4 (auto-classification) ran for {diff} seconds")
+
