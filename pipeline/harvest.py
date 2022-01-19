@@ -9,7 +9,7 @@ from uuid import uuid1
 from convert import convert
 from deduplicate import deduplicate
 import time
-from multiprocessing import Process, Lock
+from multiprocessing import Process, Lock, Value
 import sys
 from storage import *
 
@@ -140,7 +140,7 @@ class HarvestFailed(Exception):
 
 
 
-def harvest(source, lock):
+def harvest(source, lock, harvested_count):
 
     start_time = time.time()
 
@@ -151,21 +151,23 @@ def harvest(source, lock):
             batch_count = 0
             batch = []
             processes = []
-            records_in_batch = 0
-            total = 0
+            record_count_since_report = 0
+            #total = 0
             t0 = time.time()
             
             for record in record_iterator:
                 if record.is_successful():
                     batch.append(record.xml)
-                    records_in_batch += 1
-                    total += 1
-                    if records_in_batch == 200:
-                        records_in_batch = 0
-                        t1 = time.time()
-                        diff = t1 - t0
-                        t0 = t1
-                        #print(f"{200/diff} per sec, for last 200 , {total} done in total.")
+                    record_count_since_report += 1
+                    #total += 1
+                    if record_count_since_report == 200:
+                        record_count_since_report = 0
+                        #t1 = time.time()
+                        #diff = t1 - t0
+                        #t0 = t1
+                        diff = time.time() - start_time
+                        harvested_count.value += 200
+                        print(f"{harvested_count.value/diff} per sec, running average, {harvested_count.value} done in total.")
                     if (len(batch) >= 128):
                         while (len(processes) >= 4):
                             time.sleep(0)
@@ -173,7 +175,6 @@ def harvest(source, lock):
                             i = n-1
                             while i > -1:
                                 if not processes[i].is_alive():
-                                    #print("* CLEARING A PROCESS")
                                     processes[i].join()
                                     del processes[i]
                                 i -= 1
@@ -193,8 +194,11 @@ def harvest(source, lock):
             print (f'FAILED HARVEST: {source["code"]}')
             exit -1
 
+
 def threaded_handle_harvested(batch, source, lock):
     for xml in batch:
+
+        
         #print(f'Harvest harvest_item_id {record.harvest_item_id}')
         converted = convert(xml)
         if validate(xml, converted):
@@ -545,8 +549,10 @@ if __name__ == "__main__":
     # distribute the database between the processes.
     lock = Lock()
 
+    harvested_count = Value("I", 0)
+
     for source in sources_to_harvest:
-        p = Process(target=harvest, args=(source,lock))
+        p = Process(target=harvest, args=(source,lock,harvested_count))
         p.start()
         processes.append( p )
     for p in processes:
