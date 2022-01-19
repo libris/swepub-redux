@@ -59,7 +59,9 @@ def normalize_orcid(idb):
 HTTPS_PREFIX = 'https://doi.org/'
 DOI_PREFIX = '10.'
 doi_prefix = re.compile(r'(https?://doi\.org/)?(10\..*)')
-def normalize_doi(doi, body, path, id):
+#def normalize_doi(doi, body, path, id):
+def normalize_doi(idb):
+    doi = idb["value"]
     # normalize_doi_prefix
     enriched_value = doi
     code = ''
@@ -70,8 +72,8 @@ def normalize_doi(doi, body, path, id):
         code = 'prefix.add'
         enriched_value = HTTPS_PREFIX + doi
     if doi != enriched_value:
-        log_for_OAI_id(id, "DOI " + code)
-        update_at_path(body, path, enriched_value)
+        #log_for_OAI_id(id, "DOI " + code)
+        idb["value"] = enriched_value
     
     # _prefix_cleaner
     doi_match = doi_prefix.findall(doi)
@@ -79,8 +81,8 @@ def normalize_doi(doi, body, path, id):
         log_for_OAI_id(id, f'Multiple DOIs where found: {doi}')
     new_value = ''.join(doi_match[0]) if doi_match else doi
     if doi != new_value:
-        log_for_OAI_id(id, "DOI prefix.remove")
-        update_at_path(body, path, new_value)
+        #log_for_OAI_id(id, "DOI prefix.remove")
+        idb["value"] = new_value
 
 class MLStripper(HTMLParser):
 

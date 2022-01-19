@@ -82,6 +82,7 @@ def validate(raw_xml, body):
         if idb["@type"] == "DOI":
             validate_doi(idb["value"], session)
             recover_doi(idb)
+            normalize_doi(idb)
         if idb["@type"] == "ISSN":
             validate_issn(idb["value"], session)
             recover_issn(idb)
@@ -123,6 +124,7 @@ def validate(raw_xml, body):
                 if idb["@type"] == "ISSN":
                     validate_issn(idb["value"], session)
                     recover_issn(idb)
+                    normalize_issn(idb)
                 if idb["@type"] == "ISBN":
                     validate_isbn(idb["value"])
                     recover_isbn(idb)
