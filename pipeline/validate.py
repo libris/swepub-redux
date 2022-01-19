@@ -79,18 +79,23 @@ def validate(raw_xml, body):
             validate_isi(idb["value"])
             recover_isi(idb)
         if idb["@type"] == "DOI":
+            validate_doi(idb["value"], session)
             recover_doi(idb)
         if idb["@type"] == "ISSN":
-            validate_issn(idb, session)
+            validate_issn(idb["value"], session)
             recover_issn(idb)
         if idb["@type"] == "ISBN":
             validate_isbn(idb["value"])
             recover_isbn(idb)
+        if idb["@type"] == "URI":
+            result = validate_base_unicode(idb["value"])
+            #if result == False:
+                #log_for_OAI_id(body["@id"], 'URI validation failed: unicode')
     
     for series in body.get("hasSeries", []):
         for idb in series.get("identifiedBy", []):
             if idb["@type"] == "ISSN":
-                validate_issn(idb, session)
+                validate_issn(idb["value"], session)
                 recover_issn(idb)
         for title in series.get("hasTitle", []):
             if "mainTitle" in title:
@@ -102,6 +107,7 @@ def validate(raw_xml, body):
         for series in partOf.get("hasSeries", []):
             for idb in series.get("identifiedBy", []):
                 if idb["@type"] == "ISSN":
+                    validate_issn(idb["value"], session)
                     recover_issn(idb)
             for title in series.get("hasTitle", []):
                 if "mainTitle" in title:
@@ -110,7 +116,7 @@ def validate(raw_xml, body):
                     normalize_free_text(title, "subtitle")
         for idb in partOf.get("identifiedBy", []):
                 if idb["@type"] == "ISSN":
-                    validate_issn(idb, session)
+                    validate_issn(idb["value"], session)
                     recover_issn(idb)
                 if idb["@type"] == "ISBN":
                     validate_isbn(idb["value"])
@@ -125,7 +131,8 @@ def validate(raw_xml, body):
     for publication in body.get("publication", []):
         if publication.get("@type") == "Publication":
             new_date = unicode_translate(publication.get("date", None))
-            if new_date:
+            if new_date and new_date != publication["date"]:
+                #log_for_OAI_id() validation
                 publication["date"] = new_date
 
     for key in body["instanceOf"]:
@@ -133,13 +140,16 @@ def validate(raw_xml, body):
         if isinstance(obj, dict):
             for hasNote in obj.get("hasNote", []):
                 if hasNote.get("@type", "") == "CreatorCount":
-                    new_label = unicode_translate(publication.get("date", None))
+                    if not (publication["label"].isnumeric() and int(publication["label"]) > 0):
+                        pass
+                        #log_for_OAI_id(body["@id"], 'creator_count validation failed: numeric')
+                    new_label = unicode_translate(publication.get("label", None))
                     if new_label:
                         publication["label"] = new_label
 
     for subject in body["instanceOf"].get("subject", []):
         if subject.get("inScheme", {}).get("code", "") == "uka.se":
-            pass # UKA STUFF HERE
+            validate_uka(subject["code"])
         if subject.get("@type", "") == "Topic" and "prefLabel" in subject:
             normalize_free_text(subject, "prefLabel")
         if subject.get("@type", "") == "Note" and "label" in subject:

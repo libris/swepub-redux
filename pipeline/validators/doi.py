@@ -72,21 +72,21 @@ def _doi_is_valid_format(doi):
 
     return True
 
-def validate_doi(doi, id, session):
+def validate_doi(doi, session):
     if not _validate_printable_chars_and_no_ws(doi):
-        log_for_OAI_id(id, 'DOI validation failed: unicode')
+        #log_for_OAI_id(id, 'DOI validation failed: unicode')
         return False
     
     stripped_doi = _strip_doi_http_prefix(doi)
     if not _doi_is_valid_format(stripped_doi):
-        log_for_OAI_id(id, 'DOI validation failed: format')
+        #log_for_OAI_id(id, 'DOI validation failed: format')
         return False
 
     valid = _validate_with_shortdoi(stripped_doi, session)
     if not valid:
         valid = _validate_with_crossref(stripped_doi, session)
         if not valid:
-            log_for_OAI_id(id, 'DOI validation failed: remote')
+            #log_for_OAI_id(id, 'DOI validation failed: remote')
             return False
 
     return True
