@@ -81,6 +81,8 @@ def validate(raw_xml, body):
             recover_doi(idb)
         if idb["@type"] == "ISSN":
             recover_issn(idb)
+        if idb["@type"] == "ISBN":
+            recover_isbn(idb)
     
     for series in body.get("hasSeries", []):
         for idb in series.get("identifiedBy", []):
@@ -95,8 +97,12 @@ def validate(raw_xml, body):
         for idb in partOf.get("identifiedBy", []):
                 if idb["@type"] == "ISSN":
                     recover_issn(idb)
+                if idb["@type"] == "ISBN":
+                    recover_isbn(idb)
 
-        
+    for contribution in body["instanceOf"].get("contribution", []):
+        for idb in contribution.get("agent", {}).get("identifiedBy"):
+            if idb["@type"] == "ORCID":
 
     # "Enrichment".. ?
     # for id_type, jpath in PRECOMPILED_PATHS.items():

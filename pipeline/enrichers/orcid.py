@@ -12,16 +12,17 @@ orcid_regex = re.compile(
 
 orcid_extend_regex = re.compile('000-?000[1-3]')
 
-def recover_orcid(orcid, body, path, id):
+def recover_orcid(idb):
+    orcid = idb["value"]
     translated = unicode_translate(orcid)
     if translated != orcid:
         orcid = translated
-        update_at_path(body, path, orcid)
+        idb["value"] = orcid
 
     if orcid_extend_regex.match(orcid):
         orcid = '0' + orcid
-        update_at_path(body, path, orcid)
-        log_for_OAI_id(id, 'ORCID enrichment: extend')
+        idb["value"] = orcid
+        #log_for_OAI_id(id, 'ORCID enrichment: extend')
 
     # What ?! This is stupid ?!
     #hit = orcid_regex.finditer(orcid)

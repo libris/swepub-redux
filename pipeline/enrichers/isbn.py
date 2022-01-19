@@ -12,7 +12,9 @@ isbn_regex = re.compile(
     '(?:(?![-0-9]))'  # Make sure the code isnt followed by a number or hyphen
 )
 
-def recover_isbn(isbn, body, path, id):
+#def recover_isbn(isbn, body, path, id):
+def recover_isbn(idb):
+    isbn = idb["value"]
     answ = isbn_regex.finditer(isbn)
     res = []
     for pattern in answ:
@@ -24,11 +26,13 @@ def recover_isbn(isbn, body, path, id):
         return
     
     if res[0] != isbn:
-        update_at_path(body, path, res[0])
-        log_for_OAI_id(id, 'ISBN enrichment: recovery')
+        #update_at_path(body, path, res[0])
+        idb["value"] = res[0]
+        #log_for_OAI_id(id, 'ISBN enrichment: recovery')
 
     for value in res[1:]:
-        log_for_OAI_id(id, '?? ISBN enrichment: split / Not sure what to do!')
+        pass
+        #log_for_OAI_id(id, '?? ISBN enrichment: split / Not sure what to do!')
         #actions.append(DuplicateFieldAction(
         #    code='split'.format(self.type), new=value, path=field.path, field_type=self.type
         #))
