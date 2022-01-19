@@ -152,22 +152,17 @@ def harvest(source, lock, harvested_count):
             batch = []
             processes = []
             record_count_since_report = 0
-            #total = 0
             t0 = time.time()
             
             for record in record_iterator:
                 if record.is_successful():
                     batch.append(record.xml)
                     record_count_since_report += 1
-                    #total += 1
-                    if record_count_since_report == 200:
-                        record_count_since_report = 0
-                        #t1 = time.time()
-                        #diff = t1 - t0
-                        #t0 = t1
-                        diff = time.time() - start_time
-                        harvested_count.value += 200
-                        print(f"{harvested_count.value/diff} per sec, running average, {harvested_count.value} done in total.")
+                    # if record_count_since_report == 200:
+                    #     record_count_since_report = 0
+                    #     diff = time.time() - start_time
+                    #     harvested_count.value += 200
+                    #     print(f"{harvested_count.value/diff} per sec, running average, {harvested_count.value} done in total.")
                     if (len(batch) >= 128):
                         while (len(processes) >= 4):
                             time.sleep(0)
