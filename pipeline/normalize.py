@@ -92,14 +92,15 @@ class MLStripper(HTMLParser):
     def get_data(self):
         return ''.join(self.fed)
 
-def normalize_free_text(free_text, body, path, id):
+def normalize_free_text(container, path_tail):
+    free_text = container[path_tail]
     # strip tags
     s = MLStripper()
     s.feed(unescape(free_text))
     new_value = s.get_data()
     if new_value != free_text:
-        log_for_OAI_id(id, "free_text strip_tags")
-        update_at_path(body, path, new_value)
+        #log_for_OAI_id(id, "free_text strip_tags")
+        container[path_tail] = new_value
         free_text = new_value
     
     # clean_text
@@ -111,5 +112,5 @@ def normalize_free_text(free_text, body, path, id):
     new_value = text.translate(translator)
     if new_value != free_text:
         log_for_OAI_id(id, "free_text clean_text")
-        update_at_path(body, path, new_value)
+        container[path_tail] = new_value
         free_text = new_value

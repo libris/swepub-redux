@@ -88,12 +88,22 @@ def validate(raw_xml, body):
         for idb in series.get("identifiedBy", []):
             if idb["@type"] == "ISSN":
                 recover_issn(idb)
+        for title in series.get("hasTitle", []):
+            if "mainTitle" in title:
+                normalize_free_text(title, "mainTitle")
+            if "subtitle" in title:
+                normalize_free_text(title, "subtitle")
     
     for partOf in body.get("partOf", []):
         for series in partOf.get("hasSeries", []):
             for idb in series.get("identifiedBy", []):
                 if idb["@type"] == "ISSN":
                     recover_issn(idb)
+            for title in series.get("hasTitle", []):
+                if "mainTitle" in title:
+                    normalize_free_text(title, "mainTitle")
+                if "subtitle" in title:
+                    normalize_free_text(title, "subtitle")
         for idb in partOf.get("identifiedBy", []):
                 if idb["@type"] == "ISSN":
                     recover_issn(idb)
@@ -101,7 +111,7 @@ def validate(raw_xml, body):
                     recover_isbn(idb)
 
     for contribution in body["instanceOf"].get("contribution", []):
-        for idb in contribution.get("agent", {}).get("identifiedBy"):
+        for idb in contribution.get("agent", {}).get("identifiedBy", []):
             if idb["@type"] == "ORCID":
                 recover_orcid(idb)
 
@@ -112,16 +122,31 @@ def validate(raw_xml, body):
                 publication["date"] = new_date
 
     for key in body["instanceOf"]:
-        obj = body["instanceOf"].get(key, None)
-        for hasNote in obj.get("hasNote", []):
-            if hasNote.get("@type", "") == "CreatorCount":
-                new_label = unicode_translate(publication.get("date", None))
-                if new_label:
-                    publication["label"] = new_label
+        obj = body["instanceOf"].get(key, {})
+        if isinstance(obj, dict):
+            for hasNote in obj.get("hasNote", []):
+                if hasNote.get("@type", "") == "CreatorCount":
+                    new_label = unicode_translate(publication.get("date", None))
+                    if new_label:
+                        publication["label"] = new_label
 
     for subject in body["instanceOf"].get("subject", []):
         if subject.get("inScheme", {}).get("code", "") == "uka.se":
             pass # UKA STUFF HERE
+        if subject.get("@type", "") == "Topic" and "prefLabel" in subject:
+            normalize_free_text(subject, "prefLabel")
+        if subject.get("@type", "") == "Note" and "label" in subject:
+            normalize_free_text(subject, "label")
+
+    for title in body["instanceOf"].get("hasTitle", []):
+        if "mainTitle" in title:
+            normalize_free_text(title, "mainTitle")
+        if "subtitle" in title:
+            normalize_free_text(title, "subtitle")
+    
+    for summary in body["instanceOf"].get("summary", []):
+        if "label" in summary:
+            normalize_free_text(summary, "label")
 
 
     # "Enrichment".. ?
