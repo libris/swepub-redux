@@ -11,11 +11,14 @@ def normalize_issn(issn, body, path, id):
         update_at_path(body, path, new_value)
         log_for_OAI_id(id, "ISSN normalized")
 
-def normalize_isbn(isbn, body, path, id):
+#def normalize_isbn(isbn, body, path, id):
+def normalize_isbn(idb):
+    isbn = idb["value"]
     new_value = isbn.replace('-', '').upper()
     if new_value != isbn:
-        update_at_path(body, path, new_value)
-        log_for_OAI_id(id, "ISBN normalized")
+        idb["value"] = new_value
+        #update_at_path(body, path, new_value)
+        #log_for_OAI_id(id, "ISBN normalized")
 
 def normalize_isi(isi, body, path, id):
     new_value = isi.upper()

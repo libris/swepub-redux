@@ -87,6 +87,7 @@ def validate(raw_xml, body):
         if idb["@type"] == "ISBN":
             validate_isbn(idb["value"])
             recover_isbn(idb)
+            normalize_isbn(idb)
         if idb["@type"] == "URI":
             result = validate_base_unicode(idb["value"])
             #if result == False:
@@ -121,6 +122,7 @@ def validate(raw_xml, body):
                 if idb["@type"] == "ISBN":
                     validate_isbn(idb["value"])
                     recover_isbn(idb)
+                    normalize_isbn(idb)
 
     for contribution in body["instanceOf"].get("contribution", []):
         for idb in contribution.get("agent", {}).get("identifiedBy", []):
