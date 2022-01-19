@@ -5,30 +5,32 @@ from html import unescape
 from html.parser import HTMLParser
 import re
 
-def normalize_issn(issn, body, path, id):
+def normalize_issn(idb):
+    issn = idb["value"]
     new_value = issn_format(issn)
     if new_value != issn:
-        update_at_path(body, path, new_value)
-        log_for_OAI_id(id, "ISSN normalized")
+        idb["value"] = new_value
+        #log_for_OAI_id(id, "ISSN normalized")
 
-#def normalize_isbn(isbn, body, path, id):
 def normalize_isbn(idb):
     isbn = idb["value"]
     new_value = isbn.replace('-', '').upper()
     if new_value != isbn:
         idb["value"] = new_value
-        #update_at_path(body, path, new_value)
         #log_for_OAI_id(id, "ISBN normalized")
 
-def normalize_isi(isi, body, path, id):
+def normalize_isi(idb):
+    isi = idb["value"]
     new_value = isi.upper()
     if new_value != isi:
-        update_at_path(body, path, new_value)
-        log_for_OAI_id(id, "ISI normalized")
+        idb["value"] = new_value
+        #log_for_OAI_id(id, "ISI normalized")
 
 HTTP_PREFIX = 'http://orcid.org/'
 HTTPS_PREFIX = 'https://orcid.org/'
-def normalize_orcid(orcid, body, path, id):
+def normalize_orcid(idb):
+    orcid = idb["value"]
+
     # normalize_orcid_prefix
     enriched_value = orcid
     code = ''
@@ -39,8 +41,8 @@ def normalize_orcid(orcid, body, path, id):
         code = 'prefix.add'
         enriched_value = HTTPS_PREFIX + orcid
     if orcid != enriched_value:
-        log_for_OAI_id(id, "ORCID " + code)
-        update_at_path(body, path, enriched_value)
+        #log_for_OAI_id(id, "ORCID " + code)
+        idb["value"] = enriched_value
     
     # get_orcid_with_delimiters
     orcid = enriched_value
@@ -51,8 +53,8 @@ def normalize_orcid(orcid, body, path, id):
     enriched = HTTPS_PREFIX + enriched
 
     if orcid != enriched:
-        log_for_OAI_id(id, "ORCID format.delimiters")
-        update_at_path(body, path, enriched)
+        #log_for_OAI_id(id, "ORCID format.delimiters")
+        idb["value"] = enriched
 
 HTTPS_PREFIX = 'https://doi.org/'
 DOI_PREFIX = '10.'

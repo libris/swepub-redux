@@ -78,12 +78,14 @@ def validate(raw_xml, body):
         if idb["@type"] == "ISI":
             validate_isi(idb["value"])
             recover_isi(idb)
+            normalize_isi(idb)
         if idb["@type"] == "DOI":
             validate_doi(idb["value"], session)
             recover_doi(idb)
         if idb["@type"] == "ISSN":
             validate_issn(idb["value"], session)
             recover_issn(idb)
+            normalize_issn(idb)
         if idb["@type"] == "ISBN":
             validate_isbn(idb["value"])
             recover_isbn(idb)
@@ -98,6 +100,7 @@ def validate(raw_xml, body):
             if idb["@type"] == "ISSN":
                 validate_issn(idb["value"], session)
                 recover_issn(idb)
+                normalize_issn(idb)
         for title in series.get("hasTitle", []):
             if "mainTitle" in title:
                 normalize_free_text(title, "mainTitle")
@@ -110,6 +113,7 @@ def validate(raw_xml, body):
                 if idb["@type"] == "ISSN":
                     validate_issn(idb["value"], session)
                     recover_issn(idb)
+                    normalize_issn(idb)
             for title in series.get("hasTitle", []):
                 if "mainTitle" in title:
                     normalize_free_text(title, "mainTitle")
@@ -129,6 +133,7 @@ def validate(raw_xml, body):
             if idb["@type"] == "ORCID":
                 validate_orcid(idb["value"])
                 recover_orcid(idb)
+                normalize_orcid(idb)
 
     for publication in body.get("publication", []):
         if publication.get("@type") == "Publication":
