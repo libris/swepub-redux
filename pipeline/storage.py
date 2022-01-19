@@ -136,6 +136,12 @@ def open_existing_storage():
     global connection
     connection = sqlite3.connect(sqlite_path)
 
+def store_original(xml, source):
+    cursor = connection.cursor()
+    cursor.execute("""
+    INSERT INTO original(source, data) VALUES(?, ?);
+    """, (source, xml,))
+
 def store_converted(converted, source):
     cursor = connection.cursor()
 

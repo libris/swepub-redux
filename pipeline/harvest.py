@@ -196,21 +196,25 @@ def harvest(source, lock, harvested_count):
 
 
 def threaded_handle_harvested(batch, source, lock):
-    for xml in batch:
-
-        
-        #print(f'Harvest harvest_item_id {record.harvest_item_id}')
-        converted = convert(xml)
-        if validate(xml, converted):
-            #print(f"Validation passed for {converted['@id']}")
-            lock.acquire()
-            try:
-                store_converted(converted, source)
-            finally:
-                lock.release()
-        else:
-            pass
-            #print(f"Validation failed for {converted['@id']}")
+    lock.acquire()
+    try:
+        for xml in batch:    
+            store_original(xml, source)
+    finally:
+        commit_sqlite()
+        lock.release()
+        # #print(f'Harvest harvest_item_id {record.harvest_item_id}')
+        # converted = convert(xml)
+        # if validate(xml, converted):
+        #     #print(f"Validation passed for {converted['@id']}")
+        #     lock.acquire()
+        #     try:
+        #         store_converted(converted, source)
+        #     finally:
+        #         lock.release()
+        # else:
+        #     pass
+        #     #print(f"Validation failed for {converted['@id']}")
 
 sources = [
     {
@@ -536,7 +540,8 @@ if __name__ == "__main__":
 
     sources_to_harvest = sources
     if "devdata" in args:
-        sources_to_harvest = sources[15:18]
+        #sources_to_harvest = sources[15:18]
+        sources_to_harvest = sources[22:23]
 
     t0 = time.time()
     clean_and_init_storage()
@@ -562,18 +567,27 @@ if __name__ == "__main__":
     diff = t1-t0
     print(f"Phase 1 (harvesting) ran for {diff} seconds")
     t0 = t1
+
+    convert()
+    t1 = time.time()
+    diff = t1-t0
+    print(f"Phase 2 (conversion) ran for {diff} seconds")
+    t0 = t1
+
     deduplicate()
     t1 = time.time()
     diff = t1-t0
-    print(f"Phase 2 (deduplication) ran for {diff} seconds")
+    print(f"Phase 3 (deduplication) ran for {diff} seconds")
     t0 = t1
+
     merge()
     t1 = time.time()
     diff = t1-t0
-    print(f"Phase 3 (merging) ran for {diff} seconds")
+    print(f"Phase 4 (merging) ran for {diff} seconds")
     t0 = t1
+
     auto_classify()
     t1 = time.time()
     diff = t1-t0
-    print(f"Phase 4 (auto-classification) ran for {diff} seconds")
+    print(f"Phase 5 (auto-classification) ran for {diff} seconds")
 

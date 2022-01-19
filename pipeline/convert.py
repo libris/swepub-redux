@@ -1,6 +1,10 @@
 import lxml.etree as et
 from lxml.etree import parse, XSLT, fromstring, LxmlError, XMLSyntaxError
 from io import StringIO
+from storage import commit_sqlite, get_cursor, store_converted
+from multiprocessing import Process, Lock
+import time
+from validate import validate
 
 class ModsParser(object):
 
@@ -64,5 +68,65 @@ class ModsParser(object):
         return node
 
 
-def convert(body):
-    return ModsParser().parse_mods(body)
+modsparser = ModsParser()
+def _convert_publication(body):
+    return modsparser.parse_mods(body)
+
+def convert():
+    
+    # Set up batching
+    batch = []
+    tasks = []
+
+    lock = Lock()
+
+    processes = []
+    cursor = get_cursor()
+    inner_cursor = get_cursor()
+    for row in cursor.execute("""
+    SELECT
+        id, data
+    FROM
+        original
+    """):
+        original_rowid = row[0]
+        original_data = row[1]
+
+        batch.append( (original_rowid, original_data) )
+
+        if (len(batch) >= 32):
+            while (len(processes) >= 32):
+                time.sleep(0)
+                n = len(processes)
+                i = n-1
+                while i > -1:
+                    if not processes[i].is_alive():
+                        processes[i].join()
+                        del processes[i]
+                    i -= 1
+            
+            p = Process(target=_convert_and_write_batch, args=(batch, lock))
+            p.start()
+            processes.append( p )
+            batch = []
+    
+    p = Process(target=_convert_and_write_batch, args=(batch, lock))
+    p.start()
+    processes.append( p )
+    for p in processes:
+        p.join()
+            
+def _convert_and_write_batch(batch, lock):
+    lock.acquire()
+    try:
+        for (original_rowid, original_data) in batch:
+            #print(f"In pool: {original_data}\n\n")
+            converted_data = _convert_publication(original_data)
+            if validate(original_data, converted_data):
+                #print(f"Valid: {converted_data['@id']}")
+                store_converted(converted_data, original_rowid)
+    finally:
+        commit_sqlite
+        lock.release()
+    
+    
