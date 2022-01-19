@@ -16,16 +16,18 @@ issn_regex = re.compile(
     '(?:(?![ ]\d))'           # Check that not followed by non digit or hyphen and digit
 )
 
-def recover_issn(issn, body, path, id):
+#def recover_issn(issn, body, path, id):
+def recover_issn(idb):
+    issn = idb["value"]
     translated = unicode_translate(issn)
     if translated != issn:
         issn = translated
-        update_at_path(body, path, issn)
+        idb["value"] = issn
         
     answ = issn_regex.findall(issn)
     # WTF?
     # Skip first element in part since it's empty or contains non wanted delimiter
     recovered = [''.join(part[1:]) for part in answ]
     if len(recovered) > 0 and recovered[0] != issn:
-        log_for_OAI_id(id, 'ISSN enrichment: recovery')
-        update_at_path(body, path, recovered)
+        #log_for_OAI_id(id, 'ISSN enrichment: recovery')
+        idb["value"] = recovered

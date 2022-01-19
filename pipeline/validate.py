@@ -74,83 +74,107 @@ def validate(raw_xml, body):
     
     session = requests.Session()
 
+    for idb in body.get("identifiedBy", []):
+        if idb["@type"] == "ISI":
+            recover_isi(idb)
+        if idb["@type"] == "DOI":
+            recover_doi(idb)
+        if idb["@type"] == "ISSN":
+            recover_issn(idb)
+    
+    for series in body.get("hasSeries", []):
+        for idb in series.get("identifiedBy", []):
+            if idb["@type"] == "ISSN":
+                recover_issn(idb)
+    
+    for partOf in body.get("partOf", []):
+        for series in partOf.get("hasSeries", []):
+            for idb in series.get("identifiedBy", []):
+                if idb["@type"] == "ISSN":
+                    recover_issn(idb)
+        for idb in partOf.get("identifiedBy", []):
+                if idb["@type"] == "ISSN":
+                    recover_issn(idb)
+
+        
+
     # "Enrichment".. ?
-    for id_type, jpath in PRECOMPILED_PATHS.items():
-        matches = itertools.chain.from_iterable(jp.find(body) for jp in jpath)
-        for match in matches:
-            if match.value:
+    # for id_type, jpath in PRECOMPILED_PATHS.items():
+    #     matches = itertools.chain.from_iterable(jp.find(body) for jp in jpath)
+    #     for match in matches:
+    #         if match.value:
 
-                if id_type == 'ISBN':
-                    recover_isbn(match.value, body, str(match.full_path), body["@id"])
-                if id_type == 'ISI':
-                    recover_isi(match.value, body, str(match.full_path), body["@id"])
-                if id_type == 'ORCID':
-                    recover_orcid(match.value, body, str(match.full_path), body["@id"])
-                if id_type == 'ISSN':
-                    recover_issn(match.value, body, str(match.full_path), body["@id"])
-                if id_type == 'DOI':
-                    recover_doi(match.value, body, str(match.full_path), body["@id"])
-                if id_type == 'publication_year' or id_type == 'creator_count':
-                    translated = unicode_translate(match.value)
-                    if translated != match.value:
-                        update_at_path(body, str(match.full_path), translated)
+    #             if id_type == 'ISBN':
+    #                 recover_isbn(match.value, body, str(match.full_path), body["@id"])
+    #             if id_type == 'ISI':
+    #                 recover_isi(match.value, body, str(match.full_path), body["@id"])
+    #             if id_type == 'ORCID':
+    #                 recover_orcid(match.value, body, str(match.full_path), body["@id"])
+    #             if id_type == 'ISSN':
+    #                 recover_issn(match.value, body, str(match.full_path), body["@id"])
+    #             if id_type == 'DOI':
+    #                 recover_doi(match.value, body, str(match.full_path), body["@id"])
+    #             if id_type == 'publication_year' or id_type == 'creator_count':
+    #                 translated = unicode_translate(match.value)
+    #                 if translated != match.value:
+    #                     update_at_path(body, str(match.full_path), translated)
 
-    # Validation
-    passesValidation = True
-    for id_type, jpath in PRECOMPILED_PATHS.items():
-        matches = itertools.chain.from_iterable(jp.find(body) for jp in jpath)
-        for match in matches:
-            if match.value:
-                #print( id_type )
-                #print( str(match.full_path) )
-                #print( match.value )
+    # # Validation
+    # passesValidation = True
+    # for id_type, jpath in PRECOMPILED_PATHS.items():
+    #     matches = itertools.chain.from_iterable(jp.find(body) for jp in jpath)
+    #     for match in matches:
+    #         if match.value:
+    #             #print( id_type )
+    #             #print( str(match.full_path) )
+    #             #print( match.value )
 
-                if id_type == 'ISBN':
-                    passesValidation &= validate_isbn(match.value, body["@id"])
-                if id_type == 'ISI':
-                    passesValidation &= validate_isi(match.value, body["@id"])
-                if id_type == 'ORCID':
-                    passesValidation &= validate_orcid(match.value, body["@id"])
-                if id_type == 'ISSN':
-                    passesValidation &= validate_issn(match.value, body["@id"], session)
-                if id_type == 'DOI':
-                    passesValidation &= validate_doi(match.value, body["@id"], session)
-                if id_type == 'URI':
-                    result = validate_base_unicode(match.value)
-                    if result == False:
-                        log_for_OAI_id(body["@id"], 'URI validation failed: unicode')
-                        passesValidation = False
-                if id_type == 'publication_year':
-                    passesValidation &= validate_date_time(match.value, body["@id"])
-                if id_type == 'creator_count':
-                    if not (match.value.isnumeric() and int(match.value) > 0):
-                        log_for_OAI_id(body["@id"], 'creator_count validation failed: numeric')
-                        passesValidation = False
-                if id_type == 'UKA':
-                    passesValidation &= validate_uka(match.value, body["@id"])
+    #             if id_type == 'ISBN':
+    #                 passesValidation &= validate_isbn(match.value, body["@id"])
+    #             if id_type == 'ISI':
+    #                 passesValidation &= validate_isi(match.value, body["@id"])
+    #             if id_type == 'ORCID':
+    #                 passesValidation &= validate_orcid(match.value, body["@id"])
+    #             if id_type == 'ISSN':
+    #                 passesValidation &= validate_issn(match.value, body["@id"], session)
+    #             if id_type == 'DOI':
+    #                 passesValidation &= validate_doi(match.value, body["@id"], session)
+    #             if id_type == 'URI':
+    #                 result = validate_base_unicode(match.value)
+    #                 if result == False:
+    #                     log_for_OAI_id(body["@id"], 'URI validation failed: unicode')
+    #                     passesValidation = False
+    #             if id_type == 'publication_year':
+    #                 passesValidation &= validate_date_time(match.value, body["@id"])
+    #             if id_type == 'creator_count':
+    #                 if not (match.value.isnumeric() and int(match.value) > 0):
+    #                     log_for_OAI_id(body["@id"], 'creator_count validation failed: numeric')
+    #                     passesValidation = False
+    #             if id_type == 'UKA':
+    #                 passesValidation &= validate_uka(match.value, body["@id"])
 
-    # Normalization
-    for id_type, jpath in PRECOMPILED_PATHS.items():
-        matches = itertools.chain.from_iterable(jp.find(body) for jp in jpath)
-        for match in matches:
-            if match.value:
+    # # Normalization
+    # for id_type, jpath in PRECOMPILED_PATHS.items():
+    #     matches = itertools.chain.from_iterable(jp.find(body) for jp in jpath)
+    #     for match in matches:
+    #         if match.value:
 
-                if id_type == 'ISBN':
-                    normalize_isbn(match.value, body, str(match.full_path), body["@id"])
+    #             if id_type == 'ISBN':
+    #                 normalize_isbn(match.value, body, str(match.full_path), body["@id"])
                     
-                if id_type == 'ISI':
-                    normalize_isi(match.value, body, str(match.full_path), body["@id"])
+    #             if id_type == 'ISI':
+    #                 normalize_isi(match.value, body, str(match.full_path), body["@id"])
                     
-                if id_type == 'ORCID':
-                    normalize_orcid(match.value, body, str(match.full_path), body["@id"])
+    #             if id_type == 'ORCID':
+    #                 normalize_orcid(match.value, body, str(match.full_path), body["@id"])
                     
-                if id_type == 'ISSN':
-                    normalize_issn(match.value, body, str(match.full_path), body["@id"])
+    #             if id_type == 'ISSN':
+    #                 normalize_issn(match.value, body, str(match.full_path), body["@id"])
                     
-                if id_type == 'DOI':
-                    normalize_doi(match.value, body, str(match.full_path), body["@id"])
+    #             if id_type == 'DOI':
+    #                 normalize_doi(match.value, body, str(match.full_path), body["@id"])
                     
-                if id_type == 'free_text':
-                    normalize_free_text(match.value, body, str(match.full_path), body["@id"])
+    #             if id_type == 'free_text':
+    #                 normalize_free_text(match.value, body, str(match.full_path), body["@id"])
 
     return True # LOL? It's backwards, but this is the way they want it, "validate, but trust".

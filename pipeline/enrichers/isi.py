@@ -11,17 +11,18 @@ isi_regex = re.compile(
     '(?:(?![0-9a-zA-Z]))'  # Shouln't be exceded by chars it can contain
 )
 
-def recover_isi(isi, body, path, id):
+def recover_isi(idb):
+    isi = idb["value"]
     translated = unicode_translate(isi)
     if translated != isi:
         isi = translated
-        update_at_path(body, path, isi)
+        idb["value"] = isi
 
     hit = isi_regex.search(isi)
     if hit and hit.group() != isi:
-        update_at_path(body, path, hit.group())
-        log_for_OAI_id(id, 'ISI enrichment: recovery')
+        idb["value"] = hit.group()
+        #log_for_OAI_id(id, 'ISI enrichment: recovery')
     
     if len(isi) == 30 and isi[:15] == isi[15:]:
-        update_at_path(body, path, isi[:15])
-        log_for_OAI_id(id, 'ISI enrichment: recovery')
+        idb["value"] = isi[:15]
+        #log_for_OAI_id(id, 'ISI enrichment: recovery')
