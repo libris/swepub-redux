@@ -142,14 +142,14 @@ def store_original(xml, source):
     INSERT INTO original(source, data) VALUES(?, ?);
     """, (source, xml,))
 
-def store_converted(converted, source):
+def store_converted(converted, original_rowid):
     cursor = connection.cursor()
 
     #print(f'Inserting with oai_id {converted["@id"]}')
 
-    original_rowid = cursor.execute("""
-    INSERT INTO original(source, data) VALUES(?, ?);
-    """, (source, json.dumps(converted),)).lastrowid
+    #original_rowid = cursor.execute("""
+    #INSERT INTO original(source, data) VALUES(?, ?);
+    #""", (source, json.dumps(converted),)).lastrowid
 
     converted_rowid = cursor.execute("""
     INSERT INTO converted(data, original_id) VALUES(?, ?);

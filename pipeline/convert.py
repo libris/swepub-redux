@@ -2,7 +2,7 @@ import lxml.etree as et
 from lxml.etree import parse, XSLT, fromstring, LxmlError, XMLSyntaxError
 from io import StringIO
 from storage import commit_sqlite, get_cursor, store_converted
-from multiprocessing import Process, Lock
+from multiprocessing import Pool, Lock
 import time
 from validate import validate
 
@@ -78,55 +78,58 @@ def convert():
     batch = []
     tasks = []
 
-    lock = Lock()
+    with Pool(processes=16) as pool:
+        cursor = get_cursor()
+        inner_cursor = get_cursor()
+        for row in cursor.execute("""
+        SELECT
+            id, data
+        FROM
+            original
+        """):
+            original_id = row[0]
+            original_data = row[1]
 
-    processes = []
-    cursor = get_cursor()
-    inner_cursor = get_cursor()
-    for row in cursor.execute("""
-    SELECT
-        id, data
-    FROM
-        original
-    """):
-        original_rowid = row[0]
-        original_data = row[1]
+            batch.append( (original_id, original_data) )
 
-        batch.append( (original_rowid, original_data) )
+            if (len(batch) >= 32):
+                while (len(tasks) >= 32):
+                    time.sleep(0)
+                    n = len(tasks)
+                    i = n-1
+                    while i > -1:
+                        if tasks[i].ready():
+                            result = tasks[i].get()
+                            resultlist = result[0]
+                            write_conversion_result(resultlist)
+                            del(tasks[i])
+                        i -= 1
+                tasks.append(pool.map_async(_convert_batch, (batch,)))
+                batch = []
 
-        if (len(batch) >= 32):
-            while (len(processes) >= 32):
+        if len(batch) > 0:
+            tasks.append(pool.map_async(_convert_batch, (batch,)))
+        for task in tasks:
+            while not task.ready():
                 time.sleep(0)
-                n = len(processes)
-                i = n-1
-                while i > -1:
-                    if not processes[i].is_alive():
-                        processes[i].join()
-                        del processes[i]
-                    i -= 1
+            result = task.get()
+            resultlist = result[0]
+            write_conversion_result(resultlist)
             
-            p = Process(target=_convert_and_write_batch, args=(batch, lock))
-            p.start()
-            processes.append( p )
-            batch = []
-    
-    p = Process(target=_convert_and_write_batch, args=(batch, lock))
-    p.start()
-    processes.append( p )
-    for p in processes:
-        p.join()
-            
-def _convert_and_write_batch(batch, lock):
-    lock.acquire()
-    try:
-        for (original_rowid, original_data) in batch:
-            #print(f"In pool: {original_data}\n\n")
-            converted_data = _convert_publication(original_data)
-            if validate(original_data, converted_data):
-                #print(f"Valid: {converted_data['@id']}")
-                store_converted(converted_data, original_rowid)
-    finally:
-        commit_sqlite
-        lock.release()
-    
-    
+def write_conversion_result(resultlist):
+    for publication in resultlist:
+        converted_data = publication["converted"]
+        accepted = publication["accepted"]
+        log_events = publication["log_events"]
+        original_id = publication["original_id"]
+        if accepted: # TEMP
+            store_converted(converted_data, original_id)
+    commit_sqlite
+
+def _convert_batch(batch):
+    results = []
+    for original_id, original_data in batch:
+        converted_data = _convert_publication(original_data)
+        accepted = validate(original_data, converted_data)
+        results.append({"converted": converted_data, "log_events": None, "accepted": accepted, "original_id": original_id})
+    return results
