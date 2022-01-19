@@ -103,6 +103,26 @@ def validate(raw_xml, body):
     for contribution in body["instanceOf"].get("contribution", []):
         for idb in contribution.get("agent", {}).get("identifiedBy"):
             if idb["@type"] == "ORCID":
+                recover_orcid(idb)
+
+    for publication in body.get("publication", []):
+        if publication.get("@type") == "Publication":
+            new_date = unicode_translate(publication.get("date", None))
+            if new_date:
+                publication["date"] = new_date
+
+    for key in body["instanceOf"]:
+        obj = body["instanceOf"].get(key, None)
+        for hasNote in obj.get("hasNote", []):
+            if hasNote.get("@type", "") == "CreatorCount":
+                new_label = unicode_translate(publication.get("date", None))
+                if new_label:
+                    publication["label"] = new_label
+
+    for subject in body["instanceOf"].get("subject", []):
+        if subject.get("inScheme", {}).get("code", "") == "uka.se":
+            pass # UKA STUFF HERE
+
 
     # "Enrichment".. ?
     # for id_type, jpath in PRECOMPILED_PATHS.items():
