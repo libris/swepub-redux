@@ -63,6 +63,6 @@ class ModsParser(object):
             return node.strip()
         return node
 
-
+modsparser = ModsParser()
 def convert(body):
-    return ModsParser().parse_mods(body)
+    return modsparser.parse_mods(body)

@@ -10,14 +10,14 @@ isi_regex = re.compile(
     '[0-9a-zA-Z]{12})'  # Allows 0-9 and A-Z for the following 12 characters
 )
 
-def validate_isi(isi, id):
+def validate_isi(isi):
     result = validate_base_unicode(isi)
     if result == False:
-        log_for_OAI_id(id, 'ISI validation failed: unicode')
+        #log_for_OAI_id(id, 'ISI validation failed: unicode')
         return False
     
     hit = isi_regex.fullmatch(isi)
     if hit is None:
-        log_for_OAI_id(id, 'ISI validation failed: format')
+        #log_for_OAI_id(id, 'ISI validation failed: format')
         return False
     return True

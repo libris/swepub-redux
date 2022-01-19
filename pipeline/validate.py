@@ -76,17 +76,21 @@ def validate(raw_xml, body):
 
     for idb in body.get("identifiedBy", []):
         if idb["@type"] == "ISI":
+            validate_isi(idb["value"])
             recover_isi(idb)
         if idb["@type"] == "DOI":
             recover_doi(idb)
         if idb["@type"] == "ISSN":
+            validate_issn(idb, session)
             recover_issn(idb)
         if idb["@type"] == "ISBN":
+            validate_isbn(idb["value"])
             recover_isbn(idb)
     
     for series in body.get("hasSeries", []):
         for idb in series.get("identifiedBy", []):
             if idb["@type"] == "ISSN":
+                validate_issn(idb, session)
                 recover_issn(idb)
         for title in series.get("hasTitle", []):
             if "mainTitle" in title:
@@ -106,13 +110,16 @@ def validate(raw_xml, body):
                     normalize_free_text(title, "subtitle")
         for idb in partOf.get("identifiedBy", []):
                 if idb["@type"] == "ISSN":
+                    validate_issn(idb, session)
                     recover_issn(idb)
                 if idb["@type"] == "ISBN":
+                    validate_isbn(idb["value"])
                     recover_isbn(idb)
 
     for contribution in body["instanceOf"].get("contribution", []):
         for idb in contribution.get("agent", {}).get("identifiedBy", []):
             if idb["@type"] == "ORCID":
+                validate_orcid(idb["value"])
                 recover_orcid(idb)
 
     for publication in body.get("publication", []):
