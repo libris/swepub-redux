@@ -14,8 +14,8 @@ def clean_and_init_storage():
     connection = sqlite3.connect(sqlite_path)
     cursor = connection.cursor()
 
-    # Use sqlite WAL mode
-    #cursor.execute("PRAGMA journal_mode=WAL;")
+    cursor.execute("PRAGMA journal_mode=WAL;")
+    cursor.execute("PRAGMA synchronous=OFF;")
 
     # Because Swepub APIs expose publications as originally harvested, these must be kept.
     cursor.execute("""
