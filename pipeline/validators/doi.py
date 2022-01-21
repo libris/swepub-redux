@@ -3,6 +3,7 @@ import unicodedata
 import sys
 from log import log_for_OAI_id
 from validators.shared import remote_verification
+from util import make_event
 
 # For more info about unicode categories see
 # https://www.fileformat.info/info/unicode/category/index.htm and
@@ -72,21 +73,21 @@ def _doi_is_valid_format(doi):
 
     return True
 
-def validate_doi(doi, id, session):
+def validate_doi(doi, path, session, events):
     if not _validate_printable_chars_and_no_ws(doi):
-        log_for_OAI_id(id, 'DOI validation failed: unicode')
+        events.append(make_event("validation", "DOI", path, "unicode", "invalid"))
         return False
     
     stripped_doi = _strip_doi_http_prefix(doi)
     if not _doi_is_valid_format(stripped_doi):
-        log_for_OAI_id(id, 'DOI validation failed: format')
+        events.append(make_event("validation", "DOI", path, "format", "invalid"))
         return False
 
     valid = _validate_with_shortdoi(stripped_doi, session)
     if not valid:
         valid = _validate_with_crossref(stripped_doi, session)
         if not valid:
-            log_for_OAI_id(id, 'DOI validation failed: remote')
+            events.append(make_event("validation", "DOI", path, "remote.crossref", "invalid"))
             return False
 
     return True

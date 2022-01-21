@@ -1,5 +1,4 @@
-from util import update_at_path, unicode_translate
-from log import log_for_OAI_id
+from util import update_at_path, make_event
 import unicodedata
 import sys
 
@@ -18,7 +17,7 @@ TRANSLATE_DICT[ord(u'\u2044')] = ord('/')
 DOI_START = "10."
 VALID_STARTS = (DOI_START, "https://doi.org/10.", "http://doi.org/10.")
 
-def recover_doi(doi, body, path, id):
+def recover_doi(doi, body, path, id, events):
     translated = doi.translate(TRANSLATE_DICT)
     if translated != doi:
         doi = translated
@@ -30,4 +29,4 @@ def recover_doi(doi, body, path, id):
         hit = doi.find(DOI_START)
         if hit != -1:
             update_at_path(body, path, doi[hit:])
-            log_for_OAI_id(id, 'DOI enrichment: recovery')
+            events.append(make_event("enrichment", "DOI", path, "recovery", doi[hit:]))

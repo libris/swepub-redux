@@ -192,20 +192,13 @@ def harvest(source, lock, harvested_count):
 
 def threaded_handle_harvested(batch, source, lock):
     for xml in batch:
-
-        
-        #print(f'Harvest harvest_item_id {record.harvest_item_id}')
         converted = convert(xml)
-        if validate(xml, converted):
-            #print(f"Validation passed for {converted['@id']}")
-            lock.acquire()
-            try:
-                store_converted(converted, source)
-            finally:
-                lock.release()
-        else:
-            pass
-            #print(f"Validation failed for {converted['@id']}")
+        (accepted, events) = validate(xml, converted)
+        lock.acquire()
+        try:
+            store_original_and_converted(xml, converted, source, accepted, events)
+        finally:
+            lock.release()
 
 sources = [
     {
