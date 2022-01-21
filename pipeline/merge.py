@@ -57,8 +57,8 @@ def write_results(result, inner_cursor):
         cluster_id = cluster[0]
         merged_data = cluster[1]
         inner_cursor.execute("""
-        INSERT INTO finalized(cluster_id, data) VALUES(?, ?);
-        """, (cluster_id, json.dumps(merged_data)))
+        INSERT INTO finalized(cluster_id, oai_id, data) VALUES(?, ?, ?);
+        """, (cluster_id, merged_data['@id'], json.dumps(merged_data)))
     commit_sqlite()
 
 def _handle(batch): # batch is a list of cluster rows

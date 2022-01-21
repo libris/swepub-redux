@@ -12,6 +12,7 @@ import time
 from multiprocessing import Process, Lock
 import sys
 from storage import *
+from index import generate_search_tables
 
 from sickle.oaiexceptions import (
     BadArgument, BadVerb, BadResumptionToken,
@@ -534,6 +535,15 @@ if __name__ == "__main__":
     if "devdata" in args:
         sources_to_harvest = sources[15:18]
 
+    # TODO: take list of actual source names from args instead
+    if "devdatasingle" in args:
+        sources_to_harvest = [sources[5]]
+
+    if "devdatasmall" in args:
+        sources_to_harvest = [sources[5], sources[40], sources[39]]
+
+    print(sources_to_harvest)
+
     t0 = time.time()
     clean_and_init_storage()
     processes = []
@@ -570,4 +580,9 @@ if __name__ == "__main__":
     t1 = time.time()
     diff = t1-t0
     print(f"Phase 4 (auto-classification) ran for {diff} seconds")
+    t0 = t1
+    generate_search_tables()
+    t1 = time.time()
+    diff = t1-t0
+    print(f"Phase 5 (generate search tables) ran for {diff} seconds")
 

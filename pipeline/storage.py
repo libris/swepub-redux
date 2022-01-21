@@ -2,6 +2,7 @@ import sqlite3
 from sqlite3.dbapi2 import connect
 import json
 import os
+from bibframesource import BibframeSource
 
 sqlite_path = "./swepub.sqlite3"
 
@@ -15,7 +16,9 @@ def clean_and_init_storage():
     cursor = connection.cursor()
 
     # Use sqlite WAL mode
-    #cursor.execute("PRAGMA journal_mode=WAL;")
+    cursor.execute("PRAGMA journal_mode=WAL;")
+    # Faster!!
+    cursor.execute("PRAGMA synchronous=OFF;")
 
     # Because Swepub APIs expose publications as originally harvested, these must be kept.
     cursor.execute("""
@@ -31,8 +34,15 @@ def clean_and_init_storage():
     cursor.execute("""
     CREATE TABLE converted (
         id INTEGER PRIMARY KEY,
+        oai_id TEXT,
         data TEXT,
         original_id INTEGER,
+        date INTEGER,
+        source TEXT,
+        is_open_access INTEGER,
+        ssif_1 INTEGER,
+        classification_level INTEGER,
+        is_swedishlist INTEGER,
         FOREIGN KEY (original_id) REFERENCES original(id)
     );
     """)
@@ -81,6 +91,7 @@ def clean_and_init_storage():
     CREATE TABLE finalized (
         id INTEGER PRIMARY KEY,
         cluster_id INTEGER,
+        oai_id TEXT,
         data TEXT,
         FOREIGN KEY (cluster_id) REFERENCES cluster(cluster_id)
     );
@@ -130,6 +141,69 @@ def clean_and_init_storage():
     CREATE INDEX idx_abstract_total_word_counts ON abstract_total_word_counts (word);
     """)
 
+    cursor.execute("""
+    CREATE TABLE search_single_values (
+        id INTEGER PRIMARY KEY,
+        finalized_id INTEGER,
+        year INTEGER,
+        content_marking TEXT,
+        publication_status TEXT,
+        swedish_list INTEGER,
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+    );
+    """)
+
+    cursor.execute("""
+    CREATE TABLE search_doi (
+        finalized_id INTEGER,
+        doi TEXT,
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+    );
+    """)
+
+    cursor.execute("""
+    CREATE TABLE search_genre_form (
+        finalized_id INTEGER,
+        genre_form TEXT,
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+    );
+    """)
+
+    cursor.execute("""
+    CREATE TABLE search_subject (
+        finalized_id INTEGER,
+        subject INTEGER,
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+    );
+    """)
+
+    cursor.execute("""
+    CREATE TABLE search_creator (
+        finalized_id INTEGER,
+        orcid TEXT,
+        family_name TEXT,
+        given_name TEXT,
+        local_id TEXT,
+        local_id_by TEXT,
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+    );
+    """)
+
+    cursor.execute("""
+    CREATE TABLE search_org (
+        finalized_id INTEGER,
+        org TEXT,
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+    );
+    """)
+
+    cursor.execute("""
+    CREATE VIRTUAL TABLE search_fulltext_title_keywords USING FTS5 (
+        title,
+        keywords
+    );
+    """)
+
     connection.commit()
 
 def open_existing_storage():
@@ -138,6 +212,7 @@ def open_existing_storage():
 
 def store_converted(converted, source):
     cursor = connection.cursor()
+    doc = BibframeSource(converted)
 
     #print(f'Inserting with oai_id {converted["@id"]}')
 
@@ -146,8 +221,18 @@ def store_converted(converted, source):
     """, (source, json.dumps(converted),)).lastrowid
 
     converted_rowid = cursor.execute("""
-    INSERT INTO converted(data, original_id) VALUES(?, ?);
-    """, (json.dumps(converted), original_rowid)).lastrowid
+    INSERT INTO converted(data, original_id, oai_id, date, source, is_open_access, ssif_1, classification_level, is_swedishlist) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);
+    """, (
+        json.dumps(converted),
+        original_rowid,
+        doc.record_id,
+        doc.publication_year,
+        doc.source_org,
+        doc.open_access,
+        doc.ssif_1,
+        doc.level,
+        doc.is_swedishlist
+    )).lastrowid
 
     identifiers = []
     for title in converted["instanceOf"]["hasTitle"]:
