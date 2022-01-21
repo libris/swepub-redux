@@ -134,21 +134,21 @@ def validate(raw_xml, body):
             if match.value:
 
                 if id_type == 'ISBN':
-                    normalize_isbn(match.value, body, str(match.full_path), body["@id"])
+                    normalize_isbn(match.value, body, str(match.full_path), events)
                     
                 if id_type == 'ISI':
-                    normalize_isi(match.value, body, str(match.full_path), body["@id"])
+                    normalize_isi(match.value, body, str(match.full_path), events)
                     
                 if id_type == 'ORCID':
-                    normalize_orcid(match.value, body, str(match.full_path), body["@id"])
+                    normalize_orcid(match.value, body, str(match.full_path), events)
                     
                 if id_type == 'ISSN':
-                    normalize_issn(match.value, body, str(match.full_path), body["@id"])
+                    normalize_issn(match.value, body, str(match.full_path), events)
                     
                 if id_type == 'DOI':
-                    normalize_doi(match.value, body, str(match.full_path), body["@id"])
+                    normalize_doi(match.value, body, str(match.full_path), events)
                     
                 if id_type == 'free_text':
-                    normalize_free_text(match.value, body, str(match.full_path), body["@id"])
+                    normalize_free_text(match.value, body, str(match.full_path), events)
 
     return (True, events)
