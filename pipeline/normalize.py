@@ -97,7 +97,7 @@ def normalize_free_text(free_text, body, path, events):
     new_value = s.get_data()
     if new_value != free_text:
         update_at_path(body, path, new_value)
-        events.append(make_event("normalization", "free_text", path, "strip_tags", "normalized"))
+        events.append(make_event("normalization", "free_text", path, "strip_tags", None))
         free_text = new_value
     
     # clean_text
@@ -109,5 +109,5 @@ def normalize_free_text(free_text, body, path, events):
     new_value = text.translate(translator)
     if new_value != free_text:
         update_at_path(body, path, new_value)
-        events.append(make_event("normalization", "free_text", path, "clean_text", "normalized"))
+        events.append(make_event("normalization", "free_text", path, "clean_text", None))
         free_text = new_value
