@@ -40,4 +40,15 @@ The resulting sqlite3 database has roughly the following structure (see storage.
 
 ## Service
 
-Not yet carried over from the old Swepub code.
+**Work in progress!**
+
+If you want the frontend, make sure Nodejs/npm/yarn are installed, and then:
+```
+yarn --cwd service/vue-client/ build
+```
+
+To start the Swepub service (which provides the API and serves the static frontend files, if they exist):
+
+```
+python3 service/swepub.py
+```
