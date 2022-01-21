@@ -3,3 +3,5 @@ __pycache__/
 .idea/
 swepub.sqlite3
 venv/
+node_modules/
+service/vue-client/dist/
