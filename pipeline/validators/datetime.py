@@ -1,13 +1,13 @@
 from datetime import datetime
 from validators.shared import validate_base_unicode
-from log import log_for_OAI_id
+from util import make_event
 
-def validate_date_time(dt, id):
+def validate_date_time(dt, path, events):
     """Valid date formats are YYYY and YYYY-MM-DD, as specified in Swepub MODS specification.
     """
     if isinstance(dt, str):
         if not validate_base_unicode(dt):
-            log_for_OAI_id(id, 'DATETIME validation failed: unicode')
+            events.append(make_event("validation", "datetime", path, "unicode", "invalid"))
             return False
 
         try:
@@ -18,8 +18,8 @@ def validate_date_time(dt, id):
                 datetime.strptime(dt, '%Y-%m-%d')
                 return True
             except ValueError:
-                log_for_OAI_id(id, 'DATETIME validation failed: format')
+                events.append(make_event("validation", "datetime", path, "format", "invalid"))
                 return False
 
-    log_for_OAI_id(id, 'DATETIME validation failed: format')
+    events.append(make_event("validation", "datetime", path, "format", "invalid"))
     return False

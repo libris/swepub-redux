@@ -40,7 +40,7 @@ def clean_and_init_storage():
         field TEXT,
         path TEXT,
         code TEXT,
-        value TEXT,
+        result TEXT,
         FOREIGN KEY (converted_id) REFERENCES converted(id)
     );
     """)
@@ -174,8 +174,8 @@ def store_original_and_converted(original, converted, source, accepted, events):
 
     for event in events:
         cursor.execute("""
-        INSERT INTO converted_events(converted_id, type, field, path, code, value) VALUES (?, ?, ?, ?, ?, ?)
-        """, (converted_rowid, event["type"], event["field"], event["path"], event["code"], event["value"]))
+        INSERT INTO converted_events(converted_id, type, field, path, code, result) VALUES (?, ?, ?, ?, ?, ?)
+        """, (converted_rowid, event["type"], event["field"], event["path"], event["code"], event["result"]))
 
     identifiers = []
     for title in converted["instanceOf"]["hasTitle"]:

@@ -97,7 +97,6 @@ def validate(raw_xml, body):
                         update_at_path(body, str(match.full_path), translated)
 
     # Validation
-    passesValidation = True
     for id_type, jpath in PRECOMPILED_PATHS.items():
         matches = itertools.chain.from_iterable(jp.find(body) for jp in jpath)
         for match in matches:
@@ -107,28 +106,26 @@ def validate(raw_xml, body):
                 #print( match.value )
 
                 if id_type == 'ISBN':
-                    passesValidation &= validate_isbn(match.value, body["@id"])
+                    validate_isbn(match.value, str(match.full_path), events)
                 if id_type == 'ISI':
-                    passesValidation &= validate_isi(match.value, body["@id"])
+                    validate_isi(match.value, str(match.full_path), events)
                 if id_type == 'ORCID':
-                    passesValidation &= validate_orcid(match.value, body["@id"])
+                    validate_orcid(match.value, str(match.full_path), events)
                 if id_type == 'ISSN':
-                    passesValidation &= validate_issn(match.value, body["@id"], session)
+                    validate_issn(match.value, str(match.full_path), session, events)
                 if id_type == 'DOI':
-                    passesValidation &= validate_doi(match.value, body["@id"], session)
+                    validate_doi(match.value, str(match.full_path), session, events)
                 if id_type == 'URI':
                     result = validate_base_unicode(match.value)
                     if result == False:
-                        log_for_OAI_id(body["@id"], 'URI validation failed: unicode')
-                        passesValidation = False
+                        events.append(make_event("validation", "URI", str(match.full_path), "unicode", "invalid"))
                 if id_type == 'publication_year':
-                    passesValidation &= validate_date_time(match.value, body["@id"])
+                    validate_date_time(match.value, str(match.full_path), events)
                 if id_type == 'creator_count':
                     if not (match.value.isnumeric() and int(match.value) > 0):
-                        log_for_OAI_id(body["@id"], 'creator_count validation failed: numeric')
-                        passesValidation = False
+                        events.append(make_event("validation", "URI", str(match.full_path), "numeric", "invalid"))
                 if id_type == 'UKA':
-                    passesValidation &= validate_uka(match.value, body["@id"])
+                    validate_uka(match.value, str(match.full_path), events)
 
     # Normalization
     for id_type, jpath in PRECOMPILED_PATHS.items():
