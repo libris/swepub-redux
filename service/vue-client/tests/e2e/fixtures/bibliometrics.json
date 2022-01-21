@@ -1,0 +1,2147 @@
+{
+   "from":2021,
+   "hits":[
+      {
+         "DOI":[
+            
+         ],
+         "ISBN":[
+            "9781479843695"
+         ],
+         "ISI":null,
+         "ISSN":[
+            
+         ],
+         "PMID":null,
+         "archiveURI":"http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-165410",
+         "contentMarking":"ref",
+         "creatorCount":1,
+         "creators":[
+            {
+               "ORCID":null,
+               "affiliation":"su.se",
+               "familyName":"Westin",
+               "freetext_affiliations":[
+                  [
+                     "Institutionen f\u00f6r kultur och estetik",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Boel",
+               "localId":"bwest",
+               "localIdBy":"su"
+            }
+         ],
+         "duplicateIds":[
+            "oai:DiVA.org:su-165410"
+         ],
+         "electronicLocator":null,
+         "keywords":[
+            "Nostalgia",
+            "longing",
+            "children\u00b4s literature",
+            "litteraturvetenskap",
+            "Literature",
+            "Languages and Literature",
+            "Spr\u00e5k och litteratur",
+            "Humaniora och konst",
+            "Humanities and the Arts"
+         ],
+         "languages":[
+            "eng"
+         ],
+         "openAccess":false,
+         "outputTypes":[
+            "https://id.kb.se/term/swepub/publication/book-chapter"
+         ],
+         "publicationChannel":"Keywords for Children\u2019s Literature",
+         "publicationCount":1,
+         "publicationStatus":"https://id.kb.se/term/swepub/Published",
+         "publicationType":null,
+         "publicationYear":"2021",
+         "publisher":"New York University Press",
+         "recordId":"oai:DiVA.org:su-165410",
+         "scopusId":null,
+         "seriesTitle":null,
+         "source":[
+            "su"
+         ],
+         "subjects":{
+            "fiveDigitTopics":[
+               
+            ],
+            "oneDigitTopics":[
+               "6"
+            ],
+            "threeDigitTopics":[
+               "602"
+            ]
+         },
+         "summary":null,
+         "swedishList":null,
+         "title":"Nostalgia"
+      },
+      {
+         "DOI":[
+            
+         ],
+         "ISBN":[
+            "9781793631930"
+         ],
+         "ISI":null,
+         "ISSN":[
+            
+         ],
+         "PMID":null,
+         "archiveURI":"http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-179742",
+         "contentMarking":"ref",
+         "creatorCount":3,
+         "creators":[
+            {
+               "ORCID":"https://orcid.org/0000-0002-0114-7026",
+               "affiliation":"su.se",
+               "familyName":"Makko",
+               "freetext_affiliations":[
+                  [
+                     "Historiska institutionen",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Aryo",
+               "localId":"arde4734",
+               "localIdBy":"su"
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Kramer",
+               "freetext_affiliations":null,
+               "givenName":"Mark",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Ruggenthaler",
+               "freetext_affiliations":null,
+               "givenName":"Peter",
+               "localId":null,
+               "localIdBy":null
+            }
+         ],
+         "duplicateIds":[
+            "oai:DiVA.org:su-179742"
+         ],
+         "electronicLocator":"https://rowman.com/ISBN/9781793631930/The-Soviet-Union-and-Cold-War-Neutrality-and-Nonalignment-in-Europe",
+         "keywords":[
+            "historia",
+            "History",
+            "History",
+            "Historia",
+            "Humaniora och konst",
+            "Historia och arkeologi",
+            "Humanities and the Arts",
+            "History and Archaeology"
+         ],
+         "languages":[
+            "eng"
+         ],
+         "openAccess":false,
+         "outputTypes":[
+            "https://id.kb.se/term/swepub/publication/edited-book"
+         ],
+         "publicationChannel":null,
+         "publicationCount":1,
+         "publicationStatus":"https://id.kb.se/term/swepub/Published",
+         "publicationType":null,
+         "publicationYear":"2021",
+         "publisher":"Lexington Books",
+         "recordId":"oai:DiVA.org:su-179742",
+         "scopusId":null,
+         "seriesTitle":null,
+         "source":[
+            "su"
+         ],
+         "subjects":{
+            "fiveDigitTopics":[
+               "60101"
+            ],
+            "oneDigitTopics":[
+               "6"
+            ],
+            "threeDigitTopics":[
+               "601"
+            ]
+         },
+         "summary":null,
+         "swedishList":null,
+         "title":"The Soviet Union and Cold War Neutrality and Nonalignment in Europe"
+      },
+      {
+         "DOI":[
+            
+         ],
+         "ISBN":[
+            "9789179113667",
+            "9789179113674"
+         ],
+         "ISI":null,
+         "ISSN":[
+            
+         ],
+         "PMID":null,
+         "archiveURI":"http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-186722",
+         "contentMarking":"vet",
+         "creatorCount":1,
+         "creators":[
+            {
+               "ORCID":null,
+               "affiliation":"su.se",
+               "familyName":"Runesson",
+               "freetext_affiliations":[
+                  [
+                     "Historiska institutionen",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Anton",
+               "localId":null,
+               "localIdBy":null
+            }
+         ],
+         "duplicateIds":[
+            "oai:DiVA.org:su-186722"
+         ],
+         "electronicLocator":"http://su.diva-portal.org/smash/get/diva2:1501586/FULLTEXT01.pdf",
+         "keywords":[
+            "history of the body",
+            "history of physiology",
+            "sensory history",
+            "history of illness",
+            "religious experience",
+            "early modern Sweden",
+            "historia",
+            "History",
+            "History",
+            "Historia",
+            "Humaniora och konst",
+            "Historia och arkeologi",
+            "Humanities and the Arts",
+            "History and Archaeology"
+         ],
+         "languages":[
+            "swe"
+         ],
+         "openAccess":true,
+         "outputTypes":[
+            "https://id.kb.se/term/swepub/publication/doctoral-thesis"
+         ],
+         "publicationChannel":null,
+         "publicationCount":1,
+         "publicationStatus":"https://id.kb.se/term/swepub/Published",
+         "publicationType":null,
+         "publicationYear":"2021",
+         "publisher":"Historiska Institutionen, Stockholms universitet",
+         "recordId":"oai:DiVA.org:su-186722",
+         "scopusId":null,
+         "seriesTitle":null,
+         "source":[
+            "su"
+         ],
+         "subjects":{
+            "fiveDigitTopics":[
+               "60101"
+            ],
+            "oneDigitTopics":[
+               "6"
+            ],
+            "threeDigitTopics":[
+               "601"
+            ]
+         },
+         "summary":"The study investigates how ordinary people in Sweden understood the body to function between c. 1600-1750, aiming thereby to enhance our understanding of everyday life during this period. Questions of how the body worked was then primarily a topic for the physiological sciences, and previous research has thus largely focused on the dissemination and reworking of medical traditions within medical thought and practice, considering the body to have been interpreted either as an open, humoral entity, or in mechanistic terms. To discern the ways that ordinary men and women understood the body, this study departs from a phenomenological perspective and takes people's descriptions of their experiences as starting points. The considered period was characterized by Lutheran orthodoxy and the effects of confessionalization on legal thought and practice. It also saw a rise in popular participation in the activities of criminal courts. The empirical evidence consists of roughly 800 legal investigations into crimes such as bestiality, magic, murder, homicide, suicide, infanticide and various sexual offences, examined in order to access ordinary people's perspectives on the body and other aspects of existence. The methodological assumptions guiding the interpretation of the sources are firstly that legal statements remain within the scope of the probable and possible, and secondly that descriptions of experiences can inform on how people understood the body. The study is divided into five empirical chapters designed to capture both physiological topics and aspects of existence. The chapters deal with how people understood the body to function in relation to principles of life; sickness and health; perception and consciousness; influences from God and the Devil; and confession in court. All in all, the study concludes that the lived body was primarily understood as an entity that worked when its parts, abilities and seats of consciousness could be accessed and used. Together and in coordination, these could then form a functioning whole. In accordance with this perspective, influences that prevented the body\u2019s usual functioning and which made a person\u2019s existence different were generally understood as deviations from the usual way of being. In turn, restored functionality implied conforming to the previous and usual way. The identified understanding of the body thus departed from the usual state and nature of specific bodies as a starting point for how people understood change. Negations of usefulness of parts or capabilities further demonstrate both how the body was commonly understood to work, and why it needed to function as usual. The functional understanding of the body was rooted in people\u2019s existential conditions and in the needs that they had to be able to use their bodies. They needed their bodies to be able to work and to acquire religion. The study ends with suggestions for future research, such as varieties within the identified understanding of the body, and how it transformed as its existential conditions changed.",
+         "swedishList":null,
+         "title":"Blod, k\u00f6tt och t\u00e5rar: Kroppslig erfarenhet i Sverige, ca 1600\u20131750"
+      },
+      {
+         "DOI":[
+            
+         ],
+         "ISBN":[
+            "9781785275678"
+         ],
+         "ISI":null,
+         "ISSN":[
+            
+         ],
+         "PMID":null,
+         "archiveURI":"http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-187783",
+         "contentMarking":"ref",
+         "creatorCount":1,
+         "creators":[
+            {
+               "ORCID":null,
+               "affiliation":"su.se",
+               "familyName":"Jarrick",
+               "freetext_affiliations":[
+                  [
+                     "Institutionen f\u00f6r arkeologi och antikens kultur",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Arne",
+               "localId":"jarrick",
+               "localIdBy":"su"
+            }
+         ],
+         "duplicateIds":[
+            "oai:DiVA.org:su-187783"
+         ],
+         "electronicLocator":null,
+         "keywords":[
+            "historia",
+            "History",
+            "History and Archaeology",
+            "Historia och arkeologi",
+            "Humaniora och konst",
+            "Humanities and the Arts"
+         ],
+         "languages":[
+            "eng"
+         ],
+         "openAccess":false,
+         "outputTypes":[
+            "https://id.kb.se/term/swepub/publication/book"
+         ],
+         "publicationChannel":null,
+         "publicationCount":1,
+         "publicationStatus":"https://id.kb.se/term/swepub/Published",
+         "publicationType":null,
+         "publicationYear":"2021",
+         "publisher":"Anthem Press",
+         "recordId":"oai:DiVA.org:su-187783",
+         "scopusId":null,
+         "seriesTitle":null,
+         "source":[
+            "su"
+         ],
+         "subjects":{
+            "fiveDigitTopics":[
+               
+            ],
+            "oneDigitTopics":[
+               "6"
+            ],
+            "threeDigitTopics":[
+               "601"
+            ]
+         },
+         "summary":null,
+         "swedishList":null,
+         "title":"Big Research Questions about the Human Condition: A Historian's Will"
+      },
+      {
+         "DOI":[
+            "https://doi.org/10.1111/bor.12490"
+         ],
+         "ISBN":[
+            
+         ],
+         "ISI":null,
+         "ISSN":[
+            "0300-9483",
+            "1502-3885"
+         ],
+         "PMID":null,
+         "archiveURI":"http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-188123",
+         "contentMarking":"ref",
+         "creatorCount":7,
+         "creators":[
+            {
+               "ORCID":null,
+               "affiliation":"su.se",
+               "familyName":"Avery",
+               "freetext_affiliations":[
+                  [
+                     "Institutionen f\u00f6r geologiska vetenskaper",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Rachael S.",
+               "localId":"raav7166",
+               "localIdBy":"su"
+            },
+            {
+               "ORCID":null,
+               "affiliation":"su.se",
+               "familyName":"Greenwood",
+               "freetext_affiliations":[
+                  [
+                     "Institutionen f\u00f6r geologiska vetenskaper",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Sarah L.",
+               "localId":"sgree",
+               "localIdBy":"su"
+            },
+            {
+               "ORCID":null,
+               "affiliation":"su.se",
+               "familyName":"Schenk",
+               "freetext_affiliations":[
+                  [
+                     "Institutionen f\u00f6r geologiska vetenskaper",
+                     "Stockholms universitet"
+                  ],
+                  [
+                     "Swedish Meteorological and Hydrological Institute, Sweden"
+                  ]
+               ],
+               "givenName":"Frederik",
+               "localId":"fsche",
+               "localIdBy":"su"
+            },
+            {
+               "ORCID":null,
+               "affiliation":"su.se",
+               "familyName":"Mor\u00e9n",
+               "freetext_affiliations":[
+                  [
+                     "Institutionen f\u00f6r geologiska vetenskaper",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Bj\u00f6rn M.",
+               "localId":"bjmo7547",
+               "localIdBy":"su"
+            },
+            {
+               "ORCID":null,
+               "affiliation":"su.se",
+               "familyName":"Armstrong Mckay",
+               "freetext_affiliations":[
+                  [
+                     "Stockholm Resilience Centre",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"David I.",
+               "localId":"daar3019",
+               "localIdBy":"su"
+            },
+            {
+               "ORCID":null,
+               "affiliation":"su.se",
+               "familyName":"Brunnberg",
+               "freetext_affiliations":[
+                  [
+                     "Institutionen f\u00f6r naturgeografi",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Lars",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":null,
+               "affiliation":"su.se",
+               "familyName":"Wohlfarth",
+               "freetext_affiliations":[
+                  [
+                     "Institutionen f\u00f6r geologiska vetenskaper",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Barbara",
+               "localId":"wohlf",
+               "localIdBy":"su"
+            }
+         ],
+         "duplicateIds":[
+            "oai:DiVA.org:su-188123"
+         ],
+         "electronicLocator":"https://doi.org/10.1111/bor.12490",
+         "keywords":[
+            "Earth and Related Environmental Sciences",
+            "Geovetenskap och milj\u00f6vetenskap",
+            "Naturvetenskap",
+            "Natural Sciences"
+         ],
+         "languages":[
+            "eng"
+         ],
+         "openAccess":true,
+         "outputTypes":[
+            "https://id.kb.se/term/swepub/publication/journal-article"
+         ],
+         "publicationChannel":"Boreas",
+         "publicationCount":1,
+         "publicationStatus":"https://id.kb.se/term/swepub/EpubAheadOfPrintOnlineFirst",
+         "publicationType":null,
+         "publicationYear":"2021",
+         "publisher":null,
+         "recordId":"oai:DiVA.org:su-188123",
+         "scopusId":null,
+         "seriesTitle":null,
+         "source":[
+            "su"
+         ],
+         "subjects":{
+            "fiveDigitTopics":[
+               
+            ],
+            "oneDigitTopics":[
+               "1"
+            ],
+            "threeDigitTopics":[
+               "105"
+            ]
+         },
+         "summary":"The Swedish Varve Chronology is an unparalleled tool for linking the deglacial history of Sweden with associated palaeo-environmental change at an annual time scale, and it forms part of Sweden's cultural heritage. A full deglacial chronology connected to the present day does not yet exist; a notable gap is in southeasternmost Sweden, where few varved records are successfully connected to reconstruct ice-margin retreat. Deglaciation in southern Sweden covers both the climate transition to the B\u00f8lling warm period (similar to 14.7 ka BP) and the ice-margin transition from a subaqueous to terrestrial terminus. To facilitate investigations into the links between ice-margin dynamics and abrupt climate change, we revisited the varve chronologies of southern Sweden. We digitized unpublished records, reanalysed existing varve thickness records, and obtained and analysed new varve series both on land and offshore. This combined approach has enabled us to refine and extend the existing south coast chronology east and 78 km northwards. Our new Sk\u00e5ne-Sm\u00e5land chronology records 725 years of deglaciation, in addition to a younger floating chronology in parts. This chronology suggests that the glacial-lake terminating Fennoscandian Ice Sheet in southern Sweden initially retreated northwards at similar to 110-160 m a(-1) slowing to 60-70 m a(-1) near the palaeo-shoreline. Between today's mainland and the (now) island of \u00d6land the retreat rates increase three- to fivefold. Ice-margin retreat was initially oriented towards the north (as along the south coast), but later pivoted towards the northwest, signifying a landward retreat of terrestrial 'Swedish' ice that became divorced from the Baltic Sea ice-sheet catchment. Our new 725-year-long varve thickness series reveals repeated multidecadal scale episodes of increased sedimentation. These likely signify phases of enhanced ice-sheet melting that repeat and persist throughout the deglaciation of Sk\u00e5ne-Sm\u00e5land.",
+         "swedishList":null,
+         "title":"A 725-year integrated offshore terrestrial varve chronology for southeastern Sweden suggests rapid ice retreat ~ 15 ka BP"
+      },
+      {
+         "DOI":[
+            "https://doi.org/10.1080/02664763.2020.1864812"
+         ],
+         "ISBN":[
+            
+         ],
+         "ISI":null,
+         "ISSN":[
+            "0266-4763",
+            "1360-0532"
+         ],
+         "PMID":null,
+         "archiveURI":"http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-186688",
+         "contentMarking":"ref",
+         "creatorCount":2,
+         "creators":[
+            {
+               "ORCID":null,
+               "affiliation":"su.se",
+               "familyName":"Munezero",
+               "freetext_affiliations":[
+                  [
+                     "Statistiska institutionen",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Parfait",
+               "localId":"pmune",
+               "localIdBy":"su"
+            },
+            {
+               "ORCID":null,
+               "affiliation":"su.se",
+               "familyName":"Ghilagaber",
+               "freetext_affiliations":[
+                  [
+                     "Statistiska institutionen",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Gebrenegus",
+               "localId":"gebre",
+               "localIdBy":"su"
+            }
+         ],
+         "duplicateIds":[
+            "oai:DiVA.org:su-186688"
+         ],
+         "electronicLocator":"https://doi.org/10.1080/02664763.2020.1864812",
+         "keywords":[
+            "Anticipatory covariates; Bayesian inference; current-date covariates; dynamic modelling; educational gradients in divorce-risks; observational studies; particle filter; retrospective surveys; Sweden",
+            "statistik",
+            "Statistics",
+            "Probability Theory and Statistics",
+            "Sannolikhetsteori och statistik",
+            "Naturvetenskap",
+            "Matematik",
+            "Natural Sciences",
+            "Mathematics"
+         ],
+         "languages":[
+            "eng"
+         ],
+         "openAccess":true,
+         "outputTypes":[
+            "https://id.kb.se/term/swepub/publication/journal-article"
+         ],
+         "publicationChannel":"Journal of Applied Statistics",
+         "publicationCount":1,
+         "publicationStatus":"https://id.kb.se/term/swepub/EpubAheadOfPrintOnlineFirst",
+         "publicationType":null,
+         "publicationYear":"2021",
+         "publisher":null,
+         "recordId":"oai:DiVA.org:su-186688",
+         "scopusId":null,
+         "seriesTitle":null,
+         "source":[
+            "su"
+         ],
+         "subjects":{
+            "fiveDigitTopics":[
+               "10106"
+            ],
+            "oneDigitTopics":[
+               "1"
+            ],
+            "threeDigitTopics":[
+               "101"
+            ]
+         },
+         "summary":"We address a problem in inference from retrospective studies where the value of a variable is measured at the date of the survey but is used as covariate to events that have occurred long before the survey. This causes problem because the value of the current-date (anticipatory) covariate does not follow the temporal order of events. We propose a dynamic Bayesian approach for modelling jointly the anticipatory covariate and the event of interest, and allowing the effects of the anticipatory covariate to vary over time. The issues are illustrated with data on the effects of education attained by the survey-time on divorce risks among Swedish men. The overall results show that failure to adjust for the anticipatory nature of education leads to elevated relative risks of divorce across educational levels. The results are partially in accordance with previous findings based on analyses of the same data set. More importantly, our findings provide new insights in that the bias due to anticipatory covariates varies over marriage duration.",
+         "swedishList":null,
+         "title":"Dynamic Bayesian adjustment of anticipatory covariates in retrospective data: application to the effect of education on divorce risk"
+      },
+      {
+         "DOI":[
+            "https://doi.org/10.1111/jvs.12966"
+         ],
+         "ISBN":[
+            
+         ],
+         "ISI":null,
+         "ISSN":[
+            "1100-9233",
+            "1654-1103"
+         ],
+         "PMID":null,
+         "archiveURI":"http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-188112",
+         "contentMarking":"ref",
+         "creatorCount":5,
+         "creators":[
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Gustafsson",
+               "freetext_affiliations":null,
+               "givenName":"Lena",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":"https://orcid.org/0000-0002-3632-9102",
+               "affiliation":null,
+               "familyName":"Granath",
+               "freetext_affiliations":null,
+               "givenName":"Gustaf",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Nohrstedt",
+               "freetext_affiliations":null,
+               "givenName":"Hans-\u00d6rjan",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Leverkus",
+               "freetext_affiliations":null,
+               "givenName":"Alexandro B.",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":"https://orcid.org/0000-0003-1369-9351",
+               "affiliation":"su.se",
+               "familyName":"Johansson",
+               "freetext_affiliations":[
+                  [
+                     "Institutionen f\u00f6r ekologi, milj\u00f6 och botanik",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Victor",
+               "localId":"vijoh",
+               "localIdBy":"su"
+            }
+         ],
+         "duplicateIds":[
+            "oai:DiVA.org:su-188112"
+         ],
+         "electronicLocator":"https://doi.org/10.1111/jvs.12966",
+         "keywords":[
+            "bryophyte",
+            "Chamaenerion angustifolium",
+            "clear-cut",
+            "disturbance",
+            "fire",
+            "production forest",
+            "Senecio sylvaticus",
+            "succession",
+            "Sweden",
+            "traits",
+            "Vaccinium",
+            "vascular plant",
+            "vegetation",
+            "Biological Sciences",
+            "Biologiska vetenskaper",
+            "Naturvetenskap",
+            "Natural Sciences"
+         ],
+         "languages":[
+            "eng"
+         ],
+         "openAccess":true,
+         "outputTypes":[
+            "https://id.kb.se/term/swepub/publication/journal-article"
+         ],
+         "publicationChannel":"Journal of Vegetation Science",
+         "publicationCount":1,
+         "publicationStatus":"https://id.kb.se/term/swepub/EpubAheadOfPrintOnlineFirst",
+         "publicationType":null,
+         "publicationYear":"2021",
+         "publisher":null,
+         "recordId":"oai:DiVA.org:su-188112",
+         "scopusId":null,
+         "seriesTitle":null,
+         "source":[
+            "su"
+         ],
+         "subjects":{
+            "fiveDigitTopics":[
+               
+            ],
+            "oneDigitTopics":[
+               "1"
+            ],
+            "threeDigitTopics":[
+               "106"
+            ]
+         },
+         "summary":"Questions: Do burn severity and soil chemistry drive species and trait composition on recently burned clear-cuttings? Does the spatial distribution of common, easily dispersed colonizers vary with distance to fire perimeter? Location A 13,000 ha production forest landscape in boreal southern Sweden burned in a wildfire in 2014.Methods: Vascular plants and bryophytes were recorded in permanent plots on clear-cuts two and five years following fire, covering a burn severity gradient. Soil carbon content (reflecting burn severity), pH and nutrients were measured at plot level. Trait data were retrieved from the BIEN and LEDA databases and analyzed using community-weighted mean (CWM) trait values. Statistical analyses included generalized linear mixed models (GLMMs), non-metric multidimensional scaling (NMDS) and multivariate ANOVA.Results: Low burn severity resulted in higher frequency of legacy species (e.g. Vaccinium myrtillus), while high burn severity facilitated colonizing species (e.g. Senecio sylvaticus). Vegetation varied with soil chemistry, expressed through pH. Species composition changed between years and deviated from unburned clear-cuts. After five years the most common taxa on burned plots were the vascular plants Chamaenerion angustifolium, Betula spp. and Populus tremula and the bryophytes Ceratodon purpureus and Polytrichum juniperinum. CWM specific leaf area (SLA) decreased markedly with time and root buds increased with total carbon content in the soil (i.e., toward less severely burned plots), while soil pH was not associated with any studied trait. Chamaenerion angustifolium decreased with distance to the fire perimeter, while Ceratodon purpureus increased.Conclusions: Burn severity and soil pH weakly drive vegetation dynamics in the early phase following fire on clear-cuts, indicating a large influence of stochastic processes. Deciduous trees are common already after five years and their further expansion will affect light and nutrient availability. To understand future vegetation trajectories on burned clear-cuts, studies need to incorporate the light factor and links between tree species' identity and soil nutrient availability.",
+         "swedishList":null,
+         "title":"Burn severity and soil chemistry are weak drivers of early vegetation succession following a boreal mega-fire in a production forest landscape"
+      },
+      {
+         "DOI":[
+            "https://doi.org/10.1002/wcc.691"
+         ],
+         "ISBN":[
+            
+         ],
+         "ISI":null,
+         "ISSN":[
+            "1757-7780",
+            "1757-7799"
+         ],
+         "PMID":null,
+         "archiveURI":"http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-188118",
+         "contentMarking":"ref",
+         "creatorCount":3,
+         "creators":[
+            {
+               "ORCID":"https://orcid.org/0000-0003-0220-3947",
+               "affiliation":"su.se",
+               "familyName":"Charpentier Ljungqvist",
+               "freetext_affiliations":[
+                  [
+                     "Historiska institutionen",
+                     "Stockholms universitet"
+                  ],
+                  [
+                     "Swedish Collegium for Advanced Study, Sweden"
+                  ]
+               ],
+               "givenName":"Fredrik",
+               "localId":"fchar",
+               "localIdBy":"su"
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Seim",
+               "freetext_affiliations":null,
+               "givenName":"Andrea",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Huhtamaa",
+               "freetext_affiliations":null,
+               "givenName":"Heli",
+               "localId":null,
+               "localIdBy":null
+            }
+         ],
+         "duplicateIds":[
+            "oai:DiVA.org:su-188118"
+         ],
+         "electronicLocator":"https://doi.org/10.1002/wcc.691",
+         "keywords":[
+            "climate-society interactions",
+            "common era",
+            "history",
+            "impact order model",
+            "Social and Economic Geography",
+            "Social och ekonomisk geografi",
+            "Earth and Related Environmental Sciences",
+            "Geovetenskap och milj\u00f6vetenskap",
+            "Naturvetenskap",
+            "Samh\u00e4llsvetenskap",
+            "Natural Sciences",
+            "Social Sciences"
+         ],
+         "languages":[
+            "eng"
+         ],
+         "openAccess":true,
+         "outputTypes":[
+            "https://id.kb.se/term/swepub/publication/review-article"
+         ],
+         "publicationChannel":"Wiley Interdisciplinary Reviews: Climate Change",
+         "publicationCount":1,
+         "publicationStatus":"https://id.kb.se/term/swepub/EpubAheadOfPrintOnlineFirst",
+         "publicationType":null,
+         "publicationYear":"2021",
+         "publisher":null,
+         "recordId":"oai:DiVA.org:su-188118",
+         "scopusId":null,
+         "seriesTitle":null,
+         "source":[
+            "su"
+         ],
+         "subjects":{
+            "fiveDigitTopics":[
+               
+            ],
+            "oneDigitTopics":[
+               "1",
+               "5"
+            ],
+            "threeDigitTopics":[
+               "507",
+               "105"
+            ]
+         },
+         "summary":"This article evaluates 165 studies from various disciplines, published between 2000 and 2019, which in different ways link past climate variability and change to human history in medieval and early modern Europe (here, c. 700-1815 CE). Within this review, we focus on the identification and interpretation of causal links between changes in climate and in human societies. A revised climate-society impact order model of historical climate-society interactions is presented and applied to structure the findings of the past 20 years' scholarship. Despite considerable progress in research about past climate-society relations, partly expedited by new palaeoclimate data, we identify limitations to knowledge, including geographical biases, a disproportional attention to extremely cold periods, and a focus on crises. Furthermore, recent scholarship shows that the limitations with particular disciplinary approaches can be successfully overcome through interdisciplinary collaborations. We conclude the article by proposing recommendations for future directions of research in the climatic change-human history nexus.",
+         "swedishList":null,
+         "title":"Climate and society in European history"
+      },
+      {
+         "DOI":[
+            
+         ],
+         "ISBN":[
+            
+         ],
+         "ISI":null,
+         "ISSN":[
+            
+         ],
+         "PMID":null,
+         "archiveURI":"http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-188321",
+         "contentMarking":"pop",
+         "creatorCount":1,
+         "creators":[
+            {
+               "ORCID":null,
+               "affiliation":"su.se",
+               "familyName":"Martinsson",
+               "freetext_affiliations":[
+                  [
+                     "Juridiska institutionen",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Dennis",
+               "localId":"dema2365",
+               "localIdBy":"su"
+            }
+         ],
+         "duplicateIds":[
+            "oai:DiVA.org:su-188321"
+         ],
+         "electronicLocator":null,
+         "keywords":[
+            "straffprocessr\u00e4tt",
+            "resning",
+            "resning till nackdel f\u00f6r tilltalad",
+            "ny bevisning",
+            "H\u00f6gsta domstolen",
+            "Den nya DNA-analysen",
+            "straffr\u00e4tt",
+            "Criminal Law",
+            "processr\u00e4tt",
+            "Procedural Law",
+            "Law and Society",
+            "Juridik och samh\u00e4lle",
+            "Samh\u00e4llsvetenskap",
+            "Juridik",
+            "Social Sciences",
+            "Law"
+         ],
+         "languages":[
+            "swe"
+         ],
+         "openAccess":false,
+         "outputTypes":[
+            "https://id.kb.se/term/swepub/publication/editorial-letter"
+         ],
+         "publicationChannel":"Nerikes Allehanda",
+         "publicationCount":1,
+         "publicationStatus":"https://id.kb.se/term/swepub/Published",
+         "publicationType":null,
+         "publicationYear":"2021",
+         "publisher":null,
+         "recordId":"oai:DiVA.org:su-188321",
+         "scopusId":null,
+         "seriesTitle":null,
+         "source":[
+            "su"
+         ],
+         "subjects":{
+            "fiveDigitTopics":[
+               "50502"
+            ],
+            "oneDigitTopics":[
+               "5"
+            ],
+            "threeDigitTopics":[
+               "505"
+            ]
+         },
+         "summary":null,
+         "swedishList":null,
+         "title":"Ovanligt beslut om beviljad resning i H\u00f6gsta domstolen"
+      },
+      {
+         "DOI":[
+            "https://doi.org/10.1111/1755-0998.13280"
+         ],
+         "ISBN":[
+            
+         ],
+         "ISI":null,
+         "ISSN":[
+            "1755-098X",
+            "1755-0998"
+         ],
+         "PMID":"33058468",
+         "archiveURI":"http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-188132",
+         "contentMarking":"ref",
+         "creatorCount":15,
+         "creators":[
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Nowak",
+               "freetext_affiliations":null,
+               "givenName":"Michael D.",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":"https://orcid.org/0000-0002-8104-8537",
+               "affiliation":null,
+               "familyName":"Birkeland",
+               "freetext_affiliations":null,
+               "givenName":"Siri",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Mand\u00e1kova",
+               "freetext_affiliations":null,
+               "givenName":"Terezie",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":"https://orcid.org/0000-0002-0499-4124",
+               "affiliation":null,
+               "familyName":"Roy Choudhury",
+               "freetext_affiliations":null,
+               "givenName":"Rimjhim",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Guo",
+               "freetext_affiliations":null,
+               "givenName":"Xinyi",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Gustafsson",
+               "freetext_affiliations":null,
+               "givenName":"Anna Lovisa S.",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Gizaw",
+               "freetext_affiliations":null,
+               "givenName":"Abel",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Schr\u00f8der-Nielsen",
+               "freetext_affiliations":null,
+               "givenName":"Audun",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":null,
+               "affiliation":"su.se",
+               "familyName":"Fracassetti",
+               "freetext_affiliations":[
+                  [
+                     "Institutionen f\u00f6r ekologi, milj\u00f6 och botanik",
+                     "Stockholms universitet",
+                     "Stockholms universitet"
+                  ],
+                  [
+                     "Science for Life Laboratory (SciLifeLab)",
+                     "Stockholms universitet",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Marco",
+               "localId":"mafra",
+               "localIdBy":"su"
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Brysting",
+               "freetext_affiliations":null,
+               "givenName":"Anne K.",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Rieseberg",
+               "freetext_affiliations":null,
+               "givenName":"Loren",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":null,
+               "affiliation":"su.se",
+               "familyName":"Slotte",
+               "freetext_affiliations":[
+                  [
+                     "Institutionen f\u00f6r ekologi, milj\u00f6 och botanik",
+                     "Stockholms universitet",
+                     "Stockholms universitet"
+                  ],
+                  [
+                     "Science for Life Laboratory (SciLifeLab)",
+                     "Stockholms universitet",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Tanja",
+               "localId":"tasl9584",
+               "localIdBy":"su"
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Parisod",
+               "freetext_affiliations":null,
+               "givenName":"Christian",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Lysak",
+               "freetext_affiliations":null,
+               "givenName":"Martin A.",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Brochmann",
+               "freetext_affiliations":null,
+               "givenName":"Christian",
+               "localId":null,
+               "localIdBy":null
+            }
+         ],
+         "duplicateIds":[
+            "oai:DiVA.org:su-188132"
+         ],
+         "electronicLocator":"https://doi.org/10.1111/1755-0998.13280",
+         "keywords":[
+            "adaptation",
+            "Arctic",
+            "Brassicaceae",
+            "chromosome-scale assembly",
+            "linkage map",
+            "Biological Sciences",
+            "Biologiska vetenskaper",
+            "Naturvetenskap",
+            "Natural Sciences"
+         ],
+         "languages":[
+            "eng"
+         ],
+         "openAccess":true,
+         "outputTypes":[
+            "https://id.kb.se/term/swepub/publication/journal-article"
+         ],
+         "publicationChannel":"Molecular Ecology Resources",
+         "publicationCount":1,
+         "publicationStatus":"https://id.kb.se/term/swepub/EpubAheadOfPrintOnlineFirst",
+         "publicationType":null,
+         "publicationYear":"2021",
+         "publisher":null,
+         "recordId":"oai:DiVA.org:su-188132",
+         "scopusId":null,
+         "seriesTitle":null,
+         "source":[
+            "su"
+         ],
+         "subjects":{
+            "fiveDigitTopics":[
+               
+            ],
+            "oneDigitTopics":[
+               "1"
+            ],
+            "threeDigitTopics":[
+               "106"
+            ]
+         },
+         "summary":"The Arctic is one of the most extreme terrestrial environments on the planet. Here, we present the first chromosome-scale genome assembly of a plant adapted to the high Arctic, Draba nivalis (Brassicaceae), an attractive model species for studying plant adaptation to the stresses imposed by this harsh environment. We used an iterative scaffolding strategy with data from short-reads, single-molecule long reads, proximity ligation data, and a genetic map to produce a 302 Mb assembly that is highly contiguous with 91.6% assembled into eight chromosomes (the base chromosome number). To identify candidate genes and gene families that may have facilitated adaptation to Arctic environmental stresses, we performed comparative genomic analyses with nine non-Arctic Brassicaceae species. We show that the D. nivalis genome contains expanded suites of genes associated with drought and cold stress (e.g., related to the maintenance of oxidation-reduction homeostasis, meiosis, and signaling pathways). The expansions of gene families associated with these functions appear to be driven in part by the activity of transposable elements. Tests of positive selection identify suites of candidate genes associated with meiosis and photoperiodism, as well as cold, drought, and oxidative stress responses. Our results reveal a multifaceted landscape of stress adaptation in the D. nivalis genome, offering avenues for the continued development of this species as an Arctic model plant.",
+         "swedishList":null,
+         "title":"The genome of Draba nivalis shows signatures of adaptation to the extreme environmental stresses of the Arctic"
+      },
+      {
+         "DOI":[
+            "https://doi.org/10.1111/jomf.12738"
+         ],
+         "ISBN":[
+            
+         ],
+         "ISI":null,
+         "ISSN":[
+            "0022-2445",
+            "1741-3737"
+         ],
+         "PMID":null,
+         "archiveURI":"http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-188124",
+         "contentMarking":"ref",
+         "creatorCount":3,
+         "creators":[
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Morosow",
+               "freetext_affiliations":null,
+               "givenName":"Kathrin",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Jalovaara",
+               "freetext_affiliations":null,
+               "givenName":"Marika",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":"https://orcid.org/0000-0001-9687-1932",
+               "affiliation":"su.se",
+               "familyName":"H\u00e4rk\u00f6nen",
+               "freetext_affiliations":[
+                  [
+                     "Sociologiska institutionen",
+                     "Stockholms universitet"
+                  ],
+                  [
+                     "European University Institute, Italy"
+                  ]
+               ],
+               "givenName":"Juho",
+               "localId":"jhr",
+               "localIdBy":"su"
+            }
+         ],
+         "duplicateIds":[
+            "oai:DiVA.org:su-188124"
+         ],
+         "electronicLocator":"https://doi.org/10.1111/jomf.12738",
+         "keywords":[
+            "child care",
+            "divorce",
+            "family policies",
+            "longitudinal research",
+            "separation",
+            "Sociology",
+            "Sociologi",
+            "Samh\u00e4llsvetenskap",
+            "Social Sciences"
+         ],
+         "languages":[
+            "eng"
+         ],
+         "openAccess":true,
+         "outputTypes":[
+            "https://id.kb.se/term/swepub/publication/journal-article"
+         ],
+         "publicationChannel":"Journal of Marriage and Family",
+         "publicationCount":1,
+         "publicationStatus":"https://id.kb.se/term/swepub/EpubAheadOfPrintOnlineFirst",
+         "publicationType":null,
+         "publicationYear":"2021",
+         "publisher":null,
+         "recordId":"oai:DiVA.org:su-188124",
+         "scopusId":null,
+         "seriesTitle":null,
+         "source":[
+            "su"
+         ],
+         "subjects":{
+            "fiveDigitTopics":[
+               
+            ],
+            "oneDigitTopics":[
+               "5"
+            ],
+            "threeDigitTopics":[
+               "504"
+            ]
+         },
+         "summary":"Objective: This study examines how the receipt of the cash-for-care (CFC) benefit affects short- and long-term risks of union dissolution.Background: Several theories predict that couples' gendered division of labor decreases their risk of separation, either due to increased partnership satisfaction or because it establishes economic dependency. Family policies such as the Finnish CFC benefit, which is paid if a young child does not attend public daycare, may encourage such a gendered division of labor, at least temporarily.Method: Using Finnish register data, this study analyzes the first childbearing unions of 38,093 couples between 1987 and 2009. Discrete-time event history analyses and fixed effects models for nonrepeated events are applied.Results: The results suggest a lower separation risk while the benefit is received as compared to couples who do not use it, but no effect in the long-term. Fixed effects models that control for selection into CFC indicate postponement of separation until after take-up. Higher-income mothers show a stronger postponement effect, possibly due to greater income following leave.Conclusion: CFC use, which signals a temporary gendered division of labor and losses in mothers' earnings, predicts a lower separation risk during receipt of the benefit, but not beyond.Implications: Policies that affect the division of paid and unpaid labor at best only temporarily reduce dissolution risks.",
+         "swedishList":null,
+         "title":"Cash-for-Care Use and Union Dissolution in Finland"
+      },
+      {
+         "DOI":[
+            "https://doi.org/10.1111/oik.07794"
+         ],
+         "ISBN":[
+            
+         ],
+         "ISI":null,
+         "ISSN":[
+            "0030-1299",
+            "1600-0706"
+         ],
+         "PMID":null,
+         "archiveURI":"http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-188156",
+         "contentMarking":"ref",
+         "creatorCount":5,
+         "creators":[
+            {
+               "ORCID":"https://orcid.org/0000-0003-0892-5801",
+               "affiliation":"su.se",
+               "familyName":"Wickander",
+               "freetext_affiliations":[
+                  [
+                     "Institutionen f\u00f6r ekologi, milj\u00f6 och botanik",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Niklas J.",
+               "localId":"niwi2072",
+               "localIdBy":"su"
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Rasmussen",
+               "freetext_affiliations":null,
+               "givenName":"Pil U.",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Marteinsd\u00f3ttir",
+               "freetext_affiliations":null,
+               "givenName":"Brynd\u00eds",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":"https://orcid.org/0000-0001-8539-8967",
+               "affiliation":"su.se",
+               "familyName":"Ehrl\u00e9n",
+               "freetext_affiliations":[
+                  [
+                     "Institutionen f\u00f6r ekologi, milj\u00f6 och botanik",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Johan",
+               "localId":"ehrle",
+               "localIdBy":"su"
+            },
+            {
+               "ORCID":"https://orcid.org/0000-0002-3550-1070",
+               "affiliation":"su.se",
+               "familyName":"Tack",
+               "freetext_affiliations":[
+                  [
+                     "Institutionen f\u00f6r ekologi, milj\u00f6 och botanik",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Ayco J. M.",
+               "localId":"atack",
+               "localIdBy":"su"
+            }
+         ],
+         "duplicateIds":[
+            "oai:DiVA.org:su-188156"
+         ],
+         "electronicLocator":"https://doi.org/10.1111/oik.07794",
+         "keywords":[
+            "Bistorta vivipara",
+            "geothermal systems",
+            "local adaptation",
+            "performance",
+            "phenotypic plasticity",
+            "soil temperature",
+            "Biological Sciences",
+            "Biologiska vetenskaper",
+            "Naturvetenskap",
+            "Natural Sciences"
+         ],
+         "languages":[
+            "eng"
+         ],
+         "openAccess":true,
+         "outputTypes":[
+            "https://id.kb.se/term/swepub/publication/journal-article"
+         ],
+         "publicationChannel":"Oikos",
+         "publicationCount":1,
+         "publicationStatus":"https://id.kb.se/term/swepub/EpubAheadOfPrintOnlineFirst",
+         "publicationType":null,
+         "publicationYear":"2021",
+         "publisher":null,
+         "recordId":"oai:DiVA.org:su-188156",
+         "scopusId":null,
+         "seriesTitle":null,
+         "source":[
+            "su"
+         ],
+         "subjects":{
+            "fiveDigitTopics":[
+               
+            ],
+            "oneDigitTopics":[
+               "1"
+            ],
+            "threeDigitTopics":[
+               "106"
+            ]
+         },
+         "summary":"The arctic and alpine regions are predicted to experience some of the highest rates of climate change, and the arctic vegetation is expected to be especially sensitive to such changes. Understanding the ecological and evolutionary responses of arctic plant species to changes in climate is therefore a key objective. Geothermal areas, where natural temperature gradients occur over small spatial scales, and without many of the confounding environmental factors present in latitudinal and other gradient studies, provide a natural experimental setting in which to examine the response of arctic-alpine plants to increasing temperatures. To test the ecological and evolutionary response of the circumpolar alpine bistort Persicaria vivipara to temperature, we collected plant material and soil from areas with low, intermediate and high soil temperatures and grew them at three different temperatures in a three-factorial growth chamber experiment. At higher experimental soil temperatures, sprouting was earlier and plants had more leaves. Sprouting was earlier in soil originating from intermediate temperature and plants had more leaves when grown in soil originating from low temperatures. We did not find evidence of local adaptation or genetic variation in reaction norms among plants originating from areas with low, intermediate and high soil temperature. Our findings suggest that the alpine bistort has a strong plastic response to warming, but that differences in soil temperature have not resulted in genetic differentiation. The lack of an observed evolutionary response may, for example, be due to the absence of temperature-mediated selection on P. vivipara, the low rate of sexual recombination, or high levels of gene flow balancing differences in selection. When placed within the context of other studies, we conclude that arctic-alpine plant species often show strong plastic responses to spring warming, while evidence of evolutionary responses varies among species.",
+         "swedishList":null,
+         "title":"Ecological and evolutionary responses of an arctic plant to variation in microclimate and soil"
+      },
+      {
+         "DOI":[
+            "https://doi.org/10.3233/ASY-191594"
+         ],
+         "ISBN":[
+            
+         ],
+         "ISI":null,
+         "ISSN":[
+            "0921-7134",
+            "1875-8576"
+         ],
+         "PMID":null,
+         "archiveURI":"http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-179448",
+         "contentMarking":"ref",
+         "creatorCount":4,
+         "creators":[
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Helffer",
+               "freetext_affiliations":null,
+               "givenName":"Bernard",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Hoffmann-Ostenhof",
+               "freetext_affiliations":null,
+               "givenName":"Thomas",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Jauberteau",
+               "freetext_affiliations":null,
+               "givenName":"Fran\u00e7ois",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":"https://orcid.org/0000-0002-6763-6068",
+               "affiliation":"su.se",
+               "familyName":"L\u00e9na",
+               "freetext_affiliations":[
+                  [
+                     "Matematiska institutionen",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Corentin",
+               "localId":"cola8930",
+               "localIdBy":"su"
+            }
+         ],
+         "duplicateIds":[
+            "oai:DiVA.org:su-179448"
+         ],
+         "electronicLocator":null,
+         "keywords":[
+            "Spectral theory",
+            "Laplacian",
+            "multiplicity",
+            "matematik",
+            "Mathematics",
+            "Mathematical Analysis",
+            "Matematisk analys",
+            "Naturvetenskap",
+            "Matematik",
+            "Natural Sciences",
+            "Mathematics"
+         ],
+         "languages":[
+            "eng"
+         ],
+         "openAccess":false,
+         "outputTypes":[
+            "https://id.kb.se/term/swepub/publication/journal-article"
+         ],
+         "publicationChannel":"Asymptotic Analysis",
+         "publicationCount":1,
+         "publicationStatus":"https://id.kb.se/term/swepub/Published",
+         "publicationType":null,
+         "publicationYear":"2021",
+         "publisher":null,
+         "recordId":"oai:DiVA.org:su-179448",
+         "scopusId":null,
+         "seriesTitle":null,
+         "source":[
+            "su"
+         ],
+         "subjects":{
+            "fiveDigitTopics":[
+               "10101"
+            ],
+            "oneDigitTopics":[
+               "1"
+            ],
+            "threeDigitTopics":[
+               "101"
+            ]
+         },
+         "summary":"We revisit an interesting example proposed by Maria Hoffmann-Ostenhof, the second author and Nikolai Nadirashvili of a bounded domain in R\u00b2 for which the second eigenvalue of the Dirichlet Laplacian has multiplicity 3. We also analyze carefully the first eigenvalues of the Laplacian in the case of the disk with two symmetric cracks placed on a smaller concentric disk in function of their size.",
+         "swedishList":null,
+         "title":"On the multiplicity of the second eigenvalue of the Laplacian in non simply connected domains\u2013with some numerics\u2013"
+      },
+      {
+         "DOI":[
+            
+         ],
+         "ISBN":[
+            "9781527561533"
+         ],
+         "ISI":null,
+         "ISSN":[
+            
+         ],
+         "PMID":null,
+         "archiveURI":"http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-188273",
+         "contentMarking":"ref",
+         "creatorCount":3,
+         "creators":[
+            {
+               "ORCID":"https://orcid.org/0000-0002-7828-8003",
+               "affiliation":"su.se",
+               "familyName":"Bergqvist",
+               "freetext_affiliations":[
+                  [
+                     "Historiska institutionen",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Kim",
+               "localId":"kibe4273",
+               "localIdBy":"su"
+            },
+            {
+               "ORCID":"https://orcid.org/0000-0002-6437-9203",
+               "affiliation":"su.se",
+               "familyName":"Jensen",
+               "freetext_affiliations":[
+                  [
+                     "Centrum f\u00f6r medeltidsstudier",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Kurt Villads",
+               "localId":"kjens",
+               "localIdBy":"su"
+            },
+            {
+               "ORCID":null,
+               "affiliation":"su.se",
+               "familyName":"Lappin",
+               "freetext_affiliations":[
+                  [
+                     "Romanska och klassiska institutionen",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Anthony John",
+               "localId":"anla6426",
+               "localIdBy":"su"
+            }
+         ],
+         "duplicateIds":[
+            "oai:DiVA.org:su-188273"
+         ],
+         "electronicLocator":null,
+         "keywords":[
+            "History and Archaeology",
+            "Historia och arkeologi",
+            "Humaniora och konst",
+            "Humanities and the Arts"
+         ],
+         "languages":[
+            "eng"
+         ],
+         "openAccess":false,
+         "outputTypes":[
+            "https://id.kb.se/term/swepub/publication/edited-book"
+         ],
+         "publicationChannel":null,
+         "publicationCount":1,
+         "publicationStatus":"https://id.kb.se/term/swepub/Published",
+         "publicationType":null,
+         "publicationYear":"2021",
+         "publisher":"Cambridge Scholars Publishing",
+         "recordId":"oai:DiVA.org:su-188273",
+         "scopusId":null,
+         "seriesTitle":null,
+         "source":[
+            "su"
+         ],
+         "subjects":{
+            "fiveDigitTopics":[
+               
+            ],
+            "oneDigitTopics":[
+               "6"
+            ],
+            "threeDigitTopics":[
+               "601"
+            ]
+         },
+         "summary":"This volume offers insights into the nature of warfare, diplomacy and peacemaking on the Iberian Peninsula during the Middle Ages, and the influences and entanglements resulting from these processes. The essays collected here emphasize both violent conflict and the brokering of allegiances and settlements, either within polities and common endeavours or between rival entities (such as the taifas of Seville and Badajoz in the fractious eleventh century). The volume begins with an account of Muslim warlords who sought service under Christian rulers in the tenth century and their historiographical fates, and embraces the whole of the Iberian Peninsula, from its western coast, in an analysis of the tightrope walked by the Galician monastery of Oia in maintaining its Portuguese domains at times of bitter conflict between Castile and its neighbour, to its eastern coast, as Catalan and Aragonese merchants coped with pirates and state-sponsored confiscation in the fifteenth century.",
+         "swedishList":null,
+         "title":"War, Diplomacy and Peacemaking in Medieval Iberia"
+      },
+      {
+         "DOI":[
+            
+         ],
+         "ISBN":[
+            
+         ],
+         "ISI":null,
+         "ISSN":[
+            
+         ],
+         "PMID":null,
+         "archiveURI":"http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-188694",
+         "contentMarking":"ref",
+         "creatorCount":1,
+         "creators":[
+            {
+               "ORCID":null,
+               "affiliation":"su.se",
+               "familyName":"Sundkvist",
+               "freetext_affiliations":[
+                  [
+                     "Engelska institutionen",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Peter",
+               "localId":null,
+               "localIdBy":null
+            }
+         ],
+         "duplicateIds":[
+            "oai:DiVA.org:su-188694"
+         ],
+         "electronicLocator":null,
+         "keywords":[
+            "General Language Studies and Linguistics",
+            "J\u00e4mf\u00f6rande spr\u00e5kvetenskap och allm\u00e4n lingvistik",
+            "Humaniora och konst",
+            "Spr\u00e5k och litteratur",
+            "Humanities and the Arts",
+            "Languages and Literature"
+         ],
+         "languages":[
+            "eng"
+         ],
+         "openAccess":false,
+         "outputTypes":[
+            "https://id.kb.se/term/swepub/publication/book"
+         ],
+         "publicationChannel":null,
+         "publicationCount":1,
+         "publicationStatus":"https://id.kb.se/term/swepub/Published",
+         "publicationType":null,
+         "publicationYear":"2021",
+         "publisher":"Routledge",
+         "recordId":"oai:DiVA.org:su-188694",
+         "scopusId":null,
+         "seriesTitle":null,
+         "source":[
+            "su"
+         ],
+         "subjects":{
+            "fiveDigitTopics":[
+               "60201"
+            ],
+            "oneDigitTopics":[
+               "6"
+            ],
+            "threeDigitTopics":[
+               "602"
+            ]
+         },
+         "summary":null,
+         "swedishList":null,
+         "title":"The Shetland Dialect"
+      },
+      {
+         "DOI":[
+            "10.1080/1750399X.2020.1868176"
+         ],
+         "ISBN":[
+            
+         ],
+         "ISI":null,
+         "ISSN":[
+            "1750-399X",
+            "1757-0417"
+         ],
+         "PMID":null,
+         "archiveURI":"http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-188684",
+         "contentMarking":"ref",
+         "creatorCount":1,
+         "creators":[
+            {
+               "ORCID":"https://orcid.org/0000-0002-5093-5598",
+               "affiliation":"su.se",
+               "familyName":"Svahn",
+               "freetext_affiliations":[
+                  [
+                     "Tolk- och \u00f6vers\u00e4ttarinstitutet",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Elin",
+               "localId":"elsv5073",
+               "localIdBy":"su"
+            }
+         ],
+         "duplicateIds":[
+            "oai:DiVA.org:su-188684"
+         ],
+         "electronicLocator":"https://doi.org/10.1080/1750399X.2020.1868176",
+         "keywords":[
+            "Translation students; translator education; socialisation; qualitative longitudinal research; translation sociology",
+            "\u00f6vers\u00e4ttningsvetenskap",
+            "Translation Studies",
+            "Languages and Literature",
+            "Spr\u00e5k och litteratur",
+            "Humaniora och konst",
+            "Humanities and the Arts"
+         ],
+         "languages":[
+            "eng"
+         ],
+         "openAccess":true,
+         "outputTypes":[
+            "https://id.kb.se/term/swepub/publication/journal-article"
+         ],
+         "publicationChannel":"The Interpreter and Translator Trainer",
+         "publicationCount":1,
+         "publicationStatus":"https://id.kb.se/term/swepub/Published",
+         "publicationType":null,
+         "publicationYear":"2021",
+         "publisher":"Routledge",
+         "recordId":"oai:DiVA.org:su-188684",
+         "scopusId":null,
+         "seriesTitle":null,
+         "source":[
+            "su"
+         ],
+         "subjects":{
+            "fiveDigitTopics":[
+               
+            ],
+            "oneDigitTopics":[
+               "6"
+            ],
+            "threeDigitTopics":[
+               "602"
+            ]
+         },
+         "summary":"This article reports on a longitudinal focus group study of two groups of translation students aimed at investigating their socialisation into the translation profession. The students followed the same MA programme in Translation Studies at a Swedish university but worked with different source languages (SL): Japanese and English. The focus group data were analysed thematically following Braun and Clarke, with a point of departure in Weidman et al.\u2019s socialisation model and its three core elements: knowledge acquisition, investment, and involvement. The findings show that the two groups\u2019 SLs played a crucial role in their socialisation into the profession, affecting all three core elements to various degrees. The findings can be described as either pertaining to personal reasons or institutional constraints. Recognising Japanese as a language of low diffusion and low resources in the Swedish translation context provides an explanation for these findings. Finally, implications for translator education are discussed.",
+         "swedishList":null,
+         "title":"Effects of source languages on Swedish translation students\u2019 socialisation processes"
+      },
+      {
+         "DOI":[
+            
+         ],
+         "ISBN":[
+            "9781501363856",
+            "9781501363832"
+         ],
+         "ISI":null,
+         "ISSN":[
+            
+         ],
+         "PMID":null,
+         "archiveURI":"http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-185761",
+         "contentMarking":"vet",
+         "creatorCount":1,
+         "creators":[
+            {
+               "ORCID":"https://orcid.org/0000-0003-2053-0933",
+               "affiliation":"su.se",
+               "familyName":"Rahm-Sk\u00e5geby",
+               "freetext_affiliations":[
+                  [
+                     "Institutionen f\u00f6r mediestudier",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"J\u00f6rgen",
+               "localId":"jsk",
+               "localIdBy":"su"
+            }
+         ],
+         "duplicateIds":[
+            "oai:DiVA.org:su-185761"
+         ],
+         "electronicLocator":null,
+         "keywords":[
+            "cultural techniques",
+            "interruption",
+            "error",
+            "medie- och kommunikationsvetenskap",
+            "Media and Communication Studies",
+            "Media Studies",
+            "Medievetenskap",
+            "Samh\u00e4llsvetenskap",
+            "Medie- och kommunikationsvetenskap",
+            "Social Sciences",
+            "Media and Communications"
+         ],
+         "languages":[
+            "eng"
+         ],
+         "openAccess":false,
+         "outputTypes":[
+            "https://id.kb.se/term/swepub/publication/book-chapter"
+         ],
+         "publicationChannel":"Miscommunications: Errors, Mistakes, Media",
+         "publicationCount":1,
+         "publicationStatus":"https://id.kb.se/term/swepub/Published",
+         "publicationType":null,
+         "publicationYear":"2021",
+         "publisher":"Bloomsbury Academic",
+         "recordId":"oai:DiVA.org:su-185761",
+         "scopusId":null,
+         "seriesTitle":null,
+         "source":[
+            "su"
+         ],
+         "subjects":{
+            "fiveDigitTopics":[
+               "50801"
+            ],
+            "oneDigitTopics":[
+               "5"
+            ],
+            "threeDigitTopics":[
+               "508"
+            ]
+         },
+         "summary":"This chapter examines interruptions to flows of mediation. More specifically, it will seek to examine interruptions as cultural techniques (Siegert, 2015), aiming to elucidate their respective ontic operations, cultural functions, and revelations of opportunities for agency. The different interruption techniques studied in this chapter include freezes; static; and requisitions. Naturally, this is only an initial selection, and represents by no means a systematic range of examples. The chapter will trace these techniques across media forms (including TV broadcasts, home computer hacking, and video game streaming). The chapter is based on the fundamental assumption that breakdowns are capable of revealing previously ubiquitous and/or obscured aspects of mediation (James, 1991; Star, 1999) or that they can be productive and innovative sources for communication in their own right.",
+         "swedishList":null,
+         "title":"We interrupt this program: on the cultural techniques of 'technical difficulties'"
+      },
+      {
+         "DOI":[
+            "https://doi.org/10.1080/14759551.2019.1621311"
+         ],
+         "ISBN":[
+            
+         ],
+         "ISI":null,
+         "ISSN":[
+            "1475-9551",
+            "1477-2760"
+         ],
+         "PMID":null,
+         "archiveURI":"http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-171160",
+         "contentMarking":"ref",
+         "creatorCount":3,
+         "creators":[
+            {
+               "ORCID":"https://orcid.org/0000-0002-4035-9531",
+               "affiliation":"su.se",
+               "familyName":"Schriber",
+               "freetext_affiliations":[
+                  [
+                     "F\u00f6retagsekonomiska institutionen",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Svante",
+               "localId":"svsc7154",
+               "localIdBy":"su"
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"King",
+               "freetext_affiliations":null,
+               "givenName":"David R.",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":null,
+               "affiliation":null,
+               "familyName":"Bauer",
+               "freetext_affiliations":null,
+               "givenName":"Florian",
+               "localId":null,
+               "localIdBy":null
+            }
+         ],
+         "duplicateIds":[
+            "oai:DiVA.org:su-171160"
+         ],
+         "electronicLocator":"https://doi.org/10.1080/14759551.2019.1621311",
+         "keywords":[
+            "Acquisitions",
+            "decision-makers",
+            "corporeality",
+            "narrative",
+            "metaphor",
+            "Economics and Business",
+            "Ekonomi och n\u00e4ringsliv",
+            "Samh\u00e4llsvetenskap",
+            "Social Sciences"
+         ],
+         "languages":[
+            "eng"
+         ],
+         "openAccess":true,
+         "outputTypes":[
+            "https://id.kb.se/term/swepub/publication/journal-article"
+         ],
+         "publicationChannel":"Culture and Organization",
+         "publicationCount":1,
+         "publicationStatus":"https://id.kb.se/term/swepub/Published",
+         "publicationType":null,
+         "publicationYear":"2021",
+         "publisher":null,
+         "recordId":"oai:DiVA.org:su-171160",
+         "scopusId":null,
+         "seriesTitle":null,
+         "source":[
+            "su"
+         ],
+         "subjects":{
+            "fiveDigitTopics":[
+               
+            ],
+            "oneDigitTopics":[
+               "5"
+            ],
+            "threeDigitTopics":[
+               "502"
+            ]
+         },
+         "summary":"Although having grown significantly to constitute a strong influence in several fields of business research, research on corporate acquisitions still needs fresh voices. Research on acquisitions is dominated by functionalist studies searching for ways to improve financial outcomes. In contrast, this paper draws on a narrative approach to provide a new perspective to corporate acquisitions. We focus on decision-makers and how a metaphor that highlights human foibles connected to sins can offer a new understanding of corporate acquisitions. Engaging with acquisition literature and underpinning our argument with examples from well-known acquisitions, provides a new way of understanding commonly identified but socially unaccepted outcomes from acquisitions generally described as unintended and unwanted.",
+         "swedishList":null,
+         "title":"Deadly sins and corporate acquisitions"
+      },
+      {
+         "DOI":[
+            
+         ],
+         "ISBN":[
+            "9780367234898",
+            "9780429280054"
+         ],
+         "ISI":null,
+         "ISSN":[
+            "2155-5702",
+            "2155-5702",
+            "2155-5702"
+         ],
+         "PMID":null,
+         "archiveURI":"http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-186251",
+         "contentMarking":"ref",
+         "creatorCount":3,
+         "creators":[
+            {
+               "ORCID":"https://orcid.org/0000-0002-3605-8664",
+               "affiliation":"su.se",
+               "familyName":"Gottz\u00e9n",
+               "freetext_affiliations":[
+                  [
+                     "Barn- och ungdomsvetenskapliga institutionen",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Lucas",
+               "localId":"lfors",
+               "localIdBy":"su"
+            },
+            {
+               "ORCID":"https://orcid.org/0000-0003-1801-5465",
+               "affiliation":null,
+               "familyName":"Bj\u00f8rnholt",
+               "freetext_affiliations":null,
+               "givenName":"Margunn",
+               "localId":null,
+               "localIdBy":null
+            },
+            {
+               "ORCID":"https://orcid.org/0000-0001-7540-4534",
+               "affiliation":null,
+               "familyName":"Boonzaier",
+               "freetext_affiliations":null,
+               "givenName":"Floretta",
+               "localId":null,
+               "localIdBy":null
+            }
+         ],
+         "duplicateIds":[
+            "oai:DiVA.org:su-186251"
+         ],
+         "electronicLocator":null,
+         "keywords":[
+            "Social Sciences Interdisciplinary",
+            "Tv\u00e4rvetenskapliga studier inom samh\u00e4llsvetenskap",
+            "Gender Studies",
+            "Genusstudier",
+            "Samh\u00e4llsvetenskap",
+            "Annan samh\u00e4llsvetenskap",
+            "Social Sciences",
+            "Other Social Sciences"
+         ],
+         "languages":[
+            "eng"
+         ],
+         "openAccess":false,
+         "outputTypes":[
+            "https://id.kb.se/term/swepub/publication/book-chapter"
+         ],
+         "publicationChannel":"Men, masculinities and intimate partner violence",
+         "publicationCount":1,
+         "publicationStatus":"https://id.kb.se/term/swepub/Published",
+         "publicationType":null,
+         "publicationYear":"2021",
+         "publisher":"Routledge",
+         "recordId":"oai:DiVA.org:su-186251",
+         "scopusId":null,
+         "seriesTitle":null,
+         "source":[
+            "su"
+         ],
+         "subjects":{
+            "fiveDigitTopics":[
+               "50901",
+               "50902"
+            ],
+            "oneDigitTopics":[
+               "5"
+            ],
+            "threeDigitTopics":[
+               "509"
+            ]
+         },
+         "summary":"This chapter gives a broad overview of the field by bringing in to focus the value of contemporary, critical masculinity studies to feminist work on intimate partner violence. It begins by providing an outline of feminist engagements with intimate partner violence, from its origins to more contemporary work that interrogate questions of difference and diversity. We introduce masculinity studies and its relative lack of serious work on violence, specifically in a global Northern context, and we make a case that theorising about men, masculinity and intimate partner violence is fundamental and it must keep the intersectional entanglements of identities and social inequalities in mind in order to avoid the risk of reproducing classed and racial hierarchies. This chapter ends with an outline of the various chapters to the volume and its contributions to the study of men, masculinities and intimate partner violence.",
+         "swedishList":null,
+         "title":"What has masculinity to do with intimate partner violence?"
+      },
+      {
+         "DOI":[
+            
+         ],
+         "ISBN":[
+            "9789179113704",
+            "9789179113711"
+         ],
+         "ISI":null,
+         "ISSN":[
+            
+         ],
+         "PMID":null,
+         "archiveURI":"http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-186770",
+         "contentMarking":"vet",
+         "creatorCount":1,
+         "creators":[
+            {
+               "ORCID":"https://orcid.org/0000-0002-0405-778X",
+               "affiliation":"su.se",
+               "familyName":"Nyqvist",
+               "freetext_affiliations":[
+                  [
+                     "Institutionen f\u00f6r biokemi och biofysik",
+                     "Stockholms universitet"
+                  ]
+               ],
+               "givenName":"Ida",
+               "localId":"idli0944",
+               "localIdBy":"su"
+            }
+         ],
+         "duplicateIds":[
+            "oai:DiVA.org:su-186770"
+         ],
+         "electronicLocator":"http://su.diva-portal.org/smash/get/diva2:1503890/FULLTEXT01.pdf",
+         "keywords":[
+            "Intrinsically disordered proteins",
+            "Protein-protein interactions",
+            "Disorder-to-order transition",
+            "Rate-limiting transition state",
+            "\u0424-value analysis",
+            "NMR relaxation",
+            "Side-chain dynamics",
+            "Backbone dynamics",
+            "Conformational entropy change",
+            "Biophysics",
+            "biofysik",
+            "Biophysics",
+            "Biofysik",
+            "Naturvetenskap",
+            "Biologi",
+            "Natural Sciences",
+            "Biological Sciences"
+         ],
+         "languages":[
+            "eng"
+         ],
+         "openAccess":true,
+         "outputTypes":[
+            "https://id.kb.se/term/swepub/publication/doctoral-thesis"
+         ],
+         "publicationChannel":null,
+         "publicationCount":1,
+         "publicationStatus":"https://id.kb.se/term/swepub/Published",
+         "publicationType":null,
+         "publicationYear":"2021",
+         "publisher":"Department of Biochemistry and Biophysics, Stockholm University",
+         "recordId":"oai:DiVA.org:su-186770",
+         "scopusId":null,
+         "seriesTitle":null,
+         "source":[
+            "su"
+         ],
+         "subjects":{
+            "fiveDigitTopics":[
+               "10603"
+            ],
+            "oneDigitTopics":[
+               "1"
+            ],
+            "threeDigitTopics":[
+               "106"
+            ]
+         },
+         "summary":"Intrinsically disordered proteins and regions (IDPs/Rs) are proteins that do not form stable and well-defined structures in their free states but rather occupy an ensemble of conformations that change over time while still staying functional. They are prevalent in the eukaryotic proteome and are involved in various vital processes in the cell where they often interact with their binding partners through coupled binding and folding reactions. The knowledge on the molecular details of these interactions is still limited as is the role of dynamics and conformational entropy changes. In this thesis binding interactions between IDPs and a folded protein domain have been studied in more detail. The rate-limiting transition states (TS) of binding have been examined using kinetic experiments and protein engineering (F-value analysis), and the picosecond to nanosecond backbone and side-chain dynamics of these interactions have been studied with nuclear magnetic resonance (NMR) spectroscopy. To study these properties the globular TAZ1 domain of the CREB binding protein (CBP) and three of its interaction partners, the disordered transactivation domains of STAT2, HIF-1a and RelA have been selected. At the rate limiting transition states of binding for TAZ1/TAD-STAT2 and TAZ1/CTAD-HIF-1a native hydrophobic binding contacts are largely absent. These interactions are instead formed cooperatively after passing the rate-limiting barrier. The results from the backbone and side-chain dynamic studies show that the internal motions for both binding partners are significantly affected by the interactions. Changes in dynamics upon binding correspond to conformational entropy changes that contribute significantly to the binding thermodynamics, and are in the same order of magnitude as the binding enthalpy. Additionally, the conformational entropy changes for TAZ1 vary when binding to the different IDPs, demonstrating the importance of conformational entropy. In conclusion, this work contributes to the understanding of the nature of binding interactions involving intrinsically disordered proteins.",
+         "swedishList":null,
+         "title":"Biophysical\u00a0characterization\u00a0of protein-protein interactions involving intrinsically disordered proteins"
+      }
+   ],
+   "query":{
+      "contentMarking":[
+         
+      ],
+      "genreForm":[
+         
+      ],
+      "keywords":"",
+      "limit":20,
+      "match-genreForm":[
+         
+      ],
+      "org":[
+         "su"
+      ],
+      "publicationStatus":[
+         
+      ],
+      "subject":[
+         
+      ],
+      "swedishList":false,
+      "years":{
+         "from":"2021",
+         "to":"2021"
+      }
+   },
+   "query_handled_at":"2021-01-13T14:22:04Z",
+   "to":2021,
+   "total":101
+}

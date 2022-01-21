@@ -1,0 +1,20 @@
+{
+  "harvest_id": "49fe2f3c-5532-11eb-9bb0-02420a000106",
+  "rejected_publications": [
+    {
+      "errors": [
+        {
+          "error_code": "relatedItemTypeMissing",
+          "labelByLang": {
+            "eng": "Missing host publication",
+            "swe": "Värdpublikation saknas"
+          }
+        }
+      ],
+      "record_id": "oai:DiVA.org:su-188679"
+    }
+  ],
+  "source_code": "su",
+  "source_name": "Stockholms universitet",
+  "total": 1
+}

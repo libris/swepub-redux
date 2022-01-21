@@ -1,0 +1,39 @@
+module.exports = {
+  root: true,
+
+  env: {
+    node: true,
+  },
+
+  extends: [
+    'plugin:vue/essential',
+    '@vue/airbnb',
+  ],
+
+  rules: {
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'import/no-unresolved': 'off',
+    'import/extensions': 'off',
+    'no-param-reassign': ['error', { props: false }],
+    'no-prototype-builtins': 'off',
+    radix: 'off',
+    'no-plusplus': 'off',
+  },
+
+  parserOptions: {
+    parser: 'babel-eslint',
+  },
+
+  overrides: [
+    {
+      files: [
+        '**/__tests__/*.{j,t}s?(x)',
+        '**/tests/unit/**/*.spec.{j,t}s?(x)',
+      ],
+      env: {
+        jest: true,
+      },
+    },
+  ],
+};

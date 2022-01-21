@@ -1,0 +1,28 @@
+{
+  "from":2020,
+  "source":"bth",
+  "ssif":{
+     "1 Naturvetenskap":{
+        "percentage":40.86,
+        "total":123
+     },
+     "2 Teknik":{
+        "percentage":30.9,
+        "total":93
+     },
+     "3 Medicin och hälsovetenskap":{
+        "percentage":11.63,
+        "total":35
+     },
+     "5 Samhällsvetenskap":{
+        "percentage":15.95,
+        "total":48
+     },
+     "6 Humaniora och konst":{
+        "percentage":0.66,
+        "total":2
+     }
+  },
+  "to":2020,
+  "total":301
+}

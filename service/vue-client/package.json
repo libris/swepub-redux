@@ -1,0 +1,61 @@
+{
+  "name": "swepub-vue-client",
+  "version": "1.7.0-rc11",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "test:all": "vue-cli-service test:unit && NODE_ENV=e2e vue-cli-service test:e2e --headless",
+    "test:unit": "vue-cli-service test:unit",
+    "test:e2e": "NODE_ENV=e2e vue-cli-service test:e2e",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.30",
+    "@fortawesome/free-brands-svg-icons": "^5.14.0",
+    "@fortawesome/free-regular-svg-icons": "^5.14.0",
+    "@fortawesome/free-solid-svg-icons": "^5.14.0",
+    "@fortawesome/vue-fontawesome": "^2.0.0",
+    "autosize": "^4.0.2",
+    "chartjs-plugin-deferred": "^1.0.1",
+    "dayjs": "^1.9.1",
+    "normalize.css": "^8.0.1",
+    "parse-link-header": "^1.0.1",
+    "v-tooltip": "^2.0.3",
+    "vue": "^2.6.12",
+    "vue-chartjs": "^3.5.1",
+    "vue-clickaway": "^2.2.2",
+    "vue-matomo": "^3.14.0-0",
+    "vue-router": "^3.4.5",
+    "vue-select": "^3.10.8",
+    "vue-simple-spinner": "^1.2.10",
+    "vuex": "^3.5.1",
+    "whatwg-fetch": "^3.4.1"
+  },
+  "devDependencies": {
+    "@cypress/code-coverage": "^3.9.2",
+    "@vue/cli-plugin-babel": "~4.5.9",
+    "@vue/cli-plugin-e2e-cypress": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.9",
+    "@vue/cli-plugin-unit-jest": "~4.5.0",
+    "@vue/cli-service": "~4.5.9",
+    "@vue/eslint-config-airbnb": "^5.1.0",
+    "@vue/test-utils": "^1.0.3",
+    "babel-eslint": "^10.1.0",
+    "babel-plugin-transform-remove-console": "^6.9.4",
+    "chart.js": "^2.9.3",
+    "eslint": "^6.7.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-vue": "^6.2.2",
+    "flush-promises": "^1.0.2",
+    "jest-fetch-mock": "^3.0.3",
+    "node-sass": "^4.14.1",
+    "sass-loader": "10.0.2",
+    "vue-template-compiler": "^2.6.12",
+    "webpack": "^4.44.2"
+  },
+  "nyc": {
+    "report-dir": "tests/e2e/coverage",
+    "temp-dir": "tests/e2e/coverage/.nyc_output"
+  }
+}

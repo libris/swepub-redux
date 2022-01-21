@@ -1,0 +1,42 @@
+{
+  "ISSN_missing_check": {
+    "swe": "ISSN saknas",
+    "en": "ISSN missing"
+  },
+  "UKA_comprehensive_check": {
+    "swe": "UKÄ ofullständig",
+    "en": "UKA comprehensive"
+  },
+  "contributor_duplicate_check": {
+    "swe": "Upphov dubblerat",
+    "en": "Contributor duplicate"
+  },
+  "creator_count_check": {
+    "swe": "Upphovsantal",
+    "en": "Creator count"
+  },
+  "auto_classify": {
+    "swe": "Autoklassning",
+    "en": "Auto classify"
+  },
+  "creator_count": {
+    "swe": "Upphovsantal",
+    "en": "Creator count"
+  },
+  "free_text": {
+    "swe": "Fritext",
+    "en": "Free text"
+  },
+  "publication_year": {
+    "swe": "Utgivningsår",
+    "en": "Publication year"
+  },
+  "UKA": {
+    "swe": "UKÄ",
+    "en": "UKA"
+  },
+  "oa_check": {
+    "swe": "Öppen tillgång",
+    "en": "Open access"
+  }
+}

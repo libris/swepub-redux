@@ -1,0 +1,193 @@
+{
+  "openAccess": {
+    "percentage": 23.99,
+    "total": 393836
+  },
+  "sources": {
+    "bth": {
+      "percentage": 0.42,
+      "total": 6904
+    },
+    "cth": {
+      "percentage": 8.51,
+      "total": 139633
+    },
+    "du": {
+      "percentage": 0.74,
+      "total": 12207
+    },
+    "esh": {
+      "percentage": 0.18,
+      "total": 2952
+    },
+    "fhs": {
+      "percentage": 0.21,
+      "total": 3504
+    },
+    "gih": {
+      "percentage": 0.16,
+      "total": 2680
+    },
+    "gu": {
+      "percentage": 7.95,
+      "total": 130564
+    },
+    "hb": {
+      "percentage": 0.63,
+      "total": 10330
+    },
+    "hh": {
+      "percentage": 0.54,
+      "total": 8786
+    },
+    "hig": {
+      "percentage": 0.62,
+      "total": 10109
+    },
+    "his": {
+      "percentage": 0.36,
+      "total": 5840
+    },
+    "hj": {
+      "percentage": 1.35,
+      "total": 22109
+    },
+    "hkr": {
+      "percentage": 0.46,
+      "total": 7624
+    },
+    "hv": {
+      "percentage": 0.33,
+      "total": 5378
+    },
+    "kau": {
+      "percentage": 1.44,
+      "total": 23578
+    },
+    "ki": {
+      "percentage": 8.83,
+      "total": 144917
+    },
+    "kkh": {
+      "percentage": 0.01,
+      "total": 83
+    },
+    "kmh": {
+      "percentage": 0.02,
+      "total": 253
+    },
+    "konstfack": {
+      "percentage": 0.05,
+      "total": 769
+    },
+    "kth": {
+      "percentage": 6.74,
+      "total": 110596
+    },
+    "liu": {
+      "percentage": 5.57,
+      "total": 91508
+    },
+    "lnu": {
+      "percentage": 2.13,
+      "total": 34935
+    },
+    "ltu": {
+      "percentage": 2.8,
+      "total": 45948
+    },
+    "lu": {
+      "percentage": 12.93,
+      "total": 212324
+    },
+    "mau": {
+      "percentage": 0.88,
+      "total": 14415
+    },
+    "mdh": {
+      "percentage": 0.95,
+      "total": 15566
+    },
+    "miun": {
+      "percentage": 1.15,
+      "total": 18870
+    },
+    "nai": {
+      "percentage": 0.11,
+      "total": 1731
+    },
+    "nationalmuseum": {
+      "percentage": 0.03,
+      "total": 428
+    },
+    "naturvardsverket": {
+      "percentage": 0.4,
+      "total": 6532
+    },
+    "nrm": {
+      "percentage": 0.16,
+      "total": 2707
+    },
+    "oru": {
+      "percentage": 1.87,
+      "total": 30654
+    },
+    "raa": {
+      "percentage": 0.29,
+      "total": 4758
+    },
+    "ri": {
+      "percentage": 1.34,
+      "total": 21962
+    },
+    "rkh": {
+      "percentage": 0.07,
+      "total": 1133
+    },
+    "sh": {
+      "percentage": 0.99,
+      "total": 16325
+    },
+    "shh": {
+      "percentage": 0.05,
+      "total": 794
+    },
+    "slu": {
+      "percentage": 1.96,
+      "total": 32122
+    },
+    "su": {
+      "percentage": 5.91,
+      "total": 96986
+    },
+    "ths": {
+      "percentage": 0.03,
+      "total": 482
+    },
+    "umu": {
+      "percentage": 4.32,
+      "total": 70884
+    },
+    "uniarts": {
+      "percentage": 0.01,
+      "total": 230
+    },
+    "uu": {
+      "percentage": 14.37,
+      "total": 235878
+    },
+    "vti": {
+      "percentage": 0.53,
+      "total": 8632
+    }
+  },
+  "ssif": {
+    "percentage": 90.67,
+    "total": 1488553
+  },
+  "swedishList": {
+    "percentage": 18.0,
+    "total": 295556
+  },
+  "total": 1641750
+}
