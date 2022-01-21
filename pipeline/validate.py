@@ -60,7 +60,7 @@ def _should_be_rejected(raw_xml, body):
     error_list = []
     parsed_xml = et.parse(StringIO(raw_xml))
     errors = MINIMUM_LEVEL_FILTER(parsed_xml)
-    if errors.getroot():
+    if errors.getroot() is not None:
         for error in errors.getroot():
             error_list.append(error.text)
         min_level_errors = {'bibliographical_minimum_level_error': error_list}
