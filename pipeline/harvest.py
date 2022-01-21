@@ -9,7 +9,7 @@ from uuid import uuid1
 from convert import convert
 from deduplicate import deduplicate
 import time
-from multiprocessing import Process
+from multiprocessing import Process, Lock, Value
 import sys
 from storage import *
 
@@ -140,10 +140,10 @@ class HarvestFailed(Exception):
 
 
 
-def harvest(source):
+def harvest(source, lock, harvested_count):
 
     start_time = time.time()
-    
+
     for set in source["sets"]:
         harvest_info = f'{set["url"]} ({set["subset"]}, {set["metadata_prefix"]})'
         record_iterator = RecordIterator(source["code"], set, None, None)
@@ -151,38 +151,34 @@ def harvest(source):
             batch_count = 0
             batch = []
             processes = []
-            records_in_batch = 0
-            total = 0
+            record_count_since_report = 0
             t0 = time.time()
             
             for record in record_iterator:
                 if record.is_successful():
                     batch.append(record.xml)
-                    records_in_batch += 1
-                    total += 1
-                    if records_in_batch == 200:
-                        records_in_batch = 0
-                        t1 = time.time()
-                        diff = t1 - t0
-                        t0 = t1
-                        #print(f"{200/diff} per sec, for last 200 , {total} done in total.")
-                    if (len(batch) >= 512):
-                        while (len(processes) >= 16):
+                    record_count_since_report += 1
+                    # if record_count_since_report == 200:
+                    #     record_count_since_report = 0
+                    #     diff = time.time() - start_time
+                    #     harvested_count.value += 200
+                    #     print(f"{harvested_count.value/diff} per sec, running average, {harvested_count.value} done in total.")
+                    if (len(batch) >= 128):
+                        while (len(processes) >= 4):
                             time.sleep(0)
                             n = len(processes)
                             i = n-1
                             while i > -1:
                                 if not processes[i].is_alive():
-                                    #print("* CLEARING A PROCESS")
                                     processes[i].join()
                                     del processes[i]
                                 i -= 1
-                        p = Process(target=threaded_handle_harvested, args=(batch,source["code"]))
+                        p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock))
                         batch_count += 1
                         p.start()
                         processes.append( p )
                         batch = []
-            p = Process(target=threaded_handle_harvested, args=(batch,source["code"]))
+            p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock))
             p.start()
             processes.append( p )
             for p in processes:
@@ -193,11 +189,16 @@ def harvest(source):
             print (f'FAILED HARVEST: {source["code"]}')
             exit -1
 
-def threaded_handle_harvested(batch, source):
+
+def threaded_handle_harvested(batch, source, lock):
     for xml in batch:
         converted = convert(xml)
-        accepted = validate(xml, converted)
-        store_original_and_converted(xml, converted, source, accepted)
+        accepted = validate(xml, converted):
+        lock.acquire()
+        try:
+            store_original_and_converted(xml, converted, source, accepted)
+        finally:
+            lock.release()
 
 sources = [
     {
@@ -525,14 +526,42 @@ if __name__ == "__main__":
     if "devdata" in args:
         sources_to_harvest = sources[15:18]
 
+    t0 = time.time()
     clean_and_init_storage()
     processes = []
+
+    # Initially synchronization was left up to sqlite3's file locking to handle,
+    # which was fine, except that the try/sleep is somewhat inefficient and risks
+    # starving some processes for a long time.
+    # Instead, using an explicit lock should instead allow the kernel to fairly
+    # distribute the database between the processes.
+    lock = Lock()
+
+    harvested_count = Value("I", 0)
+
     for source in sources_to_harvest:
-        p = Process(target=harvest, args=(source,))
+        p = Process(target=harvest, args=(source,lock,harvested_count))
         p.start()
         processes.append( p )
     for p in processes:
         p.join()
+
+    t1 = time.time()
+    diff = t1-t0
+    print(f"Phase 1 (harvesting) ran for {diff} seconds")
+    t0 = t1
     deduplicate()
+    t1 = time.time()
+    diff = t1-t0
+    print(f"Phase 2 (deduplication) ran for {diff} seconds")
+    t0 = t1
     merge()
+    t1 = time.time()
+    diff = t1-t0
+    print(f"Phase 3 (merging) ran for {diff} seconds")
+    t0 = t1
     auto_classify()
+    t1 = time.time()
+    diff = t1-t0
+    print(f"Phase 4 (auto-classification) ran for {diff} seconds")
+

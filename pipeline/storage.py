@@ -11,11 +11,11 @@ def clean_and_init_storage():
     if os.path.exists(sqlite_path):
         os.remove(sqlite_path)
     global connection
-    connection = sqlite3.connect(sqlite_path, timeout=(5*60*60))
+    connection = sqlite3.connect(sqlite_path)
     cursor = connection.cursor()
 
-    # Use sqlite WAL mode
-    #cursor.execute("PRAGMA journal_mode=WAL;")
+    cursor.execute("PRAGMA journal_mode=WAL;")
+    cursor.execute("PRAGMA synchronous=OFF;")
 
     # Because Swepub APIs expose publications as originally harvested, these must be kept.
     cursor.execute("""
@@ -150,7 +150,7 @@ def clean_and_init_storage():
 
 def open_existing_storage():
     global connection
-    connection = sqlite3.connect(sqlite_path, timeout=(5*60*60))
+    connection = sqlite3.connect(sqlite_path)
 
 def store_original_and_converted(original, converted, source, accepted):
     cursor = connection.cursor()

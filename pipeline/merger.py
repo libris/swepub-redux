@@ -171,7 +171,7 @@ class PublicationMerger:
         master_publication_information = master.publication_information
         candidate_publication_information = candidate.publication_information
 
-        if not master_publication_information and not candidate.publication_information:
+        if not candidate.publication_information:
             return master
 
         if not master_publication_information and candidate.publication_information:
