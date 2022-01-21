@@ -32,13 +32,16 @@ def clean_and_init_storage():
     """)
 
     # This table is used to store log entries (validation/normalization errors etc) for
-    # each original publication
+    # each publication
     cursor.execute("""
-    CREATE TABLE original_log (
-        original_id INTEGER,
+    CREATE TABLE converted_events (
+        converted_id INTEGER,
+        type TEXT,
+        field TEXT,
+        path TEXT,
         code TEXT,
-        message TEXT,
-        FOREIGN KEY (original_id) REFERENCES original(id)
+        value TEXT,
+        FOREIGN KEY (converted_id) REFERENCES converted(id)
     );
     """)
 
@@ -152,7 +155,7 @@ def open_existing_storage():
     global connection
     connection = sqlite3.connect(sqlite_path)
 
-def store_original_and_converted(original, converted, source, accepted):
+def store_original_and_converted(original, converted, source, accepted, events):
     cursor = connection.cursor()
 
     #print(f'Inserting with oai_id {converted["@id"]} : \n\n{json.dumps(converted)}\n\n')
@@ -162,11 +165,17 @@ def store_original_and_converted(original, converted, source, accepted):
     """, (source, json.dumps(original), accepted, converted["@id"])).lastrowid
 
     if not accepted:
+        connection.commit()
         return
 
     converted_rowid = cursor.execute("""
     INSERT INTO converted(data, original_id) VALUES(?, ?);
     """, (json.dumps(converted), original_rowid)).lastrowid
+
+    for event in events:
+        cursor.execute("""
+        INSERT INTO converted_events(converted_id, type, field, path, code, value) VALUES (?, ?, ?, ?, ?, ?)
+        """, (converted_rowid, event["type"], event["field"], event["path"], event["code"], event["value"]))
 
     identifiers = []
     for title in converted["instanceOf"]["hasTitle"]:

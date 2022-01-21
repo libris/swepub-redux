@@ -193,10 +193,10 @@ def harvest(source, lock, harvested_count):
 def threaded_handle_harvested(batch, source, lock):
     for xml in batch:
         converted = convert(xml)
-        accepted = validate(xml, converted)
+        (accepted, events) = validate(xml, converted)
         lock.acquire()
         try:
-            store_original_and_converted(xml, converted, source, accepted)
+            store_original_and_converted(xml, converted, source, accepted, events)
         finally:
             lock.release()
 

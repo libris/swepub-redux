@@ -1,6 +1,5 @@
 import re
-from util import update_at_path, unicode_translate
-from log import log_for_OAI_id
+from util import update_at_path, unicode_translate, make_event
 
 # flake8: noqa W504
 issn_regex = re.compile(
@@ -16,16 +15,16 @@ issn_regex = re.compile(
     '(?:(?![ ]\d))'           # Check that not followed by non digit or hyphen and digit
 )
 
-def recover_issn(issn, body, path, id):
+def recover_issn(issn, body, path, id, events):
     translated = unicode_translate(issn)
     if translated != issn:
         issn = translated
         update_at_path(body, path, issn)
+        events.append(make_event("enrichment", "ISSN", path, "unicode", issn))
         
     answ = issn_regex.findall(issn)
-    # WTF?
     # Skip first element in part since it's empty or contains non wanted delimiter
     recovered = [''.join(part[1:]) for part in answ]
     if len(recovered) > 0 and recovered[0] != issn:
-        log_for_OAI_id(id, 'ISSN enrichment: recovery')
+        events.append(make_event("enrichment", "ISSN", path, "split", recovered))
         update_at_path(body, path, recovered)
