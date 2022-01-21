@@ -26,5 +26,5 @@ def recover_issn(issn, body, path, id, events):
     # Skip first element in part since it's empty or contains non wanted delimiter
     recovered = [''.join(part[1:]) for part in answ]
     if len(recovered) > 0 and recovered[0] != issn:
-        events.append(make_event("enrichment", "ISSN", path, "split", recovered))
+        events.append(make_event("enrichment", "ISSN", path, "split", recovered[0]))
         update_at_path(body, path, recovered[0])
