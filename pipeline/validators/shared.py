@@ -1,5 +1,4 @@
 from requests.exceptions import Timeout, ReadTimeout
-from log import log_for_OAI_id
 import rfc3987
 
 def _unicode_char_finder(input_string):

@@ -1,7 +1,6 @@
 from urllib.parse import quote
 import unicodedata
 import sys
-from log import log_for_OAI_id
 from validators.shared import remote_verification
 from util import make_event
 

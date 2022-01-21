@@ -1,7 +1,6 @@
 import lxml.etree as et
 from io import StringIO
 from enrichers.issn import recover_issn
-from log import log_for_OAI_id
 from jsonpath_rw_ext import parse
 import itertools
 import requests
@@ -64,7 +63,6 @@ def _should_be_rejected(raw_xml, body):
         for error in errors.getroot():
             error_list.append(error.text)
         min_level_errors = {'bibliographical_minimum_level_error': error_list}
-        log_for_OAI_id(body["@id"], min_level_errors)
     return bool(error_list)
 
 def validate(raw_xml, body):

@@ -1,6 +1,5 @@
 import re
 from stdnum.iso7064.mod_11_2 import is_valid
-from log import log_for_OAI_id
 from validators.shared import validate_base_unicode
 from util import make_event
 

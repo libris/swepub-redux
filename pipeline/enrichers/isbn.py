@@ -1,7 +1,6 @@
 import re
 from stdnum.isbn import compact
 from util import update_at_path, make_event
-from log import log_for_OAI_id
 
 # flake8: noqa W504
 isbn_regex = re.compile(

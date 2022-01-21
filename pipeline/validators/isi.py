@@ -1,5 +1,4 @@
 import re
-from log import log_for_OAI_id
 from validators.shared import validate_base_unicode
 from util import make_event
 

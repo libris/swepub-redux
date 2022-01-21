@@ -1,6 +1,5 @@
 import re
 from util import update_at_path, unicode_translate, make_event
-from log import log_for_OAI_id
 
 # flake8: noqa W504
 orcid_regex = re.compile(
