@@ -151,8 +151,9 @@ def store_converted(converted, source):
 
     identifiers = []
     for title in converted["instanceOf"]["hasTitle"]:
-        if title["mainTitle"] is not None and isinstance(title["mainTitle"], str):
-            identifiers.append(title["mainTitle"]) # TODO: STRIP AWAY WHITESPACE ETC
+        main_title = title.get("mainTitle")
+        if main_title is not None and isinstance(main_title, str):
+            identifiers.append(main_title) # TODO: STRIP AWAY WHITESPACE ETC
     
     for id_object in converted["identifiedBy"]:
         if id_object["@type"] != "Local":
