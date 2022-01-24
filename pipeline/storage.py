@@ -142,7 +142,7 @@ def clean_and_init_storage():
     """)
 
     cursor.execute("""
-    CREATE TABLE search_single_values (
+    CREATE TABLE search_single (
         id INTEGER PRIMARY KEY,
         finalized_id INTEGER,
         year INTEGER,
@@ -156,7 +156,7 @@ def clean_and_init_storage():
     cursor.execute("""
     CREATE TABLE search_doi (
         finalized_id INTEGER,
-        doi TEXT,
+        value TEXT,
         FOREIGN KEY (finalized_id) REFERENCES finalized(id)
     );
     """)
@@ -164,7 +164,7 @@ def clean_and_init_storage():
     cursor.execute("""
     CREATE TABLE search_genre_form (
         finalized_id INTEGER,
-        genre_form TEXT,
+        value TEXT,
         FOREIGN KEY (finalized_id) REFERENCES finalized(id)
     );
     """)
@@ -172,7 +172,7 @@ def clean_and_init_storage():
     cursor.execute("""
     CREATE TABLE search_subject (
         finalized_id INTEGER,
-        subject INTEGER,
+        value INTEGER,
         FOREIGN KEY (finalized_id) REFERENCES finalized(id)
     );
     """)
@@ -192,13 +192,13 @@ def clean_and_init_storage():
     cursor.execute("""
     CREATE TABLE search_org (
         finalized_id INTEGER,
-        org TEXT,
+        value TEXT,
         FOREIGN KEY (finalized_id) REFERENCES finalized(id)
     );
     """)
 
     cursor.execute("""
-    CREATE VIRTUAL TABLE search_fulltext_title_keywords USING FTS5 (
+    CREATE VIRTUAL TABLE search_fulltext USING FTS5 (
         title,
         keywords
     );

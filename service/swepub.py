@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-import itertools
+import enum
+from collections import Iterable
 from pathlib import Path
 import sqlite3
 from flask import Flask, g, request, jsonify
+from pypika import Query, Tables, Parameter
+from pypika.terms import BasicCriterion
 
 from utils import *
 
@@ -37,8 +40,12 @@ def dict_factory(cursor, row):
     return d
 
 
-def flatten(t):
-    return [item for sublist in t for item in sublist]
+def flatten(l):
+    for el in l:
+        if isinstance(el, Iterable) and not isinstance(el, (str, bytes)):
+            yield from flatten(el)
+        else:
+            yield el
 
 
 def get_percentage(count, total):
@@ -55,6 +62,10 @@ def _error(errors, status_code=400):
         'status_code': status_code
     }
     return jsonify(resp), status_code
+
+
+class Comparator(enum.Enum):
+    match = " MATCH "
 
 
 @app.teardown_appcontext
@@ -120,102 +131,64 @@ def bibliometrics_api():
         person_local_id = query_data.get("creator", {}).get("localId")
         person_local_id_by = query_data.get("creator", {}).get("localIdBy")
 
-        single_values_where = []
-        if from_yr and to_yr:
-            single_values_where.append(["year >= ? AND year <= ?", [from_yr, to_yr]])
-        if content_marking:
-            single_values_where.append([f"content_marking IN ({', '.join(['?'] * len(content_marking))})", content_marking])
-        if publication_status:
-            single_values_where.append([f"content_marking IN ({', '.join(['?'] * len(publication_status))})", publication_status])
-        if swedish_list:
-            single_values_where.append(["swedish_list = 1", []])
-        if open_access:
-            single_values_where.append(["open_access = 1", []])
-
-        single_values_sql_where = " AND ".join(item[0] for item in single_values_where)
-        single_values_params = flatten(item[1] for item in single_values_where)
-
-        creator_where = []
-        if orcid:
-            creator_where.append(["orcid = ?", [orcid]])
-        if given_name:
-            creator_where.append(["given_name = ?", [orcid]])
-        if family_name:
-            creator_where.append(["family_name = ?", [family_name]])
-        if person_local_id:
-            creator_where.append(["orcid = ?", [person_local_id]])
-        if person_local_id_by:
-            creator_where.append(["orcid = ?", [person_local_id_by]])
-        creator_sql_where = " AND ".join(item[0] for item in creator_where)
-        creator_params = flatten(item[1] for item in creator_where)
-
-        search_ft_title_kw_where = []
-        if title:
-            search_ft_title_kw_where.append(["title MATCH ?", [title]])
-        if keywords:
-            search_ft_title_kw_where.append(["keywords MATCH ?", [keywords]])
-        search_ft_title_kw_sql_where = " AND ".join(item[0] for item in search_ft_title_kw_where)
-        search_ft_title_kw_params = flatten(item[1] for item in search_ft_title_kw_where)
-
-        cur = get_db().cursor()
-        cur.row_factory = lambda cursor, row: row[0]
-
-        single_values_finalized_ids = None
-        if single_values_sql_where:
-            single_values_finalized_ids = set(cur.execute(
-                f"SELECT finalized_id FROM search_single_values WHERE {single_values_sql_where}",
-                single_values_params).fetchall())
-
-        creator_finalized_ids = None
-        if creator_sql_where:
-            creator_finalized_ids = set(cur.execute(
-                f"SELECT finalized_id FROM search_creator WHERE {creator_sql_where}",
-                creator_params).fetchall())
-
-        search_ft_title_kw_finalized_ids = None
-        if search_ft_title_kw_sql_where:
-            search_ft_title_kw_finalized_ids = set(cur.execute(
-                f"SELECT rowid FROM search_fulltext_title_keywords WHERE {search_ft_title_kw_sql_where}",
-                search_ft_title_kw_params).fetchall())
-
-        doi_finalized_ids = None
-        if doi:
-            doi_finalized_ids = set(cur.execute("SELECT finalized_id from search_doi WHERE doi = ?", [doi]).fetchall())
-
-        genre_form_finalized_ids = None
-        if genre_form:
-            genre_form_finalized_ids = set(cur.execute(
-                f"SELECT finalized_id FROM search_genre_form WHERE genre_form IN ({', '.join(['?'] * len(genre_form))})",
-                genre_form).fetchall())
-
-        subject_finalized_ids = None
-        if subjects:
-            subject_finalized_ids = set(cur.execute(
-                f"SELECT finalized_id FROM search_subject WHERE subject IN ({', '.join(['?'] * len(subjects))})",
-                subjects).fetchall())
-
-        org_finalized_ids = None
-        if orgs:
-            org_finalized_ids = set(cur.execute(
-                f"SELECT finalized_id FROM search_org WHERE org IN ({', '.join(['?'] * len(orgs))})",
-                orgs).fetchall())
-
-        sets_to_use = [item for item in [
-                single_values_finalized_ids,
-                creator_finalized_ids,
-                search_ft_title_kw_finalized_ids,
-                doi_finalized_ids,
-                genre_form_finalized_ids,
-                subject_finalized_ids,
-                org_finalized_ids
-            ] if isinstance(item, set)]
-
-        finalized_id_set = set.intersection(set(sets_to_use[0]), *itertools.islice(sets_to_use, 1, None))
-
-        return {'ids': list(finalized_id_set)}
-
     except (AttributeError, ValueError, TypeError):
         return _error(errors=[f"Invalid value for json body query parameter/s."], status_code=400)
+
+    finalized, search_single, search_creator, search_fulltext, search_doi, search_genre_form, search_subject, search_org = Tables('finalized', 'search_single', 'search_creator', 'search_fulltext', 'search_doi', 'search_genre_form', 'search_subject', 'search_org')
+    q = Query.from_(finalized).select('oai_id')
+    if limit:
+        q = q.limit(limit)
+    values = []
+
+    if from_yr and to_yr:
+        q = q.where((search_single.year >= Parameter('?')) & (search_single.year <= Parameter('?')))
+        values.append([from_yr, to_yr])
+    if swedish_list:
+        q = q.where(search_single.swedish_list == 1)
+    if open_access:
+        q = q.where(search_single.open_access == 1)
+    for k, v in {'content_marking': content_marking, 'publication_status': publication_status}.items():
+        if v:
+            q = q.where(search_single['k'].isin([Parameter(', '.join(['?'] * len(v)))]))
+            values.append(content_marking)
+    if any([(from_yr and to_yr), content_marking, publication_status, swedish_list, open_access]):
+        q = q.join(search_single).on(finalized.id == search_single.finalized_id)
+
+    for k, v in {'orcid': orcid, 'given_name': given_name, 'family_name': family_name, 'person_local_id': person_local_id, 'person_local_id_by': person_local_id_by}.items():
+        if v:
+            q.where(search_creator[k] == Parameter('?'))
+            values.append(v)
+    if any([orcid, given_name, family_name, person_local_id, person_local_id_by]):
+        q = q.join(search_creator).on(finalized.id == search_creator.finalized_id)
+
+    for k, v in {'title': title, 'keywords': keywords}.items():
+        if v:
+            q = q.where(BasicCriterion(Comparator.match, search_fulltext[k], search_fulltext[k].wrap_constant(Parameter('?'))))
+            values.append(v)
+    if any([title, keywords]):
+        q = q.join(search_fulltext).on(finalized.id == search_fulltext.rowid)
+
+    for param in [(search_doi, doi), (search_genre_form, genre_form), (search_subject, subjects), (search_org, orgs)]:
+        if param[1]:
+            if isinstance(param[1], list):
+                q = q.where(param[0].value.isin([Parameter(', '.join(['?'] * len(param[1])))]))
+            else:
+                q = q.where(param[0].value == Parameter('?'))
+            q = q.join(param[0]).on(finalized.id == param[0].finalized_id)
+            values.append(param[1])
+
+    print(str(q))
+    print(list(flatten(values)))
+
+    cur = get_db().cursor()
+    #cur.row_factory = lambda cursor, row: row[0]
+    cur.row_factory = dict_factory
+    results = cur.execute(str(q), list(flatten(values))).fetchall()
+
+    for res in results:
+        print(res)
+
+    return {}
 
 
 # TODO: from/to

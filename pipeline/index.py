@@ -8,14 +8,14 @@ OUTPUT_TYPE_PREFIX = 'https://id.kb.se/term/swepub/'
 def generate_search_tables():
     cursor = get_cursor()
 
-    for row in cursor.execute("SELECT id, cluster_id, data FROM finalized LIMIT 50"):
+    for row in cursor.execute("SELECT id, cluster_id, data FROM finalized"):
         inner_cursor = get_cursor()
         finalized_id = row[0]
         cluster_id = row[1]
         doc = BibframeSource(json.loads(row[2]))
 
         inner_cursor.execute("""
-            INSERT INTO search_single_values(
+            INSERT INTO search_single(
             finalized_id, year, content_marking, publication_status, swedish_list
             ) VALUES(
             ?, ?, ?, ?, ?
@@ -29,19 +29,19 @@ def generate_search_tables():
         ))
 
         for doi in doc.doi:
-            inner_cursor.execute("INSERT INTO search_doi (finalized_id, doi) VALUES (?, ?)", (finalized_id, doi))
+            inner_cursor.execute("INSERT INTO search_doi (finalized_id, value) VALUES (?, ?)", (finalized_id, doi))
 
         for gf in doc.output_types:
             if gf.startswith(OUTPUT_TYPE_PREFIX):
                 gf_shortened = gf[len(OUTPUT_TYPE_PREFIX):]
             else:
                 gf_shortened = gf
-            inner_cursor.execute("INSERT INTO search_genre_form (finalized_id, genre_form) VALUES (?, ?)", (finalized_id, gf_shortened))
+            inner_cursor.execute("INSERT INTO search_genre_form (finalized_id, value) VALUES (?, ?)", (finalized_id, gf_shortened))
 
         for subject in [item for sublist in doc.uka_subjects.values() for item in sublist]:
-            inner_cursor.execute("INSERT INTO search_subject (finalized_id, subject) VALUES (?, ?)", (finalized_id, subject))
+            inner_cursor.execute("INSERT INTO search_subject (finalized_id, value) VALUES (?, ?)", (finalized_id, subject))
 
-        inner_cursor.execute("INSERT INTO search_fulltext_title_keywords (rowid, title, keywords) VALUES (?, ?, ?)", (
+        inner_cursor.execute("INSERT INTO search_fulltext (rowid, title, keywords) VALUES (?, ?, ?)", (
                        finalized_id,
                        doc.title,
                        " ".join(doc.keywords)
@@ -69,7 +69,7 @@ def generate_search_tables():
             "SELECT co.source FROM converted co JOIN cluster cl ON co.id=cl.converted_id WHERE cl.cluster_id = ?", (cluster_id,))
         sources = inner_cursor.fetchall()
         for source in set([item for sublist in sources for item in sublist]):
-            inner_cursor.execute("INSERT INTO search_org (finalized_id, org) VALUES (?, ?)",
+            inner_cursor.execute("INSERT INTO search_org (finalized_id, value) VALUES (?, ?)",
                                  (finalized_id, source))
 
         commit_sqlite()
