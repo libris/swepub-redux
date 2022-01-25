@@ -5,6 +5,9 @@ from dateutil.parser import parse as dateutil_parse
 from jsonpath_rw_ext import parse
 from datetime import date, datetime
 
+CREATOR_FIELDS = ["familyName", "givenName", "localId", "localIdBy", "ORCID", "affiliation", "freetext_affiliations"]
+SUBJECT_FIELDS = ["oneDigitTopics", "threeDigitTopics", "fiveDigitTopics"]
+
 
 def _create_title_string(title_dict):
     main_title = title_dict.get("mainTitle", "")
@@ -14,6 +17,25 @@ def _create_title_string(title_dict):
     else:
         title_string = main_title
     return title_string
+
+
+def _get_ids_from_dict(root_dict, label, id_type):
+    result_list = []
+    id_list = root_dict.get(label, [])
+    for id_dict in id_list:
+        if id_dict.get("@type", "") == id_type:
+            result_list.append(id_dict.get("value"))
+    return result_list
+
+
+def _get_root_dict_ids(root_dict, label, id_type):
+    id_list = []
+    dict_list = root_dict.get(label, [])
+    for d in dict_list:
+        id_list.extend(_get_ids_from_dict(root_dict=d, label="identifiedBy", id_type=id_type))
+        id_list.extend(_get_ids_from_dict(root_dict=d, label="indirectlyIdentifiedBy", id_type=id_type))
+    return id_list
+
 
 def _add_id_to_person(person, agent, id_type, id_label):
     id = None
@@ -45,6 +67,8 @@ class Level(Enum):
 
 
 class BibframeSource:
+    """A class representing the Bibframe source"""
+    # Output types for which role 'aut' and 'cre' is to be considered a creator.
     OUTPUT_TYPES_AUT_CRE = [
         "https://id.kb.se/term/swepub/publication/book",
         "https://id.kb.se/term/swepub/publication/book-chapter",
@@ -106,25 +130,63 @@ class BibframeSource:
     RAW_SUBJECT_PATH = 'instanceOf.subject[?(@.@type=="Topic")]'
     SUBJECT_PATH = parse(RAW_SUBJECT_PATH)
 
-    def __init__(self, bibframe_source={}):
-        self._source = bibframe_source
+    def __init__(self, bibframe_source={}, fields=[]):
+        self._bibframe_master = bibframe_source
+        self._bibframe_publication_ids = bibframe_source.get("_publication_ids", [])
+        self._bibframe_publication_orgs = bibframe_source.get("_publication_orgs", [])
+        self._bibframe_publications = [bibframe_source]
+        self._chosen_fields = fields
+        if len(fields) == 0:
+            self._include_all = True
+        else:
+            self._include_all = False
 
     @property
-    def bibframe_source(self):
-        return self._source
+    def bibframe_master(self):
+        return self._bibframe_master
+
+    @property
+    def bibframe_publications(self):
+        return self._bibframe_publications
+
+    @property
+    def include_all(self):
+        return self._include_all
 
     @property
     def record_id(self):
-        return self._source.get("@id")
+        return self.bibframe_master.get("@id")
+
+    @property
+    def duplicate_ids(self):
+        return self._bibframe_publication_ids
+
+    @property
+    def PMID(self):
+        return self._get_instance_identifier(type="PMID")
+
+    @property
+    def scopus_id(self):
+        return self._get_instance_identifier(type="ScopusID")
 
     @property
     def source_org(self):
-        """Returns org code from publication"""
-        return self._source.get("meta", {}).get("assigner", {}).get("label")
+        """Returns org code from all candidate/duplicate publications"""
+        return self._bibframe_publication_orgs
+
+    @property
+    def source_org_master(self):
+        """Returns org code from master publication"""
+        return self._bibframe_master.get("meta", {}).get("assigner", {}).get("label")
+
+    @property
+    def publication_count(self):
+        """Returns the number of merged publications."""
+        return len(self._bibframe_publication_ids)
 
     @property
     def publication_year(self):
-        publications = self._source.get("publication", [])
+        publications = self.bibframe_master.get("publication", [])
         for publication in publications:
             if publication.get("@type", "").lower() == "publication":
                 return publication.get("date")
@@ -132,7 +194,7 @@ class BibframeSource:
 
     @property
     def output_types(self):
-        genre_forms = self._source.get("instanceOf", {}).get("genreForm")
+        genre_forms = self.bibframe_master.get("instanceOf", {}).get("genreForm")
         svep_url = 'https://id.kb.se/term/swepub/svep/'
         swedish_list_url = 'https://id.kb.se/term/swepub/swedishlist'
         # Example output types: https://id.kb.se/term/swepub/publication/journal-article
@@ -152,7 +214,7 @@ class BibframeSource:
 
     @property
     def publication_status(self):
-        notes = self._source.get("instanceOf", {}).get("hasNote", [])
+        notes = self.bibframe_master.get("instanceOf", {}).get("hasNote", [])
         for note in notes:
             if note.get("@type", "") == "PublicationStatus":
                 return note.get("@id")
@@ -161,7 +223,7 @@ class BibframeSource:
     @property
     def content_marking(self):
         svep_url = 'https://id.kb.se/term/swepub/svep/'
-        genreForm = self._source.get("instanceOf", {}).get("genreForm", [])
+        genreForm = self.bibframe_master.get("instanceOf", {}).get("genreForm", [])
         for gf in genreForm:
             gf_id = gf.get("@id", "")
             if gf_id.strip().startswith(svep_url):
@@ -172,7 +234,7 @@ class BibframeSource:
 
     @property
     def creator_count(self):
-        notes = self._source.get("instanceOf", {}).get("hasNote", [])
+        notes = self.bibframe_master.get("instanceOf", {}).get("hasNote", [])
         for note in notes:
             if note.get("@type", "") == "CreatorCount":
                 try:
@@ -187,14 +249,14 @@ class BibframeSource:
         creator_list = []
         creator_id_list = self._get_creator_ids_based_on_output_type()
 
-        include_every_part = True
+        include_every_part = False
         # include all subparts as default,
         # if include_all
         # or if 'creators' has been chosen but no subfields have been chosen
-        #if self.include_all or all(field not in self._chosen_fields for field in CREATOR_FIELDS):
-        #    include_every_part = True
+        if self.include_all or all(field not in self._chosen_fields for field in CREATOR_FIELDS):
+            include_every_part = True
 
-        contributors = self._source.get("instanceOf", {}).get("contribution", [])
+        contributors = self.bibframe_master.get("instanceOf", {}).get("contribution", [])
 
         for contrib in contributors:
             if contrib.get("agent", {}).get("@type", "") == "Person":
@@ -202,16 +264,20 @@ class BibframeSource:
                 for role in roles:
                     if role.get("@id", "") in creator_id_list:
                         person = dict()
-                        person.update({"givenName": contrib.get("agent", {}).get("givenName")})
-                        person.update({"familyName": contrib.get("agent", {}).get("familyName")})
-                        person = _add_id_to_person(person, contrib.get("agent", {}), "Local", "localId")
-                        person = _add_id_by_code_to_person(person, contrib.get("agent", {}), "Local", "localIdBy")
-                        person = _add_id_to_person(person, contrib.get("agent", {}), "ORCID", "ORCID")
-                        # if include_every_part or "affiliation" in self._chosen_fields:
-                        #     person = self._add_affiliation_to_person_recursive(person,
-                        #                                                        contrib.get("hasAffiliation", []))
-                        # if include_every_part or "freetext_affiliations" in self._chosen_fields:
-                        #     person = self._add_freetext_affiliation_to_person(person, contrib.get("hasAffiliation", []))
+                        if include_every_part or "givenName" in self._chosen_fields:
+                            person.update({"givenName": contrib.get("agent", {}).get("givenName")})
+                        if include_every_part or "familyName" in self._chosen_fields:
+                            person.update({"familyName": contrib.get("agent", {}).get("familyName")})
+                        if include_every_part or "localId" in self._chosen_fields:
+                            person = _add_id_to_person(person, contrib.get("agent", {}), "Local", "localId")
+                        if include_every_part or "localIdBy" in self._chosen_fields:
+                            person = _add_id_by_code_to_person(person, contrib.get("agent", {}), "Local", "localIdBy")
+                        if include_every_part or "ORCID" in self._chosen_fields:
+                            person = _add_id_to_person(person, contrib.get("agent", {}), "ORCID", "ORCID")
+                        if include_every_part or "affiliation" in self._chosen_fields:
+                            person = self._add_affiliation_to_person_recursive(person, contrib.get("hasAffiliation", []))
+                        if include_every_part or "freetext_affiliations" in self._chosen_fields:
+                            person = self._add_freetext_affiliation_to_person(person, contrib.get("hasAffiliation", []))
                         creator_list.append(person)
                         break
         return creator_list
@@ -256,7 +322,7 @@ class BibframeSource:
         """
         creator_types_present = set()
 
-        contributors = self._source.get("instanceOf", {}).get("contribution", [])
+        contributors = self.bibframe_master.get("instanceOf", {}).get("contribution", [])
         for contrib in contributors:
             if contrib.get("agent", {}).get("@type", "") == "Person":
                 roles = contrib.get("role", [])
@@ -272,10 +338,73 @@ class BibframeSource:
 
     @property
     def title(self):
-        titles = self._source.get("instanceOf", {}).get("hasTitle", [])
+        titles = self.bibframe_master.get("instanceOf", {}).get("hasTitle", [])
         for title in titles:
             if title.get("@type", "") == "Title":
                 return _create_title_string(title)
+        return None
+
+    @property
+    def publication_type(self):
+        genre_forms = self.bibframe_master.get("instanceOf", {}).get("genreForm", [])
+        # Example publication type: https://id.kb.se/term/swepub/JournalArticle
+        # Publication types don't contain another slash after swepub/
+        pub_type_re = r'^https://id\.kb\.se/term/swepub/[A-Z]{1}[a-zA-Z_\-]+$'
+        for genre_form in genre_forms:
+            id = genre_form.get("@id")
+            m = re.match(pub_type_re, id)
+            if m is None:
+                continue
+            return m.group(0)
+        return None
+
+    def _add_affiliation_to_person_recursive(self, person, affiliations):
+        if person.get("affiliation") is None:
+            person.update({"affiliation": None})
+
+        for affiliation in affiliations:
+            if affiliation.get("@type", "") == "Organization":
+                for id_by in affiliation.get("identifiedBy", []):
+                    if id_by.get("@type", "") == "URI" and id_by.get("source", {}).get("@type", "") == "Source" \
+                            and id_by.get("source", {}).get("code", "") == "kb.se":
+                        uri_value = id_by.get("value")
+                        person["affiliation"] = uri_value
+                        return person
+
+            # check if there are nested affiliations
+            nested_affiliations = affiliation.get("hasAffiliation", [])
+            if nested_affiliations is not None and len(nested_affiliations) > 0:
+                person = self._add_affiliation_to_person_recursive(person, nested_affiliations)
+
+        return person
+
+    def _add_freetext_affiliation_to_person(self, person, affiliations):
+        if person.get("freetext_affiliations") is None:
+            person.update({"freetext_affiliations": None})
+
+        freetext_affils = []
+        for affiliation in affiliations:
+            affil_tree = self._get_freetext_affiliations(affiliation)
+            if affil_tree:
+                freetext_affils.append(affil_tree)
+        if freetext_affils:
+            person["freetext_affiliations"] = freetext_affils
+        return person
+
+    def _get_freetext_affiliations(self, affiliation):
+        if affiliation.get("@type", "") != "Organization":
+            return None
+
+        nested_affils = []
+        affil_name = affiliation.get("name")
+        if affil_name:
+            nested_affils.append(affil_name)
+        sub_affils = affiliation.get("hasAffiliation", [])
+        for sub_affil in sub_affils:
+            subsub_affils = self._get_freetext_affiliations(sub_affil)
+            if subsub_affils:
+                nested_affils.extend(subsub_affils)
+        return nested_affils
 
     @property
     def open_access(self):
@@ -287,7 +416,7 @@ class BibframeSource:
         # Embargoes are more important than AccessPolicies
         if self._is_embargoed():
             return False
-        ua_policies = self._source.get("usageAndAccessPolicy", [])
+        ua_policies = self.bibframe_master.get("usageAndAccessPolicy", [])
         for policy in ua_policies:
             if policy.get("@type", "") == "AccessPolicy":
                 label = policy.get("label", "")
@@ -295,7 +424,7 @@ class BibframeSource:
                     return True
                 elif "restricted" in label:
                     return False
-        electronic_locators = self._source.get("electronicLocator", [])
+        electronic_locators = self.bibframe_master.get("electronicLocator", [])
         for electronic_locator in electronic_locators:
             if electronic_locator.get("@type", "") == "MediaObject" and len(
                     electronic_locator.get("uri", "")) > 0:
@@ -330,6 +459,231 @@ class BibframeSource:
                             return True
         return False
 
+    def _is_embargoed(self):
+        ua_policies = self.bibframe_master.get("usageAndAccessPolicy", [])
+        for policy in ua_policies:
+            if policy.get("@type", "") != "Embargo":
+                continue
+            end_date = policy.get("endDate")
+            if end_date is None:
+                return True
+            try:
+                parsed_end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
+                # Embargo is lifted the day after end date
+                if parsed_end_date >= date.today():
+                    return True
+                else:
+                    return False
+            except ValueError:
+                print(f"Invalid `endDate` {end_date} for Embargo on {self.record_id}")
+                # If we can't parse the date, we count the embargo as invalid
+                return False
+        return False
+
+    @property
+    def electronic_locator(self):
+        electronic_locators = self.bibframe_master.get("electronicLocator", [])
+        for electronic_locator in electronic_locators:
+            if electronic_locator.get("@type", "") == "Resource" and len(electronic_locator.get("uri", "")) > 0:
+                return electronic_locator.get("uri")
+        return None
+
+    @property
+    def archive_URI(self):
+        for id_by in self.bibframe_master.get("identifiedBy", []):
+            if id_by.get("@type", "") == "URI" and len(
+                    id_by.get("value", "")) > 0:
+                return id_by.get("value")
+        return None
+
+    @property
+    def publication_channel(self):
+        PROJECT_GENREFORMS = [
+            "https://id.kb.se/term/swepub/project",
+            "https://id.kb.se/term/swepub/programme",
+            "https://id.kb.se/term/swepub/grantAgreement",
+            "https://id.kb.se/term/swepub/initiative"
+        ]
+        part_ofs = self.bibframe_master.get("partOf", [])
+        for part_of in part_ofs:
+            type = part_of.get("@type")
+            if type and type == "Dataset":
+                continue
+            genreforms = part_of.get("genreForm", [])
+            found_blacklisted_gf = False
+            for gf in genreforms:
+                gf_id = gf.get("@id")
+                if gf_id and gf_id in PROJECT_GENREFORMS:
+                    found_blacklisted_gf = True
+            if found_blacklisted_gf:
+                continue
+            for title in part_of.get("hasTitle", []):
+                if title.get("@type", "") == "Title":
+                    return _create_title_string(title)
+        return None
+
+    @property
+    def publisher(self):
+        # TODO: Remove (see https://jira.kb.se/browse/SWEPUB2-718)
+        # Old versions keep everything in `provisionActivity`
+        if "publication" not in self.bibframe_master and "provisionActivity" in self.bibframe_master:
+            publications = self.bibframe_master.get("provisionActivity", [])
+        else:
+            publications = self.bibframe_master.get("publication", [])
+        for publication in publications:
+            if publication.get("@type", "") == "Publication":
+                if publication.get("agent", {}).get("@type", "") == "Agent":
+                    return publication.get("agent", {}).get("label")
+        return None
+
+    @property
+    def summary(self):
+        summaries = self.bibframe_master.get("instanceOf", {}).get("summary", [])
+        for summary in summaries:
+            if summary.get("@type", "") == "Summary":
+                return summary.get("label")
+        return None
+
+    @property
+    def swedish_list(self):
+        swedish_list_url = 'https://id.kb.se/term/swepub/swedishlist/'
+        genreForm = self.bibframe_master.get("instanceOf", {}).get("genreForm", [])
+        for gf in genreForm:
+            gf_id = gf.get("@id", "").strip()
+            if gf_id.startswith(swedish_list_url):
+                return gf_id
+        return None
+
+    @property
+    def uka_subjects(self):
+
+        subjects = dict()
+        should_include_one_digit_topics = False
+        should_include_three_digit_topics = False
+        should_include_five_digit_topics = False
+
+        if (self.include_all or "oneDigitTopics" in self._chosen_fields
+                or "subjects" in self._chosen_fields):  # noqa: W503
+            should_include_one_digit_topics = True
+
+        if (self.include_all or "threeDigitTopics" in self._chosen_fields
+                or "subjects" in self._chosen_fields):  # noqa: W503
+            should_include_three_digit_topics = True
+
+        if (self.include_all or "fiveDigitTopics" in self._chosen_fields
+                or "subjects" in self._chosen_fields):  # noqa: W503
+            should_include_five_digit_topics = True
+
+        if should_include_one_digit_topics:
+            subjects.update({"oneDigitTopics": []})
+        if should_include_three_digit_topics:
+            subjects.update({"threeDigitTopics": []})
+        if should_include_five_digit_topics:
+            subjects.update({"fiveDigitTopics": []})
+
+        for subject in self.bibframe_master.get("instanceOf", {}).get("subject", []):
+            if subject.get("inScheme", {}).get("code", "") == "uka.se" and \
+                    subject.get("@type", "") == "Topic":
+                subject_code = subject.get("code", "").strip()
+                if len(subject_code) == 1:
+                    if should_include_one_digit_topics:
+                        if subject_code not in subjects["oneDigitTopics"]:
+                            subjects["oneDigitTopics"].append(subject_code)
+                            continue
+                if len(subject_code) == 3:
+                    if should_include_three_digit_topics:
+                        if subject_code not in subjects["threeDigitTopics"]:
+                            subjects["threeDigitTopics"].append(subject_code)
+                            continue
+                if len(subject_code) == 5:
+                    if should_include_five_digit_topics:
+                        if subject_code not in subjects["fiveDigitTopics"]:
+                            subjects["fiveDigitTopics"].append(subject_code)
+        return subjects
+
+    @property
+    def keywords(self):
+        subj_list = []
+        subjects = self.bibframe_master.get("instanceOf", {}).get("subject", [])
+        for subject in subjects:
+            pref_label = subject.get("prefLabel")
+            if pref_label:
+                subj_list.append(pref_label)
+        return subj_list
+
+    @property
+    def languages(self):
+        """Return all languages specified in master publication."""
+        result = []
+        langs = self.bibframe_master.get("instanceOf", {}).get("language", [])
+        for lang in langs:
+            if '@type' in lang and lang['@type'] == 'Language':
+                if 'code' in lang:
+                    result.append(lang['code'])
+        return result
+
+    def _get_instance_identifier(self, type):
+        ids = self.bibframe_master.get("identifiedBy", [])
+        for id in ids:
+            if id.get("@type", "") == type:
+                return id.get("value")
+        return None
+
+    def _get_instance_indirect_identifier(self, type):
+        inids = self.bibframe_master.get("indirectlyIdentifiedBy", [])
+        for in_id in inids:
+            if in_id.get("@type", "") == type:
+                return in_id.get("value")
+        return None
+
+    @property
+    def ISI(self):
+        return self._get_instance_identifier(type="ISI")
+
+    @property
+    def DOI(self):
+        doi_list = []
+        ids = self.bibframe_master.get("identifiedBy", [])
+        for id in ids:
+            if id.get("@type", "") == "DOI":
+                doi_list.append(id.get("value"))
+        part_ofs = self.bibframe_master.get("partOf", [])
+        for part_of in part_ofs:
+            ids = part_of.get("identifiedBy", [])
+            for id in ids:
+                if id.get("@type", "") == "DOI":
+                    doi_list.append(id.get("value"))
+        return doi_list
+
+    @property
+    def ISSN(self):
+        return self._get_ISSN_or_ISBN(type="ISSN")
+
+    @property
+    def ISBN(self):
+        return self._get_ISSN_or_ISBN(type="ISBN")
+
+    def _get_ISSN_or_ISBN(self, type):
+        id_list = []
+        id_list.extend(_get_root_dict_ids(root_dict=self.bibframe_master, label="partOf", id_type=type))
+        for part_of in self.bibframe_master.get("partOf", []):
+            id_list.extend(_get_root_dict_ids(root_dict=part_of, label="hasSeries", id_type=type))
+        id_list.extend(_get_root_dict_ids(root_dict=self.bibframe_master, label="hasSeries", id_type=type))
+        id_list.extend(_get_ids_from_dict(root_dict=self.bibframe_master, label="identifiedBy", id_type=type))
+        id_list.extend(
+            _get_ids_from_dict(root_dict=self.bibframe_master, label="indirectlyIdentifiedBy", id_type=type))
+        return id_list
+
+    @property
+    def series_title(self):
+        serials = self.bibframe_master.get("hasSeries", [])
+        for serial in serials:
+            titles = serial.get("hasTitle", [])
+            for title in titles:
+                if title.get("@type", "") == "Title":
+                    return _create_title_string(title)
+        return None
+
     @property
     def ssif_1(self):
         SUBJECT_PREFIX = 'https://id.kb.se/term/uka/'
@@ -356,11 +710,11 @@ class BibframeSource:
     @property
     def level(self):
         """Return the publication's level according to the Swedish List."""
-        if ('instanceOf' not in self._source
-                or 'genreForm' not in self._source['instanceOf']):
+        if ('instanceOf' not in self._bibframe_master
+                or 'genreForm' not in self._bibframe_master['instanceOf']):
             return None
 
-        for gform in self._source['instanceOf']['genreForm']:
+        for gform in self._bibframe_master['instanceOf']['genreForm']:
             # Peer-reviewed always trumps non-peer-reviewed
             if '@id' in gform and gform['@id'] == Level.PEERREVIEWED.value:
                 return Level.PEERREVIEWED
@@ -372,7 +726,7 @@ class BibframeSource:
     @property
     def subjects(self):
         """Return a list of all subjects."""
-        subjects = self.SUBJECT_PATH.find(self._source)
+        subjects = self.SUBJECT_PATH.find(self._bibframe_master)
         return [subj.value for subj in subjects if subj.value]
 
     @property
@@ -383,99 +737,7 @@ class BibframeSource:
     @property
     def is_swedishlist(self):
         # instanceOf.genreForm.@id": "https://id.kb.se/term/swepub/swedishlist/peer-reviewed"
-        for gf in self._source.get("instanceOf", {}).get("genreForm", []):
+        for gf in self._bibframe_master.get("instanceOf", {}).get("genreForm", []):
             if gf.get("@id", "") == 'https://id.kb.se/term/swepub/swedishlist/peer-reviewed':
                 return True
-        return False
-
-    @property
-    def uka_subjects(self):
-        subjects = dict()
-        should_include_one_digit_topics = True
-        should_include_three_digit_topics = True
-        should_include_five_digit_topics = True
-
-        # if (self.include_all or "oneDigitTopics" in self._chosen_fields
-        #         or "subjects" in self._chosen_fields):  # noqa: W503
-        #     should_include_one_digit_topics = True
-        #
-        # if (self.include_all or "threeDigitTopics" in self._chosen_fields
-        #         or "subjects" in self._chosen_fields):  # noqa: W503
-        #     should_include_three_digit_topics = True
-        #
-        # if (self.include_all or "fiveDigitTopics" in self._chosen_fields
-        #         or "subjects" in self._chosen_fields):  # noqa: W503
-        #     should_include_five_digit_topics = True
-
-        if should_include_one_digit_topics:
-            subjects.update({"oneDigitTopics": []})
-        if should_include_three_digit_topics:
-            subjects.update({"threeDigitTopics": []})
-        if should_include_five_digit_topics:
-            subjects.update({"fiveDigitTopics": []})
-
-        for subject in self._source.get("instanceOf", {}).get("subject", []):
-            if subject.get("inScheme", {}).get("code", "") == "uka.se" and \
-                    subject.get("@type", "") == "Topic":
-                subject_code = subject.get("code", "").strip()
-                if len(subject_code) == 1:
-                    if should_include_one_digit_topics:
-                        if subject_code not in subjects["oneDigitTopics"]:
-                            subjects["oneDigitTopics"].append(subject_code)
-                            continue
-                if len(subject_code) == 3:
-                    if should_include_three_digit_topics:
-                        if subject_code not in subjects["threeDigitTopics"]:
-                            subjects["threeDigitTopics"].append(subject_code)
-                            continue
-                if len(subject_code) == 5:
-                    if should_include_five_digit_topics:
-                        if subject_code not in subjects["fiveDigitTopics"]:
-                            subjects["fiveDigitTopics"].append(subject_code)
-        return subjects
-
-    @property
-    def keywords(self):
-        subj_list = []
-        subjects = self._source.get("instanceOf", {}).get("subject", [])
-        for subject in subjects:
-            pref_label = subject.get("prefLabel")
-            if pref_label:
-                subj_list.append(pref_label)
-        return subj_list
-
-    @property
-    def doi(self):
-        doi_list = []
-        ids = self._source.get("identifiedBy", [])
-        for id in ids:
-            if id.get("@type", "") == "DOI":
-                doi_list.append(id.get("value"))
-        part_ofs = self._source.get("partOf", [])
-        for part_of in part_ofs:
-            ids = part_of.get("identifiedBy", [])
-            for id in ids:
-                if id.get("@type", "") == "DOI":
-                    doi_list.append(id.get("value"))
-        return doi_list
-
-    def _is_embargoed(self):
-        ua_policies = self._source.get("usageAndAccessPolicy", [])
-        for policy in ua_policies:
-            if policy.get("@type", "") != "Embargo":
-                continue
-            end_date = policy.get("endDate")
-            if end_date is None:
-                return True
-            try:
-                parsed_end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
-                # Embargo is lifted the day after end date
-                if parsed_end_date >= date.today():
-                    return True
-                else:
-                    return False
-            except ValueError:
-                print(f"Invalid `endDate` {end_date} for Embargo on {self.record_id}")
-                # If we can't parse the date, we count the embargo as invalid
-                return False
         return False
