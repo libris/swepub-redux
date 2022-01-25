@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+import json
+import os
+
 import bibliometrics
 from utils import *
 
@@ -22,6 +25,10 @@ SSIF_LABELS = {
     5: "5 Samhällsvetenskap",
     7: "6 Humaniora och konst"
 }
+
+INFO_API_MAPPINGS = sort_mappings(json.load(open(os.path.dirname(__file__) + '/../pipeline/ssif_research_subjects.json')))
+INFO_API_OUTPUT_TYPES = json.load(open(os.path.dirname(__file__) + '/../pipeline/output_types.json'))
+INFO_API_SOURCE_ORG_MAPPING = get_source_org_mapping(json.load(open(os.path.dirname(__file__) + '/../pipeline/sources.json')))
 
 # Note: static files should be served by Apache/nginx
 app = Flask(__name__, static_url_path='', static_folder='vue-client/dist')
@@ -86,7 +93,7 @@ def index_file():
     return app.send_static_file('index.html')
 
 
-@app.route("/api/v1/bibliometrics", methods=['POST'])
+@app.route("/api/v1/bibliometrics", methods=['POST'], strict_slashes=False)
 def bibliometrics_api():
     if request.content_type != 'application/json':
         return _error(errors=['Content-Type must be "application/json"'])
@@ -272,6 +279,27 @@ def datastatus_ssif_source_api(source=None):
         }
 
     return result
+
+
+@app.route("/api/v1/info/research-subjects", methods=['GET'])
+def info_research_subjects():
+    return jsonify(INFO_API_MAPPINGS)
+
+
+@app.route("/api/v1/info/output-types", methods=['GET'])
+def info_output_types():
+    return jsonify(INFO_API_OUTPUT_TYPES)
+
+
+@app.route("/api/v1/info/sources", methods=['GET'])
+def info_sources():
+    cur = get_db().cursor()
+    cur.row_factory = lambda cursor, row: row[0]
+    codes = cur.execute("SELECT DISTINCT value FROM search_org").fetchall()
+    sources = []
+    for code in codes:
+        sources.append({'name': INFO_API_SOURCE_ORG_MAPPING[code], 'code': code})
+    return {'sources': sources}
 
 
 if __name__ == '__main__':
