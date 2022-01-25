@@ -6,6 +6,7 @@ import re
 import time
 from json import load
 from os import path
+from multiprocessing import Process
 
 categories = load(open(path.join(path.dirname(__file__), 'categories.json')))
 
@@ -80,25 +81,54 @@ def _select_rarest_words():
 
 def _find_and_add_subjects():
     cursor = get_cursor()
-    second_cursor = get_cursor()
-    third_cursor = get_cursor()
-    level = 3
-    classes = 5
-    cursor.execute("""
+    #third_cursor = get_cursor()
+    
+    batch = []
+    processes = []
+    for finalized_row in cursor.execute("""
     SELECT
         finalized.id, finalized.data
     FROM
         finalized;
-    """)
-    rows = cursor.fetchall() # This is necessary in order to allow modification of the table while iterating
-    for finalized_row in rows:
+    """):
+        
+        
+        batch.append(finalized_row) # Does this really work? Get the stuff out first ??
+        if (len(batch) >= 256):
+            while (len(processes) >= 20):
+                time.sleep(0)
+                n = len(processes)
+                i = n-1
+                while i > -1:
+                    if not processes[i].is_alive():
+                        processes[i].join()
+                        del processes[i]
+                    i -= 1
+            p = Process(target=_conc_find_subjects, args=(batch,))
+            p.start()
+            processes.append( p )
+            batch = []
+    p = Process(target=_conc_find_subjects, args=(batch,))
+    p.start()
+    processes.append( p )
+    for p in processes:
+        p.join()
+
+    commit_sqlite()
+
+def _conc_find_subjects(finalized_rows):
+    cursor = get_cursor()
+    level = 3
+    classes = 5
+
+    for finalized_row in finalized_rows:
         finalized_rowid = finalized_row[0]
         finalized = json.loads(finalized_row[1])
 
         subjects = Counter()
         publication_subjects = set()
 
-        for candidate_row in second_cursor.execute("""
+        for candidate_row in cursor.execute("""
             SELECT
                 finalized.id, finalized.data, group_concat(abstract_rarest_words.word, '\n')
             FROM
@@ -157,14 +187,16 @@ def _find_and_add_subjects():
             publication = Publication(finalized)
             #initial_value = publication.uka_swe_classification_list
             publication.add_subjects(classifications)
-            third_cursor.execute("""
-            UPDATE
-                finalized
-            SET
-                data = ?
-            WHERE
-                id = ? ;
-            """, (json.dumps(publication.data), finalized_rowid) )
+
+            # third_cursor.execute("""
+            # UPDATE
+            #     finalized
+            # SET
+            #     data = ?
+            # WHERE
+            #     id = ? ;
+            # """, (json.dumps(publication.data), finalized_rowid) )
+
             #print(f"added subjects {classifications} into publication: {finalized_rowid}")
             
             #code = "autoclassified"
@@ -172,9 +204,6 @@ def _find_and_add_subjects():
             #logger.info(
                 #f"Autoclassifying publication {publication.id}", extra={'auditor': self.name})
             #new_audit_events = self._add_audit_event(audit_events, result, code, initial_value, value)
-
-    commit_sqlite()
-
 
 def _enrich_subject(subjects):
     ret = []
