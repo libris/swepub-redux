@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
+import bibliometrics
+from utils import *
+
 import enum
 from collections import Iterable
+from datetime import datetime
 from pathlib import Path
 import sqlite3
 from flask import Flask, g, request, jsonify
 from pypika import Query, Tables, Parameter
 from pypika.terms import BasicCriterion
-
-from utils import *
 
 # Database in parent directory of swepub.py directory
 DATABASE = str(Path.joinpath(Path(__file__).resolve().parents[1], 'swepub.sqlite3'))
@@ -135,7 +137,7 @@ def bibliometrics_api():
         return _error(errors=[f"Invalid value for json body query parameter/s."], status_code=400)
 
     finalized, search_single, search_creator, search_fulltext, search_doi, search_genre_form, search_subject, search_org = Tables('finalized', 'search_single', 'search_creator', 'search_fulltext', 'search_doi', 'search_genre_form', 'search_subject', 'search_org')
-    q = Query.from_(finalized).select('oai_id')
+    q = Query.from_(finalized).select('data')
     if limit:
         q = q.limit(limit)
     values = []
@@ -156,7 +158,7 @@ def bibliometrics_api():
 
     for k, v in {'orcid': orcid, 'given_name': given_name, 'family_name': family_name, 'person_local_id': person_local_id, 'person_local_id_by': person_local_id_by}.items():
         if v:
-            q.where(search_creator[k] == Parameter('?'))
+            q = q.where(search_creator[k] == Parameter('?'))
             values.append(v)
     if any([orcid, given_name, family_name, person_local_id, person_local_id_by]):
         q = q.join(search_creator).on(finalized.id == search_creator.finalized_id)
@@ -183,12 +185,25 @@ def bibliometrics_api():
     cur = get_db().cursor()
     #cur.row_factory = lambda cursor, row: row[0]
     cur.row_factory = dict_factory
-    results = cur.execute(str(q), list(flatten(values))).fetchall()
+    rows = cur.execute(str(q), list(flatten(values))).fetchall()
 
-    for res in results:
-        print(res)
+    fields = query_data.get("fields", [])
+    if fields is None:
+        fields = []
+    (result, errors) = bibliometrics.build_result(rows, from_yr, to_yr, fields)
 
-    return {}
+    if len(errors) > 0:
+        return _error(errors)
+
+    handled_at = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
+    #if export_as_csv:
+    #    return Response(
+    #        csv_export(result['hits'], fields, csv_flavor, query_data, handled_at),
+    #        mimetype=default_mimetype)
+    #else:
+    result["query"] = query_data
+    result["query_handled_at"] = handled_at
+    return jsonify(result)
 
 
 # TODO: from/to
