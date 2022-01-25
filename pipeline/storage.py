@@ -227,7 +227,7 @@ def store_converted(converted, source):
         original_rowid,
         doc.record_id,
         doc.publication_year,
-        doc.source_org,
+        doc.source_org_master,
         doc.open_access,
         doc.ssif_1,
         doc.level,

@@ -28,7 +28,7 @@ def generate_search_tables():
             doc.is_swedishlist
         ))
 
-        for doi in doc.doi:
+        for doi in doc.DOI:
             inner_cursor.execute("INSERT INTO search_doi (finalized_id, value) VALUES (?, ?)", (finalized_id, doi))
 
         for gf in doc.output_types:
