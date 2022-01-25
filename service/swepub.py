@@ -213,6 +213,19 @@ def bibliometrics_api():
     return jsonify(result)
 
 
+@app.route("/api/v1/bibliometrics/publications/<record_id>", methods=['GET'])
+def bibliometrics_get_record(record_id):
+    cur = get_db().cursor()
+    row = cur.execute("SELECT data FROM finalized WHERE oai_id = ?", [record_id]).fetchone()
+    if not row:
+        return _error(["Not Found"], status_code=404)
+    doc = json.loads(row[0])
+    # TODO: Don't store the following in the actual document
+    doc.pop('_publication_ids', None)
+    doc.pop('_publication_orgs', None)
+    return doc
+
+
 # TODO: from/to
 @app.route("/api/v1/datastatus")
 def datastatus():
@@ -243,7 +256,6 @@ def datastatus():
             "percentage": get_percentage(row["total"], total_docs),
             "total": row["total"]
         }
-
     return result
 
 
@@ -277,7 +289,6 @@ def datastatus_ssif_source_api(source=None):
             "total": row["total"],
             "percentage": get_percentage(row["total"], result["total"])
         }
-
     return result
 
 
