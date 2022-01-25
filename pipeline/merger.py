@@ -10,9 +10,13 @@ class PublicationMerger:
     def merge(self, publications):
         """Create a master publication by merging a list of publications."""
         master = self._get_master(publications)
+        publication_ids = []
+        publication_orgs = []
         for pub in publications:
+            publication_ids.append(pub.id)
+            publication_orgs.append(pub.source_org)
             master = self._merge(master, pub)
-        return master
+        return master, publication_ids, publication_orgs
 
     def _get_master(self, publications):
         """Return the publication with most elements."""
