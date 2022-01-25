@@ -3,6 +3,7 @@ from collections import Counter
 from audit import Publication
 import json
 import re
+import time
 from json import load
 from os import path
 
@@ -56,7 +57,7 @@ def _select_rarest_words():
                 if word.isnumeric():
                     continue
                 words_set.add(word.lower())
-            words = list(words_set)[0:300]
+            words = list(words_set)[0:150]
 
             for total_count_row in second_cursor.execute(f"""
             SELECT
@@ -215,19 +216,32 @@ def _create_subject(code, lang):
     }
 
 def auto_classify():
+    t0 = time.time()
     # First populate the abstract_total_word_counts table, so that we know
     # how many times each word occurs (within all combined abstracts).
     _generate_occurrence_table()
+    t1 = time.time()
+    diff = t1-t0
+    print(f"  auto classify 1 (counting) ran for {diff} seconds")
+    t0 = t1
 
     # Then go over the data again, and select the N _rarest_ words out of each
     # abstract, which we can now calculate given the table populated above.
     # Put these rare words in the abstract_rarest_words table.
     _select_rarest_words()
+    t1 = time.time()
+    diff = t1-t0
+    print(f"  auto classify 2 (selecting) ran for {diff} seconds")
+    t0 = t1
 
     # Now, go over the data a third time, this time, for each publication retrieving
     # candidates that share rare words, and thereby plausibly have the same subject.
     # Selectively copy good subjects over
     _find_and_add_subjects()
+    t1 = time.time()
+    diff = t1-t0
+    print(f"  auto classify 3 (adding) ran for {diff} seconds")
+    t0 = t1
 
 # For debugging
 if __name__ == "__main__":
