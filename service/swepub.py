@@ -11,7 +11,7 @@ from datetime import datetime
 from pathlib import Path
 import sqlite3
 from flask import Flask, g, request, jsonify
-from pypika import Query, Tables, Parameter
+from pypika import Query, Tables, Parameter, Table
 from pypika.terms import BasicCriterion
 
 # Database in parent directory of swepub.py directory
@@ -226,7 +226,6 @@ def bibliometrics_get_record(record_id):
     return doc
 
 
-# TODO: from/to
 @app.route("/api/v1/datastatus")
 def datastatus():
     from_yr = request.args.get("from")
@@ -237,21 +236,37 @@ def datastatus():
 
     cur = get_db().cursor()
     cur.row_factory = dict_factory
-
     result = {"sources": {}}
 
-    total_docs = cur.execute(f"SELECT COUNT(*) AS total_docs FROM converted").fetchone()["total_docs"]
-    result["total"] = total_docs
-    oa = cur.execute("SELECT COUNT(*) AS oa FROM converted WHERE is_open_access = 1").fetchone()["oa"]
-    result["openAccess"] = {"percentage": get_percentage(oa, total_docs), "total": oa}
+    if from_yr and to_yr:
+        result.update({"from": from_yr, "to": to_yr})
+        date_params = [from_yr, to_yr]
 
-    ssif = cur.execute("SELECT COUNT(*) AS ssif from converted WHERE classification_level > 0").fetchone()["ssif"]
-    result["ssif"] = {"percentage": get_percentage(ssif, total_docs), "total": ssif}
+        total_docs = cur.execute(f"SELECT COUNT(*) AS total_docs FROM converted WHERE date >= ? AND date <= ?", date_params).fetchone()["total_docs"]
+        oa = cur.execute("SELECT COUNT(*) AS oa FROM converted WHERE is_open_access = 1 AND date >= ? AND date <= ?", date_params).fetchone()["oa"]
+        ssif = cur.execute("SELECT COUNT(*) AS ssif from converted WHERE classification_level > 0 AND date >= ? AND date <= ?", date_params).fetchone()["ssif"]
+        swedish_list = cur.execute("SELECT COUNT(*) AS swedishlist from converted WHERE is_swedishlist = 1 AND date >= ? AND date <= ?", date_params).fetchone()[
+            "swedishlist"]
+        total_per_source_sql = "SELECT source, count(*) AS total FROM converted WHERE date >= ? AND date <= ? GROUP BY source"
+        total_per_source_params = date_params
+    else:
+        total_docs = cur.execute(f"SELECT COUNT(*) AS total_docs FROM converted").fetchone()["total_docs"]
+        oa = cur.execute("SELECT COUNT(*) AS oa FROM converted WHERE is_open_access = 1").fetchone()["oa"]
+        ssif = cur.execute("SELECT COUNT(*) AS ssif from converted WHERE classification_level > 0").fetchone()["ssif"]
+        swedish_list = cur.execute("SELECT COUNT(*) AS swedishlist from converted WHERE is_swedishlist = 1").fetchone()[
+            "swedishlist"]
+        total_per_source_sql = "SELECT source, count(*) AS total FROM converted GROUP BY source"
+        total_per_source_params = []
 
-    swedish_list = cur.execute("SELECT COUNT(*) AS swedishlist from converted WHERE is_swedishlist = 1").fetchone()["swedishlist"]
-    result["swedishList"] = {"percentage": get_percentage(swedish_list, total_docs), "total": swedish_list}
+    result.update({
+        "sources": {},
+        "total": total_docs,
+        "openAccess": {"percentage": get_percentage(oa, total_docs), "total": oa},
+        "ssif": {"percentage": get_percentage(ssif, total_docs), "total": ssif},
+        "swedishList": {"percentage": get_percentage(swedish_list, total_docs), "total": swedish_list}
+    })
 
-    for row in cur.execute("SELECT source, count(*) AS total FROM converted GROUP BY source"):
+    for row in cur.execute(total_per_source_sql, total_per_source_params):
         result["sources"][row["source"]] = {
             "percentage": get_percentage(row["total"], total_docs),
             "total": row["total"]
@@ -266,6 +281,12 @@ def datastatus_ssif_endpoint():
 
 @app.route("/api/v1/datastatus/ssif/<source>")
 def datastatus_ssif_source_api(source=None):
+    from_yr = request.args.get("from")
+    to_yr = request.args.get("to")
+    errors, from_yr, to_yr = parse_dates(from_yr, to_yr)
+    if errors:
+        return _error(errors)
+
     cur = get_db().cursor()
     cur.row_factory = dict_factory
 
@@ -277,18 +298,19 @@ def datastatus_ssif_source_api(source=None):
     classification_params = []
     if source:
         result["source"] = source
-        total_sql = "SELECT COUNT(*) AS total_docs from converted WHERE source = ?"
+        total_sql = "SELECT COUNT(*) AS total_docs FROM converted WHERE source = ?"
         total_params = [source]
         classification_sql = "SELECT classification_level, count(*) AS total FROM converted WHERE source = ? GROUP BY classification_level"
         classification_params = [source]
 
     result["total"] = cur.execute(total_sql, total_params).fetchone()["total_docs"]
     for row in cur.execute(classification_sql, classification_params):
-        ssif_label = SSIF_LABELS[row["classification_level"]]
-        result["ssif"][ssif_label] = {
-            "total": row["total"],
-            "percentage": get_percentage(row["total"], result["total"])
-        }
+        if (row["classification_level"]):
+            ssif_label = SSIF_LABELS[row["classification_level"]]
+            result["ssif"][ssif_label] = {
+                "total": row["total"],
+                "percentage": get_percentage(row["total"], result["total"])
+            }
     return result
 
 
