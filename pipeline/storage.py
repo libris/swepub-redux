@@ -15,9 +15,7 @@ def clean_and_init_storage():
     connection = sqlite3.connect(sqlite_path)
     cursor = connection.cursor()
 
-    # Use sqlite WAL mode
     cursor.execute("PRAGMA journal_mode=WAL;")
-    # Faster!!
     cursor.execute("PRAGMA synchronous=OFF;")
 
     # Because Swepub APIs expose publications as originally harvested, these must be kept.
@@ -25,7 +23,26 @@ def clean_and_init_storage():
     CREATE TABLE original (
         id INTEGER PRIMARY KEY,
         source TEXT,
+        oai_id, TEXT,
+        accepted INTEGER, -- (fake boolean 1/0)
         data TEXT
+    );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_original_oai_id ON original (oai_id);
+    """)
+
+    # This table is used to store log entries (validation/normalization errors etc) for
+    # each publication
+    cursor.execute("""
+    CREATE TABLE converted_events (
+        converted_id INTEGER,
+        type TEXT,
+        field TEXT,
+        path TEXT,
+        code TEXT,
+        result TEXT,
+        FOREIGN KEY (converted_id) REFERENCES converted(id)
     );
     """)
 
@@ -119,11 +136,12 @@ def clean_and_init_storage():
     );
     """)
     cursor.execute("""
-    CREATE INDEX idx_abstract_rarest_words ON abstract_rarest_words (word);
+    CREATE INDEX idx_abstract_rarest_words ON abstract_rarest_words (word, finalized_id);
     """)
     cursor.execute("""
     CREATE INDEX idx_abstract_rarest_words_id ON abstract_rarest_words (finalized_id);
     """)
+
     # In order to calculate values (rarity) for the above table, we also need an answer
     # to the question:
     #
@@ -210,15 +228,19 @@ def open_existing_storage():
     global connection
     connection = sqlite3.connect(sqlite_path)
 
-def store_converted(converted, source):
+def store_original_and_converted(original, converted, source, accepted, events):
     cursor = connection.cursor()
     doc = BibframeSource(converted)
 
-    #print(f'Inserting with oai_id {converted["@id"]}')
+    #print(f'Inserting with oai_id {converted["@id"]} : \n\n{json.dumps(converted)}\n\n')
 
     original_rowid = cursor.execute("""
-    INSERT INTO original(source, data) VALUES(?, ?);
-    """, (source, json.dumps(converted),)).lastrowid
+    INSERT INTO original(source, data, accepted, oai_id) VALUES(?, ?, ?, ?);
+    """, (source, json.dumps(original), accepted, converted["@id"])).lastrowid
+
+    if not accepted:
+        connection.commit()
+        return
 
     converted_rowid = cursor.execute("""
     INSERT INTO converted(data, original_id, oai_id, date, source, is_open_access, ssif_1, classification_level, is_swedishlist) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);
@@ -233,6 +255,11 @@ def store_converted(converted, source):
         doc.level,
         doc.is_swedishlist
     )).lastrowid
+
+    for event in events:
+        cursor.execute("""
+        INSERT INTO converted_events(converted_id, type, field, path, code, result) VALUES (?, ?, ?, ?, ?, ?)
+        """, (converted_rowid, event["type"], event["field"], event["path"], event["code"], event["result"]))
 
     identifiers = []
     for title in converted["instanceOf"]["hasTitle"]:

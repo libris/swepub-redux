@@ -1,7 +1,6 @@
 import re
 from stdnum.isbn import compact
-from util import update_at_path
-from log import log_for_OAI_id
+from util import update_at_path, make_event
 
 # flake8: noqa W504
 isbn_regex = re.compile(
@@ -12,7 +11,7 @@ isbn_regex = re.compile(
     '(?:(?![-0-9]))'  # Make sure the code isnt followed by a number or hyphen
 )
 
-def recover_isbn(isbn, body, path, id):
+def recover_isbn(isbn, body, path, id, events):
     answ = isbn_regex.finditer(isbn)
     res = []
     for pattern in answ:
@@ -25,12 +24,5 @@ def recover_isbn(isbn, body, path, id):
     
     if res[0] != isbn:
         update_at_path(body, path, res[0])
-        log_for_OAI_id(id, 'ISBN enrichment: recovery')
-
-    for value in res[1:]:
-        log_for_OAI_id(id, '?? ISBN enrichment: split / Not sure what to do!')
-        #actions.append(DuplicateFieldAction(
-        #    code='split'.format(self.type), new=value, path=field.path, field_type=self.type
-        #))
-        #field.add_creation_event(old=old_value, new=value, code='split')
+        events.append(make_event("enrichment", "ISBN", path, "split", res[0]))
     

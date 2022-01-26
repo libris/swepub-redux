@@ -3,8 +3,12 @@ from collections import Counter
 from audit import Publication
 import json
 import re
+import time
+import os
 from json import load
 from os import path
+from multiprocessing import Process
+from tempfile import TemporaryDirectory
 
 categories = load(open(path.join(path.dirname(__file__), 'categories.json')))
 
@@ -56,7 +60,7 @@ def _select_rarest_words():
                 if word.isnumeric():
                     continue
                 words_set.add(word.lower())
-            words = list(words_set)[0:300]
+            words = list(words_set)[0:150]
 
             for total_count_row in second_cursor.execute(f"""
             SELECT
@@ -79,101 +83,163 @@ def _select_rarest_words():
 
 def _find_and_add_subjects():
     cursor = get_cursor()
-    second_cursor = get_cursor()
-    third_cursor = get_cursor()
+    
+    # Sqlite does not allow reading and writing to occurr concurrently. In this particular
+    # case what we want to do concurrently (many in parallell!) is the query in _conc_find_subjects.
+    # By writing to a temp dir, instead of directly to the database, it becomes possible to
+    # perform that query out-off-process, and thereby doing many queries in parallell.
+    # The 'file_sequence_number' is the file each process should be writing results into.
+    with TemporaryDirectory() as temp_dir:
+        file_sequence_number = 0
+        
+        batch = []
+        processes = []
+        for finalized_row in cursor.execute("""
+        SELECT
+            finalized.id, finalized.data
+        FROM
+            finalized;
+        """):
+            
+            
+            batch.append(finalized_row) # Does this really work? Get the stuff out first ??
+            if (len(batch) >= 256):
+                while (len(processes) >= 20):
+                    time.sleep(0)
+                    n = len(processes)
+                    i = n-1
+                    while i > -1:
+                        if not processes[i].is_alive():
+                            processes[i].join()
+                            del processes[i]
+                        i -= 1
+                p = Process(target=_conc_find_subjects, args=(batch,temp_dir,file_sequence_number))
+                file_sequence_number += 1
+                p.start()
+                processes.append( p )
+                batch = []
+        p = Process(target=_conc_find_subjects, args=(batch,temp_dir,file_sequence_number))
+        file_sequence_number += 1
+        p.start()
+        processes.append( p )
+        for p in processes:
+            p.join()
+
+        for file in os.listdir(temp_dir):
+            with open(f"{temp_dir}/{file}", "r") as f:
+                rowid = f.readline()
+                if not rowid:
+                    continue
+                jsontext = f.readline()
+
+                #print(f"About to write at id: {rowid}, data:\n{jsontext}")
+                
+                cursor.execute("""
+                UPDATE
+                    finalized
+                SET
+                    data = ?
+                WHERE
+                    id = ? ;
+                """, (jsontext, rowid) )
+            commit_sqlite()
+        
+
+def _conc_find_subjects(finalized_rows, temp_dir, file_sequence_number):
+    cursor = get_cursor()
     level = 3
     classes = 5
-    cursor.execute("""
-    SELECT
-        finalized.id, finalized.data
-    FROM
-        finalized;
-    """)
-    rows = cursor.fetchall() # This is necessary in order to allow modification of the table while iterating
-    for finalized_row in rows:
-        finalized_rowid = finalized_row[0]
-        finalized = json.loads(finalized_row[1])
 
-        subjects = Counter()
-        publication_subjects = set()
+    with open(f"{temp_dir}/{file_sequence_number}", "w") as output:
 
-        for candidate_row in second_cursor.execute("""
-            SELECT
-                finalized.id, finalized.data, group_concat(abstract_rarest_words.word, '\n')
-            FROM
-                abstract_rarest_words
-            LEFT JOIN
-                finalized
-            ON
-                finalized.id = abstract_rarest_words.finalized_id
-            WHERE
-                abstract_rarest_words.word IN (SELECT word FROM abstract_rarest_words WHERE finalized_id = ?)
-            GROUP BY
-                abstract_rarest_words.finalized_id;
-            """, (finalized_rowid,)):
-                candidate_rowid = candidate_row[0]
-                candidate = json.loads(candidate_row[1])
-                candidate_matched_words = []
-                if isinstance(candidate_row[2], str):
-                    candidate_matched_words = candidate_row[2].split("\n")
+        for finalized_row in finalized_rows:
+            finalized_rowid = finalized_row[0]
+            finalized = json.loads(finalized_row[1])
 
-                if candidate_rowid == finalized_rowid:
-                    continue
+            subjects = Counter()
+            publication_subjects = set()
+
+            for candidate_row in cursor.execute("""
+                SELECT
+                    finalized.id, finalized.data, group_concat(abstract_rarest_words.word, '\n')
+                FROM
+                    abstract_rarest_words
+                LEFT JOIN
+                    finalized
+                ON
+                    finalized.id = abstract_rarest_words.finalized_id
+                WHERE
+                    abstract_rarest_words.word IN (SELECT word FROM abstract_rarest_words WHERE finalized_id = ?)
+                GROUP BY
+                    abstract_rarest_words.finalized_id;
+                """, (finalized_rowid,)):
+                    candidate_rowid = candidate_row[0]
+                    candidate = json.loads(candidate_row[1])
+                    candidate_matched_words = []
+                    if isinstance(candidate_row[2], str):
+                        candidate_matched_words = candidate_row[2].split("\n")
+
+                    if candidate_rowid == finalized_rowid:
+                        continue
+                    
+                    # This is a vital tweaking point. How many _rare_ words do two abstracts need to share
+                    # in order to be considered on the same subject? 2 seems a balanced choice. 1 "works" too,
+                    # but may be a bit too aggressive (providing a bit too many false positive matches).
+                    if len(candidate_matched_words) < 2:
+                        continue
+
+                    #print(f"Matched {finalized_rowid} with {candidate_rowid} based on shared rare words: {candidate_matched_words}")
+            
+                    for subject in candidate.get("instanceOf", {}).get("subject", []):
+                        try:
+                            authority, subject_id = subject['inScheme']['code'], subject['code']
+                        except KeyError:
+                            continue
+
+                        if authority not in ('hsv', 'uka.se') or len(subject_id) < level:
+                            continue
+
+                        publication_subjects.add(subject_id[:level])
+                    score = len(candidate_matched_words)
+                    for sub in publication_subjects:
+                        subjects[sub] += score
+            subjects = subjects.most_common(classes)
+            if len(subjects) > 0:
+                enriched_subjects =_enrich_subject(subjects)
+                #print(f"enriched subjects for {finalized_rowid}: {str(enriched_subjects)}")
+
+                LANGS = ['eng', 'swe']
+                classifications = []
+                for item in enriched_subjects:
+                    for lang in LANGS:
+                        if lang in item:
+                            classifications.append(item[lang])
                 
-                # This is a vital tweaking point. How many _rare_ words do two abstracts need to share
-                # in order to be considered on the same subject? 2 seems a balanced choice. 1 "works" too,
-                # but may be a bit too aggressive (providing a bit too many false positive matches).
-                if len(candidate_matched_words) < 2:
-                    continue
+                publication = Publication(finalized)
+                #initial_value = publication.uka_swe_classification_list
+                publication.add_subjects(classifications)
 
-                #print(f"Matched {finalized_rowid} with {candidate_rowid} based on shared rare words: {candidate_matched_words}")
-        
-                for subject in candidate.get("instanceOf", {}).get("subject", []):
-                    try:
-                        authority, subject_id = subject['inScheme']['code'], subject['code']
-                    except KeyError:
-                        continue
+                # third_cursor.execute("""
+                # UPDATE
+                #     finalized
+                # SET
+                #     data = ?
+                # WHERE
+                #     id = ? ;
+                # """, (json.dumps(publication.data), finalized_rowid) )
 
-                    if authority not in ('hsv', 'uka.se') or len(subject_id) < level:
-                        continue
+                output.write(str(finalized_rowid))
+                output.write("\n")
+                output.write(json.dumps(publication.data))
+                output.write("\n")
 
-                    publication_subjects.add(subject_id[:level])
-                score = len(candidate_matched_words)
-                for sub in publication_subjects:
-                    subjects[sub] += score
-        subjects = subjects.most_common(classes)
-        if len(subjects) > 0:
-            enriched_subjects =_enrich_subject(subjects)
-            #print(f"enriched subjects for {finalized_rowid}: {str(enriched_subjects)}")
-
-            LANGS = ['eng', 'swe']
-            classifications = []
-            for item in enriched_subjects:
-                for lang in LANGS:
-                    if lang in item:
-                        classifications.append(item[lang])
-            
-            publication = Publication(finalized)
-            #initial_value = publication.uka_swe_classification_list
-            publication.add_subjects(classifications)
-            third_cursor.execute("""
-            UPDATE
-                finalized
-            SET
-                data = ?
-            WHERE
-                id = ? ;
-            """, (json.dumps(publication.data), finalized_rowid) )
-            #print(f"added subjects {classifications} into publication: {finalized_rowid}")
-            
-            #code = "autoclassified"
-            #value = publication.uka_swe_classification_list
-            #logger.info(
-                #f"Autoclassifying publication {publication.id}", extra={'auditor': self.name})
-            #new_audit_events = self._add_audit_event(audit_events, result, code, initial_value, value)
-
-    commit_sqlite()
-
+                #print(f"added subjects {classifications} into publication: {finalized_rowid}")
+                
+                #code = "autoclassified"
+                #value = publication.uka_swe_classification_list
+                #logger.info(
+                    #f"Autoclassifying publication {publication.id}", extra={'auditor': self.name})
+                #new_audit_events = self._add_audit_event(audit_events, result, code, initial_value, value)
 
 def _enrich_subject(subjects):
     ret = []
@@ -215,19 +281,32 @@ def _create_subject(code, lang):
     }
 
 def auto_classify():
+    t0 = time.time()
     # First populate the abstract_total_word_counts table, so that we know
     # how many times each word occurs (within all combined abstracts).
     _generate_occurrence_table()
+    t1 = time.time()
+    diff = t1-t0
+    print(f"  auto classify 1 (counting) ran for {diff} seconds")
+    t0 = t1
 
     # Then go over the data again, and select the N _rarest_ words out of each
     # abstract, which we can now calculate given the table populated above.
     # Put these rare words in the abstract_rarest_words table.
     _select_rarest_words()
+    t1 = time.time()
+    diff = t1-t0
+    print(f"  auto classify 2 (selecting) ran for {diff} seconds")
+    t0 = t1
 
     # Now, go over the data a third time, this time, for each publication retrieving
     # candidates that share rare words, and thereby plausibly have the same subject.
     # Selectively copy good subjects over
     _find_and_add_subjects()
+    t1 = time.time()
+    diff = t1-t0
+    print(f"  auto classify 3 (adding) ran for {diff} seconds")
+    t0 = t1
 
 # For debugging
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 import re
 from stdnum.iso7064.mod_11_2 import is_valid
-from log import log_for_OAI_id
 from validators.shared import validate_base_unicode
+from util import make_event
 
     # flake8: noqa W504
 orcid_regex = re.compile(
@@ -16,29 +16,29 @@ def _strip_url(orcid):
         return orcid.split('/')[-1]
     return orcid
 
-def validate_orcid(orcid, id):
+def validate_orcid(orcid, path, events):
     result = validate_base_unicode(orcid)
     if result == False:
-        log_for_OAI_id(id, 'ORCID validation failed: unicode')
+        events.append(make_event("validation", "ORCID", path, "unicode", "invalid"))
         return False
     
     hit = orcid_regex.fullmatch(orcid)
     if hit is None:
-        log_for_OAI_id(id, 'ORCID validation failed: format')
+        events.append(make_event("validation", "ORCID", path, "format", "invalid"))
         return False
 
     try:
         orcnum = int(_strip_url(orcid).replace('-', '')[:-1])
         inspan = 15000000 <= orcnum <= 35000001
         if inspan == False:
-            log_for_OAI_id(id, 'ORCID validation failed: span')
+            events.append(make_event("validation", "ORCID", path, "span", "invalid"))
             return False
     except ValueError:
-        log_for_OAI_id(id, 'ORCID validation failed: span')
+        events.append(make_event("validation", "ORCID", path, "span", "invalid"))
         return False
     
     if not is_valid(_strip_url(orcid).upper().replace('-', '')):
-        log_for_OAI_id(id, 'ORCID validation failed: checksum')
+        events.append(make_event("validation", "ORCID", path, "checksum", "invalid"))
         return False
 
     return True
