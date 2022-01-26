@@ -206,9 +206,19 @@ sources = json.load(open(os.path.dirname(__file__) + '/sources.json'))
 if __name__ == "__main__":
     args = sys.argv[1:]
 
-    sources_to_harvest = sources
     if "devdata" in args:
-        sources_to_harvest = sources[15:18]
+        sources_to_harvest = [sources["mdh"], sources["miun"], sources["mau"]]
+    elif len(args) > 0:
+        sources_to_harvest = []
+        for arg in args:
+            if arg not in sources:
+                print(f"Source {arg} does not exist in sources.json")
+                sys.exit(1)
+            sources_to_harvest.append(sources[arg])
+    else:
+        sources_to_harvest = list(sources.values())
+
+    print("Harvesting", " ".join([source['code'] for source in sources_to_harvest]))
 
     t0 = time.time()
     clean_and_init_storage()
