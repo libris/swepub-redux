@@ -244,18 +244,19 @@ if __name__ == "__main__":
     diff = t1-t0
     print(f"Phase 1 (harvesting) ran for {diff} seconds")
     t0 = t1
+    auto_classify()
+    t1 = time.time()
+    diff = t1-t0
+    print(f"Phase 2 (auto-classification) ran for {diff} seconds")
+    t0 = t1
     deduplicate()
     t1 = time.time()
     diff = t1-t0
-    print(f"Phase 2 (deduplication) ran for {diff} seconds")
+    print(f"Phase 3 (deduplication) ran for {diff} seconds")
     t0 = t1
     merge()
     t1 = time.time()
     diff = t1-t0
-    print(f"Phase 3 (merging) ran for {diff} seconds")
-    t0 = t1
-    auto_classify()
-    t1 = time.time()
-    diff = t1-t0
-    print(f"Phase 4 (auto-classification) ran for {diff} seconds")
+    print(f"Phase 4 (merging) ran for {diff} seconds")
+    
 

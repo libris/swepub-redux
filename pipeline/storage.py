@@ -122,15 +122,15 @@ def clean_and_init_storage():
     CREATE TABLE abstract_rarest_words (
         id INTEGER PRIMARY KEY,
         word TEXT,
-        finalized_id INTEGER,
-        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+        converted_id INTEGER,
+        FOREIGN KEY (converted_id) REFERENCES converted(id)
     );
     """)
     cursor.execute("""
-    CREATE INDEX idx_abstract_rarest_words ON abstract_rarest_words (word, finalized_id);
+    CREATE INDEX idx_abstract_rarest_words ON abstract_rarest_words (word, converted_id);
     """)
     cursor.execute("""
-    CREATE INDEX idx_abstract_rarest_words_id ON abstract_rarest_words (finalized_id);
+    CREATE INDEX idx_abstract_rarest_words_id ON abstract_rarest_words (converted_id);
     """)
 
     # In order to calculate values (rarity) for the above table, we also need an answer
