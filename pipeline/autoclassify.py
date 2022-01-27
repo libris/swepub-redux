@@ -141,7 +141,7 @@ def _find_and_add_subjects():
                     data = ?
                 WHERE
                     id = ? ;
-                """, (jsontext, rowid) )
+                """, (jsontext.rstrip(), rowid) )
             commit_sqlite()
         
 
