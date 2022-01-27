@@ -147,8 +147,10 @@ def clean_and_init_storage():
     );
     """)
     cursor.execute("""
-    CREATE INDEX idx_abstract_total_word_counts ON abstract_total_word_counts (word);
+    CREATE INDEX idx_abstract_total_word_counts ON abstract_total_word_counts (word, occurrences);
     """)
+
+    # SUGGESTED BY SQLITE: CREATE INDEX abstract_total_word_counts_idx_77e8bc04 ON abstract_total_word_counts(word, occurrences);
 
     connection.commit()
 
