@@ -65,7 +65,7 @@ def _should_be_rejected(raw_xml, body):
         min_level_errors = {'bibliographical_minimum_level_error': error_list}
     return bool(error_list)
 
-def validate(raw_xml, body, harvest_cache):
+def validate(raw_xml, body, id_cache, issn_cache):
     if _should_be_rejected(raw_xml, body):
         return (False, [])
     
@@ -110,9 +110,9 @@ def validate(raw_xml, body, harvest_cache):
                 if id_type == 'ORCID':
                     validate_orcid(match.value, str(match.full_path), events)
                 if id_type == 'ISSN':
-                    validate_issn(match.value, str(match.full_path), session, events, harvest_cache)
+                    validate_issn(match.value, str(match.full_path), session, events, id_cache, issn_cache)
                 if id_type == 'DOI':
-                    validate_doi(match.value, str(match.full_path), session, events, harvest_cache)
+                    validate_doi(match.value, str(match.full_path), session, events, id_cache)
                 if id_type == 'URI':
                     result = validate_base_unicode(match.value)
                     if result == False:

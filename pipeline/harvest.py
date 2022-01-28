@@ -1,7 +1,7 @@
 from pathlib import Path
 from autoclassify import auto_classify
 from merge import merge
-import pickle
+import re
 import sickle
 from modsstylesheet import ModsStylesheet
 import hashlib
@@ -34,7 +34,8 @@ RequestExceptions = (
     requests.exceptions.HTTPError
 )
 
-HARVEST_CACHE_PATH = "./harvest_cache.pkl"
+ID_CACHE_PATH = "./id_cache.json"
+ISSN_PATH = "./issn.txt"  # one ISSN per line
 
 class RecordIterator:
 
@@ -143,7 +144,7 @@ class HarvestFailed(Exception):
 
 
 
-def harvest(source, lock, harvested_count, harvest_cache):
+def harvest(source, lock, harvested_count, id_cache, issn_cache):
 
     start_time = time.time()
 
@@ -176,12 +177,12 @@ def harvest(source, lock, harvested_count, harvest_cache):
                                     processes[i].join()
                                     del processes[i]
                                 i -= 1
-                        p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, harvest_cache))
+                        p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, id_cache, issn_cache))
                         batch_count += 1
                         p.start()
                         processes.append( p )
                         batch = []
-            p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, harvest_cache))
+            p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, id_cache, issn_cache))
             p.start()
             processes.append( p )
             for p in processes:
@@ -193,10 +194,10 @@ def harvest(source, lock, harvested_count, harvest_cache):
             exit -1
 
 
-def threaded_handle_harvested(batch, source, lock, harvest_cache):
+def threaded_handle_harvested(batch, source, lock, id_cache, issn_cache):
     for xml in batch:
         converted = convert(xml)
-        (accepted, events) = validate(xml, converted, harvest_cache)
+        (accepted, events) = validate(xml, converted, id_cache, issn_cache)
         lock.acquire()
         try:
             store_original_and_converted(xml, converted, source, accepted, events)
@@ -230,17 +231,34 @@ if __name__ == "__main__":
     # After harvesting we save the cache to disk so that we can use it again next time, greatly
     # improving harvesting speed. This is all optional: harvesting will work fine even if the
     # cache file is missing/corrupt/whatever.
-    harvest_cache_dict = {}
+    previously_validated_ids = {}
     try:
-        with open(HARVEST_CACHE_PATH, 'rb') as f:
-            harvest_cache_dict = pickle.load(f)
+        with open(ID_CACHE_PATH, 'r') as f:
+            previously_validated_ids = json.load(f)
+        print(f"Cache populated with {len(previously_validated_ids)} previously validated IDs from {ID_CACHE_PATH}")
     except FileNotFoundError:
-        print("Harvest cache file not found, starting fresh")
+        print("ID cache file not found, starting fresh")
     except Exception as e:
-        print(f"Failed loading cache file, starting fresh (error: {e})")
-    # All harvest jobs have access to the same Manager-managed dictionary
+        print(f"Failed loading ID cache file, starting fresh (error: {e})")
+
+    # If we have a file with known ISSN numbers, use it to populate the cache
+    known_issns = {}
+    try:
+        with open(ISSN_PATH, 'r') as f:
+            for line in f:
+                known_issns[re.split(r'\s|\t', line)[0].strip()] = 1
+            print(f"Cache populated with {len(known_issns)} ISSNs from {ISSN_PATH}")
+    except Exception as e:
+        print(f"Failed loading ISSN file: {e}")
+    # All harvest jobs have access to the same Manager-managed dictionaries
     manager = Manager()
-    harvest_cache = manager.dict(harvest_cache_dict)
+    # id_cache (stuff seen during requests to external sources) should be saved,
+    # but we don't want to waste time saving ISSNs already known from issn.txt,
+    # hence separating "stuff learned during harvest" from "stuff learned from static file"
+    ids_not_in_issn = set(previously_validated_ids.keys()) - set(known_issns.keys())
+    id_cache = manager.dict(dict.fromkeys(ids_not_in_issn, 1))
+
+    issn_cache = manager.dict(known_issns)
 
     print("Harvesting", " ".join([source['code'] for source in sources_to_harvest]))
 
@@ -258,7 +276,7 @@ if __name__ == "__main__":
     harvested_count = Value("I", 0)
 
     for source in sources_to_harvest:
-        p = Process(target=harvest, args=(source, lock, harvested_count, harvest_cache))
+        p = Process(target=harvest, args=(source, lock, harvested_count, id_cache, issn_cache))
         p.start()
         processes.append( p )
     for p in processes:
@@ -285,7 +303,8 @@ if __name__ == "__main__":
 
     # Save ISSN/DOI cache for use next time
     try:
-        with open(HARVEST_CACHE_PATH, 'wb') as f:
-            pickle.dump(dict(harvest_cache), f)
+        print(f"Saving {len(id_cache)} cached IDs to {ID_CACHE_PATH}")
+        with open(ID_CACHE_PATH, 'w') as f:
+            json.dump(dict(id_cache), f)
     except Exception as e:
-        print(f"Failed saving harvest cache to {HARVEST_CACHE_PATH}: {e}")
+        print(f"Failed saving harvest ID cache to {ID_CACHE_PATH}: {e}")

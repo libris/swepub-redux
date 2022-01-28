@@ -3,3 +3,6 @@ __pycache__/
 .idea/
 swepub.sqlite3
 venv/
+*.pkl
+id_cache.json
+issn.txt
