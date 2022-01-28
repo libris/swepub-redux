@@ -1,6 +1,7 @@
 from pathlib import Path
 from autoclassify import auto_classify
 from merge import merge
+import pickle
 import sickle
 from modsstylesheet import ModsStylesheet
 import hashlib
@@ -9,7 +10,7 @@ from uuid import uuid1
 from convert import convert
 from deduplicate import deduplicate
 import time
-from multiprocessing import Process, Lock, Value
+from multiprocessing import Process, Lock, Value, Manager
 import sys
 from storage import *
 
@@ -32,6 +33,8 @@ RequestExceptions = (
     requests.exceptions.ChunkedEncodingError,
     requests.exceptions.HTTPError
 )
+
+HARVEST_CACHE_PATH = "./harvest_cache.pkl"
 
 class RecordIterator:
 
@@ -140,7 +143,7 @@ class HarvestFailed(Exception):
 
 
 
-def harvest(source, lock, harvested_count):
+def harvest(source, lock, harvested_count, harvest_cache):
 
     start_time = time.time()
 
@@ -173,12 +176,12 @@ def harvest(source, lock, harvested_count):
                                     processes[i].join()
                                     del processes[i]
                                 i -= 1
-                        p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock))
+                        p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, harvest_cache))
                         batch_count += 1
                         p.start()
                         processes.append( p )
                         batch = []
-            p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock))
+            p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, harvest_cache))
             p.start()
             processes.append( p )
             for p in processes:
@@ -190,10 +193,10 @@ def harvest(source, lock, harvested_count):
             exit -1
 
 
-def threaded_handle_harvested(batch, source, lock):
+def threaded_handle_harvested(batch, source, lock, harvest_cache):
     for xml in batch:
         converted = convert(xml)
-        (accepted, events) = validate(xml, converted)
+        (accepted, events) = validate(xml, converted, harvest_cache)
         lock.acquire()
         try:
             store_original_and_converted(xml, converted, source, accepted, events)
@@ -218,6 +221,27 @@ if __name__ == "__main__":
     else:
         sources_to_harvest = list(sources.values())
 
+    # We check if ISSN and DOI numbers really exist through HTTP requests to external servers,
+    # so we cache the results to avoid unnecessary requests. Such requests were previously
+    # cached in Redis. We don't care about the whole response, just whether the ISSN/DOI
+    # was found or not, so all we need to store is the ISSN/DOI itself.
+    # (This can't be a set because that's not supported by multiprocessing.Manager, and anyway
+    # both set and dict lookups are O(1).)
+    # After harvesting we save the cache to disk so that we can use it again next time, greatly
+    # improving harvesting speed. This is all optional: harvesting will work fine even if the
+    # cache file is missing/corrupt/whatever.
+    harvest_cache_dict = {}
+    try:
+        with open(HARVEST_CACHE_PATH, 'rb') as f:
+            harvest_cache_dict = pickle.load(f)
+    except FileNotFoundError:
+        print("Harvest cache file not found, starting fresh")
+    except Exception as e:
+        print(f"Failed loading cache file, starting fresh (error: {e})")
+    # All harvest jobs have access to the same Manager-managed dictionary
+    manager = Manager()
+    harvest_cache = manager.dict(harvest_cache_dict)
+
     print("Harvesting", " ".join([source['code'] for source in sources_to_harvest]))
 
     t0 = time.time()
@@ -234,7 +258,7 @@ if __name__ == "__main__":
     harvested_count = Value("I", 0)
 
     for source in sources_to_harvest:
-        p = Process(target=harvest, args=(source,lock,harvested_count))
+        p = Process(target=harvest, args=(source, lock, harvested_count, harvest_cache))
         p.start()
         processes.append( p )
     for p in processes:
@@ -258,5 +282,10 @@ if __name__ == "__main__":
     t1 = time.time()
     diff = t1-t0
     print(f"Phase 4 (merging) ran for {diff} seconds")
-    
 
+    # Save ISSN/DOI cache for use next time
+    try:
+        with open(HARVEST_CACHE_PATH, 'wb') as f:
+            pickle.dump(dict(harvest_cache), f)
+    except Exception as e:
+        print(f"Failed saving harvest cache to {HARVEST_CACHE_PATH}: {e}")

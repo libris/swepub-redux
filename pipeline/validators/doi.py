@@ -72,7 +72,7 @@ def _doi_is_valid_format(doi):
 
     return True
 
-def validate_doi(doi, path, session, events):
+def validate_doi(doi, path, session, events, harvest_cache):
     if not _validate_printable_chars_and_no_ws(doi):
         events.append(make_event("validation", "DOI", path, "unicode", "invalid"))
         return False
@@ -82,6 +82,9 @@ def validate_doi(doi, path, session, events):
         events.append(make_event("validation", "DOI", path, "format", "invalid"))
         return False
 
+    if harvest_cache.get(stripped_doi, False):
+        return True
+
     valid = _validate_with_shortdoi(stripped_doi, session)
     if not valid:
         valid = _validate_with_crossref(stripped_doi, session)
@@ -89,4 +92,5 @@ def validate_doi(doi, path, session, events):
             events.append(make_event("validation", "DOI", path, "remote.crossref", "invalid"))
             return False
 
+    harvest_cache[doi] = True
     return True

@@ -5,7 +5,7 @@ from util import make_event
 
 issn_regex = re.compile('[0-9]{4}-?[0-9]{3}[0-9xX]')
     
-def validate_issn(issn, path, session, events):
+def validate_issn(issn, path, session, events, harvest_cache):
     if issn is not None and isinstance(issn, str):
         hit = issn_regex.fullmatch(issn)
         if hit is None:
@@ -15,8 +15,12 @@ def validate_issn(issn, path, session, events):
         events.append(make_event("validation", "ISSN", path, "checksum", "invalid"))
         return False
 
+    if harvest_cache.get(issn, False):
+        return True
+
     if not remote_verification(f'https://portal.issn.org/resource/ISSN/{issn}?format=json', session):
         events.append(make_event("validation", "ISSN", path, "remote", "invalid"))
         return False
 
+    harvest_cache[issn] = True
     return True
