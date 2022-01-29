@@ -72,7 +72,7 @@ def _doi_is_valid_format(doi):
 
     return True
 
-def validate_doi(doi, path, session, events, id_cache):
+def validate_doi(doi, path, session, events, harvest_cache):
     if not _validate_printable_chars_and_no_ws(doi):
         events.append(make_event("validation", "DOI", path, "unicode", "invalid"))
         return False
@@ -82,7 +82,7 @@ def validate_doi(doi, path, session, events, id_cache):
         events.append(make_event("validation", "DOI", path, "format", "invalid"))
         return False
 
-    if id_cache.get(stripped_doi, 0):
+    if harvest_cache['id'].get(stripped_doi, 0):
         return True
 
     valid = _validate_with_shortdoi(stripped_doi, session)
@@ -92,5 +92,5 @@ def validate_doi(doi, path, session, events, id_cache):
             events.append(make_event("validation", "DOI", path, "remote.crossref", "invalid"))
             return False
 
-    id_cache[stripped_doi] = 1
+    harvest_cache['id'][stripped_doi] = 1
     return True

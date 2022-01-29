@@ -144,7 +144,7 @@ class HarvestFailed(Exception):
 
 
 
-def harvest(source, lock, harvested_count, id_cache, issn_cache):
+def harvest(source, lock, harvested_count, harvest_cache):
 
     start_time = time.time()
 
@@ -177,12 +177,12 @@ def harvest(source, lock, harvested_count, id_cache, issn_cache):
                                     processes[i].join()
                                     del processes[i]
                                 i -= 1
-                        p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, id_cache, issn_cache))
+                        p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, harvest_cache))
                         batch_count += 1
                         p.start()
                         processes.append( p )
                         batch = []
-            p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, id_cache, issn_cache))
+            p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, harvest_cache))
             p.start()
             processes.append( p )
             for p in processes:
@@ -194,10 +194,10 @@ def harvest(source, lock, harvested_count, id_cache, issn_cache):
             exit -1
 
 
-def threaded_handle_harvested(batch, source, lock, id_cache, issn_cache):
+def threaded_handle_harvested(batch, source, lock, harvest_cache):
     for xml in batch:
         converted = convert(xml)
-        (accepted, events) = validate(xml, converted, id_cache, issn_cache)
+        (accepted, events) = validate(xml, converted, harvest_cache)
         lock.acquire()
         try:
             store_original_and_converted(xml, converted, source, accepted, events)
@@ -257,8 +257,8 @@ if __name__ == "__main__":
     # hence separating "stuff learned during harvest" from "stuff learned from static file"
     ids_not_in_issn = set(previously_validated_ids.keys()) - set(known_issns.keys())
     id_cache = manager.dict(dict.fromkeys(ids_not_in_issn, 1))
-
     issn_cache = manager.dict(known_issns)
+    harvest_cache = manager.dict({'id': id_cache, 'issn': issn_cache})
 
     print("Harvesting", " ".join([source['code'] for source in sources_to_harvest]))
 
@@ -276,7 +276,7 @@ if __name__ == "__main__":
     harvested_count = Value("I", 0)
 
     for source in sources_to_harvest:
-        p = Process(target=harvest, args=(source, lock, harvested_count, id_cache, issn_cache))
+        p = Process(target=harvest, args=(source, lock, harvested_count, harvest_cache))
         p.start()
         processes.append( p )
     for p in processes:
@@ -303,8 +303,8 @@ if __name__ == "__main__":
 
     # Save ISSN/DOI cache for use next time
     try:
-        print(f"Saving {len(id_cache)} cached IDs to {ID_CACHE_PATH}")
+        print(f"Saving {len(harvest_cache['id'])} cached IDs to {ID_CACHE_PATH}")
         with open(ID_CACHE_PATH, 'w') as f:
-            json.dump(dict(id_cache), f)
+            json.dump(dict(harvest_cache['id']), f)
     except Exception as e:
         print(f"Failed saving harvest ID cache to {ID_CACHE_PATH}: {e}")
