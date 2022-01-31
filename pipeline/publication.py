@@ -74,6 +74,11 @@ class Publication:
         return self.body['@id']
 
     @property
+    def source_org(self):
+        """Returns org code"""
+        return self.body.get("meta", {}).get("assigner", {}).get("label")
+
+    @property
     def body(self):
         """Return raw publication data"""
         return self._body

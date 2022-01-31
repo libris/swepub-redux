@@ -13,6 +13,7 @@ import time
 from multiprocessing import Process, Lock, Value, Manager
 import sys
 from storage import *
+from index import generate_search_tables
 
 from sickle.oaiexceptions import (
     BadArgument, BadVerb, BadResumptionToken,
@@ -300,6 +301,11 @@ if __name__ == "__main__":
     t1 = time.time()
     diff = t1-t0
     print(f"Phase 4 (merging) ran for {diff} seconds")
+    t0 = t1
+    generate_search_tables()
+    t1 = time.time()
+    diff = t1-t0
+    print(f"Phase 5 (generate search tables) ran for {diff} seconds")
 
     # Save ISSN/DOI cache for use next time
     try:
