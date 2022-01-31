@@ -18,13 +18,14 @@ issn_regex = re.compile(
 def recover_issn(issn, body, path, id, events):
     translated = unicode_translate(issn)
     if translated != issn:
+        initial = issn
         issn = translated
         update_at_path(body, path, issn)
-        events.append(make_event("enrichment", "ISSN", path, "unicode", issn))
+        events.append(make_event("enrichment", "ISSN", path, "unicode", issn, initial_value=initial))
         
     answ = issn_regex.findall(issn)
     # Skip first element in part since it's empty or contains non wanted delimiter
     recovered = [''.join(part[1:]) for part in answ]
     if len(recovered) > 0 and recovered[0] != issn:
-        events.append(make_event("enrichment", "ISSN", path, "split", recovered[0]))
+        events.append(make_event("enrichment", "ISSN", path, "split", recovered[0], initial_value=issn))
         update_at_path(body, path, recovered[0])

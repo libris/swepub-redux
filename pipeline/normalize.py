@@ -8,19 +8,19 @@ def normalize_issn(issn, body, path, events):
     new_value = issn_format(issn)
     if new_value != issn:
         update_at_path(body, path, new_value)
-        events.append(make_event("normalization", "ISSN", path, "format", new_value))
+        events.append(make_event("normalization", "ISSN", path, "format", new_value, initial_value=issn))
 
 def normalize_isbn(isbn, body, path, events):
     new_value = isbn.replace('-', '').upper()
     if new_value != isbn:
         update_at_path(body, path, new_value)
-        events.append(make_event("normalization", "ISBN", path, "format", new_value))
+        events.append(make_event("normalization", "ISBN", path, "format", new_value, initial_value=isbn))
 
 def normalize_isi(isi, body, path, events):
     new_value = isi.upper()
     if new_value != isi:
         update_at_path(body, path, new_value)
-        events.append(make_event("normalization", "ISI", path, "capitalize", new_value))
+        events.append(make_event("normalization", "ISI", path, "capitalize", new_value, initial_value=isi))
 
 HTTP_PREFIX = 'http://orcid.org/'
 HTTPS_PREFIX = 'https://orcid.org/'
@@ -36,7 +36,7 @@ def normalize_orcid(orcid, body, path, events):
         enriched_value = HTTPS_PREFIX + orcid
     if orcid != enriched_value:
         update_at_path(body, path, enriched_value)
-        events.append(make_event("normalization", "ORCID", path, code, enriched_value))
+        events.append(make_event("normalization", "ORCID", path, code, enriched_value, initial_value=orcid))
     
     # get_orcid_with_delimiters
     initial = enriched_value
@@ -49,7 +49,7 @@ def normalize_orcid(orcid, body, path, events):
 
     if initial != enriched:
         update_at_path(body, path, enriched)
-        events.append(make_event("normalization", "ORCID", path, "format.delimiters", enriched))
+        events.append(make_event("normalization", "ORCID", path, "format.delimiters", enriched, initial_value=initial))
 
 HTTPS_PREFIX = 'https://doi.org/'
 DOI_PREFIX = '10.'
@@ -66,14 +66,14 @@ def normalize_doi(doi, body, path, events):
         enriched_value = HTTPS_PREFIX + doi
     if doi != enriched_value:
         update_at_path(body, path, enriched_value)
-        events.append(make_event("normalization", "DOI", path, code, enriched_value))
+        events.append(make_event("normalization", "DOI", path, code, enriched_value, initial_value=doi))
     
     # _prefix_cleaner
     doi_match = doi_prefix.findall(doi)
     new_value = ''.join(doi_match[0]) if doi_match else doi
     if doi != new_value:
         update_at_path(body, path, new_value)
-        events.append(make_event("normalization", "DOI", path, "prefix.remove", new_value))
+        events.append(make_event("normalization", "DOI", path, "prefix.remove", new_value, initial_value=doi))
 
 class MLStripper(HTMLParser):
 
@@ -97,7 +97,7 @@ def normalize_free_text(free_text, body, path, events):
     new_value = s.get_data()
     if new_value != free_text:
         update_at_path(body, path, new_value)
-        events.append(make_event("normalization", "free_text", path, "strip_tags", None))
+        events.append(make_event("normalization", "free_text", path, "strip_tags", None, initial_value=free_text))
         free_text = new_value
     
     # clean_text
@@ -109,5 +109,5 @@ def normalize_free_text(free_text, body, path, events):
     new_value = text.translate(translator)
     if new_value != free_text:
         update_at_path(body, path, new_value)
-        events.append(make_event("normalization", "free_text", path, "clean_text", None))
+        events.append(make_event("normalization", "free_text", path, "clean_text", None, initial_value=free_text))
         free_text = new_value

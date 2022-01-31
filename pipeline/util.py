@@ -24,5 +24,5 @@ class UnicodeAsciiTranslator:
 def unicode_translate(input_string):
     return input_string.translate(UnicodeAsciiTranslator())
 
-def make_event(type, field, path, code, result):
-    return {"type": type, "field": field, "path": str(path), "code": code, "result" : result}
+def make_event(type=None, field=None, path=None, code=None, result=None, initial_value=None, step=None):
+    return {"type": type, "field": field, "path": str(path), "code": code, "result": result, "initial_value": initial_value, "step": step}

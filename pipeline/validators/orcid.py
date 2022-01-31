@@ -19,26 +19,26 @@ def _strip_url(orcid):
 def validate_orcid(orcid, path, events):
     result = validate_base_unicode(orcid)
     if result == False:
-        events.append(make_event("validation", "ORCID", path, "unicode", "invalid"))
+        events.append(make_event("validation", "ORCID", path, "unicode", "invalid", initial_value=orcid))
         return False
     
     hit = orcid_regex.fullmatch(orcid)
     if hit is None:
-        events.append(make_event("validation", "ORCID", path, "format", "invalid"))
+        events.append(make_event("validation", "ORCID", path, "format", "invalid", initial_value=orcid))
         return False
 
     try:
         orcnum = int(_strip_url(orcid).replace('-', '')[:-1])
         inspan = 15000000 <= orcnum <= 35000001
         if inspan == False:
-            events.append(make_event("validation", "ORCID", path, "span", "invalid"))
+            events.append(make_event("validation", "ORCID", path, "span", "invalid", initial_value=orcid))
             return False
     except ValueError:
-        events.append(make_event("validation", "ORCID", path, "span", "invalid"))
+        events.append(make_event("validation", "ORCID", path, "span", "invalid", initial_value=orcid))
         return False
     
     if not is_valid(_strip_url(orcid).upper().replace('-', '')):
-        events.append(make_event("validation", "ORCID", path, "checksum", "invalid"))
+        events.append(make_event("validation", "ORCID", path, "checksum", "invalid", initial_value=orcid))
         return False
 
     return True

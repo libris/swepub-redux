@@ -19,8 +19,8 @@ def recover_isi(isi, body, path, id, events):
     hit = isi_regex.search(isi)
     if hit and hit.group() != isi:
         update_at_path(body, path, hit.group())
-        events.append(make_event("enrichment", "ISI", path, "recovery", hit.group()))
+        events.append(make_event("enrichment", "ISI", path, "recovery", hit.group()), initial_value=isi)
     
     if len(isi) == 30 and isi[:15] == isi[15:]:
         update_at_path(body, path, isi[:15])
-        events.append(make_event("enrichment", "ISI", path, "double", isi[:15]))
+        events.append(make_event("enrichment", "ISI", path, "double", isi[:15]), initial_value=isi)

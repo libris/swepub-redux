@@ -74,12 +74,12 @@ def _doi_is_valid_format(doi):
 
 def validate_doi(doi, path, session, events, harvest_cache):
     if not _validate_printable_chars_and_no_ws(doi):
-        events.append(make_event("validation", "DOI", path, "unicode", "invalid"))
+        events.append(make_event("validation", "DOI", path, "unicode", "invalid", initial_value=doi))
         return False
     
     stripped_doi = _strip_doi_http_prefix(doi)
     if not _doi_is_valid_format(stripped_doi):
-        events.append(make_event("validation", "DOI", path, "format", "invalid"))
+        events.append(make_event("validation", "DOI", path, "format", "invalid", initial_value=doi))
         return False
 
     if harvest_cache['id'].get(stripped_doi, 0):
@@ -89,7 +89,7 @@ def validate_doi(doi, path, session, events, harvest_cache):
     if not valid:
         valid = _validate_with_crossref(stripped_doi, session)
         if not valid:
-            events.append(make_event("validation", "DOI", path, "remote.crossref", "invalid"))
+            events.append(make_event("validation", "DOI", path, "remote.crossref", "invalid", initial_value=doi))
             return False
 
     harvest_cache['id'][stripped_doi] = 1

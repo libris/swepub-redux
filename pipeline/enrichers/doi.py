@@ -18,6 +18,7 @@ DOI_START = "10."
 VALID_STARTS = (DOI_START, "https://doi.org/10.", "http://doi.org/10.")
 
 def recover_doi(doi, body, path, id, events):
+    initial = doi
     translated = doi.translate(TRANSLATE_DICT)
     if translated != doi:
         doi = translated
@@ -29,4 +30,4 @@ def recover_doi(doi, body, path, id, events):
         hit = doi.find(DOI_START)
         if hit != -1:
             update_at_path(body, path, doi[hit:])
-            events.append(make_event("enrichment", "DOI", path, "recovery", doi[hit:]))
+            events.append(make_event("enrichment", "DOI", path, "recovery", doi[hit:], initial_value=initial))
