@@ -38,8 +38,10 @@ def clean_and_init_storage():
     CREATE TABLE converted_events (
         converted_id INTEGER,
         type TEXT,
+        name TEXT,
         field TEXT,
         path TEXT,
+        step TEXT,
         code TEXT,
         initial_value TEXT,
         result TEXT,
@@ -255,14 +257,24 @@ def store_original_and_converted(original, converted, source, accepted, events):
         doc.source_org_master,
         doc.open_access,
         doc.ssif_1,
-        doc.level,
+        str(doc.level),
         doc.is_swedishlist
     )).lastrowid
 
     for event in events:
         cursor.execute("""
-        INSERT INTO converted_events(converted_id, type, field, path, code, initial_value, result) VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (converted_rowid, event["type"], event["field"], event["path"], event["code"], event["initial_value"], event["result"]))
+        INSERT INTO converted_events(converted_id, type, field, path, code, initial_value, result, name, step) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            converted_rowid,
+            event["type"],
+            event["field"],
+            event["path"],
+            event["code"],
+            event["initial_value"],
+            event["result"],
+            event["name"],
+            event["step"]
+        ))
 
     identifiers = []
     for title in converted["instanceOf"]["hasTitle"]:

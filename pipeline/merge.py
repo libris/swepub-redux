@@ -1,4 +1,3 @@
-from audit import audit
 from storage import commit_sqlite, get_cursor, open_existing_storage
 from merger import PublicationMerger
 from publication import Publication
@@ -74,7 +73,6 @@ def _handle(batch): # batch is a list of cluster rows
         merger = PublicationMerger()
         union_publication, publication_ids, publication_orgs = merger.merge(publications)
 
-        audit(union_publication.body)
         union_publication.body['_publication_ids'] = publication_ids
         union_publication.body['_publication_orgs'] = publication_orgs
 

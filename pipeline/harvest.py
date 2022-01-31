@@ -22,6 +22,7 @@ from sickle.oaiexceptions import (
 )
 from modsstylesheet import ModsStylesheet
 from validate import validate
+from audit import audit
 
 OAIExceptions = (
     BadArgument, BadVerb, BadResumptionToken,
@@ -199,9 +200,11 @@ def threaded_handle_harvested(batch, source, lock, harvest_cache):
     for xml in batch:
         converted = convert(xml)
         (accepted, events) = validate(xml, converted, harvest_cache)
+        (audited, audit_events) = audit(converted)
+        events.extend(audit_events.data)
         lock.acquire()
         try:
-            store_original_and_converted(xml, converted, source, accepted, events)
+            store_original_and_converted(xml, audited.data, source, accepted, events)
         finally:
             lock.release()
 
