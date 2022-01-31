@@ -241,7 +241,7 @@ def store_original_and_converted(original, converted, source, accepted, events):
 
     original_rowid = cursor.execute("""
     INSERT INTO original(source, data, accepted, oai_id) VALUES(?, ?, ?, ?);
-    """, (source, json.dumps(original), accepted, converted["@id"])).lastrowid
+    """, (source, original, accepted, converted["@id"])).lastrowid
 
     if not accepted:
         connection.commit()

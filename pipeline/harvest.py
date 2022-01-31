@@ -14,6 +14,8 @@ from multiprocessing import Process, Lock, Value, Manager
 import sys
 from storage import *
 from index import generate_search_tables
+import logging
+import swepublog
 
 from sickle.oaiexceptions import (
     BadArgument, BadVerb, BadResumptionToken,
@@ -190,9 +192,9 @@ def harvest(source, lock, harvested_count, harvest_cache):
             for p in processes:
                 p.join()
             finish_time = time.time()
-            print(f'Harvest of {source["code"]} took {finish_time-start_time} seconds.')
+            log.info(f'Harvest of {source["code"]} took {finish_time-start_time} seconds.')
         except HarvestFailed as e:
-            print (f'FAILED HARVEST: {source["code"]}')
+            log.warn(f'FAILED HARVEST: {source["code"]}')
             exit -1
 
 
@@ -212,6 +214,8 @@ def threaded_handle_harvested(batch, source, lock, harvest_cache):
 sources = json.load(open(os.path.dirname(__file__) + '/sources.json'))
 
 if __name__ == "__main__":
+    # To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..
+    log = swepublog.get_default_logger()
     args = sys.argv[1:]
 
     if "devdata" in args:
@@ -220,7 +224,7 @@ if __name__ == "__main__":
         sources_to_harvest = []
         for arg in args:
             if arg not in sources:
-                print(f"Source {arg} does not exist in sources.json")
+                log.error(f"Source {arg} does not exist in sources.json")
                 sys.exit(1)
             sources_to_harvest.append(sources[arg])
     else:
@@ -239,11 +243,11 @@ if __name__ == "__main__":
     try:
         with open(ID_CACHE_PATH, 'r') as f:
             previously_validated_ids = json.load(f)
-        print(f"Cache populated with {len(previously_validated_ids)} previously validated IDs from {ID_CACHE_PATH}")
+        log.info(f"Cache populated with {len(previously_validated_ids)} previously validated IDs from {ID_CACHE_PATH}")
     except FileNotFoundError:
-        print("ID cache file not found, starting fresh")
+        log.warn("ID cache file not found, starting fresh")
     except Exception as e:
-        print(f"Failed loading ID cache file, starting fresh (error: {e})")
+        log.warn(f"Failed loading ID cache file, starting fresh (error: {e})")
 
     # If we have a file with known ISSN numbers, use it to populate the cache
     known_issns = {}
@@ -251,9 +255,9 @@ if __name__ == "__main__":
         with open(ISSN_PATH, 'r') as f:
             for line in f:
                 known_issns[re.split(r'\s|\t', line)[0].strip()] = 1
-            print(f"Cache populated with {len(known_issns)} ISSNs from {ISSN_PATH}")
+            log.info(f"Cache populated with {len(known_issns)} ISSNs from {ISSN_PATH}")
     except Exception as e:
-        print(f"Failed loading ISSN file: {e}")
+        log.warn(f"Failed loading ISSN file: {e}")
     # All harvest jobs have access to the same Manager-managed dictionaries
     manager = Manager()
     # id_cache (stuff seen during requests to external sources) should be saved,
@@ -264,7 +268,7 @@ if __name__ == "__main__":
     issn_cache = manager.dict(known_issns)
     harvest_cache = manager.dict({'id': id_cache, 'issn': issn_cache})
 
-    print("Harvesting", " ".join([source['code'] for source in sources_to_harvest]))
+    log.info("Harvesting " + " ".join([source['code'] for source in sources_to_harvest]))
 
     t0 = time.time()
     clean_and_init_storage()
@@ -288,32 +292,32 @@ if __name__ == "__main__":
 
     t1 = time.time()
     diff = t1-t0
-    print(f"Phase 1 (harvesting) ran for {diff} seconds")
+    log.info(f"Phase 1 (harvesting) ran for {diff} seconds")
     t0 = t1
     auto_classify()
     t1 = time.time()
     diff = t1-t0
-    print(f"Phase 2 (auto-classification) ran for {diff} seconds")
+    log.info(f"Phase 2 (auto-classification) ran for {diff} seconds")
     t0 = t1
     deduplicate()
     t1 = time.time()
     diff = t1-t0
-    print(f"Phase 3 (deduplication) ran for {diff} seconds")
+    log.info(f"Phase 3 (deduplication) ran for {diff} seconds")
     t0 = t1
     merge()
     t1 = time.time()
     diff = t1-t0
-    print(f"Phase 4 (merging) ran for {diff} seconds")
+    log.info(f"Phase 4 (merging) ran for {diff} seconds")
     t0 = t1
     generate_search_tables()
     t1 = time.time()
     diff = t1-t0
-    print(f"Phase 5 (generate search tables) ran for {diff} seconds")
+    log.info(f"Phase 5 (generate search tables) ran for {diff} seconds")
 
     # Save ISSN/DOI cache for use next time
     try:
-        print(f"Saving {len(harvest_cache['id'])} cached IDs to {ID_CACHE_PATH}")
+        log.info(f"Saving {len(harvest_cache['id'])} cached IDs to {ID_CACHE_PATH}")
         with open(ID_CACHE_PATH, 'w') as f:
             json.dump(dict(harvest_cache['id']), f)
     except Exception as e:
-        print(f"Failed saving harvest ID cache to {ID_CACHE_PATH}: {e}")
+        log.warn(f"Failed saving harvest ID cache to {ID_CACHE_PATH}: {e}")
