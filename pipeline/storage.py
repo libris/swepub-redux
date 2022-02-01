@@ -48,6 +48,12 @@ def clean_and_init_storage():
         FOREIGN KEY (converted_id) REFERENCES converted(id)
     );
     """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_events_converted_id ON converted_events(converted_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_events_type ON converted_events(type);
+    """)
 
     # After conversion, validation and normalization each publication is stored in this
     # form, for later in use in deduplication.
@@ -65,6 +71,27 @@ def clean_and_init_storage():
         is_swedishlist INTEGER, -- whether doc is peer-reviewed (see above) or not. Merge classification_level and is_swedishlist?
         FOREIGN KEY (original_id) REFERENCES original(id)
     );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_oai_id ON converted(oai_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_date ON converted(date);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_source ON converted(source);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_is_open_access ON converted(is_open_access);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_ssif_1 ON converted(ssif_1);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_classification_level ON converted(classification_level);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_is_swedishlist ON converted(is_swedishlist);
     """)
 
     # To facilitate deduplication, store all of each publications ids (regardless of type)
@@ -115,6 +142,9 @@ def clean_and_init_storage():
         data TEXT,
         FOREIGN KEY (cluster_id) REFERENCES cluster(cluster_id)
     );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_finalized_oai_id ON finalized(oai_id);
     """)
 
     # To facilitate "auto classification", store (for each publication) the N rarest
@@ -175,6 +205,21 @@ def clean_and_init_storage():
         FOREIGN KEY (finalized_id) REFERENCES finalized(id)
     );
     """)
+    cursor.execute("""
+    CREATE INDEX idx_search_single_finalized_id ON search_single(finalized_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_single_finalized_year ON search_single(year);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_single_finalized_content_marking ON search_single(content_marking);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_single_publication_status ON search_single(publication_status);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_single_swedish_list ON search_single(swedish_list);
+    """)
 
     cursor.execute("""
     CREATE TABLE search_doi (
@@ -182,6 +227,12 @@ def clean_and_init_storage():
         value TEXT,
         FOREIGN KEY (finalized_id) REFERENCES finalized(id)
     );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_doi_finalized_id ON search_doi(finalized_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_doi_value ON search_doi(value);
     """)
 
     cursor.execute("""
@@ -191,6 +242,12 @@ def clean_and_init_storage():
         FOREIGN KEY (finalized_id) REFERENCES finalized(id)
     );
     """)
+    cursor.execute("""
+    CREATE INDEX idx_search_genre_form_finalized_id ON search_genre_form(finalized_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_genre_form_value ON search_genre_form(value);
+    """)
 
     cursor.execute("""
     CREATE TABLE search_subject (
@@ -199,6 +256,13 @@ def clean_and_init_storage():
         FOREIGN KEY (finalized_id) REFERENCES finalized(id)
     );
     """)
+    cursor.execute("""
+    CREATE INDEX idx_search_subject_finalized_id ON search_subject(finalized_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_subject_value ON search_subject(value);
+    """)
+
 
     cursor.execute("""
     CREATE TABLE search_creator (
@@ -211,6 +275,24 @@ def clean_and_init_storage():
         FOREIGN KEY (finalized_id) REFERENCES finalized(id)
     );
     """)
+    cursor.execute("""
+    CREATE INDEX idx_search_creator_finalized_id ON search_creator(finalized_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_creator_orcid ON search_creator(orcid);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_creator_family_name ON search_creator(family_name);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_creator_given_name ON search_creator(given_name);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_creator_local_id ON search_creator(local_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_creator_local_id_by ON search_creator(local_id_by);
+    """)
 
     cursor.execute("""
     CREATE TABLE search_org (
@@ -218,6 +300,12 @@ def clean_and_init_storage():
         value TEXT,
         FOREIGN KEY (finalized_id) REFERENCES finalized(id)
     );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_org_finalized_id ON search_org(finalized_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_org_value ON search_org(value);
     """)
 
     cursor.execute("""
