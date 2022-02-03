@@ -149,13 +149,24 @@ class HarvestFailed(Exception):
 
 
 
-def harvest(source, lock, harvested_count, harvest_cache):
+def harvest(source, lock, harvested_count, harvest_cache, incremental):
+
+    cursor = get_cursor()
+    if incremental:
+        lock.acquire()
+        try:
+            cursor.execute("SELECT last_successful_harvest from last_harvest WHERE source = ?", (source["code"],))
+            rows = cursor.fetchall()
+            print(f"rows0:{rows[0]}")
+        finally:
+            lock.release()
 
     start_time = time.time()
 
     for set in source["sets"]:
         harvest_info = f'{set["url"]} ({set["subset"]}, {set["metadata_prefix"]})'
         harvest_start = datetime.now()
+
         record_iterator = RecordIterator(source["code"], set, None, None)
         try:
             batch_count = 0
@@ -198,7 +209,9 @@ def harvest(source, lock, harvested_count, harvest_cache):
             cursor = get_cursor()
             lock.acquire()
             try:
-                cursor.execute("INSERT INTO last_harvest(source, last_successful_harvest) VALUES (?, ?)", (source["code"], harvest_start))
+                cursor.execute("""
+                INSERT INTO last_harvest(source, last_successful_harvest) VALUES (?, ?)
+                ON CONFLICT DO UPDATE SET last_successful_harvest = ?""", (source["code"], harvest_start, harvest_start))
                 commit_sqlite()
             finally:
                 lock.release()
@@ -226,6 +239,11 @@ if __name__ == "__main__":
     # To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..
     log = swepublog.get_default_logger()
     args = sys.argv[1:]
+
+    incremental = False
+    if "update" in args:
+        args.remove("update")
+        incremental = True
 
     if "devdata" in args:
         sources_to_harvest = [sources["mdh"], sources["miun"], sources["mau"]]
@@ -280,7 +298,10 @@ if __name__ == "__main__":
     log.info("Harvesting " + " ".join([source['code'] for source in sources_to_harvest]))
 
     t0 = time.time()
-    clean_and_init_storage()
+    if incremental:
+        open_existing_storage()
+    else:
+        clean_and_init_storage()
     processes = []
 
     # Initially synchronization was left up to sqlite3's file locking to handle,
@@ -293,7 +314,7 @@ if __name__ == "__main__":
     harvested_count = Value("I", 0)
 
     for source in sources_to_harvest:
-        p = Process(target=harvest, args=(source, lock, harvested_count, harvest_cache))
+        p = Process(target=harvest, args=(source, lock, harvested_count, harvest_cache, incremental))
         p.start()
         processes.append( p )
     for p in processes:
