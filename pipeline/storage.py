@@ -17,6 +17,7 @@ def clean_and_init_storage():
 
     cursor.execute("PRAGMA journal_mode=WAL;")
     cursor.execute("PRAGMA synchronous=OFF;")
+    cursor.execute("PRAGMA foreign_keys=ON;")
 
     # Because Swepub APIs expose publications as originally harvested, these must be kept.
     cursor.execute("""
@@ -45,7 +46,7 @@ def clean_and_init_storage():
         code TEXT,
         initial_value TEXT,
         result TEXT,
-        FOREIGN KEY (converted_id) REFERENCES converted(id)
+        FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
     );
     """)
     cursor.execute("""
@@ -69,7 +70,7 @@ def clean_and_init_storage():
         ssif_1 INTEGER, -- SSIF 1-level classification (1-6)
         classification_level TEXT, -- e.g. "https://id.kb.se/term/swepub/swedishlist/peer-reviewed". TOOD: store as int?
         is_swedishlist INTEGER, -- whether doc is peer-reviewed (see above) or not. Merge classification_level and is_swedishlist?
-        FOREIGN KEY (original_id) REFERENCES original(id)
+        FOREIGN KEY (original_id) REFERENCES original(id) ON DELETE CASCADE
     );
     """)
     cursor.execute("""
@@ -104,7 +105,7 @@ def clean_and_init_storage():
         id INTEGER PRIMARY KEY,
         identifier TEXT,
         converted_id INTEGER,
-        FOREIGN KEY (converted_id) REFERENCES converted(id)
+        FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
     );
     """)
 
@@ -122,7 +123,7 @@ def clean_and_init_storage():
     CREATE TABLE cluster (
         cluster_id INTEGER,
         converted_id INTEGER,
-        FOREIGN KEY (converted_id) REFERENCES converted(id)
+        FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
     );
     """)
     cursor.execute("""
@@ -134,13 +135,15 @@ def clean_and_init_storage():
 
     # The final form of a publication in swepub. Each row in this table contains a merged
     # publication, that represents one of the clusters found in the deduplication process.
+    # cluster_id references into the cluster table, but cannot acutally be a formal
+    # foreign key, because cluster_id is not (and cannot be) unique. See the cluster
+    # definition above.
     cursor.execute("""
     CREATE TABLE finalized (
         id INTEGER PRIMARY KEY,
         cluster_id INTEGER,
         oai_id TEXT,
-        data TEXT,
-        FOREIGN KEY (cluster_id) REFERENCES cluster(cluster_id)
+        data TEXT
     );
     """)
     cursor.execute("""
@@ -165,7 +168,7 @@ def clean_and_init_storage():
         id INTEGER PRIMARY KEY,
         word TEXT,
         converted_id INTEGER,
-        FOREIGN KEY (converted_id) REFERENCES converted(id)
+        FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
     );
     """)
     cursor.execute("""
@@ -202,7 +205,7 @@ def clean_and_init_storage():
         content_marking TEXT,
         publication_status TEXT,
         swedish_list INTEGER,
-        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id) ON DELETE CASCADE
     );
     """)
     cursor.execute("""
@@ -225,7 +228,7 @@ def clean_and_init_storage():
     CREATE TABLE search_doi (
         finalized_id INTEGER,
         value TEXT,
-        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id) ON DELETE CASCADE
     );
     """)
     cursor.execute("""
@@ -239,7 +242,7 @@ def clean_and_init_storage():
     CREATE TABLE search_genre_form (
         finalized_id INTEGER,
         value TEXT,
-        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id) ON DELETE CASCADE
     );
     """)
     cursor.execute("""
@@ -253,7 +256,7 @@ def clean_and_init_storage():
     CREATE TABLE search_subject (
         finalized_id INTEGER,
         value INTEGER,
-        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id) ON DELETE CASCADE
     );
     """)
     cursor.execute("""
@@ -272,7 +275,7 @@ def clean_and_init_storage():
         given_name TEXT,
         local_id TEXT,
         local_id_by TEXT,
-        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id) ON DELETE CASCADE
     );
     """)
     cursor.execute("""
@@ -298,7 +301,7 @@ def clean_and_init_storage():
     CREATE TABLE search_org (
         finalized_id INTEGER,
         value TEXT,
-        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id) ON DELETE CASCADE
     );
     """)
     cursor.execute("""

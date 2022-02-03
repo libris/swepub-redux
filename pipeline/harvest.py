@@ -293,21 +293,25 @@ if __name__ == "__main__":
     t1 = time.time()
     diff = t1-t0
     log.info(f"Phase 1 (harvesting) ran for {diff} seconds")
+
     t0 = t1
     auto_classify()
     t1 = time.time()
     diff = t1-t0
     log.info(f"Phase 2 (auto-classification) ran for {diff} seconds")
+
     t0 = t1
     deduplicate()
     t1 = time.time()
     diff = t1-t0
     log.info(f"Phase 3 (deduplication) ran for {diff} seconds")
+
     t0 = t1
     merge()
     t1 = time.time()
     diff = t1-t0
     log.info(f"Phase 4 (merging) ran for {diff} seconds")
+    
     t0 = t1
     generate_search_tables()
     t1 = time.time()
