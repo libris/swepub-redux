@@ -19,6 +19,15 @@ def clean_and_init_storage():
     cursor.execute("PRAGMA synchronous=OFF;")
     cursor.execute("PRAGMA foreign_keys=ON;")
 
+    # To allow incremental updates, we must know the last successful (start of-) harvest time
+    # for each source
+    cursor.execute("""
+    CREATE TABLE last_harvest (
+        source TEXT PRIMARY KEY,
+        last_successful_harvest DATETIME
+    );
+    """)
+
     # Because Swepub APIs expose publications as originally harvested, these must be kept.
     cursor.execute("""
     CREATE TABLE original (
@@ -323,6 +332,10 @@ def clean_and_init_storage():
 def open_existing_storage():
     global connection
     connection = sqlite3.connect(sqlite_path)
+    cursor = connection.cursor()
+    cursor.execute("PRAGMA journal_mode=WAL;")
+    cursor.execute("PRAGMA synchronous=OFF;")
+    cursor.execute("PRAGMA foreign_keys=ON;")
 
 def store_original_and_converted(original, converted, source, accepted, events):
     cursor = connection.cursor()

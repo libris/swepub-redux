@@ -16,6 +16,7 @@ from storage import *
 from index import generate_search_tables
 import logging
 import swepublog
+from datetime import datetime
 
 from sickle.oaiexceptions import (
     BadArgument, BadVerb, BadResumptionToken,
@@ -154,6 +155,7 @@ def harvest(source, lock, harvested_count, harvest_cache):
 
     for set in source["sets"]:
         harvest_info = f'{set["url"]} ({set["subset"]}, {set["metadata_prefix"]})'
+        harvest_start = datetime.now()
         record_iterator = RecordIterator(source["code"], set, None, None)
         try:
             batch_count = 0
@@ -193,9 +195,16 @@ def harvest(source, lock, harvested_count, harvest_cache):
                 p.join()
             finish_time = time.time()
             log.info(f'Harvest of {source["code"]} took {finish_time-start_time} seconds.')
+            cursor = get_cursor()
+            lock.acquire()
+            try:
+                cursor.execute("INSERT INTO last_harvest(source, last_successful_harvest) VALUES (?, ?)", (source["code"], harvest_start))
+                commit_sqlite()
+            finally:
+                lock.release()
         except HarvestFailed as e:
             log.warn(f'FAILED HARVEST: {source["code"]}')
-            exit -1
+            continue
 
 
 def threaded_handle_harvested(batch, source, lock, harvest_cache):
