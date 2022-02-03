@@ -16,12 +16,12 @@ def build_deduplicated_result(es_result):
     return BibframeSource(hits[0].get("_source")).bibframe_master
 
 
-def build_result(rows, from_yr, to_yr, fields):
-    no_of_hits = len(rows)
+def build_result(rows, from_yr, to_yr, fields, total):
+    #no_of_hits = len(rows)
     result = {
         "from": from_yr,
         "to": to_yr,
-        "total": no_of_hits,
+        "total": total,
         "hits": []
     }
     errors = list()

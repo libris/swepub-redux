@@ -6,13 +6,14 @@ import bibliometrics
 from utils import *
 
 import enum
-from collections import Iterable
+from collections.abc import Iterable
 from datetime import datetime
 from pathlib import Path
 import sqlite3
 from flask import Flask, g, request, jsonify
 from pypika import Query, Tables, Parameter, Table
 from pypika.terms import BasicCriterion
+from pypika.functions import Count
 
 # Database in parent directory of swepub.py directory
 DATABASE = str(Path.joinpath(Path(__file__).resolve().parents[1], 'swepub.sqlite3'))
@@ -144,9 +145,7 @@ def bibliometrics_api():
         return _error(errors=[f"Invalid value for json body query parameter/s."], status_code=400)
 
     finalized, search_single, search_creator, search_fulltext, search_doi, search_genre_form, search_subject, search_org = Tables('finalized', 'search_single', 'search_creator', 'search_fulltext', 'search_doi', 'search_genre_form', 'search_subject', 'search_org')
-    q = Query.from_(finalized).select('data')
-    if limit:
-        q = q.limit(limit)
+    q = Query.from_(finalized)#.select('data')
     values = []
 
     if from_yr and to_yr:
@@ -186,18 +185,26 @@ def bibliometrics_api():
             q = q.join(param[0]).on(finalized.id == param[0].finalized_id)
             values.append(param[1])
 
+    q_total = q.select(Count('*').as_("total"))
+    q = q.select('data')
+    if limit:
+        q = q.limit(limit)
+    print(str(q_total))
     print(str(q))
     print(list(flatten(values)))
 
     cur = get_db().cursor()
     #cur.row_factory = lambda cursor, row: row[0]
     cur.row_factory = dict_factory
+    total = cur.execute(str(q_total), list(flatten(values))).fetchone()
+    print(total)
+
     rows = cur.execute(str(q), list(flatten(values))).fetchall()
 
     fields = query_data.get("fields", [])
     if fields is None:
         fields = []
-    (result, errors) = bibliometrics.build_result(rows, from_yr, to_yr, fields)
+    (result, errors) = bibliometrics.build_result(rows, from_yr, to_yr, fields, total['total'])
 
     if len(errors) > 0:
         return _error(errors)
