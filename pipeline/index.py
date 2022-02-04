@@ -1,79 +1,79 @@
 import json
-from storage import commit_sqlite, get_cursor
+from storage import *
 from bibframesource import BibframeSource
 
 OUTPUT_TYPE_PREFIX = 'https://id.kb.se/term/swepub/'
 
 
 def generate_search_tables():
-    cursor = get_cursor()
+    with get_connection() as connection:
+        cursor = connection.cursor()
 
-    for row in cursor.execute("SELECT id, cluster_id, data FROM finalized"):
-        inner_cursor = get_cursor()
-        finalized_id = row[0]
-        cluster_id = row[1]
-        doc = BibframeSource(json.loads(row[2]))
+        for row in cursor.execute("SELECT id, cluster_id, data FROM finalized"):
+            inner_cursor = connection.cursor()
+            finalized_id = row[0]
+            cluster_id = row[1]
+            doc = BibframeSource(json.loads(row[2]))
 
-        inner_cursor.execute("""
-            INSERT INTO search_single(
-            finalized_id, year, content_marking, publication_status, swedish_list
-            ) VALUES(
-            ?, ?, ?, ?, ?
-            )
-            """, (
-            finalized_id,
-            doc.publication_year,
-            doc.content_marking,
-            get_publication_status(doc),
-            doc.is_swedishlist
-        ))
-
-        for doi in doc.DOI:
-            inner_cursor.execute("INSERT INTO search_doi (finalized_id, value) VALUES (?, ?)", (finalized_id, doi))
-
-        for gf in doc.output_types:
-            if gf.startswith(OUTPUT_TYPE_PREFIX):
-                gf_shortened = gf[len(OUTPUT_TYPE_PREFIX):]
-            else:
-                gf_shortened = gf
-            inner_cursor.execute("INSERT INTO search_genre_form (finalized_id, value) VALUES (?, ?)", (finalized_id, gf_shortened))
-
-        for subject in [item for sublist in doc.uka_subjects.values() for item in sublist]:
-            inner_cursor.execute("INSERT INTO search_subject (finalized_id, value) VALUES (?, ?)", (finalized_id, subject))
-
-        inner_cursor.execute("INSERT INTO search_fulltext (rowid, title, keywords) VALUES (?, ?, ?)", (
-                       finalized_id,
-                       doc.title,
-                       " ".join(doc.keywords)
-                       ))
-
-        for creator in doc.creators:
             inner_cursor.execute("""
-                INSERT INTO search_creator(
-                finalized_id, orcid, family_name, given_name, local_id, local_id_by
+                INSERT INTO search_single(
+                finalized_id, year, content_marking, publication_status, swedish_list
                 ) VALUES(
-                ?, ?, ?, ?, ?, ?
+                ?, ?, ?, ?, ?
                 )
                 """, (
                 finalized_id,
-                creator.get("ORCID", None),
-                creator.get("familyName", None),
-                creator.get("givenName", None),
-                creator.get("localId", None),
-                creator.get("localIdBy", None)
+                doc.publication_year,
+                doc.content_marking,
+                get_publication_status(doc),
+                doc.is_swedishlist
             ))
 
-        # Get org code from candidate/duplicate publications. No need to go through the actual documents, because we've
-        # already put the code in the `converted` table.
-        inner_cursor.execute(
-            "SELECT co.source FROM converted co JOIN cluster cl ON co.id=cl.converted_id WHERE cl.cluster_id = ?", (cluster_id,))
-        sources = inner_cursor.fetchall()
-        for source in set([item for sublist in sources for item in sublist]):
-            inner_cursor.execute("INSERT INTO search_org (finalized_id, value) VALUES (?, ?)",
-                                 (finalized_id, source))
+            for doi in doc.DOI:
+                inner_cursor.execute("INSERT INTO search_doi (finalized_id, value) VALUES (?, ?)", (finalized_id, doi))
 
-        commit_sqlite()
-        inner_cursor.close()
+            for gf in doc.output_types:
+                if gf.startswith(OUTPUT_TYPE_PREFIX):
+                    gf_shortened = gf[len(OUTPUT_TYPE_PREFIX):]
+                else:
+                    gf_shortened = gf
+                inner_cursor.execute("INSERT INTO search_genre_form (finalized_id, value) VALUES (?, ?)", (finalized_id, gf_shortened))
+
+            for subject in [item for sublist in doc.uka_subjects.values() for item in sublist]:
+                inner_cursor.execute("INSERT INTO search_subject (finalized_id, value) VALUES (?, ?)", (finalized_id, subject))
+
+            inner_cursor.execute("INSERT INTO search_fulltext (rowid, title, keywords) VALUES (?, ?, ?)", (
+                        finalized_id,
+                        doc.title,
+                        " ".join(doc.keywords)
+                        ))
+
+            for creator in doc.creators:
+                inner_cursor.execute("""
+                    INSERT INTO search_creator(
+                    finalized_id, orcid, family_name, given_name, local_id, local_id_by
+                    ) VALUES(
+                    ?, ?, ?, ?, ?, ?
+                    )
+                    """, (
+                    finalized_id,
+                    creator.get("ORCID", None),
+                    creator.get("familyName", None),
+                    creator.get("givenName", None),
+                    creator.get("localId", None),
+                    creator.get("localIdBy", None)
+                ))
+
+            # Get org code from candidate/duplicate publications. No need to go through the actual documents, because we've
+            # already put the code in the `converted` table.
+            inner_cursor.execute(
+                "SELECT co.source FROM converted co JOIN cluster cl ON co.id=cl.converted_id WHERE cl.cluster_id = ?", (cluster_id,))
+            sources = inner_cursor.fetchall()
+            for source in set([item for sublist in sources for item in sublist]):
+                inner_cursor.execute("INSERT INTO search_org (finalized_id, value) VALUES (?, ?)",
+                                    (finalized_id, source))
+
+            connection.commit()
 
 
 def get_publication_status(doc):

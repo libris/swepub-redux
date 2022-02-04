@@ -17,6 +17,7 @@ from index import generate_search_tables
 from stats import generate_processing_stats
 import logging
 import swepublog
+from datetime import datetime, timezone
 
 from sickle.oaiexceptions import (
     BadArgument, BadVerb, BadResumptionToken,
@@ -149,13 +150,32 @@ class HarvestFailed(Exception):
 
 
 
-def harvest(source, lock, harvested_count, harvest_cache):
+def harvest(source, lock, harvested_count, harvest_cache, incremental, added_converted_rowids):
+
+    
+    fromtime = None
+    if incremental:
+        lock.acquire()
+        try:
+            with get_connection() as connection:
+                cursor = connection.cursor()
+                cursor.execute("""
+                SELECT strftime('%Y-%m-%dT%H:%M:%SZ', last_successful_harvest) from last_harvest WHERE source = ?""",
+                (source["code"],))
+                rows = cursor.fetchall()
+                if rows:
+                    fromtime = rows[0][0]
+        finally:
+            lock.release()
 
     start_time = time.time()
 
     for set in source["sets"]:
         harvest_info = f'{set["url"]} ({set["subset"]}, {set["metadata_prefix"]})'
-        record_iterator = RecordIterator(source["code"], set, None, None)
+        harvest_start = datetime.now(timezone.utc)
+
+        #fromtime = "2020-05-05T00:00:00Z" # Only while debugging, use to force FROM date to get some incremental test data.
+        record_iterator = RecordIterator(source["code"], set, fromtime, None)
         try:
             batch_count = 0
             batch = []
@@ -182,24 +202,39 @@ def harvest(source, lock, harvested_count, harvest_cache):
                                     processes[i].join()
                                     del processes[i]
                                 i -= 1
-                        p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, harvest_cache))
+                        p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, harvest_cache, incremental, added_converted_rowids))
                         batch_count += 1
                         p.start()
                         processes.append( p )
                         batch = []
-            p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, harvest_cache))
+            p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, harvest_cache, incremental, added_converted_rowids))
             p.start()
             processes.append( p )
             for p in processes:
                 p.join()
             finish_time = time.time()
             log.info(f'Harvest of {source["code"]} took {finish_time-start_time} seconds.')
+
+
+            with get_connection() as connection:
+                cursor = connection.cursor()
+                lock.acquire()
+                try:
+                    cursor.execute("""
+                    INSERT INTO last_harvest(source, last_successful_harvest) VALUES (?, ?)
+                    ON CONFLICT DO UPDATE SET last_successful_harvest = ?;""", (source["code"], harvest_start, harvest_start))
+                    connection.commit()
+                finally:
+                    lock.release()
+            #print(f"harvested: {record_count_since_report}")
+
+
         except HarvestFailed as e:
             log.warn(f'FAILED HARVEST: {source["code"]}')
-            exit -1
+            continue
 
-
-def threaded_handle_harvested(batch, source, lock, harvest_cache):
+def threaded_handle_harvested(batch, source, lock, harvest_cache, incremental, added_converted_rowids):
+    converted_rowids = []
     for xml in batch:
         converted = convert(xml)
         (accepted, events) = validate(xml, converted, harvest_cache)
@@ -207,9 +242,16 @@ def threaded_handle_harvested(batch, source, lock, harvest_cache):
         events.extend(audit_events.data)
         lock.acquire()
         try:
-            store_original_and_converted(xml, audited.data, source, accepted, events)
+            with get_connection() as connection:
+                converted_rowid = store_original_and_converted(xml, audited.data, source, accepted, events, connection, incremental)
+                if converted_rowid:
+                    converted_rowids.append(converted_rowid)
         finally:
             lock.release()
+
+    if incremental:
+        for rowid in converted_rowids:
+            added_converted_rowids[rowid] = None
 
 
 sources = json.load(open(os.path.dirname(__file__) + '/sources.json'))
@@ -218,6 +260,11 @@ if __name__ == "__main__":
     # To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..
     log = swepublog.get_default_logger()
     args = sys.argv[1:]
+
+    incremental = False
+    if "update" in args:
+        args.remove("update")
+        incremental = True
 
     if "devdata" in args:
         sources_to_harvest = [sources["mdh"], sources["miun"], sources["mau"]]
@@ -258,7 +305,7 @@ if __name__ == "__main__":
                 known_issns[re.split(r'\s|\t', line)[0].strip()] = 1
             log.info(f"Cache populated with {len(known_issns)} ISSNs from {ISSN_PATH}")
     except Exception as e:
-        log.warn(f"Failed loading ISSN file: {e}")
+        log.warning(f"Failed loading ISSN file: {e}")
     # All harvest jobs have access to the same Manager-managed dictionaries
     manager = Manager()
     # id_cache (stuff seen during requests to external sources) should be saved,
@@ -268,6 +315,8 @@ if __name__ == "__main__":
     id_cache = manager.dict(dict.fromkeys(ids_not_in_issn, 1))
     issn_cache = manager.dict(known_issns)
     harvest_cache = manager.dict({'id': id_cache, 'issn': issn_cache})
+
+    added_converted_rowids = manager.dict()
 
     log.info("Harvesting " + " ".join([source['code'] for source in sources_to_harvest]))
 
@@ -281,7 +330,21 @@ if __name__ == "__main__":
     print(sources_to_harvest)
 
     t0 = time.time()
-    clean_and_init_storage()
+    if incremental:
+        open_existing_storage()
+        with get_connection() as connection:
+            cursor = connection.cursor()
+            cursor.execute("DELETE FROM cluster")
+            cursor.execute("DELETE FROM finalized")
+            cursor.execute("DELETE FROM search_single")
+            cursor.execute("DELETE FROM search_doi")
+            cursor.execute("DELETE FROM search_genre_form")
+            cursor.execute("DELETE FROM search_subject")
+            cursor.execute("DELETE FROM search_creator")
+            cursor.execute("DELETE FROM search_org")
+            cursor.execute("DELETE FROM search_fulltext")
+    else:
+        clean_and_init_storage()
     processes = []
 
     # Initially synchronization was left up to sqlite3's file locking to handle,
@@ -294,30 +357,34 @@ if __name__ == "__main__":
     harvested_count = Value("I", 0)
 
     for source in sources_to_harvest:
-        p = Process(target=harvest, args=(source, lock, harvested_count, harvest_cache))
+        p = Process(target=harvest, args=(source, lock, harvested_count, harvest_cache, incremental, added_converted_rowids))
         p.start()
         processes.append( p )
     for p in processes:
         p.join()
-
+    
     t1 = time.time()
     diff = t1-t0
     log.info(f"Phase 1 (harvesting) ran for {diff} seconds")
+
     t0 = t1
-    auto_classify()
+    auto_classify(incremental, added_converted_rowids.keys())
     t1 = time.time()
     diff = t1-t0
     log.info(f"Phase 2 (auto-classification) ran for {diff} seconds")
+
     t0 = t1
     deduplicate()
     t1 = time.time()
     diff = t1-t0
     log.info(f"Phase 3 (deduplication) ran for {diff} seconds")
+
     t0 = t1
     merge()
     t1 = time.time()
     diff = t1-t0
     log.info(f"Phase 4 (merging) ran for {diff} seconds")
+    
     t0 = t1
     generate_search_tables()
     t1 = time.time()

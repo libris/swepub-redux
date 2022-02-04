@@ -6,24 +6,31 @@ from bibframesource import BibframeSource
 
 sqlite_path = "./swepub.sqlite3"
 
-connection = None
-
 def clean_and_init_storage():
     if os.path.exists(sqlite_path):
         os.remove(sqlite_path)
-    global connection
     connection = sqlite3.connect(sqlite_path)
     cursor = connection.cursor()
 
     cursor.execute("PRAGMA journal_mode=WAL;")
     cursor.execute("PRAGMA synchronous=OFF;")
+    cursor.execute("PRAGMA foreign_keys=ON;")
+
+    # To allow incremental updates, we must know the last successful (start of-) harvest time
+    # for each source
+    cursor.execute("""
+    CREATE TABLE last_harvest (
+        source TEXT PRIMARY KEY,
+        last_successful_harvest DATETIME
+    );
+    """)
 
     # Because Swepub APIs expose publications as originally harvested, these must be kept.
     cursor.execute("""
     CREATE TABLE original (
         id INTEGER PRIMARY KEY,
         source TEXT,
-        oai_id, TEXT,
+        oai_id, TEXT, -- TODO ADD UNIQUE,
         accepted INTEGER, -- (fake boolean 1/0)
         data TEXT
     );
@@ -46,7 +53,7 @@ def clean_and_init_storage():
         initial_value TEXT,
         result TEXT,
         new_value TEXT,
-        FOREIGN KEY (converted_id) REFERENCES converted(id)
+        FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
     );
     """)
     cursor.execute("""
@@ -61,7 +68,7 @@ def clean_and_init_storage():
     cursor.execute("""
     CREATE TABLE converted (
         id INTEGER PRIMARY KEY,
-        oai_id TEXT, -- e.g. "oai:DiVA.org:ri-6513"
+        oai_id TEXT, -- TODO ADD UNIQUE, -- e.g. "oai:DiVA.org:ri-6513"
         data TEXT, -- JSON
         original_id INTEGER,
         date INTEGER, -- year
@@ -70,7 +77,7 @@ def clean_and_init_storage():
         ssif_1 INTEGER, -- SSIF 1-level classification (1-6)
         classification_level TEXT, -- e.g. "https://id.kb.se/term/swepub/swedishlist/peer-reviewed". TOOD: store as int?
         is_swedishlist INTEGER, -- whether doc is peer-reviewed (see above) or not. Merge classification_level and is_swedishlist?
-        FOREIGN KEY (original_id) REFERENCES original(id)
+        FOREIGN KEY (original_id) REFERENCES original(id) ON DELETE CASCADE
     );
     """)
     cursor.execute("""
@@ -105,7 +112,7 @@ def clean_and_init_storage():
         id INTEGER PRIMARY KEY,
         identifier TEXT,
         converted_id INTEGER,
-        FOREIGN KEY (converted_id) REFERENCES converted(id)
+        FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
     );
     """)
 
@@ -123,7 +130,7 @@ def clean_and_init_storage():
     CREATE TABLE cluster (
         cluster_id INTEGER,
         converted_id INTEGER,
-        FOREIGN KEY (converted_id) REFERENCES converted(id)
+        FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
     );
     """)
     cursor.execute("""
@@ -135,13 +142,15 @@ def clean_and_init_storage():
 
     # The final form of a publication in swepub. Each row in this table contains a merged
     # publication, that represents one of the clusters found in the deduplication process.
+    # cluster_id references into the cluster table, but cannot acutally be a formal
+    # foreign key, because cluster_id is not (and cannot be) unique. See the cluster
+    # definition above.
     cursor.execute("""
     CREATE TABLE finalized (
         id INTEGER PRIMARY KEY,
         cluster_id INTEGER,
         oai_id TEXT,
-        data TEXT,
-        FOREIGN KEY (cluster_id) REFERENCES cluster(cluster_id)
+        data TEXT
     );
     """)
     cursor.execute("""
@@ -166,7 +175,7 @@ def clean_and_init_storage():
         id INTEGER PRIMARY KEY,
         word TEXT,
         converted_id INTEGER,
-        FOREIGN KEY (converted_id) REFERENCES converted(id)
+        FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
     );
     """)
     cursor.execute("""
@@ -203,7 +212,7 @@ def clean_and_init_storage():
         content_marking TEXT,
         publication_status TEXT,
         swedish_list INTEGER,
-        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id) ON DELETE CASCADE
     );
     """)
     cursor.execute("""
@@ -226,7 +235,7 @@ def clean_and_init_storage():
     CREATE TABLE search_doi (
         finalized_id INTEGER,
         value TEXT,
-        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id) ON DELETE CASCADE
     );
     """)
     cursor.execute("""
@@ -240,7 +249,7 @@ def clean_and_init_storage():
     CREATE TABLE search_genre_form (
         finalized_id INTEGER,
         value TEXT,
-        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id) ON DELETE CASCADE
     );
     """)
     cursor.execute("""
@@ -254,7 +263,7 @@ def clean_and_init_storage():
     CREATE TABLE search_subject (
         finalized_id INTEGER,
         value INTEGER,
-        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id) ON DELETE CASCADE
     );
     """)
     cursor.execute("""
@@ -273,7 +282,7 @@ def clean_and_init_storage():
         given_name TEXT,
         local_id TEXT,
         local_id_by TEXT,
-        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id) ON DELETE CASCADE
     );
     """)
     cursor.execute("""
@@ -299,7 +308,7 @@ def clean_and_init_storage():
     CREATE TABLE search_org (
         finalized_id INTEGER,
         value TEXT,
-        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id) ON DELETE CASCADE
     );
     """)
     cursor.execute("""
@@ -334,14 +343,22 @@ def clean_and_init_storage():
     connection.commit()
 
 def open_existing_storage():
-    global connection
     connection = sqlite3.connect(sqlite_path)
+    cursor = connection.cursor()
+    cursor.execute("PRAGMA journal_mode=WAL;")
+    cursor.execute("PRAGMA synchronous=OFF;")
+    cursor.execute("PRAGMA foreign_keys=ON;")
 
-def store_original_and_converted(original, converted, source, accepted, events):
+def store_original_and_converted(original, converted, source, accepted, events, connection, incremental):
     cursor = connection.cursor()
     doc = BibframeSource(converted)
 
     #print(f'Inserting with oai_id {converted["@id"]} : \n\n{json.dumps(converted)}\n\n')
+
+    if incremental:
+        cursor.execute("""
+        DELETE FROM original WHERE oai_id = ?;
+        """, (converted["@id"],))
 
     original_rowid = cursor.execute("""
     INSERT INTO original(source, data, accepted, oai_id) VALUES(?, ?, ?, ?);
@@ -349,7 +366,7 @@ def store_original_and_converted(original, converted, source, accepted, events):
 
     if not accepted:
         connection.commit()
-        return
+        return None
 
     converted_rowid = cursor.execute("""
     INSERT INTO converted(data, original_id, oai_id, date, source, is_open_access, ssif_1, classification_level, is_swedishlist) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);
@@ -399,9 +416,7 @@ def store_original_and_converted(original, converted, source, accepted, events):
         """, (identifier, converted_rowid))
             
     connection.commit()
+    return converted_rowid
 
-def get_cursor():
-    return connection.cursor()
-
-def commit_sqlite():
-    connection.commit()
+def get_connection():
+    return sqlite3.connect(sqlite_path)
