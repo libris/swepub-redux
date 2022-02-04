@@ -333,11 +333,16 @@ def open_existing_storage():
     cursor.execute("PRAGMA synchronous=OFF;")
     cursor.execute("PRAGMA foreign_keys=ON;")
 
-def store_original_and_converted(original, converted, source, accepted, events, connection):
+def store_original_and_converted(original, converted, source, accepted, events, connection, incremental):
     cursor = connection.cursor()
     doc = BibframeSource(converted)
 
     #print(f'Inserting with oai_id {converted["@id"]} : \n\n{json.dumps(converted)}\n\n')
+
+    if incremental:
+        cursor.execute("""
+        DELETE FROM original WHERE oai_id = ?;
+        """, (converted["@id"],))
 
     original_rowid = cursor.execute("""
     INSERT INTO original(source, data, accepted, oai_id) VALUES(?, ?, ?, ?);
@@ -345,7 +350,7 @@ def store_original_and_converted(original, converted, source, accepted, events, 
 
     if not accepted:
         connection.commit()
-        return
+        return None
 
     converted_rowid = cursor.execute("""
     INSERT INTO converted(data, original_id, oai_id, date, source, is_open_access, ssif_1, classification_level, is_swedishlist) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);
@@ -394,6 +399,7 @@ def store_original_and_converted(original, converted, source, accepted, events, 
         """, (identifier, converted_rowid))
             
     connection.commit()
+    return converted_rowid
 
 def get_connection():
     return sqlite3.connect(sqlite_path)

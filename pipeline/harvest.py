@@ -149,7 +149,7 @@ class HarvestFailed(Exception):
 
 
 
-def harvest(source, lock, harvested_count, harvest_cache, incremental):
+def harvest(source, lock, harvested_count, harvest_cache, incremental, added_converted_rowids):
 
     
     fromtime = None
@@ -173,6 +173,7 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental):
         harvest_info = f'{set["url"]} ({set["subset"]}, {set["metadata_prefix"]})'
         harvest_start = datetime.now(timezone.utc)
 
+        #fromtime = "2020-05-05T00:00:00Z" # Only while debugging, use to force FROM date to get some incremental test data.
         record_iterator = RecordIterator(source["code"], set, fromtime, None)
         try:
             batch_count = 0
@@ -200,12 +201,12 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental):
                                     processes[i].join()
                                     del processes[i]
                                 i -= 1
-                        p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, harvest_cache))
+                        p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, harvest_cache, incremental, added_converted_rowids))
                         batch_count += 1
                         p.start()
                         processes.append( p )
                         batch = []
-            p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, harvest_cache))
+            p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, harvest_cache, incremental, added_converted_rowids))
             p.start()
             processes.append( p )
             for p in processes:
@@ -224,14 +225,15 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental):
                     connection.commit()
                 finally:
                     lock.release()
-            print(f"harvested: {record_count_since_report}")
+            #print(f"harvested: {record_count_since_report}")
 
 
         except HarvestFailed as e:
             log.warn(f'FAILED HARVEST: {source["code"]}')
             continue
 
-def threaded_handle_harvested(batch, source, lock, harvest_cache):
+def threaded_handle_harvested(batch, source, lock, harvest_cache, incremental, added_converted_rowids):
+    converted_rowids = []
     for xml in batch:
         converted = convert(xml)
         (accepted, events) = validate(xml, converted, harvest_cache)
@@ -240,9 +242,15 @@ def threaded_handle_harvested(batch, source, lock, harvest_cache):
         lock.acquire()
         try:
             with get_connection() as connection:
-                store_original_and_converted(xml, audited.data, source, accepted, events, connection)
+                converted_rowid = store_original_and_converted(xml, audited.data, source, accepted, events, connection, incremental)
+                if converted_rowid:
+                    converted_rowids.append(converted_rowid)
         finally:
             lock.release()
+
+    if incremental:
+        for rowid in converted_rowids:
+            added_converted_rowids[rowid] = None
 
 
 sources = json.load(open(os.path.dirname(__file__) + '/sources.json'))
@@ -307,6 +315,8 @@ if __name__ == "__main__":
     issn_cache = manager.dict(known_issns)
     harvest_cache = manager.dict({'id': id_cache, 'issn': issn_cache})
 
+    added_converted_rowids = manager.dict()
+
     log.info("Harvesting " + " ".join([source['code'] for source in sources_to_harvest]))
 
     t0 = time.time()
@@ -337,7 +347,7 @@ if __name__ == "__main__":
     harvested_count = Value("I", 0)
 
     for source in sources_to_harvest:
-        p = Process(target=harvest, args=(source, lock, harvested_count, harvest_cache, incremental))
+        p = Process(target=harvest, args=(source, lock, harvested_count, harvest_cache, incremental, added_converted_rowids))
         p.start()
         processes.append( p )
     for p in processes:
@@ -348,7 +358,7 @@ if __name__ == "__main__":
     log.info(f"Phase 1 (harvesting) ran for {diff} seconds")
 
     t0 = t1
-    auto_classify()
+    auto_classify(incremental, added_converted_rowids.keys())
     t1 = time.time()
     diff = t1-t0
     log.info(f"Phase 2 (auto-classification) ran for {diff} seconds")

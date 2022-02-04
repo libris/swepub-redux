@@ -275,33 +275,40 @@ def _create_subject(code, lang):
         ]
     }
 
-def auto_classify():
-    t0 = time.time()
-    # First populate the abstract_total_word_counts table, so that we know
-    # how many times each word occurs (within all combined abstracts).
-    _generate_occurrence_table()
-    t1 = time.time()
-    diff = t1-t0
-    print(f"  auto classify 1 (counting) ran for {diff} seconds")
-    t0 = t1
+def auto_classify(incremental, incrementally_converted_rowids):
 
-    # Then go over the data again, and select the N _rarest_ words out of each
-    # abstract, which we can now calculate given the table populated above.
-    # Put these rare words in the abstract_rarest_words table.
-    _select_rarest_words()
-    t1 = time.time()
-    diff = t1-t0
-    print(f"  auto classify 2 (selecting) ran for {diff} seconds")
-    t0 = t1
+    if not incremental:
 
-    # Now, go over the data a third time, this time, for each publication retrieving
-    # candidates that share rare words, and thereby plausibly have the same subject.
-    # Selectively copy good subjects over
-    _find_and_add_subjects()
-    t1 = time.time()
-    diff = t1-t0
-    print(f"  auto classify 3 (adding) ran for {diff} seconds")
-    t0 = t1
+        t0 = time.time()
+        # First populate the abstract_total_word_counts table, so that we know
+        # how many times each word occurs (within all combined abstracts).
+        _generate_occurrence_table()
+        t1 = time.time()
+        diff = t1-t0
+        print(f"  auto classify 1 (counting) ran for {diff} seconds")
+        t0 = t1
+
+        # Then go over the data again, and select the N _rarest_ words out of each
+        # abstract, which we can now calculate given the table populated above.
+        # Put these rare words in the abstract_rarest_words table.
+        _select_rarest_words()
+        t1 = time.time()
+        diff = t1-t0
+        print(f"  auto classify 2 (selecting) ran for {diff} seconds")
+        t0 = t1
+
+        # Now, go over the data a third time, this time, for each publication retrieving
+        # candidates that share rare words, and thereby plausibly have the same subject.
+        # Selectively copy good subjects over
+        _find_and_add_subjects()
+        t1 = time.time()
+        diff = t1-t0
+        print(f"  auto classify 3 (adding) ran for {diff} seconds")
+        t0 = t1
+    
+    else:
+        #for converted_rowid in incrementally_converted_rowids:
+        print(f"Should now have done peicemeal auto classication on: {incrementally_converted_rowids}")
 
 # For debugging
 if __name__ == "__main__":
