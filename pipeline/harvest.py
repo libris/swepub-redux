@@ -156,16 +156,14 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental):
     if incremental:
         lock.acquire()
         try:
-            #cursor = get_cursor()
-            #cursor.execute("SELECT last_successful_harvest from last_harvest WHERE source = ?", (source["code"],))
-            #rows = cursor.fetchall()
-            #print(f"** rows0:{rows[0][0]}, type: {type(rows[0][0])}")
-            #fromtime = rows[0][0]
-            #
-            #
-            #
-            #HMM
-            fromtime = "2022-05-05T00:00:00Z"
+            with get_connection() as connection:
+                cursor = connection.cursor()
+                cursor.execute("""
+                SELECT strftime('%Y-%m-%dT%H:%M:%SZ', last_successful_harvest) from last_harvest WHERE source = ?""",
+                (source["code"],))
+                rows = cursor.fetchall()
+                if rows:
+                    fromtime = rows[0][0]
         finally:
             lock.release()
 
