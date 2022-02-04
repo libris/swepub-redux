@@ -7,7 +7,8 @@ class ContributorAuditor(BaseAuditor):
         self.name = ContributorAuditor.__name__
 
     def audit(self, publication, audit_events):
-        step = 'Checking duplicate contributor persons'
+        #step = 'Checking duplicate contributor persons'
+        step = 'contributor_duplicate_check'
         result = False
         if publication.has_duplicate_contributor_persons:
             message = 'Publication has duplicate contributor persons'

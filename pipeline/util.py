@@ -25,7 +25,7 @@ def unicode_translate(input_string):
     return input_string.translate(UnicodeAsciiTranslator())
 
 
-def make_event(type=None, field=None, path=None, code=None, result=None, initial_value=None, step=None, name=None):
+def make_event(type=None, field=None, path=None, code=None, result=None, initial_value=None, new_value=None, step=None, name=None):
     return {
         "type": type,
         "field": field,
@@ -33,6 +33,7 @@ def make_event(type=None, field=None, path=None, code=None, result=None, initial
         "code": code,
         "result": result,
         "initial_value": initial_value,
+        "new_value": new_value,
         "step": step,
         "name": name
     }

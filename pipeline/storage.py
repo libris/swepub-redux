@@ -45,6 +45,7 @@ def clean_and_init_storage():
         code TEXT,
         initial_value TEXT,
         result TEXT,
+        new_value TEXT,
         FOREIGN KEY (converted_id) REFERENCES converted(id)
     );
     """)
@@ -316,65 +317,17 @@ def clean_and_init_storage():
     """)
 
     cursor.execute("""
-    CREATE TABLE search_single (
-        id INTEGER PRIMARY KEY,
-        finalized_id INTEGER,
-        year INTEGER,
-        content_marking TEXT,
-        publication_status TEXT,
-        swedish_list INTEGER,
-        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
-    );
-    """)
-
-    cursor.execute("""
-    CREATE TABLE search_doi (
-        finalized_id INTEGER,
-        value TEXT,
-        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
-    );
-    """)
-
-    cursor.execute("""
-    CREATE TABLE search_genre_form (
-        finalized_id INTEGER,
-        value TEXT,
-        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
-    );
-    """)
-
-    cursor.execute("""
-    CREATE TABLE search_subject (
-        finalized_id INTEGER,
-        value INTEGER,
-        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
-    );
-    """)
-
-    cursor.execute("""
-    CREATE TABLE search_creator (
-        finalized_id INTEGER,
-        orcid TEXT,
-        family_name TEXT,
-        given_name TEXT,
-        local_id TEXT,
-        local_id_by TEXT,
-        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
-    );
-    """)
-
-    cursor.execute("""
-    CREATE TABLE search_org (
-        finalized_id INTEGER,
-        value TEXT,
-        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
-    );
-    """)
-
-    cursor.execute("""
-    CREATE VIRTUAL TABLE search_fulltext USING FTS5 (
-        title,
-        keywords
+    CREATE TABLE processing_stats (
+        type TEXT,
+        org TEXT,
+        year INT,
+        label TEXT,
+        valid INT,
+        invalid INT,
+        enriched INT,
+        unchanged INT,
+        unsuccessful INT,
+        pending INT
     );
     """)
 
@@ -414,7 +367,7 @@ def store_original_and_converted(original, converted, source, accepted, events):
 
     for event in events:
         cursor.execute("""
-        INSERT INTO converted_events(converted_id, type, field, path, code, initial_value, result, name, step) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO converted_events(converted_id, type, field, path, code, initial_value, result, name, step, new_value) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             converted_rowid,
             event["type"],
@@ -424,7 +377,8 @@ def store_original_and_converted(original, converted, source, accepted, events):
             event["initial_value"],
             event["result"],
             event["name"],
-            event["step"]
+            event["step"],
+            event["new_value"],
         ))
 
     identifiers = []

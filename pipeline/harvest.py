@@ -14,6 +14,7 @@ from multiprocessing import Process, Lock, Value, Manager
 import sys
 from storage import *
 from index import generate_search_tables
+from stats import generate_processing_stats
 import logging
 import swepublog
 
@@ -322,6 +323,11 @@ if __name__ == "__main__":
     t1 = time.time()
     diff = t1-t0
     log.info(f"Phase 5 (generate search tables) ran for {diff} seconds")
+    t0 = t1
+    generate_processing_stats()
+    t1 = time.time()
+    diff = t1-t0
+    log.info(f"Phase 6 (generate processing stats) ran for {diff} seconds")
 
     # Save ISSN/DOI cache for use next time
     try:
