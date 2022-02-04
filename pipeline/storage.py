@@ -6,12 +6,9 @@ from bibframesource import BibframeSource
 
 sqlite_path = "./swepub.sqlite3"
 
-connection = None
-
 def clean_and_init_storage():
     if os.path.exists(sqlite_path):
         os.remove(sqlite_path)
-    global connection
     connection = sqlite3.connect(sqlite_path)
     cursor = connection.cursor()
 
@@ -330,14 +327,13 @@ def clean_and_init_storage():
     connection.commit()
 
 def open_existing_storage():
-    global connection
     connection = sqlite3.connect(sqlite_path)
     cursor = connection.cursor()
     cursor.execute("PRAGMA journal_mode=WAL;")
     cursor.execute("PRAGMA synchronous=OFF;")
     cursor.execute("PRAGMA foreign_keys=ON;")
 
-def store_original_and_converted(original, converted, source, accepted, events):
+def store_original_and_converted(original, converted, source, accepted, events, connection):
     cursor = connection.cursor()
     doc = BibframeSource(converted)
 
@@ -399,8 +395,5 @@ def store_original_and_converted(original, converted, source, accepted, events):
             
     connection.commit()
 
-def get_cursor():
-    return connection.cursor()
-
-def commit_sqlite():
-    connection.commit()
+def get_connection():
+    return sqlite3.connect(sqlite_path)

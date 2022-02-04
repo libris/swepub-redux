@@ -151,11 +151,12 @@ class HarvestFailed(Exception):
 
 def harvest(source, lock, harvested_count, harvest_cache, incremental):
 
-    cursor = get_cursor()
+    
     fromtime = None
     if incremental:
         lock.acquire()
         try:
+            #cursor = get_cursor()
             #cursor.execute("SELECT last_successful_harvest from last_harvest WHERE source = ?", (source["code"],))
             #rows = cursor.fetchall()
             #print(f"** rows0:{rows[0][0]}, type: {type(rows[0][0])}")
@@ -215,26 +216,27 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental):
             log.info(f'Harvest of {source["code"]} took {finish_time-start_time} seconds.')
 
 
-            cursor = get_cursor()
-            lock.acquire()
-            try:
-                print(f"**** NOW WRITING LAST HARVEST TIME: {harvest_start}")
-                cursor.execute("""
-                INSERT INTO last_harvest(source, last_successful_harvest) VALUES (?, ?)
-                ON CONFLICT DO UPDATE SET last_successful_harvest = ?;""", (source["code"], harvest_start, harvest_start))
-                commit_sqlite()
-                
-                #################################
-                #cursor.execute("SELECT last_successful_harvest from last_harvest WHERE source = ?", (source["code"],))
-                #rows = cursor.fetchall()
-                #print(f"** JUST WROTE AND READ UP:{rows[0][0]}, type: {type(rows[0][0])}")
-                #print(f"**** WROTE LAST HARVEST TIME FOR : {source['code']}")
-                #cursor.execute("SELECT * from last_harvest")
-                #rows = cursor.fetchall()
-                #print(f"** AT EXIT1 READ UP:{rows[0]}")
-                #################################
-            finally:
-                lock.release()
+            with get_connection() as connection:
+                cursor = connection.cursor()
+                lock.acquire()
+                try:
+                    print(f"**** NOW WRITING LAST HARVEST TIME: {harvest_start}")
+                    cursor.execute("""
+                    INSERT INTO last_harvest(source, last_successful_harvest) VALUES (?, ?)
+                    ON CONFLICT DO UPDATE SET last_successful_harvest = ?;""", (source["code"], harvest_start, harvest_start))
+                    connection.commit()
+                    
+                    #################################
+                    #cursor.execute("SELECT last_successful_harvest from last_harvest WHERE source = ?", (source["code"],))
+                    #rows = cursor.fetchall()
+                    #print(f"** JUST WROTE AND READ UP:{rows[0][0]}, type: {type(rows[0][0])}")
+                    #print(f"**** WROTE LAST HARVEST TIME FOR : {source['code']}")
+                    #cursor.execute("SELECT * from last_harvest")
+                    #rows = cursor.fetchall()
+                    #print(f"** AT EXIT1 READ UP:{rows[0]}")
+                    #################################
+                finally:
+                    lock.release()
             print(f"harvested: {record_count_since_report}")
 
 
@@ -255,7 +257,8 @@ def threaded_handle_harvested(batch, source, lock, harvest_cache):
         events.extend(audit_events.data)
         lock.acquire()
         try:
-            store_original_and_converted(xml, audited.data, source, accepted, events)
+            with get_connection() as connection:
+                store_original_and_converted(xml, audited.data, source, accepted, events, connection)
         finally:
             lock.release()
 
@@ -327,16 +330,17 @@ if __name__ == "__main__":
     t0 = time.time()
     if incremental:
         open_existing_storage()
-        cursor = get_cursor()
-        cursor.execute("DELETE FROM cluster")
-        cursor.execute("DELETE FROM finalized")
-        cursor.execute("DELETE FROM search_single")
-        cursor.execute("DELETE FROM search_doi")
-        cursor.execute("DELETE FROM search_genre_form")
-        cursor.execute("DELETE FROM search_subject")
-        cursor.execute("DELETE FROM search_creator")
-        cursor.execute("DELETE FROM search_org")
-        cursor.execute("DELETE FROM search_fulltext")
+        with get_connection() as connection:
+            cursor = connection.cursor()
+            cursor.execute("DELETE FROM cluster")
+            cursor.execute("DELETE FROM finalized")
+            cursor.execute("DELETE FROM search_single")
+            cursor.execute("DELETE FROM search_doi")
+            cursor.execute("DELETE FROM search_genre_form")
+            cursor.execute("DELETE FROM search_subject")
+            cursor.execute("DELETE FROM search_creator")
+            cursor.execute("DELETE FROM search_org")
+            cursor.execute("DELETE FROM search_fulltext")
     else:
         clean_and_init_storage()
     processes = []
@@ -357,10 +361,11 @@ if __name__ == "__main__":
     for p in processes:
         p.join()
     
-    cursor = get_cursor()
-    cursor.execute("SELECT * from last_harvest")
-    rows = cursor.fetchall()
-    print(f"** AT EXIT READ UP:{rows[0]}")
+    with get_connection() as connection:
+        cursor = connection.cursor()
+        cursor.execute("SELECT * from last_harvest")
+        rows = cursor.fetchall()
+        print(f"** AT EXIT READ UP:{rows[0]}")
 
     t1 = time.time()
     diff = t1-t0

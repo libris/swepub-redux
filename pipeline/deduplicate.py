@@ -2,7 +2,7 @@ import json
 import time
 from multiprocessing import Pool
 from difflib import SequenceMatcher
-from storage import commit_sqlite, get_cursor, open_existing_storage
+from storage import *
 
 """Max length in characters to compare text"""
 MAX_LENGTH_STRING_TO_COMPARE = 1000
@@ -285,53 +285,54 @@ def _is_close_enough(a_rowid, b_rowid):
     5. Their respective sets of DOIs (if any) are compatible
     """
 
-    cursor = get_cursor()
-    cursor.execute("""
-    SELECT
-        data
-    FROM
-        converted
-    WHERE
-        rowid = ? OR rowid = ?;
-    """, (a_rowid, b_rowid))
-    candidate_rows = cursor.fetchall() # Will give exactly 2 rows, per definition
-    a = json.loads(candidate_rows[0][0])
-    b = json.loads(candidate_rows[1][0])
+    with get_connection() as connection:
+        cursor = connection.cursor()
+        cursor.execute("""
+        SELECT
+            data
+        FROM
+            converted
+        WHERE
+            rowid = ? OR rowid = ?;
+        """, (a_rowid, b_rowid))
+        candidate_rows = cursor.fetchall() # Will give exactly 2 rows, per definition
+        a = json.loads(candidate_rows[0][0])
+        b = json.loads(candidate_rows[1][0])
 
-    # 5.
-    if not _has_compatible_doi_set(a, b):
-        return False
+        # 5.
+        if not _has_compatible_doi_set(a, b):
+            return False
 
-    # 1. # THIS IS POINTLESS, CANT HAPPEN ANYMORE
-    if a["@id"] == b["@id"]:
-        return True
+        # 1. # THIS IS POINTLESS, CANT HAPPEN ANYMORE
+        if a["@id"] == b["@id"]:
+            return True
 
-    # 2.
-    #print(f'*** {b["@id"]} now to be checked for duplicity (2) with {a["@id"]}')
-    if _has_same_main_title(a, b) \
-            and _has_same_ids(a, b):
-        #print(f'*** {b["@id"]} was (type 2) duplicate of {a["@id"]}')
-        return True
-    #print(f'*** {b["@id"]} was NOT (type 2) duplicate of {a["@id"]}')
+        # 2.
+        #print(f'*** {b["@id"]} now to be checked for duplicity (2) with {a["@id"]}')
+        if _has_same_main_title(a, b) \
+                and _has_same_ids(a, b):
+            #print(f'*** {b["@id"]} was (type 2) duplicate of {a["@id"]}')
+            return True
+        #print(f'*** {b["@id"]} was NOT (type 2) duplicate of {a["@id"]}')
 
-    # 3.
-    if _has_same_main_title(a, b) \
-            and CONFERENCE_PAPER_GENREFORM not in _genre_form(a) \
-            and CONFERENCE_PAPER_GENREFORM not in _genre_form(b) \
-            and _has_same_sub_title(a, b) \
-            and _has_same_summary(a, b) \
-            and _has_same_publication_date(a, b) \
-            and _has_same_genre_form(a, b):
-        return True
+        # 3.
+        if _has_same_main_title(a, b) \
+                and CONFERENCE_PAPER_GENREFORM not in _genre_form(a) \
+                and CONFERENCE_PAPER_GENREFORM not in _genre_form(b) \
+                and _has_same_sub_title(a, b) \
+                and _has_same_summary(a, b) \
+                and _has_same_publication_date(a, b) \
+                and _has_same_genre_form(a, b):
+            return True
 
-    # 4.
-    if _has_same_main_title(a, b) \
-            and (CONFERENCE_PAPER_GENREFORM in _genre_form(a) or CONFERENCE_PAPER_GENREFORM in _genre_form(b)) \
-            and _has_same_sub_title(a, b) \
-            and _has_same_summary(a, b) \
-            and _has_same_publication_date(a, b) \
-            and _has_same_partof_main_title(a, b):
-        return True
+        # 4.
+        if _has_same_main_title(a, b) \
+                and (CONFERENCE_PAPER_GENREFORM in _genre_form(a) or CONFERENCE_PAPER_GENREFORM in _genre_form(b)) \
+                and _has_same_sub_title(a, b) \
+                and _has_same_summary(a, b) \
+                and _has_same_publication_date(a, b) \
+                and _has_same_partof_main_title(a, b):
+            return True
 
     return False
 
@@ -349,48 +350,51 @@ def _generate_clusters():
 
     with Pool(processes=16) as pool:
 
-        cursor = get_cursor()
-        inner_cursor = get_cursor()
-        for candidatelist_row in cursor.execute("""
-        SELECT
-            group_concat(converted.id, "\n")
-        FROM
-            clusteringidentifiers
-        LEFT JOIN
-            converted ON clusteringidentifiers.converted_id = converted.id
-        GROUP BY
-            clusteringidentifiers.identifier;
-        """):
-            candidates = candidatelist_row[0].split('\n')
-            if len(candidates) > 1:
-                #print(json.dumps(candidates))
-                batch.append(candidates)
+        with get_connection() as connection:
+            cursor = connection.cursor()
+            inner_cursor = connection.cursor()
+            for candidatelist_row in cursor.execute("""
+            SELECT
+                group_concat(converted.id, "\n")
+            FROM
+                clusteringidentifiers
+            LEFT JOIN
+                converted ON clusteringidentifiers.converted_id = converted.id
+            GROUP BY
+                clusteringidentifiers.identifier;
+            """):
+                candidates = candidatelist_row[0].split('\n')
+                if len(candidates) > 1:
+                    #print(json.dumps(candidates))
+                    batch.append(candidates)
 
-                if (len(batch) >= 32):
-                    while (len(tasks) >= 32):
-                        time.sleep(0)
-                        n = len(tasks)
-                        i = n-1
-                        while i > -1:
-                            if tasks[i].ready():
-                                result = tasks[i].get()
-                                write_detected_duplicate_pairs(result, inner_cursor, next_cluster_id)
-                                next_cluster_id += len(result[0])
-                                del(tasks[i])
-                            i -= 1
-                    tasks.append(pool.map_async(_check_candidate_groups, (batch,)))
-                    batch = []
+                    if (len(batch) >= 32):
+                        while (len(tasks) >= 32):
+                            time.sleep(0)
+                            n = len(tasks)
+                            i = n-1
+                            while i > -1:
+                                if tasks[i].ready():
+                                    result = tasks[i].get()
+                                    write_detected_duplicate_pairs(result, inner_cursor, next_cluster_id)
+                                    next_cluster_id += len(result[0])
+                                    del(tasks[i])
+                                i -= 1
+                        tasks.append(pool.map_async(_check_candidate_groups, (batch,)))
+                        batch = []
+                connection.commit()
 
-        if len(batch) > 0:
-            tasks.append(pool.map_async(_check_candidate_groups, (batch,)))
-        for task in tasks:
-            while not task.ready():
-                time.sleep(0)
-            result = task.get()
-            write_detected_duplicate_pairs(result, inner_cursor, next_cluster_id)
-            next_cluster_id += len(result[0])
+            if len(batch) > 0:
+                tasks.append(pool.map_async(_check_candidate_groups, (batch,)))
+            for task in tasks:
+                while not task.ready():
+                    time.sleep(0)
+                result = task.get()
+                write_detected_duplicate_pairs(result, inner_cursor, next_cluster_id)
+                next_cluster_id += len(result[0])
+            connection.commit()
 
-        return next_cluster_id
+    return next_cluster_id
 
 def _check_candidate_groups(batch):
     pairs = []
@@ -410,110 +414,111 @@ def write_detected_duplicate_pairs(result, inner_cursor, next_cluster_id):
         INSERT INTO cluster(cluster_id, converted_id) VALUES(?, ?);
         """, (next_cluster_id, pair[1]))
         next_cluster_id += 1
-    commit_sqlite()
+
 
 # Join any clusters that have one or more common publications.
 def _join_overlapping_clusters(next_cluster_id):
-    cursor = get_cursor()
-    cursor.execute("""
-    SELECT
-        count(cluster_id), group_concat(cluster_id, "\n")
-    FROM
-        cluster
-    GROUP BY
-        converted_id;
-    """)
-    rows = cursor.fetchall() # This is necessary in order to allow modification of the table while iterating
+    with get_connection() as connection:
+        cursor = connection.cursor()
+        cursor.execute("""
+        SELECT
+            count(cluster_id), group_concat(cluster_id, "\n")
+        FROM
+            cluster
+        GROUP BY
+            converted_id;
+        """)
+        rows = cursor.fetchall() # This is necessary in order to allow modification of the table while iterating
 
-    # Holds information on already merged clusters, so for example 1 -> 2 means cluster 1 no longer exists,
-    # but it's publications are now in 2 instead.
-    merged_into = {}
+        # Holds information on already merged clusters, so for example 1 -> 2 means cluster 1 no longer exists,
+        # but it's publications are now in 2 instead.
+        merged_into = {}
 
-    for cluster_row in rows:
-        cluster_count = cluster_row[0]
-        if cluster_count > 1:
-            clusters = cluster_row[1].split('\n')
+        for cluster_row in rows:
+            cluster_count = cluster_row[0]
+            if cluster_count > 1:
+                clusters = cluster_row[1].split('\n')
 
-            #print(f"-----\nNow considering merging: {clusters}")
+                #print(f"-----\nNow considering merging: {clusters}")
 
-            cluster_a = clusters.pop()
+                cluster_a = clusters.pop()
 
-            while len(clusters) > 0:
-                cluster_b = clusters.pop()
+                while len(clusters) > 0:
+                    cluster_b = clusters.pop()
 
-                #print(f"  To be merged: {cluster_a} into {cluster_b}")
+                    #print(f"  To be merged: {cluster_a} into {cluster_b}")
 
-                # Replace cluster_a and cluster_b with where ever their contents are now
-                while cluster_a in merged_into:
-                    cluster_a = merged_into[cluster_a]
-                while cluster_b in merged_into:
-                    cluster_b = merged_into[cluster_b]
+                    # Replace cluster_a and cluster_b with where ever their contents are now
+                    while cluster_a in merged_into:
+                        cluster_a = merged_into[cluster_a]
+                    while cluster_b in merged_into:
+                        cluster_b = merged_into[cluster_b]
 
-                #print(f"  After following history: {cluster_a} into {cluster_b}")
+                    #print(f"  After following history: {cluster_a} into {cluster_b}")
 
-                if cluster_a == cluster_b:
-                    continue
+                    if cluster_a == cluster_b:
+                        continue
 
-                # Merge cluster_a into cluster_b
-                cursor.execute("""
-                UPDATE
-                    cluster
-                SET
-                    cluster_id = ?
-                WHERE
-                    cluster_id = ?;
-                """, (cluster_b, cluster_a))
-                merged_into[cluster_a] = cluster_b
+                    # Merge cluster_a into cluster_b
+                    cursor.execute("""
+                    UPDATE
+                        cluster
+                    SET
+                        cluster_id = ?
+                    WHERE
+                        cluster_id = ?;
+                    """, (cluster_b, cluster_a))
+                    merged_into[cluster_a] = cluster_b
 
-                #print(f"Merged cluster {cluster_a} into {cluster_b}")
+                    #print(f"Merged cluster {cluster_a} into {cluster_b}")
 
-                cluster_a = cluster_b
+                    cluster_a = cluster_b
 
-            #print("\n")
+                #print("\n")
 
-            commit_sqlite()
+                connection.commit()
     
-    # Given two clusters (A,B,C) and (B,C,D) which have now been joined, there will now be duplicate
-    # rows for B and C. These must (should) be cleared:
-    cursor.execute("""
-    DELETE FROM
-        cluster
-    WHERE
-        rowid NOT IN
-        (
-            SELECT
-                MIN(rowid)
-            FROM
-                cluster
-            GROUP BY
-                cluster_id, converted_id
-        );
-    """)
-    commit_sqlite()
+        # Given two clusters (A,B,C) and (B,C,D) which have now been joined, there will now be duplicate
+        # rows for B and C. These must (should) be cleared:
+        cursor.execute("""
+        DELETE FROM
+            cluster
+        WHERE
+            rowid NOT IN
+            (
+                SELECT
+                    MIN(rowid)
+                FROM
+                    cluster
+                GROUP BY
+                    cluster_id, converted_id
+            );
+        """)
+        connection.commit()
 
-    # Add single member clusters for solitary publications (those that are not part of any other clusters)
-    cursor.execute("""
-    SELECT
-        id
-    FROM
-        converted
-    WHERE
-        id NOT IN (
-            SELECT DISTINCT
-                converted_id
-            FROM
-                cluster
-        );
-    """)
-    rows = cursor.fetchall() # This is necessary in order to allow modification of the table while iterating
-    for solitary_row in rows:
-        solitary_converted_id = solitary_row[0]
-        inner_cursor = get_cursor()
-        inner_cursor.execute("""
-        INSERT INTO cluster(cluster_id, converted_id) VALUES(?, ?);
-        """, (next_cluster_id, solitary_converted_id))
-        next_cluster_id += 1
-    commit_sqlite()
+        # Add single member clusters for solitary publications (those that are not part of any other clusters)
+        cursor.execute("""
+        SELECT
+            id
+        FROM
+            converted
+        WHERE
+            id NOT IN (
+                SELECT DISTINCT
+                    converted_id
+                FROM
+                    cluster
+            );
+        """)
+        rows = cursor.fetchall() # This is necessary in order to allow modification of the table while iterating
+        for solitary_row in rows:
+            solitary_converted_id = solitary_row[0]
+            inner_cursor = connection.cursor()
+            inner_cursor.execute("""
+            INSERT INTO cluster(cluster_id, converted_id) VALUES(?, ?);
+            """, (next_cluster_id, solitary_converted_id))
+            next_cluster_id += 1
+        connection.commit()
 
 
 def deduplicate():
