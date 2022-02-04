@@ -20,13 +20,13 @@ def _validate_format(isbn, path, events):
     hit10 = isbn10_regex.fullmatch(isbn)
     if hit10 and len(compact(isbn)) == 10:
         return True
-    events.append(make_event("validation", "ISBN", path, "format", "invalid"))
+    events.append(make_event("validation", "ISBN", path, "format", "invalid", initial_value=isbn))
     return False
 
 def _validate_checksum(isbn, path, events):
     if is_valid(isbn):
         return True
-    events.append(make_event("validation", "ISBN", path, "checksum", "invalid"))
+    events.append(make_event("validation", "ISBN", path, "checksum", "invalid", initial_value=isbn))
     return False
 
 def validate_isbn(isbn, path, events):

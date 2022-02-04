@@ -13,11 +13,11 @@ isi_regex = re.compile(
 def validate_isi(isi, path, events):
     result = validate_base_unicode(isi)
     if result == False:
-        events.append(make_event("validation", "ISI", path, "unicode", "invalid"))
+        events.append(make_event("validation", "ISI", path, "unicode", "invalid", initial_value=isi))
         return False
     
     hit = isi_regex.fullmatch(isi)
     if hit is None:
-        events.append(make_event("validation", "ISI", path, "format", "invalid"))
+        events.append(make_event("validation", "ISI", path, "format", "invalid", initial_value=isi))
         return False
     return True

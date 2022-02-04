@@ -38,12 +38,21 @@ def clean_and_init_storage():
     CREATE TABLE converted_events (
         converted_id INTEGER,
         type TEXT,
+        name TEXT,
         field TEXT,
         path TEXT,
+        step TEXT,
         code TEXT,
+        initial_value TEXT,
         result TEXT,
         FOREIGN KEY (converted_id) REFERENCES converted(id)
     );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_events_converted_id ON converted_events(converted_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_events_type ON converted_events(type);
     """)
 
     # After conversion, validation and normalization each publication is stored in this
@@ -51,17 +60,38 @@ def clean_and_init_storage():
     cursor.execute("""
     CREATE TABLE converted (
         id INTEGER PRIMARY KEY,
-        oai_id TEXT,
-        data TEXT,
+        oai_id TEXT, -- e.g. "oai:DiVA.org:ri-6513"
+        data TEXT, -- JSON
         original_id INTEGER,
-        date INTEGER,
-        source TEXT,
+        date INTEGER, -- year
+        source TEXT, -- source code, e.g. "kth", "ltu"
         is_open_access INTEGER,
-        ssif_1 INTEGER,
-        classification_level INTEGER,
-        is_swedishlist INTEGER,
+        ssif_1 INTEGER, -- SSIF 1-level classification (1-6)
+        classification_level TEXT, -- e.g. "https://id.kb.se/term/swepub/swedishlist/peer-reviewed". TOOD: store as int?
+        is_swedishlist INTEGER, -- whether doc is peer-reviewed (see above) or not. Merge classification_level and is_swedishlist?
         FOREIGN KEY (original_id) REFERENCES original(id)
     );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_oai_id ON converted(oai_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_date ON converted(date);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_source ON converted(source);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_is_open_access ON converted(is_open_access);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_ssif_1 ON converted(ssif_1);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_classification_level ON converted(classification_level);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_is_swedishlist ON converted(is_swedishlist);
     """)
 
     # To facilitate deduplication, store all of each publications ids (regardless of type)
@@ -113,6 +143,9 @@ def clean_and_init_storage():
         FOREIGN KEY (cluster_id) REFERENCES cluster(cluster_id)
     );
     """)
+    cursor.execute("""
+    CREATE INDEX idx_finalized_oai_id ON finalized(oai_id);
+    """)
 
     # To facilitate "auto classification", store (for each publication) the N rarest
     # words that occurr in that publications abstract.
@@ -131,15 +164,15 @@ def clean_and_init_storage():
     CREATE TABLE abstract_rarest_words (
         id INTEGER PRIMARY KEY,
         word TEXT,
-        finalized_id INTEGER,
-        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+        converted_id INTEGER,
+        FOREIGN KEY (converted_id) REFERENCES converted(id)
     );
     """)
     cursor.execute("""
-    CREATE INDEX idx_abstract_rarest_words ON abstract_rarest_words (word, finalized_id);
+    CREATE INDEX idx_abstract_rarest_words ON abstract_rarest_words (word, converted_id);
     """)
     cursor.execute("""
-    CREATE INDEX idx_abstract_rarest_words_id ON abstract_rarest_words (finalized_id);
+    CREATE INDEX idx_abstract_rarest_words_id ON abstract_rarest_words (converted_id);
     """)
 
     # In order to calculate values (rarity) for the above table, we also need an answer
@@ -156,7 +189,130 @@ def clean_and_init_storage():
     );
     """)
     cursor.execute("""
-    CREATE INDEX idx_abstract_total_word_counts ON abstract_total_word_counts (word);
+    CREATE INDEX idx_abstract_total_word_counts ON abstract_total_word_counts (word, occurrences);
+    """)
+
+    # SUGGESTED BY SQLITE: CREATE INDEX abstract_total_word_counts_idx_77e8bc04 ON abstract_total_word_counts(word, occurrences);
+
+    cursor.execute("""
+    CREATE TABLE search_single (
+        id INTEGER PRIMARY KEY,
+        finalized_id INTEGER,
+        year INTEGER,
+        content_marking TEXT,
+        publication_status TEXT,
+        swedish_list INTEGER,
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+    );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_single_finalized_id ON search_single(finalized_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_single_finalized_year ON search_single(year);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_single_finalized_content_marking ON search_single(content_marking);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_single_publication_status ON search_single(publication_status);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_single_swedish_list ON search_single(swedish_list);
+    """)
+
+    cursor.execute("""
+    CREATE TABLE search_doi (
+        finalized_id INTEGER,
+        value TEXT,
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+    );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_doi_finalized_id ON search_doi(finalized_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_doi_value ON search_doi(value);
+    """)
+
+    cursor.execute("""
+    CREATE TABLE search_genre_form (
+        finalized_id INTEGER,
+        value TEXT,
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+    );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_genre_form_finalized_id ON search_genre_form(finalized_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_genre_form_value ON search_genre_form(value);
+    """)
+
+    cursor.execute("""
+    CREATE TABLE search_subject (
+        finalized_id INTEGER,
+        value INTEGER,
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+    );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_subject_finalized_id ON search_subject(finalized_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_subject_value ON search_subject(value);
+    """)
+
+
+    cursor.execute("""
+    CREATE TABLE search_creator (
+        finalized_id INTEGER,
+        orcid TEXT,
+        family_name TEXT,
+        given_name TEXT,
+        local_id TEXT,
+        local_id_by TEXT,
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+    );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_creator_finalized_id ON search_creator(finalized_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_creator_orcid ON search_creator(orcid);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_creator_family_name ON search_creator(family_name);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_creator_given_name ON search_creator(given_name);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_creator_local_id ON search_creator(local_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_creator_local_id_by ON search_creator(local_id_by);
+    """)
+
+    cursor.execute("""
+    CREATE TABLE search_org (
+        finalized_id INTEGER,
+        value TEXT,
+        FOREIGN KEY (finalized_id) REFERENCES finalized(id)
+    );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_org_finalized_id ON search_org(finalized_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_org_value ON search_org(value);
+    """)
+
+    cursor.execute("""
+    CREATE VIRTUAL TABLE search_fulltext USING FTS5 (
+        title,
+        keywords
+    );
     """)
 
     cursor.execute("""
@@ -236,7 +392,7 @@ def store_original_and_converted(original, converted, source, accepted, events):
 
     original_rowid = cursor.execute("""
     INSERT INTO original(source, data, accepted, oai_id) VALUES(?, ?, ?, ?);
-    """, (source, json.dumps(original), accepted, converted["@id"])).lastrowid
+    """, (source, original, accepted, converted["@id"])).lastrowid
 
     if not accepted:
         connection.commit()
@@ -252,19 +408,30 @@ def store_original_and_converted(original, converted, source, accepted, events):
         doc.source_org_master,
         doc.open_access,
         doc.ssif_1,
-        doc.level,
+        str(doc.level),
         doc.is_swedishlist
     )).lastrowid
 
     for event in events:
         cursor.execute("""
-        INSERT INTO converted_events(converted_id, type, field, path, code, result) VALUES (?, ?, ?, ?, ?, ?)
-        """, (converted_rowid, event["type"], event["field"], event["path"], event["code"], event["result"]))
+        INSERT INTO converted_events(converted_id, type, field, path, code, initial_value, result, name, step) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            converted_rowid,
+            event["type"],
+            event["field"],
+            event["path"],
+            event["code"],
+            event["initial_value"],
+            event["result"],
+            event["name"],
+            event["step"]
+        ))
 
     identifiers = []
     for title in converted["instanceOf"]["hasTitle"]:
-        if title["mainTitle"] is not None and isinstance(title["mainTitle"], str):
-            identifiers.append(title["mainTitle"]) # TODO: STRIP AWAY WHITESPACE ETC
+        main_title = title.get("mainTitle")
+        if main_title is not None and isinstance(main_title, str):
+            identifiers.append(main_title) # TODO: STRIP AWAY WHITESPACE ETC
     
     for id_object in converted["identifiedBy"]:
         if id_object["@type"] != "Local":

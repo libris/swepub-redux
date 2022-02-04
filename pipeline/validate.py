@@ -65,7 +65,7 @@ def _should_be_rejected(raw_xml, body):
         min_level_errors = {'bibliographical_minimum_level_error': error_list}
     return bool(error_list)
 
-def validate(raw_xml, body):
+def validate(raw_xml, body, harvest_cache):
     if _should_be_rejected(raw_xml, body):
         return (False, [])
     
@@ -91,7 +91,7 @@ def validate(raw_xml, body):
                 if id_type == 'publication_year' or id_type == 'creator_count':
                     translated = unicode_translate(match.value)
                     if translated != match.value:
-                        events.append(make_event("enrichment", "publication_year", str(match.full_path), "unicode", translated))
+                        events.append(make_event("enrichment", "publication_year", str(match.full_path), "unicode", translated, initial_value=match.value))
                         update_at_path(body, str(match.full_path), translated)
 
     # Validation
@@ -110,18 +110,18 @@ def validate(raw_xml, body):
                 if id_type == 'ORCID':
                     validate_orcid(match.value, str(match.full_path), events)
                 if id_type == 'ISSN':
-                    validate_issn(match.value, str(match.full_path), session, events)
+                    validate_issn(match.value, str(match.full_path), session, events, harvest_cache)
                 if id_type == 'DOI':
-                    validate_doi(match.value, str(match.full_path), session, events)
+                    validate_doi(match.value, str(match.full_path), session, events, harvest_cache)
                 if id_type == 'URI':
                     result = validate_base_unicode(match.value)
                     if result == False:
-                        events.append(make_event("validation", "URI", str(match.full_path), "unicode", "invalid"))
+                        events.append(make_event("validation", "URI", str(match.full_path), "unicode", "invalid", initial_value=match.value))
                 if id_type == 'publication_year':
                     validate_date_time(match.value, str(match.full_path), events)
                 if id_type == 'creator_count':
                     if not (match.value.isnumeric() and int(match.value) > 0):
-                        events.append(make_event("validation", "URI", str(match.full_path), "numeric", "invalid"))
+                        events.append(make_event("validation", "URI", str(match.full_path), "numeric", "invalid", initial_value=match.value))
                 if id_type == 'UKA':
                     validate_uka(match.value, str(match.full_path), events)
 

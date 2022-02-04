@@ -24,7 +24,11 @@ To run the pipeline do:
 $ python3 pipeline/harvest.py devdata
 ```
 
-Expect this to take a few minutes. If you omit the "devdata" parameter you instead get the full production data which takes 5 or 6 hours.
+Expect this to take a few minutes. If you omit the "devdata" parameter you instead get the full production data which takes 5 or 6 hours. You can also specify one or more individual source(s) (these must exist in `pipeline/sources.json`), e.g.:
+
+```
+$ python3 pipeline/harvest.py ths uniarts
+```
 
 There is no state to be considered here and no running "services". Each time the pipeline is executed a new sqlite3 database is produced as output. You may even run more than one in parallell if you like.
 

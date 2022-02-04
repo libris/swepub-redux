@@ -7,7 +7,7 @@ def validate_date_time(dt, path, events):
     """
     if isinstance(dt, str):
         if not validate_base_unicode(dt):
-            events.append(make_event("validation", "datetime", path, "unicode", "invalid"))
+            events.append(make_event("validation", "datetime", path, "unicode", "invalid", initial_value=dt))
             return False
 
         try:
@@ -18,8 +18,8 @@ def validate_date_time(dt, path, events):
                 datetime.strptime(dt, '%Y-%m-%d')
                 return True
             except ValueError:
-                events.append(make_event("validation", "datetime", path, "format", "invalid"))
+                events.append(make_event("validation", "datetime", path, "format", "invalid", initial_value=dt))
                 return False
 
-    events.append(make_event("validation", "datetime", path, "format", "invalid"))
+    events.append(make_event("validation", "datetime", path, "format", "invalid", initial_value=dt))
     return False

@@ -15,14 +15,14 @@ categories = load(open(path.join(path.dirname(__file__), 'categories.json')))
 def _generate_occurrence_table():
     cursor = get_cursor()
     count_per_word = {}
-    for finalized_row in cursor.execute("""
+    for converted_row in cursor.execute("""
     SELECT
         data
     FROM
-        finalized;
+        converted;
     """):
-        finalized = json.loads(finalized_row[0])
-        for summary in finalized.get("instanceOf", {}).get("summary", []):
+        converted = json.loads(converted_row[0])
+        for summary in converted.get("instanceOf", {}).get("summary", []):
             abstract = summary.get("label", "")
             words = re.findall(r'\w+', abstract)
             for word in words:
@@ -43,15 +43,15 @@ def _select_rarest_words():
     cursor = get_cursor()
     second_cursor = get_cursor()
     third_cursor = get_cursor()
-    for finalized_row in cursor.execute("""
+    for converted_row in cursor.execute("""
     SELECT
         id, data
     FROM
-        finalized;
+        converted;
     """):
-        finalized_rowid = finalized_row[0]
-        finalized = json.loads(finalized_row[1])
-        for summary in finalized.get("instanceOf", {}).get("summary", []):
+        converted_rowid = converted_row[0]
+        converted = json.loads(converted_row[1])
+        for summary in converted.get("instanceOf", {}).get("summary", []):
             abstract = summary.get("label", "")
 
             words = re.findall(r'\w+', abstract)
@@ -77,8 +77,8 @@ def _select_rarest_words():
                 rare_word = total_count_row[0]
                 #print(f"Writing rare word {rare_word} for id: {finalized_rowid}")
                 third_cursor.execute("""
-                INSERT INTO abstract_rarest_words(word, finalized_id) VALUES(?, ?);
-                """, (rare_word, finalized_rowid))
+                INSERT INTO abstract_rarest_words(word, converted_id) VALUES(?, ?);
+                """, (rare_word, converted_rowid))
         commit_sqlite()
 
 def _find_and_add_subjects():
@@ -94,15 +94,15 @@ def _find_and_add_subjects():
         
         batch = []
         processes = []
-        for finalized_row in cursor.execute("""
+        for converted_row in cursor.execute("""
         SELECT
-            finalized.id, finalized.data
+            converted.id, converted.data
         FROM
-            finalized;
+            converted;
         """):
             
             
-            batch.append(finalized_row) # Does this really work? Get the stuff out first ??
+            batch.append(converted_row)
             if (len(batch) >= 256):
                 while (len(processes) >= 20):
                     time.sleep(0)
@@ -136,50 +136,50 @@ def _find_and_add_subjects():
                 
                 cursor.execute("""
                 UPDATE
-                    finalized
+                    converted
                 SET
                     data = ?
                 WHERE
                     id = ? ;
-                """, (jsontext, rowid) )
+                """, (jsontext.rstrip(), rowid) )
             commit_sqlite()
         
 
-def _conc_find_subjects(finalized_rows, temp_dir, file_sequence_number):
+def _conc_find_subjects(converted_rows, temp_dir, file_sequence_number):
     cursor = get_cursor()
     level = 3
     classes = 5
 
     with open(f"{temp_dir}/{file_sequence_number}", "w") as output:
 
-        for finalized_row in finalized_rows:
-            finalized_rowid = finalized_row[0]
-            finalized = json.loads(finalized_row[1])
+        for converted_row in converted_rows:
+            converted_rowid = converted_row[0]
+            converted = json.loads(converted_row[1])
 
             subjects = Counter()
             publication_subjects = set()
 
             for candidate_row in cursor.execute("""
                 SELECT
-                    finalized.id, finalized.data, group_concat(abstract_rarest_words.word, '\n')
+                    converted.id, converted.data, group_concat(abstract_rarest_words.word, '\n')
                 FROM
                     abstract_rarest_words
                 LEFT JOIN
-                    finalized
+                    converted
                 ON
-                    finalized.id = abstract_rarest_words.finalized_id
+                    converted.id = abstract_rarest_words.converted_id
                 WHERE
-                    abstract_rarest_words.word IN (SELECT word FROM abstract_rarest_words WHERE finalized_id = ?)
+                    abstract_rarest_words.word IN (SELECT word FROM abstract_rarest_words WHERE converted_id = ?)
                 GROUP BY
-                    abstract_rarest_words.finalized_id;
-                """, (finalized_rowid,)):
+                    abstract_rarest_words.converted_id;
+                """, (converted_rowid,)):
                     candidate_rowid = candidate_row[0]
                     candidate = json.loads(candidate_row[1])
                     candidate_matched_words = []
                     if isinstance(candidate_row[2], str):
                         candidate_matched_words = candidate_row[2].split("\n")
 
-                    if candidate_rowid == finalized_rowid:
+                    if candidate_rowid == converted_rowid:
                         continue
                     
                     # This is a vital tweaking point. How many _rare_ words do two abstracts need to share
@@ -215,20 +215,11 @@ def _conc_find_subjects(finalized_rows, temp_dir, file_sequence_number):
                         if lang in item:
                             classifications.append(item[lang])
                 
-                publication = Publication(finalized)
+                publication = Publication(converted)
                 #initial_value = publication.uka_swe_classification_list
                 publication.add_subjects(classifications)
 
-                # third_cursor.execute("""
-                # UPDATE
-                #     finalized
-                # SET
-                #     data = ?
-                # WHERE
-                #     id = ? ;
-                # """, (json.dumps(publication.data), finalized_rowid) )
-
-                output.write(str(finalized_rowid))
+                output.write(str(converted_rowid))
                 output.write("\n")
                 output.write(json.dumps(publication.data))
                 output.write("\n")

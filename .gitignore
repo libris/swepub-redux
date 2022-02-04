@@ -3,5 +3,9 @@ __pycache__/
 .idea/
 swepub.sqlite3
 venv/
+<<<<<<< HEAD
 node_modules/
 service/vue-client/dist/
+*.pkl
+id_cache.json
+issn.txt

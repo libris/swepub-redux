@@ -24,5 +24,5 @@ def recover_isbn(isbn, body, path, id, events):
     
     if res[0] != isbn:
         update_at_path(body, path, res[0])
-        events.append(make_event("enrichment", "ISBN", path, "split", res[0]))
+        events.append(make_event("enrichment", "ISBN", path, "split", res[0], initial_value=isbn))
     
