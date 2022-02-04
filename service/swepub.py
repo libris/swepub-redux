@@ -10,7 +10,7 @@ from collections.abc import Iterable
 from datetime import datetime
 from pathlib import Path
 import sqlite3
-from flask import Flask, g, request, jsonify
+from flask import Flask, g, request, jsonify, Response
 from pypika import Query, Tables, Parameter, Table
 from pypika.terms import BasicCriterion
 from pypika.functions import Count
@@ -340,6 +340,49 @@ def info_sources():
     for code in codes:
         sources.append({'name': INFO_API_SOURCE_ORG_MAPPING[code], 'code': code})
     return {'sources': sources}
+
+
+
+@app.route("/api/v1/process/publications/<path:record_id>", methods=['GET'])
+def process_get_publication(record_id=None):
+    if record_id is None:
+        return _error(['Missing parameter: "record_id"'], status_code=400)
+
+    cur = get_db().cursor()
+    row = cur.execute("SELECT data FROM converted WHERE oai_id = ?", [record_id]).fetchone()
+    if not row:
+        return _error(["Not Found"], status_code=404)
+    return Response(row[0], mimetype='application/ld+json')
+
+
+
+@app.route("/api/v1/process/publications/<path:record_id>/original", methods=['GET'])
+def process_get_original_publication(record_id=None):
+    if record_id is None:
+        return _error(['Missing parameter: "record_id"'], status_code=400)
+
+    cur = get_db().cursor()
+    row = cur.execute("SELECT data FROM original WHERE oai_id = ?", [record_id]).fetchone()
+    if not row:
+        return _error(["Not Found"], status_code=404)
+    return Response(row[0], mimetype='application/xml; charset=utf-8')
+
+
+
+# TODO?
+@app.route("/api/v1/process/<harvest_id>/rejected")
+def process_get_rejected_publications(harvest_id):
+    return {}
+
+
+
+@app.route('/api/v1/process/<source>', methods=['GET'])
+def get_stats(source=None):
+    if source is None:
+        return _error(['Missing parameter: "source"'], status_code=400)
+    # TODO: if source doesn't exist
+
+    return {}
 
 
 if __name__ == '__main__':
