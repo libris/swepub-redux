@@ -33,7 +33,7 @@ def clean_and_init_storage():
     CREATE TABLE original (
         id INTEGER PRIMARY KEY,
         source TEXT,
-        oai_id, TEXT,
+        oai_id, TEXT UNIQUE,
         accepted INTEGER, -- (fake boolean 1/0)
         data TEXT
     );
@@ -70,7 +70,7 @@ def clean_and_init_storage():
     cursor.execute("""
     CREATE TABLE converted (
         id INTEGER PRIMARY KEY,
-        oai_id TEXT, -- e.g. "oai:DiVA.org:ri-6513"
+        oai_id TEXT UNIQUE, -- e.g. "oai:DiVA.org:ri-6513"
         data TEXT, -- JSON
         original_id INTEGER,
         date INTEGER, -- year

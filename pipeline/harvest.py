@@ -16,7 +16,7 @@ from storage import *
 from index import generate_search_tables
 import logging
 import swepublog
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sickle.oaiexceptions import (
     BadArgument, BadVerb, BadResumptionToken,
@@ -152,12 +152,19 @@ class HarvestFailed(Exception):
 def harvest(source, lock, harvested_count, harvest_cache, incremental):
 
     cursor = get_cursor()
+    fromtime = None
     if incremental:
         lock.acquire()
         try:
-            cursor.execute("SELECT last_successful_harvest from last_harvest WHERE source = ?", (source["code"],))
-            rows = cursor.fetchall()
-            print(f"rows0:{rows[0]}")
+            #cursor.execute("SELECT last_successful_harvest from last_harvest WHERE source = ?", (source["code"],))
+            #rows = cursor.fetchall()
+            #print(f"** rows0:{rows[0][0]}, type: {type(rows[0][0])}")
+            #fromtime = rows[0][0]
+            #
+            #
+            #
+            #HMM
+            fromtime = "2022-05-05T00:00:00Z"
         finally:
             lock.release()
 
@@ -165,9 +172,9 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental):
 
     for set in source["sets"]:
         harvest_info = f'{set["url"]} ({set["subset"]}, {set["metadata_prefix"]})'
-        harvest_start = datetime.now()
+        harvest_start = datetime.now(timezone.utc)
 
-        record_iterator = RecordIterator(source["code"], set, None, None)
+        record_iterator = RecordIterator(source["code"], set, fromtime, None)
         try:
             batch_count = 0
             batch = []
@@ -206,19 +213,39 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental):
                 p.join()
             finish_time = time.time()
             log.info(f'Harvest of {source["code"]} took {finish_time-start_time} seconds.')
+
+
             cursor = get_cursor()
             lock.acquire()
             try:
+                print(f"**** NOW WRITING LAST HARVEST TIME: {harvest_start}")
                 cursor.execute("""
                 INSERT INTO last_harvest(source, last_successful_harvest) VALUES (?, ?)
-                ON CONFLICT DO UPDATE SET last_successful_harvest = ?""", (source["code"], harvest_start, harvest_start))
+                ON CONFLICT DO UPDATE SET last_successful_harvest = ?;""", (source["code"], harvest_start, harvest_start))
                 commit_sqlite()
+                
+                #################################
+                #cursor.execute("SELECT last_successful_harvest from last_harvest WHERE source = ?", (source["code"],))
+                #rows = cursor.fetchall()
+                #print(f"** JUST WROTE AND READ UP:{rows[0][0]}, type: {type(rows[0][0])}")
+                #print(f"**** WROTE LAST HARVEST TIME FOR : {source['code']}")
+                #cursor.execute("SELECT * from last_harvest")
+                #rows = cursor.fetchall()
+                #print(f"** AT EXIT1 READ UP:{rows[0]}")
+                #################################
             finally:
                 lock.release()
+            print(f"harvested: {record_count_since_report}")
+
+
         except HarvestFailed as e:
             log.warn(f'FAILED HARVEST: {source["code"]}')
             continue
 
+    #cursor = get_cursor()
+    #cursor.execute("SELECT * from last_harvest")
+    #rows = cursor.fetchall()
+    #print(f"** AT SUBPROCESS EXIT READ UP:{rows[0]}")
 
 def threaded_handle_harvested(batch, source, lock, harvest_cache):
     for xml in batch:
@@ -300,6 +327,16 @@ if __name__ == "__main__":
     t0 = time.time()
     if incremental:
         open_existing_storage()
+        cursor = get_cursor()
+        cursor.execute("DELETE FROM cluster")
+        cursor.execute("DELETE FROM finalized")
+        cursor.execute("DELETE FROM search_single")
+        cursor.execute("DELETE FROM search_doi")
+        cursor.execute("DELETE FROM search_genre_form")
+        cursor.execute("DELETE FROM search_subject")
+        cursor.execute("DELETE FROM search_creator")
+        cursor.execute("DELETE FROM search_org")
+        cursor.execute("DELETE FROM search_fulltext")
     else:
         clean_and_init_storage()
     processes = []
@@ -319,6 +356,11 @@ if __name__ == "__main__":
         processes.append( p )
     for p in processes:
         p.join()
+    
+    cursor = get_cursor()
+    cursor.execute("SELECT * from last_harvest")
+    rows = cursor.fetchall()
+    print(f"** AT EXIT READ UP:{rows[0]}")
 
     t1 = time.time()
     diff = t1-t0
