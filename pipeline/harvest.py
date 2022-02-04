@@ -220,21 +220,10 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental):
                 cursor = connection.cursor()
                 lock.acquire()
                 try:
-                    print(f"**** NOW WRITING LAST HARVEST TIME: {harvest_start}")
                     cursor.execute("""
                     INSERT INTO last_harvest(source, last_successful_harvest) VALUES (?, ?)
                     ON CONFLICT DO UPDATE SET last_successful_harvest = ?;""", (source["code"], harvest_start, harvest_start))
                     connection.commit()
-                    
-                    #################################
-                    #cursor.execute("SELECT last_successful_harvest from last_harvest WHERE source = ?", (source["code"],))
-                    #rows = cursor.fetchall()
-                    #print(f"** JUST WROTE AND READ UP:{rows[0][0]}, type: {type(rows[0][0])}")
-                    #print(f"**** WROTE LAST HARVEST TIME FOR : {source['code']}")
-                    #cursor.execute("SELECT * from last_harvest")
-                    #rows = cursor.fetchall()
-                    #print(f"** AT EXIT1 READ UP:{rows[0]}")
-                    #################################
                 finally:
                     lock.release()
             print(f"harvested: {record_count_since_report}")
@@ -243,11 +232,6 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental):
         except HarvestFailed as e:
             log.warn(f'FAILED HARVEST: {source["code"]}')
             continue
-
-    #cursor = get_cursor()
-    #cursor.execute("SELECT * from last_harvest")
-    #rows = cursor.fetchall()
-    #print(f"** AT SUBPROCESS EXIT READ UP:{rows[0]}")
 
 def threaded_handle_harvested(batch, source, lock, harvest_cache):
     for xml in batch:
@@ -314,7 +298,7 @@ if __name__ == "__main__":
                 known_issns[re.split(r'\s|\t', line)[0].strip()] = 1
             log.info(f"Cache populated with {len(known_issns)} ISSNs from {ISSN_PATH}")
     except Exception as e:
-        log.warn(f"Failed loading ISSN file: {e}")
+        log.warning(f"Failed loading ISSN file: {e}")
     # All harvest jobs have access to the same Manager-managed dictionaries
     manager = Manager()
     # id_cache (stuff seen during requests to external sources) should be saved,
@@ -361,12 +345,6 @@ if __name__ == "__main__":
     for p in processes:
         p.join()
     
-    with get_connection() as connection:
-        cursor = connection.cursor()
-        cursor.execute("SELECT * from last_harvest")
-        rows = cursor.fetchall()
-        print(f"** AT EXIT READ UP:{rows[0]}")
-
     t1 = time.time()
     diff = t1-t0
     log.info(f"Phase 1 (harvesting) ran for {diff} seconds")
