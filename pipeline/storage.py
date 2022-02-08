@@ -42,25 +42,61 @@ def clean_and_init_storage():
     # This table is used to store log entries (validation/normalization errors etc) for
     # each publication
     cursor.execute("""
-    CREATE TABLE converted_events (
+    CREATE TABLE converted_audit_events (
         converted_id INTEGER,
         type TEXT,
         name TEXT,
-        field TEXT,
-        path TEXT,
         step TEXT,
         code TEXT,
-        initial_value TEXT,
         result TEXT,
-        new_value TEXT,
+        initial_value TEXT,
+        value TEXT,
         FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
     );
     """)
     cursor.execute("""
-    CREATE INDEX idx_converted_events_converted_id ON converted_events(converted_id);
+    CREATE INDEX idx_converted_audit_events_converted_id ON converted_audit_events(converted_id);
     """)
     cursor.execute("""
-    CREATE INDEX idx_converted_events_type ON converted_events(type);
+    CREATE INDEX idx_converted_audit_events_type ON converted_audit_events(type);
+    """)
+
+    cursor.execute("""
+    CREATE TABLE converted_field_events (
+        converted_id INTEGER,
+        field TEXT,
+        path TEXT,
+        initial_value TEXT,
+        value TEXT,
+        validation_status TEXT,
+        enrichment_status TEXT,
+        normalization_status TEXT,
+        events TEXT,
+        FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
+    );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_field_events_converted_id ON converted_field_events(converted_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_field_events_field ON converted_field_events(field);
+    """)
+
+    cursor.execute("""
+    CREATE TABLE converted_record_info (
+        converted_id INTEGER,
+        field TEXT,
+        validation_status TEXT,
+        enrichment_status TEXT,
+        normalization_status TEXT,
+        FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
+    );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_record_info_converted_id ON converted_field_events(converted_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_record_info_field ON converted_field_events(field);
     """)
 
     # After conversion, validation and normalization each publication is stored in this
@@ -326,17 +362,30 @@ def clean_and_init_storage():
     """)
 
     cursor.execute("""
-    CREATE TABLE processing_stats (
+    CREATE TABLE stats_audit_events (
         type TEXT,
-        org TEXT,
-        year INT,
+        source TEXT,
+        date INT,
         label TEXT,
-        valid INT,
-        invalid INT,
-        enriched INT,
-        unchanged INT,
-        unsuccessful INT,
-        pending INT
+        valid INT DEFAULT 0,
+        invalid INT DEFAULT 0,
+        PRIMARY KEY (type, source, date, label)
+    );
+    """)
+
+    cursor.execute("""
+    CREATE TABLE stats_field_events (
+        field TEXT,
+        source TEXT,
+        date INT,
+        v_valid INT DEFAULT 0,
+        v_invalid INT DEFAULT 0,
+        e_enriched INT DEFAULT 0,
+        e_unchanged INT DEFAULT 0,
+        e_unsuccessful INT DEFAULT 0,
+        n_unchanged INT DEFAULT 0,
+        n_normalized INT DEFAULT 0,
+        PRIMARY KEY (field, source, date)
     );
     """)
 
@@ -349,7 +398,7 @@ def open_existing_storage():
     cursor.execute("PRAGMA synchronous=OFF;")
     cursor.execute("PRAGMA foreign_keys=ON;")
 
-def store_original_and_converted(original, converted, source, accepted, events, connection, incremental):
+def store_original_and_converted(original, converted, source, accepted, audit_events, field_events, record_info, connection, incremental):
     cursor = connection.cursor()
     doc = BibframeSource(converted)
 
@@ -382,20 +431,48 @@ def store_original_and_converted(original, converted, source, accepted, events, 
         doc.is_swedishlist
     )).lastrowid
 
-    for event in events:
+    for field in field_events.values():
         cursor.execute("""
-        INSERT INTO converted_events(converted_id, type, field, path, code, initial_value, result, name, step, new_value) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO converted_field_events(
+            converted_id, field, path, initial_value, value, validation_status, enrichment_status, normalization_status, events
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            converted_rowid,
+            field.id_type,
+            field.path,
+            field.initial_value,
+            field.value,
+            field.validation_status,
+            field.enrichment_status,
+            field.normalization_status,
+            json.dumps(field.events)
+        ))
+
+    for field, value in record_info.items():
+        cursor.execute("""
+        INSERT INTO converted_record_info(
+            converted_id, field, validation_status, enrichment_status, normalization_status
+        ) VALUES (?, ?, ?, ?, ?)
+        """, (
+            converted_rowid,
+            field,
+            value['validation_status'],
+            value['enrichment_status'],
+            value['normalization_status']
+        ))
+
+    for event in audit_events:
+        cursor.execute("""
+        INSERT INTO converted_audit_events(converted_id, type, code, initial_value, result, name, step, value) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             converted_rowid,
             event["type"],
-            event["field"],
-            event["path"],
             event["code"],
             event["initial_value"],
             event["result"],
             event["name"],
             event["step"],
-            event["new_value"],
+            event["value"],
         ))
 
     identifiers = []
@@ -420,3 +497,9 @@ def store_original_and_converted(original, converted, source, accepted, events, 
 
 def get_connection():
     return sqlite3.connect(sqlite_path)
+
+def dict_factory(cursor, row):
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d

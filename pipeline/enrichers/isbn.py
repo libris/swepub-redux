@@ -11,18 +11,27 @@ isbn_regex = re.compile(
     '(?:(?![-0-9]))'  # Make sure the code isnt followed by a number or hyphen
 )
 
-def recover_isbn(isbn, body, path, id, events):
+
+
+def recover_isbn(body, field):
+    isbn = field.value
+
     answ = isbn_regex.finditer(isbn)
     res = []
     for pattern in answ:
         p = compact(pattern.group())
         if len(p) == 10 or len(p) == 13:
             res.append(pattern.group())
-    
+
     if not res:
+        #field.enrichment_status = "unsuccessful"
         return
-    
+
     if res[0] != isbn:
-        update_at_path(body, path, res[0])
-        events.append(make_event("enrichment", "ISBN", path, "split", res[0], initial_value=isbn))
-    
+        update_at_path(body, field.path, res[0])
+        field.value = res[0]
+        field.enrichment_status = "enriched"
+        field.events.append(make_event(type="enrichment", code="split", value=res[0], initial_value=isbn, result="enriched"))
+
+    if field.enrichment_status != 'enriched':
+        field.enrichment_status = 'unsuccessful'

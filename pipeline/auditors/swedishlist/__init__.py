@@ -86,8 +86,8 @@ class SwedishListAuditor(BaseAuditor):
     @staticmethod
     def _add_audit_event(audit_events, level):
         name = SwedishListAuditor.__name__
-        step = 'Setting publication level'
-        result = 'Not audited'
+        step = 'set_publication_level'
+        result = '0'
         if level:
             result = level.value
         audit_events.add_event(name, step, result)

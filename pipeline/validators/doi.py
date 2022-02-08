@@ -72,25 +72,42 @@ def _doi_is_valid_format(doi):
 
     return True
 
-def validate_doi(doi, path, session, events, harvest_cache):
+
+def _validate(field, session, harvest_cache):
+    doi = field.value
+
     if not _validate_printable_chars_and_no_ws(doi):
-        events.append(make_event("validation", "DOI", path, "unicode", "invalid", initial_value=doi))
+        field.events.append(make_event(type="validation", code="unicode", result="invalid", value=doi))
         return False
     
     stripped_doi = _strip_doi_http_prefix(doi)
     if not _doi_is_valid_format(stripped_doi):
-        events.append(make_event("validation", "DOI", path, "format", "invalid", initial_value=doi))
+        field.events.append(make_event(type="validation", code="format", result="invalid", value=stripped_doi))
         return False
 
     if harvest_cache['id'].get(stripped_doi, 0):
+        field.events.append(make_event(type="validation", code="cache", result="valid", value=stripped_doi))
+        field.value = stripped_doi
         return True
 
     valid = _validate_with_shortdoi(stripped_doi, session)
     if not valid:
         valid = _validate_with_crossref(stripped_doi, session)
         if not valid:
-            events.append(make_event("validation", "DOI", path, "remote.crossref", "invalid", initial_value=doi))
+            events.append(make_event(type="validation", code="remote.crossref", result="invalid", value=stripped_doi))
             return False
 
     harvest_cache['id'][stripped_doi] = 1
+    field.value = stripped_doi
     return True
+
+
+def validate_doi(field, session, harvest_cache):
+    if _validate(field, session, harvest_cache):
+        field.validation_status = 'valid'
+        if not field.is_enriched():
+            field.enrichment_status = 'unchanged'
+    else:
+        field.validation_status = 'invalid'
+        if field.is_enriched():
+            field.enrichment_status = 'unsuccessful'

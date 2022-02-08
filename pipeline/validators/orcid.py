@@ -16,29 +16,42 @@ def _strip_url(orcid):
         return orcid.split('/')[-1]
     return orcid
 
-def validate_orcid(orcid, path, events):
+def _validate(field):
+    orcid = field.value
+
     result = validate_base_unicode(orcid)
     if result == False:
-        events.append(make_event("validation", "ORCID", path, "unicode", "invalid", initial_value=orcid))
+        field.events.append(make_event(type="validation", code="unicode", result="invalid", value=orcid))
         return False
     
     hit = orcid_regex.fullmatch(orcid)
     if hit is None:
-        events.append(make_event("validation", "ORCID", path, "format", "invalid", initial_value=orcid))
+        field.events.append(make_event(type="validation", code="format", result="invalid", value=orcid))
         return False
 
     try:
         orcnum = int(_strip_url(orcid).replace('-', '')[:-1])
         inspan = 15000000 <= orcnum <= 35000001
         if inspan == False:
-            events.append(make_event("validation", "ORCID", path, "span", "invalid", initial_value=orcid))
+            field.events.append(make_event(type="validation", code="span", result="invalid", value=orcid))
             return False
     except ValueError:
-        events.append(make_event("validation", "ORCID", path, "span", "invalid", initial_value=orcid))
+        field.events.append(make_event(type="validation", code="span", result="invalid", value=orcid))
         return False
     
     if not is_valid(_strip_url(orcid).upper().replace('-', '')):
-        events.append(make_event("validation", "ORCID", path, "checksum", "invalid", initial_value=orcid))
+        field.events.append(make_event(type="validation", code="checksum", result="invalid", value=orcid))
         return False
 
-    return True
+    field.events.append(make_event(type="validation", code="checksum", result="valid", value=orcid))
+    return True 
+
+def validate_orcid(field):
+    if _validate(field):
+        field.validation_status = 'valid'
+        if not field.is_enriched():
+            field.enrichment_status = 'unchanged'
+    else:
+        field.validation_status = 'invalid'
+        if field.is_enriched():
+            field.enrichment_status = 'unsuccessful'

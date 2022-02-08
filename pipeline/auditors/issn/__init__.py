@@ -7,7 +7,7 @@ class ISSNAuditor(BaseAuditor):
         self.name = ISSNAuditor.__name__
 
     def audit(self, publication, audit_events):
-        step = 'Checking missing ISSN'
+        step = 'ISSN_missing_check'
         result = False
         message = 'ISSN not missing (or publication is not a published article)'
         if publication.is_article and publication.missing_issn_or_any_empty_issn:

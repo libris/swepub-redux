@@ -19,7 +19,7 @@ class UKAAuditor(BaseAuditor):
         return publication, new_audit_events
 
     def _add_audit_event(self, audit_events, comprehensive):
-        step = 'Checking if classification is comprehensive'
+        step = 'UKA_comprehensive_check'
         audit_events.add_event(self.name, step, comprehensive)
         return audit_events
 
