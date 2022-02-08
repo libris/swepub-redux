@@ -29,7 +29,7 @@ SSIF_LABELS = {
 
 INFO_API_MAPPINGS = sort_mappings(json.load(open(os.path.dirname(__file__) + '/../pipeline/ssif_research_subjects.json')))
 INFO_API_OUTPUT_TYPES = json.load(open(os.path.dirname(__file__) + '/../pipeline/output_types.json'))
-INFO_API_SOURCE_ORG_MAPPING = get_source_org_mapping(json.load(open(os.path.dirname(__file__) + '/../pipeline/sources.json')))
+INFO_API_SOURCE_ORG_MAPPING = json.load(open(os.path.dirname(__file__) + '/../pipeline/sources.json'))
 
 # Note: static files should be served by Apache/nginx
 app = Flask(__name__, static_url_path='', static_folder='vue-client/dist')
@@ -377,12 +377,83 @@ def process_get_rejected_publications(harvest_id):
 
 
 @app.route('/api/v1/process/<source>', methods=['GET'])
-def get_stats(source=None):
+def process_get_stats(source=None):
     if source is None:
         return _error(['Missing parameter: "source"'], status_code=400)
     # TODO: if source doesn't exist
 
-    return {}
+    cur = get_db().cursor()
+    cur.row_factory = dict_factory
+
+    result = {
+        'code': source,
+        'source': INFO_API_SOURCE_ORG_MAPPING[source]['name'],
+        'audits': {},
+        'enrichments': {},
+        'normalizations': {},
+        'validations': {},
+        'total': 0,
+    }
+
+    for row in cur.execute("""
+        SELECT
+            label, SUM(valid) AS valid, SUM(invalid)
+        AS
+            invalid
+        FROM
+            stats_audit_events
+        WHERE
+            source = ?
+        AND
+            type = 'audits'
+        GROUP BY
+            label
+            """, [source]):
+        result['audits'][row['label']] = {}
+        if row['valid']:
+            result['audits'][row['label']]['valid'] = row['valid']
+        if row['invalid']:
+            result['audits'][row['label']]['invalid'] = row['invalid']
+
+    for row in cur.execute("""
+        SELECT
+            field,
+            SUM(e_enriched) AS e_enriched,
+            SUM(e_unchanged) AS e_unchanged,
+            SUM(e_unsuccessful) AS e_unsuccessful,
+            SUM(n_unchanged) AS n_unchanged,
+            SUM(n_normalized) AS n_normalized,
+            SUM(v_valid) AS v_valid,
+            SUM(v_invalid) AS v_invalid
+        FROM
+            stats_field_events
+        WHERE
+            source = ?
+        GROUP BY
+            field
+    """, [source]):
+        result['enrichments'][row['field']] = {}
+        result['normalizations'][row['field']] = {}
+        result['validations'][row['field']] = {}
+
+        if row['e_enriched']:
+            result['enrichments'][row['field']]['enriched'] = row['e_enriched']
+        if row['e_unchanged']:
+            result['enrichments'][row['field']]['unchanged'] = row['e_unchanged']
+        if row['e_unsuccessful']:
+            result['enrichments'][row['field']]['unsuccessful'] = row['e_unsuccessful']
+
+        if row['n_unchanged']:
+            result['normalizations'][row['field']]['unchanged'] = row['n_unchanged']
+        if row['n_normalized']:
+            result['normalizations'][row['field']]['normalized'] = row['n_normalized']
+
+        if row['v_valid']:
+            result['validations'][row['field']]['valid'] = row['v_valid']
+        if row['v_invalid']:
+            result['validations'][row['field']]['invalid'] = row['v_invalid']
+
+    return result
 
 
 if __name__ == '__main__':
