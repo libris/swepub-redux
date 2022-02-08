@@ -53,7 +53,7 @@ class SubjectsAuditor(BaseAuditor):
         complimentary_subjects = self._get_complimentary_subjects(publication)
         publication.subjects = subjects + complimentary_subjects
 
-        step = "Expand research subjects"
+        step = "expand_research_subjects"
         result = False
         if len(complimentary_subjects) > 0:
             #logger.info(

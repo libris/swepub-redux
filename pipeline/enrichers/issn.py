@@ -15,17 +15,27 @@ issn_regex = re.compile(
     '(?:(?![ ]\d))'           # Check that not followed by non digit or hyphen and digit
 )
 
-def recover_issn(issn, body, path, id, events):
+def recover_issn(body, field):
+    issn = field.value
+    path = field.path
+
     translated = unicode_translate(issn)
     if translated != issn:
         initial = issn
         issn = translated
         update_at_path(body, path, issn)
-        events.append(make_event("enrichment", "ISSN", path, "unicode", issn, initial_value=initial))
-        
+        field.events.append(make_event(type="enrichment", code="unicode", value=issn, initial_value=initial, result="enriched"))
+        field.enrichment_status = 'enriched'
+        field.value = issn
+
     answ = issn_regex.findall(issn)
     # Skip first element in part since it's empty or contains non wanted delimiter
     recovered = [''.join(part[1:]) for part in answ]
     if len(recovered) > 0 and recovered[0] != issn:
-        events.append(make_event("enrichment", "ISSN", path, "split", recovered[0], initial_value=issn))
+        field.events.append(make_event(type="enrichment", code="split", value=recovered[0], initial_value=issn, result="enriched"))
         update_at_path(body, path, recovered[0])
+        field.enrichment_status = 'enriched'
+        field.value = recovered[0]
+
+    if field.enrichment_status != 'enriched':
+        field.enrichment_status = 'unsuccessful'

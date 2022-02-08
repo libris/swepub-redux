@@ -4,27 +4,47 @@ from html import unescape
 from html.parser import HTMLParser
 import re
 
-def normalize_issn(issn, body, path, events):
+
+def normalize_issn(body, field):
+    issn = field.value
+    path = field.path
+
     new_value = issn_format(issn)
     if new_value != issn:
         update_at_path(body, path, new_value)
-        events.append(make_event("normalization", "ISSN", path, "format", new_value, initial_value=issn))
+        field.events.append(make_event(type="normalization", code="format", value=new_value, initial_value=issn, result="normalized"))
+        field.normalization_status = 'normalized'
+        field.value = new_value
 
-def normalize_isbn(isbn, body, path, events):
+
+def normalize_isbn(body, field):
+    isbn = field.value
+    path = field.path
+
     new_value = isbn.replace('-', '').upper()
     if new_value != isbn:
         update_at_path(body, path, new_value)
-        events.append(make_event("normalization", "ISBN", path, "format", new_value, initial_value=isbn))
+        field.events.append(make_event(type="normalization", code="format", value=new_value, initial_value=isbn, result="normalized"))
+        field.normalization_status = 'normalized'
+        field.value = new_value
 
-def normalize_isi(isi, body, path, events):
+
+def normalize_isi(body, field):
+    isi = field.value
+
     new_value = isi.upper()
     if new_value != isi:
         update_at_path(body, path, new_value)
-        events.append(make_event("normalization", "ISI", path, "capitalize", new_value, initial_value=isi))
+        field.events.append(make_event(type="normalization", code="capitalize", value=new_value, initial_value=isi, result="normalized"))
+        field.normalization_status = 'normalized'
+        field.value = new_value
+
 
 HTTP_PREFIX = 'http://orcid.org/'
 HTTPS_PREFIX = 'https://orcid.org/'
-def normalize_orcid(orcid, body, path, events):
+def normalize_orcid(body, field):
+    orcid = field.value
+    path = field.path
     # normalize_orcid_prefix
     enriched_value = orcid
     code = ''
@@ -36,8 +56,10 @@ def normalize_orcid(orcid, body, path, events):
         enriched_value = HTTPS_PREFIX + orcid
     if orcid != enriched_value:
         update_at_path(body, path, enriched_value)
-        events.append(make_event("normalization", "ORCID", path, code, enriched_value, initial_value=orcid))
-    
+        field.events.append(make_event(type="normalization", result="normalized", code=code, value=enriched_value, initial_value=orcid))
+        field.normalization_status = 'normalized'
+        field.value = enriched_value
+
     # get_orcid_with_delimiters
     initial = enriched_value
     orcid = enriched_value
@@ -49,34 +71,45 @@ def normalize_orcid(orcid, body, path, events):
 
     if initial != enriched:
         update_at_path(body, path, enriched)
-        events.append(make_event("normalization", "ORCID", path, "format.delimiters", enriched, initial_value=initial))
+        field.events.append(make_event(type="normalization", result="normalized", code="format.delimiters", value=enriched, initial_value=initial))
+        field.normalization_status = 'normalized'
+        field.value = enriched_value
+
 
 HTTPS_PREFIX = 'https://doi.org/'
 DOI_PREFIX = '10.'
 doi_prefix = re.compile(r'(https?://doi\.org/)?(10\..*)')
-def normalize_doi(doi, body, path, events):
+def normalize_doi(body, field):
+    doi = field.value
+    path = field.path
     # normalize_doi_prefix
     enriched_value = doi
-    code = ''
-    if doi.startswith('http:'):
-        code = 'prefix.update'
-        enriched_value = doi[:4] + 's' + doi[4:]
-    elif doi.startswith(DOI_PREFIX):
-        code = 'prefix.add'
-        enriched_value = HTTPS_PREFIX + doi
-    if doi != enriched_value:
-        update_at_path(body, path, enriched_value)
-        events.append(make_event("normalization", "DOI", path, code, enriched_value, initial_value=doi))
-    
+    path = field.path
+
     # _prefix_cleaner
     doi_match = doi_prefix.findall(doi)
     new_value = ''.join(doi_match[0]) if doi_match else doi
     if doi != new_value:
         update_at_path(body, path, new_value)
-        events.append(make_event("normalization", "DOI", path, "prefix.remove", new_value, initial_value=doi))
+        field.events.append(make_event(type="normalization", result="normalized", code="prefix.remove", value=new_value, initial_value=doi))
+        field.normalization_status = 'normalized'
+        field.value = new_value
+
+    code = ''
+    if new_value.startswith('http:'):
+        code = 'prefix.update'
+        enriched_value = new_value[:4] + 's' + new_value[4:]
+    elif new_value.startswith(DOI_PREFIX):
+        code = 'prefix.add'
+        enriched_value = HTTPS_PREFIX + new_value
+    if new_value != enriched_value:
+        update_at_path(body, path, enriched_value)
+        field.events.append(make_event(type="normalization", result="normalized", code=code, value=enriched_value, initial_value=doi))
+        field.normalization_status = 'normalized'
+        field.value = enriched_value
+
 
 class MLStripper(HTMLParser):
-
     def __init__(self):
         super().__init__()
         self.reset()
@@ -90,16 +123,22 @@ class MLStripper(HTMLParser):
     def get_data(self):
         return ''.join(self.fed)
 
-def normalize_free_text(free_text, body, path, events):
+
+def normalize_free_text(body, field):
+    free_text = field.value
+    path = field.path
+    field.enrichment_status = 'unchanged'
     # strip tags
     s = MLStripper()
     s.feed(unescape(free_text))
     new_value = s.get_data()
     if new_value != free_text:
         update_at_path(body, path, new_value)
-        events.append(make_event("normalization", "free_text", path, "strip_tags", None, initial_value=free_text))
+        field.events.append(make_event(type="normalization", code="strip_tags", result="normalized", value=new_value, initial_value=free_text))
+        field.normalization_status = 'normalized'
+        field.value = new_value
         free_text = new_value
-    
+
     # clean_text
     # \n, \r, \t etc. are replaced with a single space
     text = re.sub(r'[\a\b\f\n\r\t\v]+', ' ', free_text)
@@ -109,5 +148,6 @@ def normalize_free_text(free_text, body, path, events):
     new_value = text.translate(translator)
     if new_value != free_text:
         update_at_path(body, path, new_value)
-        events.append(make_event("normalization", "free_text", path, "clean_text", None, initial_value=free_text))
-        free_text = new_value
+        field.events.append(make_event(type="normalization", code="clean_text", result="normalized", initial_value=free_text, value=new_value))
+        field.normalization_status = 'normalized'
+        field.value = new_value

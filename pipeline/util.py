@@ -1,12 +1,14 @@
 import json                                                                                                                                                                             
 from jsonpath_rw import jsonpath, parse
 
+
 def update_at_path(root, path, new_value):
     basepath, key = path.rsplit('.', 1)
     found = parse(basepath).find(root)
     parent_object = found[0].value
     #print(f"Replacing {parent_object[key]} with {new_value} at {path}")
     parent_object[key] = new_value
+
 
 class UnicodeAsciiTranslator:
     def __init__(self):
@@ -21,18 +23,30 @@ class UnicodeAsciiTranslator:
             return '-'
         return None
 
+
 def unicode_translate(input_string):
     return input_string.translate(UnicodeAsciiTranslator())
 
 
-def make_event(type=None, field=None, path=None, code=None, result=None, initial_value=None, step=None, name=None):
-    return {
+def make_event(type=None, code=None, result=None, initial_value=None, value=None):
+    result = {
         "type": type,
-        "field": field,
-        "path": str(path),
         "code": code,
         "result": result,
         "initial_value": initial_value,
+        "value": value,
+    }
+
+    return {k: v for k, v in result.items() if v is not None}
+
+
+def make_audit_event(type=None, code=None, result=None, initial_value=None, value=None, step=None, name=None):
+    return {
+        "type": type,
+        "code": code,
+        "result": result,
+        "initial_value": initial_value,
+        "value": value,
         "step": step,
         "name": name
     }

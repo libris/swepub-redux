@@ -2,12 +2,14 @@ from datetime import datetime
 from validators.shared import validate_base_unicode
 from util import make_event
 
-def validate_date_time(dt, path, events):
+
+def _validate(field):
+    dt = field.value
     """Valid date formats are YYYY and YYYY-MM-DD, as specified in Swepub MODS specification.
     """
     if isinstance(dt, str):
         if not validate_base_unicode(dt):
-            events.append(make_event("validation", "datetime", path, "unicode", "invalid", initial_value=dt))
+            field.events.append(make_event(type="validation", code="unicode", result="invalid", value=dt))
             return False
 
         try:
@@ -18,8 +20,19 @@ def validate_date_time(dt, path, events):
                 datetime.strptime(dt, '%Y-%m-%d')
                 return True
             except ValueError:
-                events.append(make_event("validation", "datetime", path, "format", "invalid", initial_value=dt))
+                field.events.append(make_event(type="validation", code="format", result="invalid", value=dt))
                 return False
 
-    events.append(make_event("validation", "datetime", path, "format", "invalid", initial_value=dt))
+    field.events.append(make_event(type="validation", code="format", result="invalid", value=dt))
     return False
+
+
+def validate_date_time(field):
+    if _validate(field):
+        field.validation_status = 'valid'
+        if not field.is_enriched():
+            field.enrichment_status = 'unchanged'
+    else:
+        field.validation_status = 'invalid'
+        if field.is_enriched():
+            field.enrichment_status = 'unsuccessful'

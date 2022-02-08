@@ -10,14 +10,19 @@ isi_regex = re.compile(
     '[0-9a-zA-Z]{12})'  # Allows 0-9 and A-Z for the following 12 characters
 )
 
-def validate_isi(isi, path, events):
+def validate_isi(field):
+    isi = field.value
     result = validate_base_unicode(isi)
     if result == False:
-        events.append(make_event("validation", "ISI", path, "unicode", "invalid", initial_value=isi))
+        field.events.append(make_event("validation", "ISI", field.path, "unicode", "invalid", initial_value=isi))
+        field.validation_status = 'invalid'
         return False
     
     hit = isi_regex.fullmatch(isi)
     if hit is None:
-        events.append(make_event("validation", "ISI", path, "format", "invalid", initial_value=isi))
+        field.events.append(make_event("validation", "ISI", field.path, "format", "invalid", initial_value=isi))
+        field.validation_status = 'invalid'
         return False
-    return True
+    else:
+        field.events.append(make_event("validation", "ISI", field.path, "format", "valid", initial_value=isi))
+        field.validation_status = 'valid'

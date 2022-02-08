@@ -11,7 +11,7 @@ from auditors.contributor import ContributorAuditor
 from auditors.issn import ISSNAuditor
 from auditors.autoclassifier import AutoClassifier
 from auditors.subjects import SubjectsAuditor
-from util import make_event
+from util import make_audit_event
 
 AUDITORS = [
     SwedishListAuditor(),
@@ -131,7 +131,7 @@ class AuditEvents:
         # if value:
         #     audit_event['value'] = value
         # self._audit_events[name].append(audit_event)
-        self._audit_events.append(make_event(
+        self._audit_events.append(make_audit_event(
             name=name, type="audit", code=code, step=step, result=result, initial_value=initial_value
         ))
 

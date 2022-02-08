@@ -14,6 +14,7 @@ from multiprocessing import Process, Lock, Value, Manager
 import sys
 from storage import *
 from index import generate_search_tables
+from stats import generate_processing_stats
 import logging
 import swepublog
 from datetime import datetime, timezone
@@ -221,7 +222,7 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental, added_con
                 try:
                     cursor.execute("""
                     INSERT INTO last_harvest(source, last_successful_harvest) VALUES (?, ?)
-                    ON CONFLICT DO UPDATE SET last_successful_harvest = ?;""", (source["code"], harvest_start, harvest_start))
+                    ON CONFLICT(source) DO UPDATE SET last_successful_harvest = ?;""", (source["code"], harvest_start, harvest_start))
                     connection.commit()
                 finally:
                     lock.release()
@@ -236,13 +237,13 @@ def threaded_handle_harvested(batch, source, lock, harvest_cache, incremental, a
     converted_rowids = []
     for xml in batch:
         converted = convert(xml)
-        (accepted, events) = validate(xml, converted, harvest_cache)
+        (accepted, field_events, record_info) = validate(xml, converted, harvest_cache)
         (audited, audit_events) = audit(converted)
-        events.extend(audit_events.data)
+        #events.extend(audit_events.data)
         lock.acquire()
         try:
             with get_connection() as connection:
-                converted_rowid = store_original_and_converted(xml, audited.data, source, accepted, events, connection, incremental)
+                converted_rowid = store_original_and_converted(xml, audited.data, source, accepted, audit_events.data, field_events, record_info, connection, incremental)
                 if converted_rowid:
                     converted_rowids.append(converted_rowid)
         finally:
@@ -374,12 +375,18 @@ if __name__ == "__main__":
     t1 = time.time()
     diff = t1-t0
     log.info(f"Phase 4 (merging) ran for {diff} seconds")
-    
+
     t0 = t1
     generate_search_tables()
     t1 = time.time()
     diff = t1-t0
     log.info(f"Phase 5 (generate search tables) ran for {diff} seconds")
+
+    t0 = t1
+    generate_processing_stats()
+    t1 = time.time()
+    diff = t1-t0
+    log.info(f"Phase 6 (generate processing stats) ran for {diff} seconds")
 
     # Save ISSN/DOI cache for use next time
     try:
