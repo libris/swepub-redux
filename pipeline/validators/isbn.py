@@ -21,14 +21,14 @@ def _validate_format(isbn, path, field):
     hit10 = isbn10_regex.fullmatch(isbn)
     if hit10 and len(compact(isbn)) == 10:
         return True
-    field.events.append(make_event("validation", "ISBN", path, "format", "invalid", initial_value=isbn))
+    field.events.append(make_event(type="validation", code="format", result="invalid", initial_value=isbn))
     return False
 
 
 def _validate_checksum(isbn, path, field):
     if is_valid(isbn):
         return True
-    field.events.append(make_event("validation", "ISBN", path, "checksum", "invalid", initial_value=isbn))
+    field.events.append(make_event(type="validation", code="checksum", result="invalid", initial_value=isbn))
     return False
 
 
