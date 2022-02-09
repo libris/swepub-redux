@@ -12,19 +12,15 @@ def generate_processing_stats():
             SELECT
                 converted_audit_events.step,
                 converted.source,
-                date,
+                converted.date,
                 SUM(CASE WHEN converted_audit_events.result == 1 Then 1 else 0 end) AS result_true,
                 SUM(CASE WHEN converted_audit_events.result == 0 Then 1 else 0 end) AS result_false
             FROM
                 converted_audit_events
             LEFT JOIN
                 converted ON converted_audit_events.converted_id=converted.id
-            WHERE
-                converted_audit_events.type = 'audit'
             GROUP BY
-                converted.source, converted_audit_events.step, date
-            ORDER BY
-                date
+                converted.source, converted_audit_events.step, converted.date
             """):
             if row['step'] == 'creator_count_check':
                 valid = row['result_true']
@@ -35,17 +31,17 @@ def generate_processing_stats():
 
             inner_cursor.execute("""
                 INSERT INTO
-                    stats_audit_events(type, source, date, label, valid, invalid)
+                    stats_audit_events(source, date, label, valid, invalid)
                 VALUES
-                    (?, ?, ?, ?, ?, ?)
+                    (?, ?, ?, ?, ?)
                 """,
-                ['audits', row['source'], row['date'], row['step'], valid, invalid])
+                [row['source'], row['date'], row['step'], valid, invalid])
 
         for row in cursor.execute("""
             SELECT
                 converted_record_info.field,
                 converted.source,
-                date,
+                converted.date,
                 SUM(CASE WHEN converted_record_info.validation_status == 'valid' Then 1 else 0 end) AS v_valid,
                 SUM(CASE WHEN converted_record_info.validation_status == 'invalid' Then 1 else 0 end) AS v_invalid,
 
@@ -60,9 +56,7 @@ def generate_processing_stats():
             LEFT JOIN
                 converted ON converted_record_info.converted_id=converted.id
             GROUP BY
-                converted.source, converted_record_info.field, date
-            ORDER BY
-                date
+                converted.source, converted_record_info.field, converted.date
             """):
             inner_cursor.execute("""
                 INSERT INTO
