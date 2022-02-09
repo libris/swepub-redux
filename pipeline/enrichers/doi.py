@@ -26,7 +26,7 @@ def recover_doi(body, field):
     if translated != doi:
         doi = translated
         update_at_path(body, path, doi)
-        field.events.append(make_event(type="enrichment", field="DOI", path=path, code="unicode", initial_value=initial, value=doi))
+        field.events.append(make_event(type="enrichment", code="unicode", initial_value=initial, value=doi, result="enriched"))
         field.value = doi
 
     if doi.startswith(VALID_STARTS):
@@ -35,7 +35,7 @@ def recover_doi(body, field):
         hit = doi.find(DOI_START)
         if hit != -1:
             update_at_path(body, path, doi[hit:])
-            field.events.append(make_event(type="enrichment", field="DOI", path=path, code="recovery", value=doi[hit:], initial_value=initial, result="enriched"))
+            field.events.append(make_event(type="enrichment", code="recovery", value=doi[hit:], initial_value=initial, result="enriched"))
             field.value = doi[hit:]
 
     if field.enrichment_status != 'enriched':

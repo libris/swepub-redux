@@ -343,6 +343,8 @@ if __name__ == "__main__":
             cursor.execute("DELETE FROM search_creator")
             cursor.execute("DELETE FROM search_org")
             cursor.execute("DELETE FROM search_fulltext")
+            cursor.execute("DELETE FROM stats_field_events")
+            cursor.execute("DELETE FROM stats_audit_events")
     else:
         clean_and_init_storage()
     processes = []

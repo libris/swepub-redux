@@ -44,7 +44,6 @@ def clean_and_init_storage():
     cursor.execute("""
     CREATE TABLE converted_audit_events (
         converted_id INTEGER,
-        type TEXT,
         name TEXT,
         step TEXT,
         code TEXT,
@@ -56,9 +55,6 @@ def clean_and_init_storage():
     """)
     cursor.execute("""
     CREATE INDEX idx_converted_audit_events_converted_id ON converted_audit_events(converted_id);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_converted_audit_events_type ON converted_audit_events(type);
     """)
 
     cursor.execute("""
@@ -363,14 +359,16 @@ def clean_and_init_storage():
 
     cursor.execute("""
     CREATE TABLE stats_audit_events (
-        type TEXT,
         source TEXT,
         date INT,
         label TEXT,
         valid INT DEFAULT 0,
         invalid INT DEFAULT 0,
-        PRIMARY KEY (type, source, date, label)
+        PRIMARY KEY (source, date, label)
     );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_stats_audit_events_source ON stats_audit_events(source);
     """)
 
     cursor.execute("""
@@ -463,10 +461,9 @@ def store_original_and_converted(original, converted, source, accepted, audit_ev
 
     for event in audit_events:
         cursor.execute("""
-        INSERT INTO converted_audit_events(converted_id, type, code, initial_value, result, name, step, value) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO converted_audit_events(converted_id, code, initial_value, result, name, step, value) VALUES (?, ?, ?, ?, ?, ?, ?)
         """, (
             converted_rowid,
-            event["type"],
             event["code"],
             event["initial_value"],
             event["result"],

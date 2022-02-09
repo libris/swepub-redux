@@ -17,7 +17,6 @@ class CreatorCountAuditor(BaseAuditor):
 
         #logger.info(msg, extra={'auditor': self.name})
 
-        #step = 'Checking if CreatorCount note exists'
         step = 'creator_count_note_exists'
         new_audit_events = self._add_audit_event(
             audit_events, step, cc_exists)
@@ -36,7 +35,6 @@ class CreatorCountAuditor(BaseAuditor):
 
         #logger.info(msg, extra={'auditor': self.name})
 
-        #step = 'Checking if CreatorCount is valid'
         step = 'creator_count_check'
         new_audit_events = self._add_audit_event(
             new_audit_events, step, is_valid_count)
