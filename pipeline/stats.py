@@ -80,11 +80,6 @@ def generate_processing_stats():
                     row['n_unchanged'], row['n_normalized']
                 ])
 
-        # converted_record_info is only necessary for stats creation, so now we can get rid of its data.
-        # TODO: We *COULD* probably skip the whole converted_record_info table and figure everything out
-        # through converted_field_events with SQL, but that was more of a pain than I could handle right now.
-        cursor.execute("DELETE FROM converted_record_info")
-
         connection.commit()
 
 
