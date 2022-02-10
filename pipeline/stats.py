@@ -39,7 +39,7 @@ def generate_processing_stats():
 
         for row in cursor.execute("""
             SELECT
-                converted_record_info.field,
+                converted_record_info.field_name,
                 converted.source,
                 converted.date,
                 SUM(CASE WHEN converted_record_info.validation_status == 'valid' Then 1 else 0 end) AS v_valid,
@@ -56,19 +56,19 @@ def generate_processing_stats():
             LEFT JOIN
                 converted ON converted_record_info.converted_id=converted.id
             GROUP BY
-                converted.source, converted_record_info.field, converted.date
+                converted.source, converted_record_info.field_name, converted.date
             """):
             inner_cursor.execute("""
                 INSERT INTO
                     stats_field_events(
-                        field, source, date,
+                        field_name, source, date,
                         v_valid, v_invalid,
                         e_enriched, e_unchanged, e_unsuccessful,
                         n_unchanged, n_normalized)
                 VALUES
                     (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, [
-                    row['field'], row['source'], row['date'],
+                    row['field_name'], row['source'], row['date'],
                     row['v_valid'], row['v_invalid'],
                     row['e_enriched'], row['e_unchanged'], row['e_unsuccessful'],
                     row['n_unchanged'], row['n_normalized']

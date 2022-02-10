@@ -86,7 +86,7 @@ def _validate(field, session, harvest_cache):
         return False
 
     if harvest_cache['id'].get(stripped_doi, 0):
-        field.events.append(make_event(type="validation", code="cache", result="valid", value=stripped_doi))
+        field.events.append(make_event(type="validation", code="remote.cache", result="valid", value=stripped_doi))
         field.value = stripped_doi
         return True
 
@@ -94,9 +94,10 @@ def _validate(field, session, harvest_cache):
     if not valid:
         valid = _validate_with_crossref(stripped_doi, session)
         if not valid:
-            events.append(make_event(type="validation", code="remote.crossref", result="invalid", value=stripped_doi))
+            field.events.append(make_event(type="validation", code="remote.crossref", result="invalid", value=stripped_doi))
             return False
 
+    field.events.append(make_event(type="validation", code="remote", result="valid", value=stripped_doi))
     harvest_cache['id'][stripped_doi] = 1
     field.value = stripped_doi
     return True

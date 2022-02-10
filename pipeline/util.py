@@ -34,7 +34,7 @@ def make_event(type=None, code=None, result=None, initial_value=None, value=None
         "code": code,
         "result": result,
         "initial_value": initial_value,
-        "value": value,
+        "value": value
     }
 
     return {k: v for k, v in result.items() if v is not None}

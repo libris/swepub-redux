@@ -21,7 +21,7 @@ def _validate(field, session, harvest_cache):
         return False
 
     if harvest_cache['issn'].get(issn, 0) or harvest_cache['id'].get(issn, 0):
-        field.events.append(make_event(type="validation", code="cache", result="valid", value=issn))
+        field.events.append(make_event(type="validation", code="remote.cache", result="valid", value=issn))
         return True
 
     if not remote_verification(f'https://portal.issn.org/resource/ISSN/{issn}?format=json', session):

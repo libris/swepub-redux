@@ -32,7 +32,7 @@ def recover_issn(body, field):
     # Skip first element in part since it's empty or contains non wanted delimiter
     recovered = [''.join(part[1:]) for part in answ]
     if len(recovered) > 0 and recovered[0] != issn:
-        field.events.append(make_event(type="enrichment", code="split", value=recovered[0], initial_value=issn, result="enriched"))
+        field.events.append(make_event(type="enrichment", code="recovery", value=recovered[0], initial_value=issn, result="enriched"))
         update_at_path(body, path, recovered[0])
         field.enrichment_status = 'enriched'
         field.value = recovered[0]

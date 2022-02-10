@@ -27,6 +27,7 @@ def _validate_format(isbn, path, field):
 
 def _validate_checksum(isbn, path, field):
     if is_valid(isbn):
+        field.events.append(make_event(type="validation", code="checksum", result="valid", initial_value=field.value))
         return True
     field.events.append(make_event(type="validation", code="checksum", result="invalid", initial_value=isbn))
     return False
