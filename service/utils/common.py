@@ -29,6 +29,35 @@ def parse_dates(from_date, to_date):
     return errors, from_date, to_date
 
 
+MAX_RESULT_SIZE = 10000
+def parse_limit_and_offset(limit, offset):
+    """Get limit and offset from query args."""
+    errors = []
+    if limit is None and offset is not None:
+        errors.append(f"Parameter 'offset' must be used together with 'limit'")
+    if limit is not None:
+        try:
+            limit = int(limit)
+            if limit > MAX_RESULT_SIZE:
+                limit = MAX_RESULT_SIZE
+            if limit < 0:
+                errors.append(f"Parameter 'limit' must be non-negative")
+        except ValueError:
+            errors.append(f"Invalid value for 'limit' parameter: {limit}")
+            limit = None
+    if offset is not None:
+        try:
+            offset = int(offset)
+            if offset > MAX_RESULT_SIZE:
+                offset = MAX_RESULT_SIZE
+            if offset < 0:
+                errors.append(f"Parameter 'offset' must be non-negative")
+        except ValueError:
+            errors.append(f"Invalid value for 'offset' parameter: {offset}")
+            offset = None
+    return (errors, limit, offset)
+
+
 def sort_mappings(unsorted):
     """Create a tree given a dict
     We expect the dict to contain keys of length 1, 3, or 5. These lengths
@@ -64,3 +93,4 @@ def get_source_org_mapping(oai_sources):
     for source in oai_sources:
         mapping[source['code']] = source['name']
     return mapping
+

@@ -3,15 +3,16 @@ import json
 import os
 
 import bibliometrics
-from utils import *
+from utils.common import *
+from utils.process import *
 
 import enum
 from collections.abc import Iterable
 from datetime import datetime
 from pathlib import Path
 import sqlite3
-from flask import Flask, g, request, jsonify, Response
-from pypika import Query, Tables, Parameter, Table
+from flask import Flask, g, request, jsonify, Response, stream_with_context, url_for
+from pypika import Query, Tables, Parameter, Table, Criterion
 from pypika.terms import BasicCriterion
 from pypika.functions import Count
 
@@ -380,7 +381,8 @@ def process_get_rejected_publications(harvest_id):
 def process_get_stats(source=None):
     if source is None:
         return _error(['Missing parameter: "source"'], status_code=400)
-    # TODO: if source doesn't exist
+    if source not in INFO_API_SOURCE_ORG_MAPPING:
+        return _error(['Source not found'], status_code=404)
 
     cur = get_db().cursor()
     cur.row_factory = dict_factory
@@ -404,8 +406,6 @@ def process_get_stats(source=None):
             stats_audit_events
         WHERE
             source = ?
-        AND
-            type = 'audits'
         GROUP BY
             label
             """, [source]):
@@ -417,7 +417,7 @@ def process_get_stats(source=None):
 
     for row in cur.execute("""
         SELECT
-            field,
+            field_name,
             SUM(e_enriched) AS e_enriched,
             SUM(e_unchanged) AS e_unchanged,
             SUM(e_unsuccessful) AS e_unsuccessful,
@@ -430,30 +430,155 @@ def process_get_stats(source=None):
         WHERE
             source = ?
         GROUP BY
-            field
+            field_name
     """, [source]):
-        result['enrichments'][row['field']] = {}
-        result['normalizations'][row['field']] = {}
-        result['validations'][row['field']] = {}
+        result['enrichments'][row['field_name']] = {}
+        result['normalizations'][row['field_name']] = {}
+        result['validations'][row['field_name']] = {}
 
         if row['e_enriched']:
-            result['enrichments'][row['field']]['enriched'] = row['e_enriched']
+            result['enrichments'][row['field_name']]['enriched'] = row['e_enriched']
         if row['e_unchanged']:
-            result['enrichments'][row['field']]['unchanged'] = row['e_unchanged']
+            result['enrichments'][row['field_name']]['unchanged'] = row['e_unchanged']
         if row['e_unsuccessful']:
-            result['enrichments'][row['field']]['unsuccessful'] = row['e_unsuccessful']
+            result['enrichments'][row['field_name']]['unsuccessful'] = row['e_unsuccessful']
 
         if row['n_unchanged']:
-            result['normalizations'][row['field']]['unchanged'] = row['n_unchanged']
+            result['normalizations'][row['field_name']]['unchanged'] = row['n_unchanged']
         if row['n_normalized']:
-            result['normalizations'][row['field']]['normalized'] = row['n_normalized']
+            result['normalizations'][row['field_name']]['normalized'] = row['n_normalized']
 
         if row['v_valid']:
-            result['validations'][row['field']]['valid'] = row['v_valid']
+            result['validations'][row['field_name']]['valid'] = row['v_valid']
         if row['v_invalid']:
-            result['validations'][row['field']]['invalid'] = row['v_invalid']
+            result['validations'][row['field_name']]['invalid'] = row['v_invalid']
+
+    result['total'] = cur.execute("SELECT COUNT(*) AS total_docs FROM converted WHERE source = ?", [source]).fetchone()["total_docs"]
 
     return result
+
+
+@app.route('/api/v1/process/<source>/export', methods=['GET'])
+def process_get_export(source=None):
+    if source is None:
+        return _error(['Missing parameter: "source"'], status_code=400)
+    if source not in INFO_API_SOURCE_ORG_MAPPING:
+        return _error(['Source not found'], status_code=404)
+
+    from_date = request.args.get('from')
+    to_date = request.args.get('to')
+    limit = request.args.get('limit')
+    offset = request.args.get('offset')
+    (errors, limit, offset) = parse_limit_and_offset(limit, offset)
+    if errors:
+        return _errors(errors)
+    (errors, from_date, to_date) = parse_dates(from_date, to_date)
+    if errors:
+        return _errors(errors)
+    validation_flags = request.args.get('validation_flags')
+    enrichment_flags = request.args.get('enrichment_flags')
+    normalization_flags = request.args.get('normalization_flags')
+    audit_flags = request.args.get('audit_flags')
+    (errors, selected_flags) = parse_flags(
+        validation_flags, enrichment_flags, normalization_flags, audit_flags)
+    if errors:
+        return _errors(errors)
+
+    print(selected_flags)
+
+    converted, converted_record_info, converted_audit_events = Tables('converted', 'converted_record_info', 'converted_audit_events')
+    values = []
+    q = Query \
+        .select(converted.oai_id).distinct() \
+        .select(converted.date, converted.data, converted.events) \
+        .from_(converted) \
+        .where(converted.source == Parameter('?'))
+
+    values.append(source)
+
+    # We only need to join the converted_record_info table if a validation/enrichment/normalization flag
+    # was selected, *or* if no flags were selected at all
+    if any([selected_flags['validation'], selected_flags['enrichment'], selected_flags['normalization']]) or not any(selected_flags.values()):
+        q = q \
+            .left_join(converted_record_info) \
+            .on(converted.id == converted_record_info.converted_id)
+
+    # ...and likewise for converted_audit_events
+    if selected_flags['audit'] or not any(selected_flags.values()):
+        q = q \
+            .left_join(converted_audit_events) \
+            .on(converted.id == converted_audit_events.converted_id)
+
+    if from_date and to_date:
+        q = q.where((converted.date >= Parameter('?')) & (converted.date <= Parameter('?')))
+        values.append([from_date, to_date])
+
+    # Specified flags should be OR'd together, so we build up a list of criteria and use
+    # pypika's Criterion.any.
+    criteria = []
+    for flag_type, flags in selected_flags.items():
+        for flag_name, flag_values in flags.items():
+            if flag_type in ['validation', 'enrichment', 'normalization']:
+                for flag_value in flag_values:
+                    criteria.append(
+                        (converted_record_info.field_name == Parameter('?')) & \
+                        (converted_record_info[f"{flag_type}_status"] == Parameter('?'))
+                    )
+                    values.append([flag_name, flag_value])
+            if flag_type == 'audit':
+                for flag_value in flag_values:
+                    criteria.append(
+                        (converted_audit_events.step == Parameter('?')) & \
+                        (converted_audit_events.result == Parameter('?'))
+                    )
+                    int_flag_value = 1 if flag_value == 'valid' else 0
+                    values.append([flag_name, int_flag_value])
+    q = q.where(Criterion.any(criteria))
+
+    if limit:
+        q = q.limit(limit)
+    if offset:
+        q = q.offset(offset)
+
+    print(str(q))
+
+    handled_at = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
+    cur = get_db().cursor()
+    cur.row_factory = dict_factory
+
+    def get_results():
+        # Exports can be large and we don't want to load everything into memory, so we stream
+        # the output (each yield is sent directly to the client).
+        # Since we send one result at a time, we can't send a ready-made dict when JSON is selected.
+        yield(
+            f'{{"code": "{source}",'
+            f'"hits": ['
+        )
+        total = 0
+        for row in cur.execute(str(q), list(flatten(values))):
+            flask_url = url_for('process_get_original_publication', record_id=row['oai_id'])
+            proto = request.headers.get("X-Forwarded-Proto")
+            host = request.headers.get("X-Forwarded-Host")
+            mods_url = f"{proto}://{host}{flask_url}"
+            maybe_comma = ',' if total > 0 else ''
+            total += 1
+            yield(maybe_comma + json.dumps(build_export_result(
+                json.loads(row['data']),
+                json.loads(row['events']),
+                selected_flags,
+                row['oai_id'],
+                mods_url))
+            )
+        yield(
+            f'],'
+            f'"query": {json.dumps(request.args)},'
+            f'"query_handled_at": "{handled_at}",'
+            f'"source": "{INFO_API_SOURCE_ORG_MAPPING[source]["name"]}",'
+            f'"total": {total}'
+            '}'
+        )
+
+    return app.response_class(stream_with_context(get_results()), mimetype='application/json')
 
 
 if __name__ == '__main__':
