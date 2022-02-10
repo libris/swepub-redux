@@ -29,6 +29,7 @@ def _validate(field):
 
 def validate_date_time(field):
     if _validate(field):
+        field.events.append(make_event(type="validation", code="format", result="valid", value=field.value))
         field.validation_status = 'valid'
         if not field.is_enriched():
             field.enrichment_status = 'unchanged'

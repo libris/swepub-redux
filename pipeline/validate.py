@@ -92,85 +92,106 @@ def get_record_info(field_events):
     # - if *all* ISBNs are valid, the record's ISBN validation_status will be 'valid'
     # - if *any* ISBN is invalid, the record's ISBN validation_status will be 'invalid'
     # - etc.
-    for field in field_events.values():
-        if not stats.get(field.id_type):
-            stats[field.id_type] = {}
 
-        if stats[field.id_type].get('validation_status', '') != 'invalid':
-            stats[field.id_type]['validation_status'] = field.validation_status
+    for id_type in field_events.values():
+        for field in id_type.values():
+            if not stats.get(field.id_type):
+                stats[field.id_type] = {'events': []}
 
-        current_enrichment_status = stats[field.id_type].get('enrichment_status', '')
-        if current_enrichment_status != 'unsuccessful':
-            if not (current_enrichment_status == 'enriched' and field.enrichment_status == 'unchanged'):
-                stats[field.id_type]['enrichment_status'] = field.enrichment_status
+            if stats[field.id_type].get('validation_status', '') != 'invalid':
+                stats[field.id_type]['validation_status'] = field.validation_status
 
-        if stats[field.id_type].get('normalization_status', '') != 'normalized':
-            stats[field.id_type]['normalization_status'] = field.normalization_status
+            current_enrichment_status = stats[field.id_type].get('enrichment_status', '')
+            if current_enrichment_status != 'unsuccessful':
+                if not (current_enrichment_status == 'enriched' and field.enrichment_status == 'unchanged'):
+                    stats[field.id_type]['enrichment_status'] = field.enrichment_status
 
+            if stats[field.id_type].get('normalization_status', '') != 'normalized':
+                stats[field.id_type]['normalization_status'] = field.normalization_status
+
+            stats[field.id_type]['events'].extend(field.events)
     return stats
 
 
 def validate_stuff(field_events, session, harvest_cache):
-    for field in field_events.values():
-        if field.validation_status != 'valid':
-            if field.id_type == 'ISBN':
-                validate_isbn(field)
-            if field.id_type == 'ISI':
-                validate_isi(field)
-            if field.id_type == 'ORCID':
-                validate_orcid(field)
-            if field.id_type == 'ISSN':
-                validate_issn(field, session, harvest_cache)
-            if field.id_type == 'DOI':
-                validate_doi(field, session, harvest_cache)
-            if field.id_type == 'URI':
-                validate_uri(field)
-            if field.id_type == 'publication_year':
-                validate_date_time(field)
-            if field.id_type == 'creator_count':
-                validate_creator_count(field)
-            if field.id_type == 'UKA':
-                validate_uka(field)
-            if field.id_type == 'free_text':
-                field.validation_status = 'valid'  # formerly "AcceptingValidator"
+    for id_type in field_events.values():
+        for field in id_type.values():
+            if field.validation_status != 'valid':
+                if field.id_type == 'ISBN':
+                    validate_isbn(field)
+                if field.id_type == 'ISI':
+                    validate_isi(field)
+                if field.id_type == 'ORCID':
+                    validate_orcid(field)
+                if field.id_type == 'ISSN':
+                    validate_issn(field, session, harvest_cache)
+                if field.id_type == 'DOI':
+                    validate_doi(field, session, harvest_cache)
+                if field.id_type == 'URI':
+                    validate_uri(field)
+                if field.id_type == 'publication_year':
+                    validate_date_time(field)
+                if field.id_type == 'creator_count':
+                    validate_creator_count(field)
+                if field.id_type == 'UKA':
+                    validate_uka(field)
+                if field.id_type == 'free_text':
+                    field.validation_status = 'valid'  # formerly "AcceptingValidator"
 
 
 def enrich_stuff(body, field_events):
-    for field in field_events.values():
-        if field.validation_status != 'valid':
-            if field.id_type == 'ISBN':
-                recover_isbn(body, field)
-            if field.id_type == 'ISI':
-                recover_isi(body, field)
-            if field.id_type == 'ORCID':
-                recover_orcid(body, field)
-            if field.id_type == 'ISSN':
-                recover_issn(body, field)
-            if field.id_type == 'DOI':
-                recover_doi(body, field)
-            if field.id_type == 'publication_year':
-                recover_unicode(body, field)
-            if field.id_type == 'creator_count':
-                recover_unicode(body, field)
+    for id_type in field_events.values():
+        for field in id_type.values():
+            if field.validation_status != 'valid':
+                if field.id_type == 'ISBN':
+                    recover_isbn(body, field)
+                if field.id_type == 'ISI':
+                    recover_isi(body, field)
+                if field.id_type == 'ORCID':
+                    recover_orcid(body, field)
+                if field.id_type == 'ISSN':
+                    recover_issn(body, field)
+                if field.id_type == 'DOI':
+                    recover_doi(body, field)
+                if field.id_type == 'publication_year':
+                    recover_unicode(body, field)
+                if field.id_type == 'creator_count':
+                    recover_unicode(body, field)
 
 
 def normalize_stuff(body, field_events):
-    for field in field_events.values():
-        # Unlike with validations/enrichments we now only look at *valid* fields
-        if field.validation_status == 'valid':
-            if field.id_type == 'ISBN':
-                normalize_isbn(body, field)
-            if field.id_type == 'ISI':
-                normalize_isi(body, field)
-            if field.id_type == 'ORCID':
-                normalize_orcid(body, field)
-            if field.id_type == 'ISSN':
-                normalize_issn(body, field)
-            if field.id_type == 'DOI':
-                normalize_doi(body, field)
-            if field.id_type == 'free_text':
-                normalize_free_text(body, field)
+    for id_type in field_events.values():
+        for field in id_type.values():
+            # Unlike with validations/enrichments we now only look at *valid* fields
+            if field.validation_status == 'valid':
+                if field.id_type == 'ISBN':
+                    normalize_isbn(body, field)
+                if field.id_type == 'ISI':
+                    normalize_isi(body, field)
+                if field.id_type == 'ORCID':
+                    normalize_orcid(body, field)
+                if field.id_type == 'ISSN':
+                    normalize_issn(body, field)
+                if field.id_type == 'DOI':
+                    normalize_doi(body, field)
+                if field.id_type == 'free_text':
+                    normalize_free_text(body, field)
 
+
+def get_clean_events(field_events):
+    events_only = {}
+    for id_type, paths in field_events.items():
+        if not events_only.get(id_type):
+            events_only[id_type] = {}
+        for path, values in paths.items():
+            if values.events:
+                events_only[id_type][path] = {
+                    'events': values.events,
+                    'normalization_status': values.normalization_status,
+                    'validation_status': values.validation_status,
+                    'enrichment_status': values.enrichment_status
+                }
+    return events_only
 
 def validate(raw_xml, body, harvest_cache):
     if _should_be_rejected(raw_xml, body):
@@ -184,7 +205,9 @@ def validate(raw_xml, body, harvest_cache):
         matches = itertools.chain.from_iterable(jp.find(body) for jp in jpath)
         for match in matches:
             if match.value:
-                field_events[str(match.full_path)] = FieldMeta(str(match.full_path), id_type, match.value)
+                if not field_events.get(id_type):
+                    field_events[id_type] = {}
+                field_events[id_type][str(match.full_path)] = FieldMeta(str(match.full_path), id_type, match.value)
 
     validate_stuff(field_events, session, harvest_cache)
     enrich_stuff(body, field_events)
@@ -193,5 +216,6 @@ def validate(raw_xml, body, harvest_cache):
     normalize_stuff(body, field_events)
 
     record_info = get_record_info(field_events)
+    events_only = get_clean_events(field_events)
 
-    return True, field_events, record_info
+    return True, events_only, record_info

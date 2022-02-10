@@ -58,30 +58,9 @@ def clean_and_init_storage():
     """)
 
     cursor.execute("""
-    CREATE TABLE converted_field_events (
-        converted_id INTEGER,
-        field TEXT,
-        path TEXT,
-        initial_value TEXT,
-        value TEXT,
-        validation_status TEXT,
-        enrichment_status TEXT,
-        normalization_status TEXT,
-        events TEXT,
-        FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
-    );
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_converted_field_events_converted_id ON converted_field_events(converted_id);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_converted_field_events_field ON converted_field_events(field);
-    """)
-
-    cursor.execute("""
     CREATE TABLE converted_record_info (
         converted_id INTEGER,
-        field TEXT,
+        field_name TEXT,
         validation_status TEXT,
         enrichment_status TEXT,
         normalization_status TEXT,
@@ -89,10 +68,19 @@ def clean_and_init_storage():
     );
     """)
     cursor.execute("""
-    CREATE INDEX idx_converted_record_info_converted_id ON converted_field_events(converted_id);
+    CREATE INDEX idx_converted_record_info_converted_id ON converted_record_info(converted_id);
     """)
     cursor.execute("""
-    CREATE INDEX idx_converted_record_info_field ON converted_field_events(field);
+    CREATE INDEX idx_converted_record_info_field_name ON converted_record_info(field_name);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_record_info_validation_status ON converted_record_info(validation_status);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_record_info_enrichment_status ON converted_record_info(enrichment_status);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_record_info_normalization_status ON converted_record_info(normalization_status);
     """)
 
     # After conversion, validation and normalization each publication is stored in this
@@ -109,6 +97,7 @@ def clean_and_init_storage():
         ssif_1 INTEGER, -- SSIF 1-level classification (1-6)
         classification_level TEXT, -- e.g. "https://id.kb.se/term/swepub/swedishlist/peer-reviewed". TOOD: store as int?
         is_swedishlist INTEGER, -- whether doc is peer-reviewed (see above) or not. Merge classification_level and is_swedishlist?
+        events TEXT,
         FOREIGN KEY (original_id) REFERENCES original(id) ON DELETE CASCADE
     );
     """)
@@ -373,7 +362,7 @@ def clean_and_init_storage():
 
     cursor.execute("""
     CREATE TABLE stats_field_events (
-        field TEXT,
+        field_name TEXT,
         source TEXT,
         date INT,
         v_valid INT DEFAULT 0,
@@ -383,7 +372,7 @@ def clean_and_init_storage():
         e_unsuccessful INT DEFAULT 0,
         n_unchanged INT DEFAULT 0,
         n_normalized INT DEFAULT 0,
-        PRIMARY KEY (field, source, date)
+        PRIMARY KEY (field_name, source, date)
     );
     """)
 
@@ -399,6 +388,8 @@ def open_existing_storage():
 def store_original_and_converted(original, converted, source, accepted, audit_events, field_events, record_info, connection, incremental):
     cursor = connection.cursor()
     doc = BibframeSource(converted)
+
+    converted_events = {'audit_events': audit_events, 'field_events': field_events}
 
     #print(f'Inserting with oai_id {converted["@id"]} : \n\n{json.dumps(converted)}\n\n')
 
@@ -416,7 +407,7 @@ def store_original_and_converted(original, converted, source, accepted, audit_ev
         return None
 
     converted_rowid = cursor.execute("""
-    INSERT INTO converted(data, original_id, oai_id, date, source, is_open_access, ssif_1, classification_level, is_swedishlist) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);
+    INSERT INTO converted(data, original_id, oai_id, date, source, is_open_access, ssif_1, classification_level, is_swedishlist, events) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
     """, (
         json.dumps(converted),
         original_rowid,
@@ -425,52 +416,37 @@ def store_original_and_converted(original, converted, source, accepted, audit_ev
         doc.source_org_master,
         doc.open_access,
         doc.ssif_1,
-        str(doc.level),
-        doc.is_swedishlist
+        (str(doc.level) if doc.level else None),
+        doc.is_swedishlist,
+        json.dumps(converted_events, default=lambda o: o.__dict__) #, default=lambda o: o.__dict__)
     )).lastrowid
-
-    for field in field_events.values():
-        cursor.execute("""
-        INSERT INTO converted_field_events(
-            converted_id, field, path, initial_value, value, validation_status, enrichment_status, normalization_status, events
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            converted_rowid,
-            field.id_type,
-            field.path,
-            field.initial_value,
-            field.value,
-            field.validation_status,
-            field.enrichment_status,
-            field.normalization_status,
-            json.dumps(field.events)
-        ))
 
     for field, value in record_info.items():
         cursor.execute("""
         INSERT INTO converted_record_info(
-            converted_id, field, validation_status, enrichment_status, normalization_status
+            converted_id, field_name, validation_status, enrichment_status, normalization_status
         ) VALUES (?, ?, ?, ?, ?)
         """, (
             converted_rowid,
             field,
             value['validation_status'],
             value['enrichment_status'],
-            value['normalization_status']
+            value['normalization_status'],
         ))
 
-    for event in audit_events:
-        cursor.execute("""
-        INSERT INTO converted_audit_events(converted_id, code, initial_value, result, name, step, value) VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (
-            converted_rowid,
-            event["code"],
-            event["initial_value"],
-            event["result"],
-            event["name"],
-            event["step"],
-            event["value"],
-        ))
+    for name, events in audit_events.items():
+        for event in events:
+            cursor.execute("""
+            INSERT INTO converted_audit_events(converted_id, code, initial_value, result, name, step, value) VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (
+                converted_rowid,
+                event.get("code", None),
+                event.get("initial_value", None),
+                event.get("result", None),
+                name,
+                event.get("step", None),
+                event.get("value", None)
+            ))
 
     identifiers = []
     for title in converted["instanceOf"]["hasTitle"]:

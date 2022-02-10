@@ -111,7 +111,7 @@ class AuditEvents:
 
     def __init__(self, data=None):
         if data is None:
-            data = []
+            data = {}
         self._audit_events = data
 
     @property
@@ -121,19 +121,19 @@ class AuditEvents:
 
     def add_event(self, name, step, result, code=None, initial_value=None, value=None):
         """Add an audit event."""
-        # if name not in self._audit_events:
-        #     self._audit_events[name] = []
-        # audit_event = {'step': step, 'result': result}
-        # if code:
-        #     audit_event['code'] = code
-        # if initial_value:
-        #     audit_event['initial_value'] = initial_value
-        # if value:
-        #     audit_event['value'] = value
-        # self._audit_events[name].append(audit_event)
-        self._audit_events.append(make_audit_event(
-            name=name, type="audit", code=code, step=step, result=result, initial_value=initial_value
-        ))
+        if name not in self._audit_events:
+            self._audit_events[name] = []
+        audit_event = {'step': step, 'result': result}
+        if code:
+            audit_event['code'] = code
+        if initial_value:
+            audit_event['initial_value'] = initial_value
+        if value:
+            audit_event['value'] = value
+        self._audit_events[name].append(audit_event)
+        #self._audit_events.append(make_audit_event(
+        #    name=name, type="audit", code=code, step=step, result=result, initial_value=initial_value
+        #))
 
     def get_event_result(self, name, step_name):
         """Get result for specific audit step or None if not found."""
