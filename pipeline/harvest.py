@@ -230,28 +230,29 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental, added_con
             # If we're doing incremental updating: Check if the source uses <deletedRecord>persistent</deletedRecord>.
             # If it does not, we need to "ListIdentifiers" all of their records to figure out if any were deleted.
             if incremental:
-                all_source_ids = _get_source_ids(set)
-                obsolete_ids = []
-                with get_connection() as connection:
-                    cursor = connection.cursor()
-                    for original_id_row in cursor.execute("""
-                    SELECT
-                        oai_id
-                    FROM
-                        original
-                    WHERE
-                        source = ?;
-                    """, (source["code"],)):
-                        existing_oai_id = original_id_row[0]
-                        if existing_oai_id not in all_source_ids:
-                            obsolete_ids.append(existing_oai_id)
+                if not _get_has_persistent_deletes(set):
+                    all_source_ids = _get_source_ids(set)
+                    obsolete_ids = []
+                    with get_connection() as connection:
+                        cursor = connection.cursor()
+                        for original_id_row in cursor.execute("""
+                        SELECT
+                            oai_id
+                        FROM
+                            original
+                        WHERE
+                            source = ?;
+                        """, (source["code"],)):
+                            existing_oai_id = original_id_row[0]
+                            if existing_oai_id not in all_source_ids:
+                                obsolete_ids.append(existing_oai_id)
 
-                    cursor.execute(f"""
-                    DELETE FROM
-                        original
-                    WHERE oai_id IN ({','.join('?'*len(obsolete_ids))});
-                    """, (obsolete_ids,))
-                    log.info(f"Deleted {len(obsolete_ids)} obsolete records from {source['code']}, after checking their ID-list.")
+                        cursor.execute(f"""
+                        DELETE FROM
+                            original
+                        WHERE oai_id IN ({','.join('?'*len(obsolete_ids))});
+                        """, (obsolete_ids,))
+                        log.info(f"Deleted {len(obsolete_ids)} obsolete records from {source['code']}, after checking their ID-list.")
 
         except HarvestFailed as e:
             log.warn(f'FAILED HARVEST: {source["code"]}')
@@ -291,6 +292,11 @@ def _get_source_ids(source_set):
     for header in headers:
         source_ids.add(header.identifier)
     return source_ids
+
+def _get_has_persistent_deletes(source_set):
+    sickle_client = sickle.Sickle(source_set["url"])
+    identify = sickle_client.Identify()
+    return identify.deletedRecord == "persistent"
 
 
 sources = json.load(open(os.path.dirname(__file__) + '/sources.json'))
