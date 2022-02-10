@@ -1,12 +1,9 @@
-from pathlib import Path
 from autoclassify import auto_classify
 from merge import merge
 import re
 import sickle
 from modsstylesheet import ModsStylesheet
-import hashlib
 import requests
-from uuid import uuid1
 from convert import convert
 from deduplicate import deduplicate
 import time
@@ -18,6 +15,7 @@ from stats import generate_processing_stats
 import logging
 import swepublog
 from datetime import datetime, timezone
+import xml.etree.ElementTree as ET
 
 from sickle.oaiexceptions import (
     BadArgument, BadVerb, BadResumptionToken,
@@ -92,22 +90,23 @@ class RecordIterator:
         self.records = sickle_client.ListRecords(**list_record_params)
 
     def _get_next_record(self):
-        transformed_record = self.stylesheet.apply(next(self.records).raw)
-        return Record(transformed_record)
+        record = next(self.records)
+        #print(f"next record: {record.header.identifier}") # status="deleted"
+        root = ET.fromstring(record.header.raw)
+        deleted = "status" in root.attrib and root.attrib["status"] == "deleted"
+        transformed_record = self.stylesheet.apply(record.raw)
+        return Record(record.header.identifier, deleted, transformed_record)
 
 
 class Record:
 
-    def __init__(self, xml=''):
+    def __init__(self, oai_id, deleted, xml=''):
         self.xml = xml
-        self.harvest_item_id = str(uuid1())
-        self.hash = self._get_hash()
+        self.deleted = deleted
+        self.oai_id = oai_id
 
     def is_successful(self):
         return bool(self.xml)
-
-    def _get_hash(self):
-        return str(hashlib.md5(self.xml.encode()).hexdigest())
 
 
 class Source:
@@ -185,7 +184,7 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental, added_con
             
             for record in record_iterator:
                 if record.is_successful():
-                    batch.append(record.xml)
+                    batch.append(record)
                     record_count_since_report += 1
                     # if record_count_since_report == 200:
                     #     record_count_since_report = 0
@@ -235,7 +234,8 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental, added_con
 
 def threaded_handle_harvested(batch, source, lock, harvest_cache, incremental, added_converted_rowids):
     converted_rowids = []
-    for xml in batch:
+    for record in batch:
+        xml = record.xml
         converted = convert(xml)
         (accepted, field_events, record_info) = validate(xml, converted, harvest_cache)
         (audited, audit_events) = audit(converted)
@@ -243,7 +243,7 @@ def threaded_handle_harvested(batch, source, lock, harvest_cache, incremental, a
         lock.acquire()
         try:
             with get_connection() as connection:
-                converted_rowid = store_original_and_converted(xml, audited.data, source, accepted, audit_events.data, field_events, record_info, connection, incremental)
+                converted_rowid = store_original_and_converted(record.oai_id, record.deleted, xml, audited.data, source, accepted, audit_events.data, field_events, record_info, connection, incremental)
                 if converted_rowid:
                     converted_rowids.append(converted_rowid)
         finally:
