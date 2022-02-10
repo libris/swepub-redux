@@ -396,20 +396,23 @@ def open_existing_storage():
     cursor.execute("PRAGMA synchronous=OFF;")
     cursor.execute("PRAGMA foreign_keys=ON;")
 
-def store_original_and_converted(original, converted, source, accepted, audit_events, field_events, record_info, connection, incremental):
+def store_original_and_converted(oai_id, deleted, original, converted, source, accepted, audit_events, field_events, record_info, connection, incremental):
     cursor = connection.cursor()
     doc = BibframeSource(converted)
 
-    #print(f'Inserting with oai_id {converted["@id"]} : \n\n{json.dumps(converted)}\n\n')
+    #print(f'Inserting with oai_id {oai_id}')
 
     if incremental:
         cursor.execute("""
         DELETE FROM original WHERE oai_id = ?;
-        """, (converted["@id"],))
+        """, (oai_id,))
+    
+    if deleted:
+        return None
 
     original_rowid = cursor.execute("""
     INSERT INTO original(source, data, accepted, oai_id) VALUES(?, ?, ?, ?);
-    """, (source, original, accepted, converted["@id"])).lastrowid
+    """, (source, original, accepted, oai_id)).lastrowid
 
     if not accepted:
         connection.commit()
