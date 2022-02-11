@@ -9,7 +9,6 @@ from auditors.creatorcount import CreatorCountAuditor
 from auditors.uka import UKAAuditor
 from auditors.contributor import ContributorAuditor
 from auditors.issn import ISSNAuditor
-from auditors.autoclassifier import AutoClassifier
 from auditors.subjects import SubjectsAuditor
 from util import make_audit_event
 
@@ -19,7 +18,6 @@ AUDITORS = [
     ContributorAuditor(),
     UKAAuditor(),
     ISSNAuditor(),
-    #AutoClassifier(),
     SubjectsAuditor(),
 ]
 

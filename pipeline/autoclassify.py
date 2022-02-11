@@ -133,9 +133,21 @@ def _find_and_add_subjects():
                     rowid = f.readline()
                     if not rowid:
                         continue
-                    jsontext = f.readline()
+                    jsontext = f.readline().rstrip()
 
                     #print(f"About to write at id: {rowid}, data:\n{jsontext}")
+
+                    cursor.execute("""
+                    SELECT
+                        data
+                    FROM
+                        converted
+                    WHERE
+                        id = ? ;
+                    """, (rowid,) )
+                    old_converted = cursor.fetchall()[0][0]
+                    old_publication = Publication(json.loads(old_converted))
+
                     
                     cursor.execute("""
                     UPDATE
@@ -144,8 +156,46 @@ def _find_and_add_subjects():
                         data = ?
                     WHERE
                         id = ? ;
-                    """, (jsontext.rstrip(), rowid) )
+                    """, (jsontext, rowid) )
+
+                    publication = Publication(json.loads(jsontext))
+                    code = "autoclassified"
+                    initial_value = old_publication.uka_swe_classification_list
+                    value = publication.uka_swe_classification_list
+                    step = "Autoclassifying publication"
+                    result = "1"
+
+                    cursor.execute("""
+                    INSERT INTO converted_audit_events
+                        (converted_id, name, step, code, result, initial_value, value)
+                    VALUES
+                        (?, ?, ?, ?, ?, ?, ?);
+                    """, (rowid, "AutoclassifierAuditor", step, code, result, json.dumps(initial_value), json.dumps(value)) )
                 connection.commit()
+
+        # # Add "did nothing"-events (ffs..) for every publication that was not affected by autoclassification
+        # cursor.execute("""
+        # SELECT id FROM converted WHERE id NOT IN
+        # (
+        #     SELECT
+        #         converted_id
+        #     FROM
+        #         converted_audit_events
+        #     WHERE
+        #         name = 'AutoclassifierAuditor'
+        # );
+        # """)
+        # rows = cursor.fetchall()
+
+        # for row in rows:
+        #     rowid = row[0]
+        #     cursor.execute("""
+        #     INSERT INTO converted_audit_events
+        #         (converted_id, name, step, code, result, initial_value, value)
+        #     VALUES
+        #         (?, ?, ?, ?, ?, ?, ?);
+        #     """, (rowid, "AutoclassifierAuditor", None, None, "0", None, None) )
+        # connection.commit()
         
 
 def _conc_find_subjects(converted_rows, temp_dir, file_sequence_number):
@@ -165,12 +215,6 @@ def _conc_find_subjects(converted_rows, temp_dir, file_sequence_number):
                     output.write("\n")
                     output.write(json.dumps(new_data))
                     output.write("\n")
-
-                    #code = "autoclassified"
-                    #value = publication.uka_swe_classification_list
-                    #logger.info(
-                        #f"Autoclassifying publication {publication.id}", extra={'auditor': self.name})
-                    #new_audit_events = self._add_audit_event(audit_events, result, code, initial_value, value)
 
 def find_subjects_for(converted_rowid, converted, cursor):
     level = 3
