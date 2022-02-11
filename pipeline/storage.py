@@ -6,15 +6,17 @@ from bibframesource import BibframeSource
 
 sqlite_path = "./swepub.sqlite3"
 
+def _set_pragmas(cursor):
+    cursor.execute("PRAGMA journal_mode=WAL;")
+    cursor.execute("PRAGMA synchronous=OFF;")
+    cursor.execute("PRAGMA foreign_keys=ON;")
+
 def clean_and_init_storage():
     if os.path.exists(sqlite_path):
         os.remove(sqlite_path)
     connection = sqlite3.connect(sqlite_path)
     cursor = connection.cursor()
-
-    cursor.execute("PRAGMA journal_mode=WAL;")
-    cursor.execute("PRAGMA synchronous=OFF;")
-    cursor.execute("PRAGMA foreign_keys=ON;")
+    _set_pragmas(cursor)
 
     # To allow incremental updates, we must know the last successful (start of-) harvest time
     # for each source
@@ -381,9 +383,7 @@ def clean_and_init_storage():
 def open_existing_storage():
     connection = sqlite3.connect(sqlite_path)
     cursor = connection.cursor()
-    cursor.execute("PRAGMA journal_mode=WAL;")
-    cursor.execute("PRAGMA synchronous=OFF;")
-    cursor.execute("PRAGMA foreign_keys=ON;")
+    _set_pragmas(cursor)
 
 def store_original_and_converted(oai_id, deleted, original, converted, source, accepted, audit_events, field_events, record_info, connection, incremental):
     cursor = connection.cursor()
