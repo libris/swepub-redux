@@ -23,9 +23,14 @@ def _generate_occurrence_table():
             converted;
         """):
             converted = json.loads(converted_row[0])
+            publication = Publication(converted)
+            strings_to_scan = []
             for summary in converted.get("instanceOf", {}).get("summary", []):
-                abstract = summary.get("label", "")
-                words = re.findall(r'\w+', abstract)
+                strings_to_scan.append(summary.get("label", ""))
+            strings_to_scan += publication.keywords
+            
+            for string in strings_to_scan:
+                words = re.findall(r'\w+', string)
                 for word in words:
                     if word.isnumeric():
                         continue
@@ -53,34 +58,38 @@ def _select_rarest_words():
         """):
             converted_rowid = converted_row[0]
             converted = json.loads(converted_row[1])
+            publication = Publication(converted)
+            strings_to_scan = []
             for summary in converted.get("instanceOf", {}).get("summary", []):
-                abstract = summary.get("label", "")
-
-                words = re.findall(r'\w+', abstract)
-                words_set = set()
+                strings_to_scan.append(summary.get("label", ""))
+            strings_to_scan += publication.keywords
+            
+            words_set = set()
+            for string in strings_to_scan:
+                words = re.findall(r'\w+', string)
                 for word in words:
                     if word.isnumeric():
                         continue
                     words_set.add(word.lower())
-                words = list(words_set)[0:150]
+            words = list(words_set)[0:150]
 
-                for total_count_row in second_cursor.execute(f"""
-                SELECT
-                    word
-                FROM
-                    abstract_total_word_counts
-                WHERE
-                    word IN ({','.join('?'*len(words))})
-                ORDER BY
-                    occurrences ASC
-                LIMIT
-                    6;
-                """, words):
-                    rare_word = total_count_row[0]
-                    #print(f"Writing rare word {rare_word} for id: {finalized_rowid}")
-                    third_cursor.execute("""
-                    INSERT INTO abstract_rarest_words(word, converted_id) VALUES(?, ?);
-                    """, (rare_word, converted_rowid))
+            for total_count_row in second_cursor.execute(f"""
+            SELECT
+                word
+            FROM
+                abstract_total_word_counts
+            WHERE
+                word IN ({','.join('?'*len(words))})
+            ORDER BY
+                occurrences ASC
+            LIMIT
+                6;
+            """, words):
+                rare_word = total_count_row[0]
+                #print(f"Writing rare word {rare_word} for id: {converted_rowid}")
+                third_cursor.execute("""
+                INSERT INTO abstract_rarest_words(word, converted_id) VALUES(?, ?);
+                """, (rare_word, converted_rowid))
             connection.commit()
 
 def _find_and_add_subjects():
@@ -280,10 +289,16 @@ def find_subjects_for(converted_rowid, converted, cursor):
                 if lang in item:
                     classifications.append(item[lang])
         
-        #initial_value = publication.uka_swe_classification_list
         publication.add_subjects(classifications)
 
-        #print(f"added subjects {classifications} into publication: {converted_rowid}")
+        # print(f"Into publication: {converted_rowid}")
+        # for summary in converted.get("instanceOf", {}).get("summary", []):
+        #     print(f"  with summary:\"{summary}\"")
+        # for keyword in publication.keywords:
+        #     print(f"  with keyword:\"{keyword}\"")
+        # for classification in classifications:
+        #     print(f"  added subject: {classification['prefLabel']}")
+        # print("\n")
 
     return len(subjects) > 0, publication.data
 
