@@ -253,7 +253,7 @@ def datastatus():
         total_docs = cur.execute(f"SELECT COUNT(*) AS total_docs FROM converted WHERE date >= ? AND date <= ?", date_params).fetchone()["total_docs"]
         oa = cur.execute("SELECT COUNT(*) AS oa FROM converted WHERE is_open_access = 1 AND date >= ? AND date <= ?", date_params).fetchone()["oa"]
         ssif = cur.execute("SELECT COUNT(*) AS ssif from converted WHERE classification_level > 0 AND date >= ? AND date <= ?", date_params).fetchone()["ssif"]
-        swedish_list = cur.execute("SELECT COUNT(*) AS swedishlist from converted WHERE is_swedishlist = 1 AND date >= ? AND date <= ?", date_params).fetchone()[
+        swedish_list = cur.execute("SELECT COUNT(*) AS swedishlist from converted WHERE classification_level = 1 AND date >= ? AND date <= ?", date_params).fetchone()[
             "swedishlist"]
         total_per_source_sql = "SELECT source, count(*) AS total FROM converted WHERE date >= ? AND date <= ? GROUP BY source"
         total_per_source_params = date_params
@@ -261,7 +261,7 @@ def datastatus():
         total_docs = cur.execute(f"SELECT COUNT(*) AS total_docs FROM converted").fetchone()["total_docs"]
         oa = cur.execute("SELECT COUNT(*) AS oa FROM converted WHERE is_open_access = 1").fetchone()["oa"]
         ssif = cur.execute("SELECT COUNT(*) AS ssif from converted WHERE classification_level > 0").fetchone()["ssif"]
-        swedish_list = cur.execute("SELECT COUNT(*) AS swedishlist from converted WHERE is_swedishlist = 1").fetchone()[
+        swedish_list = cur.execute("SELECT COUNT(*) AS swedishlist from converted WHERE classification_level = 1").fetchone()[
             "swedishlist"]
         total_per_source_sql = "SELECT source, count(*) AS total FROM converted GROUP BY source"
         total_per_source_params = []
@@ -339,7 +339,7 @@ def info_sources():
     codes = cur.execute("SELECT DISTINCT value FROM search_org").fetchall()
     sources = []
     for code in codes:
-        sources.append({'name': INFO_API_SOURCE_ORG_MAPPING[code], 'code': code})
+        sources.append({'name': INFO_API_SOURCE_ORG_MAPPING[code]['name'], 'code': code})
     return {'sources': sources}
 
 
