@@ -95,8 +95,7 @@ def clean_and_init_storage():
         source TEXT, -- source code, e.g. "kth", "ltu"
         is_open_access INTEGER,
         ssif_1 INTEGER, -- SSIF 1-level classification (1-6)
-        classification_level TEXT, -- e.g. "https://id.kb.se/term/swepub/swedishlist/peer-reviewed". TOOD: store as int?
-        is_swedishlist INTEGER, -- whether doc is peer-reviewed (see above) or not. Merge classification_level and is_swedishlist?
+        classification_level INT, -- 0 = https://id.kb.se/term/swepub/swedishlist/non-peer-reviewed, 1 = peer-reviewed (1 also means "is_swedishlist")
         events TEXT,
         FOREIGN KEY (original_id) REFERENCES original(id) ON DELETE CASCADE
     );
@@ -118,9 +117,6 @@ def clean_and_init_storage():
     """)
     cursor.execute("""
     CREATE INDEX idx_converted_classification_level ON converted(classification_level);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_converted_is_swedishlist ON converted(is_swedishlist);
     """)
 
     # To facilitate deduplication, store all of each publications ids (regardless of type)
@@ -407,7 +403,7 @@ def store_original_and_converted(original, converted, source, accepted, audit_ev
         return None
 
     converted_rowid = cursor.execute("""
-    INSERT INTO converted(data, original_id, oai_id, date, source, is_open_access, ssif_1, classification_level, is_swedishlist, events) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    INSERT INTO converted(data, original_id, oai_id, date, source, is_open_access, ssif_1, classification_level, events) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);
     """, (
         json.dumps(converted),
         original_rowid,
@@ -416,8 +412,7 @@ def store_original_and_converted(original, converted, source, accepted, audit_ev
         doc.source_org_master,
         doc.open_access,
         doc.ssif_1,
-        (str(doc.level) if doc.level else None),
-        doc.is_swedishlist,
+        doc.level,
         json.dumps(converted_events, default=lambda o: o.__dict__) #, default=lambda o: o.__dict__)
     )).lastrowid
 

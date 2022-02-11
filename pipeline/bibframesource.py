@@ -717,10 +717,12 @@ class BibframeSource:
         for gform in self._bibframe_master['instanceOf']['genreForm']:
             # Peer-reviewed always trumps non-peer-reviewed
             if '@id' in gform and gform['@id'] == Level.PEERREVIEWED.value:
-                return Level.PEERREVIEWED
+                #return Level.PEERREVIEWED
+                return 1
 
             if '@id' in gform and gform['@id'] == Level.NONPEERREVIEWED.value:
-                return Level.NONPEERREVIEWED
+                #return Level.NONPEERREVIEWED
+                return 0
         return None
 
     @property
