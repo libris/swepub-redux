@@ -231,6 +231,7 @@ def clean_and_init_storage():
         content_marking TEXT,
         publication_status TEXT,
         swedish_list INTEGER,
+        open_access INTEGER,
         FOREIGN KEY (finalized_id) REFERENCES finalized(id) ON DELETE CASCADE
     );
     """)
@@ -248,6 +249,9 @@ def clean_and_init_storage():
     """)
     cursor.execute("""
     CREATE INDEX idx_search_single_swedish_list ON search_single(swedish_list);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_search_single_open_access ON search_single(open_access);
     """)
 
     cursor.execute("""
