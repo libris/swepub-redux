@@ -343,7 +343,7 @@ def clean_and_init_storage():
 
     cursor.execute("""
     CREATE VIRTUAL TABLE search_fulltext USING FTS5 (
-        finalized_id UNINDEXED,
+        finalized_id,
         title,
         keywords
     );
