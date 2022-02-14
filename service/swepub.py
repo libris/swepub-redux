@@ -6,8 +6,6 @@ from utils import bibliometrics
 from utils.common import *
 from utils.process import *
 
-import enum
-from collections.abc import Iterable
 from datetime import datetime
 from pathlib import Path
 import sqlite3
@@ -41,42 +39,6 @@ def get_db():
     if db is None:
         db = g._database = sqlite3.connect(DATABASE)
     return db
-
-
-# https://stackoverflow.com/a/3300514
-def dict_factory(cursor, row):
-    d = {}
-    for idx, col in enumerate(cursor.description):
-        d[col[0]] = row[idx]
-    return d
-
-
-def flatten(l):
-    for el in l:
-        if isinstance(el, Iterable) and not isinstance(el, (str, bytes)):
-            yield from flatten(el)
-        else:
-            yield el
-
-
-def get_percentage(count, total):
-    if total > 0:
-        percentage = round(count / total * 100, 2)
-    else:
-        percentage = 0.0
-    return percentage
-
-
-def _error(errors, status_code=400):
-    resp = {
-        'errors': errors,
-        'status_code': status_code
-    }
-    return jsonify(resp), status_code
-
-
-class Comparator(enum.Enum):
-    match = " MATCH "
 
 
 @app.teardown_appcontext
@@ -195,10 +157,8 @@ def bibliometrics_api():
     print(list(flatten(values)))
 
     cur = get_db().cursor()
-    #cur.row_factory = lambda cursor, row: row[0]
     cur.row_factory = dict_factory
     total = cur.execute(str(q_total), list(flatten(values))).fetchone()
-    print(total)
 
     rows = cur.execute(str(q), list(flatten(values))).fetchall()
 
@@ -343,7 +303,6 @@ def info_sources():
     return {'sources': sources}
 
 
-
 @app.route("/api/v1/process/publications/<path:record_id>", methods=['GET'])
 def process_get_publication(record_id=None):
     if record_id is None:
@@ -369,12 +328,10 @@ def process_get_original_publication(record_id=None):
     return Response(row[0], mimetype='application/xml; charset=utf-8')
 
 
-
 # TODO?
 @app.route("/api/v1/process/<harvest_id>/rejected")
 def process_get_rejected_publications(harvest_id):
     return {}
-
 
 
 @app.route('/api/v1/process/<source>', methods=['GET'])

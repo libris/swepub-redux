@@ -1,3 +1,42 @@
+from collections.abc import Iterable
+from enum import Enum
+
+# https://stackoverflow.com/a/3300514
+def dict_factory(cursor, row):
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
+
+
+def flatten(l):
+    for el in l:
+        if isinstance(el, Iterable) and not isinstance(el, (str, bytes)):
+            yield from flatten(el)
+        else:
+            yield el
+
+
+def get_percentage(count, total):
+    if total > 0:
+        percentage = round(count / total * 100, 2)
+    else:
+        percentage = 0.0
+    return percentage
+
+
+def _error(errors, status_code=400):
+    resp = {
+        'errors': errors,
+        'status_code': status_code
+    }
+    return jsonify(resp), status_code
+
+
+class Comparator(Enum):
+    match = " MATCH "
+
+
 def parse_dates(from_date, to_date):
     if from_date == '':
         from_date = None
