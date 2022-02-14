@@ -58,15 +58,15 @@ PATHS = {
 PRECOMPILED_PATHS = {k: [parse(p) for p in v] for k, v in PATHS.items()}
 
 
-def _should_be_rejected(raw_xml, body):
+def should_be_rejected(raw_xml):
     error_list = []
     parsed_xml = et.parse(StringIO(raw_xml))
     errors = MINIMUM_LEVEL_FILTER(parsed_xml)
+    min_level_errors = None
     if errors.getroot() is not None:
         for error in errors.getroot():
             error_list.append(error.text)
-        min_level_errors = {'bibliographical_minimum_level_error': error_list}
-    return bool(error_list)
+    return bool(error_list), error_list
 
 
 class FieldMeta:
@@ -193,10 +193,7 @@ def get_clean_events(field_events):
                 }
     return events_only
 
-def validate(raw_xml, body, harvest_cache):
-    if _should_be_rejected(raw_xml, body):
-        return False, [], []
-
+def validate(body, harvest_cache):
     session = requests.Session()
     field_events = {}
     # For each path, create a FieldMeta object that we'll use during all
@@ -218,4 +215,4 @@ def validate(raw_xml, body, harvest_cache):
     record_info = get_record_info(field_events)
     events_only = get_clean_events(field_events)
 
-    return True, events_only, record_info
+    return events_only, record_info
