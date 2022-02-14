@@ -2,7 +2,7 @@ import json
 import os
 import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 from pipeline.bibframesource import BibframeSource
 
 CREATOR_FIELDS = ["familyName", "givenName", "localId", "localIdBy", "ORCID", "affiliation", "freetext_affiliations"]

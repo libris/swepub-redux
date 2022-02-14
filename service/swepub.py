@@ -2,7 +2,7 @@
 import json
 import os
 
-import bibliometrics
+from utils import bibliometrics
 from utils.common import *
 from utils.process import *
 
