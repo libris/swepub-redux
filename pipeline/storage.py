@@ -356,7 +356,7 @@ def clean_and_init_storage():
         valid INT DEFAULT 0,
         invalid INT DEFAULT 0,
         PRIMARY KEY (source, date, label)
-    );
+    ) WITHOUT ROWID;
     """)
     cursor.execute("""
     CREATE INDEX idx_stats_audit_events_source ON stats_audit_events(source);
@@ -375,7 +375,7 @@ def clean_and_init_storage():
         n_unchanged INT DEFAULT 0,
         n_normalized INT DEFAULT 0,
         PRIMARY KEY (field_name, source, date)
-    );
+    ) WITHOUT ROWID;
     """)
 
     connection.commit()
