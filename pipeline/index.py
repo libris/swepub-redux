@@ -79,7 +79,7 @@ def write_results(result, inner_cursor, connection):
         for subject in meta['subjects']:
             inner_cursor.execute("INSERT INTO search_subject (finalized_id, value) VALUES (?, ?)", (finalized_id, subject))
 
-        inner_cursor.execute("INSERT INTO search_fulltext (rowid, title, keywords) VALUES (?, ?, ?)", (
+        inner_cursor.execute("INSERT INTO search_fulltext (finalized_id, title, keywords) VALUES (?, ?, ?)", (
                     finalized_id,
                     meta['title'],
                     meta['keywords']
