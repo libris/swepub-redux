@@ -290,12 +290,12 @@ def datastatus_ssif_source_api(source=None):
     return result
 
 
-@app.route('/api/v1/validations', methods=['GET'])
+@app.route('/api/v1/datastatus/validations', methods=['GET'])
 def datastatus_validations():
     return datastatus_validations_source(source=None)
 
 
-@app.route('/api/v1/validations/<source>', methods=['GET'])
+@app.route('/api/v1/datastatus/validations/<source>', methods=['GET'])
 def datastatus_validations_source(source=None):
     from_yr = request.args.get("from")
     to_yr = request.args.get("to")
