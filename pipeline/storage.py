@@ -96,7 +96,6 @@ def clean_and_init_storage():
         date INTEGER, -- year
         source TEXT, -- source code, e.g. "kth", "ltu"
         is_open_access INTEGER,
-        ssif_1 INTEGER, -- SSIF 1-level classification (1-6)
         classification_level INT, -- 0 = https://id.kb.se/term/swepub/swedishlist/non-peer-reviewed, 1 = peer-reviewed (1 also means "is_swedishlist")
         events TEXT,
         FOREIGN KEY (original_id) REFERENCES original(id) ON DELETE CASCADE
@@ -115,10 +114,21 @@ def clean_and_init_storage():
     CREATE INDEX idx_converted_is_open_access ON converted(is_open_access);
     """)
     cursor.execute("""
-    CREATE INDEX idx_converted_ssif_1 ON converted(ssif_1);
+    CREATE INDEX idx_converted_classification_level ON converted(classification_level);
+    """)
+
+    cursor.execute("""
+    CREATE TABLE converted_ssif_1 (
+        converted_id INTEGER,
+        value INTEGER,
+        FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
+    );
     """)
     cursor.execute("""
-    CREATE INDEX idx_converted_classification_level ON converted(classification_level);
+    CREATE INDEX idx_converted_ssif_1_converted_id ON converted_ssif_1(converted_id);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_ssif_1_value ON converted_ssif_1(value);
     """)
 
     # To facilitate deduplication, store all of each publications ids (regardless of type)
@@ -411,7 +421,7 @@ def store_original_and_converted(oai_id, deleted, original, converted, source, a
         return None
 
     converted_rowid = cursor.execute("""
-    INSERT INTO converted(data, original_id, oai_id, date, source, is_open_access, ssif_1, classification_level, events) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);
+    INSERT INTO converted(data, original_id, oai_id, date, source, is_open_access, classification_level, events) VALUES(?, ?, ?, ?, ?, ?, ?, ?);
     """, (
         json.dumps(converted),
         original_rowid,
@@ -419,10 +429,14 @@ def store_original_and_converted(oai_id, deleted, original, converted, source, a
         doc.publication_year,
         doc.source_org_master,
         doc.open_access,
-        doc.ssif_1,
         doc.level,
         json.dumps(converted_events, default=lambda o: o.__dict__) #, default=lambda o: o.__dict__)
     )).lastrowid
+
+    for ssif_1 in doc.ssif_1_codes:
+        cursor.execute("""
+        INSERT INTO converted_ssif_1(converted_id, value) VALUES(?, ?)
+        """, (converted_rowid, ssif_1))
 
     for field, value in record_info.items():
         cursor.execute("""

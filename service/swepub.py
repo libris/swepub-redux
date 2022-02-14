@@ -270,8 +270,6 @@ def datastatus_ssif_endpoint():
     return datastatus_ssif_source_api(None)
 
 
-# TODO: A thing can actually have multiple 1-level SSIF classifications (e.g. both 2 and 3 and 5).
-# converted.ssif_1 needs to be turned into a separate table.
 @app.route("/api/v1/datastatus/ssif/<source>")
 def datastatus_ssif_source_api(source=None):
     from_yr = request.args.get("from")
@@ -283,18 +281,26 @@ def datastatus_ssif_source_api(source=None):
     if source and source not in INFO_API_SOURCE_ORG_MAPPING:
         return _error(['Source not found'], status_code=404)
 
-    converted = Table('converted')
+    converted, converted_ssif_1 = Tables('converted', 'converted_ssif_1')
     values = []
     result = {"ssif": {}}
 
     q_total = Query \
         .select(fn.Count('*').as_('total_docs')) \
-        .from_(converted)
+        .from_(converted_ssif_1)
 
     q_ssif = Query \
-        .select(converted.ssif_1, fn.Count('*').as_('total')) \
-        .from_(converted) \
-        .groupby(converted.ssif_1)
+        .select(converted_ssif_1.value.as_('ssif_1'), fn.Count('*').as_('total')) \
+        .from_(converted_ssif_1) \
+        .groupby(converted_ssif_1.value)
+
+    if source or (from_yr and to_yr):
+        q_total = q_total \
+            .left_join(converted) \
+            .on(converted_ssif_1.converted_id == converted.id)
+        q_ssif = q_ssif \
+            .left_join(converted) \
+            .on(converted_ssif_1.converted_id == converted.id)
 
     if source:
         result['source'] = source

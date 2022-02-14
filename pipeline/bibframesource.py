@@ -743,3 +743,15 @@ class BibframeSource:
             if gf.get("@id", "") == 'https://id.kb.se/term/swepub/swedishlist/peer-reviewed':
                 return True
         return False
+
+    @property
+    def ssif_1_codes(self):
+        uka_subject_codes = []
+        for subject in self.bibframe_master.get("instanceOf", {}).get("subject", []):
+            if subject.get("inScheme", {}).get("code", "") == "uka.se" and \
+                    subject.get("@type", "") == "Topic":
+                subject_code = subject.get("code", "").strip()
+                if subject_code:
+                    uka_subject_codes.append(subject_code[0])
+
+        return list(set(uka_subject_codes))
