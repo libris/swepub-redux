@@ -23,7 +23,7 @@ SSIF_LABELS = {
     3: "3 Medicin och hälsovetenskap",
     4: "4 Lantbruksvetenskap och veterinärmedicin",
     5: "5 Samhällsvetenskap",
-    7: "6 Humaniora och konst"
+    6: "6 Humaniora och konst"
 }
 
 INFO_API_MAPPINGS = sort_mappings(json.load(open(os.path.dirname(__file__) + '/../pipeline/ssif_research_subjects.json')))
@@ -210,39 +210,54 @@ def datastatus():
     if errors:
         return _error(errors)
 
-    cur = get_db().cursor()
-    cur.row_factory = dict_factory
+    converted = Table('converted')
+    values = []
     result = {"sources": {}}
+
+    q_total = Query \
+        .select(fn.Count('*').as_('total_docs')) \
+        .from_(converted)
+    q_oa = Query \
+        .select(fn.Count('*').as_('oa')) \
+        .from_(converted) \
+        .where(converted.is_open_access == 1)
+    q_ssif = Query \
+        .select(fn.Count('*').as_('ssif')) \
+        .from_(converted) \
+        .where(converted.ssif_1 > 0)
+    q_swedishlist = Query \
+        .select(fn.Count('*').as_('swedishlist')) \
+        .from_(converted) \
+        .where(converted.classification_level == 1)
+    q_total_per_source = Query \
+        .select(converted.source, fn.Count('*').as_('total')) \
+        .from_(converted) \
+        .groupby(converted.source)
 
     if from_yr and to_yr:
         result.update({"from": from_yr, "to": to_yr})
-        date_params = [from_yr, to_yr]
+        for q in [q_total, q_oa, q_ssif, q_swedishlist, q_total_per_source]:
+            q = q.where((converted.date >= Parameter('?')) & (converted.date <= Parameter('?')))
+            values.append([from_yr, to_yr])
 
-        total_docs = cur.execute(f"SELECT COUNT(*) AS total_docs FROM converted WHERE date >= ? AND date <= ?", date_params).fetchone()["total_docs"]
-        oa = cur.execute("SELECT COUNT(*) AS oa FROM converted WHERE is_open_access = 1 AND date >= ? AND date <= ?", date_params).fetchone()["oa"]
-        ssif = cur.execute("SELECT COUNT(*) AS ssif from converted WHERE classification_level > 0 AND date >= ? AND date <= ?", date_params).fetchone()["ssif"]
-        swedish_list = cur.execute("SELECT COUNT(*) AS swedishlist from converted WHERE classification_level = 1 AND date >= ? AND date <= ?", date_params).fetchone()[
-            "swedishlist"]
-        total_per_source_sql = "SELECT source, count(*) AS total FROM converted WHERE date >= ? AND date <= ? GROUP BY source"
-        total_per_source_params = date_params
-    else:
-        total_docs = cur.execute(f"SELECT COUNT(*) AS total_docs FROM converted").fetchone()["total_docs"]
-        oa = cur.execute("SELECT COUNT(*) AS oa FROM converted WHERE is_open_access = 1").fetchone()["oa"]
-        ssif = cur.execute("SELECT COUNT(*) AS ssif from converted WHERE classification_level > 0").fetchone()["ssif"]
-        swedish_list = cur.execute("SELECT COUNT(*) AS swedishlist from converted WHERE classification_level = 1").fetchone()[
-            "swedishlist"]
-        total_per_source_sql = "SELECT source, count(*) AS total FROM converted GROUP BY source"
-        total_per_source_params = []
+    values = list(flatten(values))
+    cur = get_db().cursor()
+    cur.row_factory = dict_factory
+
+    total_docs = cur.execute(str(q_total), values).fetchone()['total_docs']
+    oa = cur.execute(str(q_oa), values).fetchone()['oa']
+    ssif = cur.execute(str(q_ssif), values).fetchone()['ssif']
+    swedishlist = cur.execute(str(q_swedishlist), values).fetchone()['swedishlist']
 
     result.update({
         "sources": {},
         "total": total_docs,
         "openAccess": {"percentage": get_percentage(oa, total_docs), "total": oa},
         "ssif": {"percentage": get_percentage(ssif, total_docs), "total": ssif},
-        "swedishList": {"percentage": get_percentage(swedish_list, total_docs), "total": swedish_list}
+        "swedishList": {"percentage": get_percentage(swedishlist, total_docs), "total": swedishlist}
     })
 
-    for row in cur.execute(total_per_source_sql, total_per_source_params):
+    for row in cur.execute(str(q_total_per_source), values):
         result["sources"][row["source"]] = {
             "percentage": get_percentage(row["total"], total_docs),
             "total": row["total"]
@@ -255,6 +270,8 @@ def datastatus_ssif_endpoint():
     return datastatus_ssif_source_api(None)
 
 
+# TODO: A thing can actually have multiple 1-level SSIF classifications (e.g. both 2 and 3 and 5).
+# converted.ssif_1 needs to be turned into a separate table.
 @app.route("/api/v1/datastatus/ssif/<source>")
 def datastatus_ssif_source_api(source=None):
     from_yr = request.args.get("from")
@@ -263,30 +280,47 @@ def datastatus_ssif_source_api(source=None):
     if errors:
         return _error(errors)
 
+    if source and source not in INFO_API_SOURCE_ORG_MAPPING:
+        return _error(['Source not found'], status_code=404)
+
+    converted = Table('converted')
+    values = []
+    result = {"ssif": {}}
+
+    q_total = Query \
+        .select(fn.Count('*').as_('total_docs')) \
+        .from_(converted)
+
+    q_ssif = Query \
+        .select(converted.ssif_1, fn.Count('*').as_('total')) \
+        .from_(converted) \
+        .groupby(converted.ssif_1)
+
+    if source:
+        result['source'] = source
+        q_total = q_total.where(converted.source == Parameter('?'))
+        q_ssif = q_ssif.where(converted.source == Parameter('?'))
+        values.append(source)
+
+    if from_yr and to_yr:
+        result.update({"from": from_yr, "to": to_yr})
+        q_total = q_total.where((converted.date >= Parameter('?')) & (converted.date <= Parameter('?')))
+        q_ssif = q_ssif.where((converted.date >= Parameter('?')) & (converted.date <= Parameter('?')))
+        values.append([from_yr, to_yr])
+
+    values = list(flatten(values))
     cur = get_db().cursor()
     cur.row_factory = dict_factory
 
-    result = {"ssif": {}}
-
-    total_sql = "SELECT COUNT(*) AS total_docs from converted"
-    total_params = []
-    classification_sql = "SELECT classification_level, count(*) AS total FROM converted GROUP BY classification_level"
-    classification_params = []
-    if source:
-        result["source"] = source
-        total_sql = "SELECT COUNT(*) AS total_docs FROM converted WHERE source = ?"
-        total_params = [source]
-        classification_sql = "SELECT classification_level, count(*) AS total FROM converted WHERE source = ? GROUP BY classification_level"
-        classification_params = [source]
-
-    result["total"] = cur.execute(total_sql, total_params).fetchone()["total_docs"]
-    for row in cur.execute(classification_sql, classification_params):
-        if (row["classification_level"]):
-            ssif_label = SSIF_LABELS[row["classification_level"]]
-            result["ssif"][ssif_label] = {
-                "total": row["total"],
-                "percentage": get_percentage(row["total"], result["total"])
+    result['total'] = cur.execute(str(q_total), values).fetchone()['total_docs']
+    for row in cur.execute(str(q_ssif), values):
+        if row['ssif_1']:
+            ssif_label = SSIF_LABELS[row['ssif_1']]
+            result['ssif'][ssif_label] = {
+                'total': row['total'],
+                'percentage': get_percentage(row['total'], result['total'])
             }
+
     return result
 
 
@@ -302,6 +336,9 @@ def datastatus_validations_source(source=None):
     errors, from_yr, to_yr = parse_dates(from_yr, to_yr)
     if errors:
         return _error(errors)
+
+    if source and source not in INFO_API_SOURCE_ORG_MAPPING:
+        return _error(['Source not found'], status_code=404)
 
     stats_field_events = Table('stats_field_events')
 
@@ -378,7 +415,6 @@ def process_get_publication(record_id=None):
     return Response(row[0], mimetype='application/ld+json')
 
 
-
 @app.route("/api/v1/process/publications/<path:record_id>/original", methods=['GET'])
 def process_get_original_publication(record_id=None):
     if record_id is None:
@@ -391,12 +427,13 @@ def process_get_original_publication(record_id=None):
     return Response(row[0], mimetype='application/xml; charset=utf-8')
 
 
-# TODO?
+# TODO!
 @app.route("/api/v1/process/<harvest_id>/rejected")
 def process_get_rejected_publications(harvest_id):
     return {}
 
 
+# TODO: from/to
 @app.route('/api/v1/process/<source>', methods=['GET'])
 def process_get_stats(source=None):
     if source is None:
