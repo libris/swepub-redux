@@ -175,7 +175,7 @@ def bibliometrics_api():
             q = q.where(BasicCriterion(Comparator.match, search_fulltext[k], search_fulltext[k].wrap_constant(Parameter('?'))))
             values.append(v)
     if any([title, keywords]):
-        q = q.join(search_fulltext).on(finalized.id == search_fulltext.rowid)
+        q = q.join(search_fulltext).on(finalized.id == search_fulltext.finalized_id)
 
     for param in [(search_doi, doi), (search_genre_form, genre_form), (search_subject, subjects), (search_org, orgs)]:
         if param[1]:
