@@ -25,13 +25,6 @@ def get_percentage(count, total):
     return percentage
 
 
-def _error(errors, status_code=400):
-    resp = {
-        'errors': errors,
-        'status_code': status_code
-    }
-    return jsonify(resp), status_code
-
 
 class Comparator(Enum):
     match = " MATCH "

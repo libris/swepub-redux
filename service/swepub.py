@@ -12,7 +12,7 @@ import sqlite3
 from flask import Flask, g, request, jsonify, Response, stream_with_context, url_for
 from pypika import Query, Tables, Parameter, Table, Criterion
 from pypika.terms import BasicCriterion
-from pypika.functions import Count
+from pypika import functions as fn
 
 # Database in parent directory of swepub.py directory
 DATABASE = str(Path.joinpath(Path(__file__).resolve().parents[1], 'swepub.sqlite3'))
@@ -46,6 +46,14 @@ def close_connection(exception):
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()
+
+
+def _error(errors, status_code=400):
+    resp = {
+        'errors': errors,
+        'status_code': status_code
+    }
+    return jsonify(resp), status_code
 
 
 @app.route("/")
@@ -148,7 +156,7 @@ def bibliometrics_api():
             q = q.join(param[0]).on(finalized.id == param[0].finalized_id)
             values.append(param[1])
 
-    q_total = q.select(Count('*').as_("total"))
+    q_total = q.select(fn.Count('*').as_("total"))
     q = q.select('data')
     if limit:
         q = q.limit(limit)
@@ -279,6 +287,61 @@ def datastatus_ssif_source_api(source=None):
                 "total": row["total"],
                 "percentage": get_percentage(row["total"], result["total"])
             }
+    return result
+
+
+@app.route('/api/v1/validations', methods=['GET'])
+def datastatus_validations():
+    return datastatus_validations_source(source=None)
+
+
+@app.route('/api/v1/validations/<source>', methods=['GET'])
+def datastatus_validations_source(source=None):
+    from_yr = request.args.get("from")
+    to_yr = request.args.get("to")
+    errors, from_yr, to_yr = parse_dates(from_yr, to_yr)
+    if errors:
+        return _error(errors)
+
+    stats_field_events = Table('stats_field_events')
+
+    values = []
+    q = Query \
+        .select(stats_field_events.field_name, fn.Sum(stats_field_events.v_invalid).as_("sum")) \
+        .from_(stats_field_events) \
+        .groupby(stats_field_events.field_name)
+
+    if source:
+        q = q.where(stats_field_events.source == Parameter('?'))
+        values.append(source)
+
+    if from_yr and to_yr:
+        q = q.where((stats_field_events.date >= Parameter('?')) & (stats_field_events.date <= Parameter('?')))
+        values.append([from_yr, to_yr])
+
+    cur = get_db().cursor()
+    cur.row_factory = dict_factory
+    rows = cur.execute(str(q), list(flatten(values))).fetchall()
+
+    total = sum(row['sum'] for row in rows)
+    result = {'total': total, 'validationFlags': {}}
+
+    if not rows:
+        return _error(["Not Found"], status_code=404)
+
+    for row in rows:
+        result['validationFlags'][row['field_name']] = {
+            'percentage': round((row['sum'] / total) * 100, 2),
+            'total': row['sum']
+        }
+
+    if source:
+        result['source'] = source
+
+    if from_yr and to_yr:
+        result['from'] = from_yr
+        result['to_yr'] = to_yr
+
     return result
 
 
