@@ -23,7 +23,7 @@ from sickle.oaiexceptions import (
     NoMetadataFormat, NoRecordsMatch, OAIError
 )
 from modsstylesheet import ModsStylesheet
-from validate import validate
+from validate import validate, should_be_rejected
 from audit import audit
 
 OAIExceptions = (
@@ -262,15 +262,21 @@ def threaded_handle_harvested(batch, source, lock, harvest_cache, incremental, a
     converted_rowids = []
     for record in batch:
         xml = record.xml
-        converted = convert(xml)
-        (accepted, field_events, record_info) = validate(xml, converted, harvest_cache)
-        (audited, audit_events) = audit(converted)
-        #events.extend(audit_events.data)
+        rejected, min_level_errors = should_be_rejected(xml)
+        accepted = not rejected
+
+        if accepted:
+            converted = convert(xml)
+            (field_events, record_info) = validate(converted, harvest_cache)
+            (audited, audit_events) = audit(converted)
+        
         lock.acquire()
         try:
             with get_connection() as connection:
-                converted_rowid = store_original_and_converted(record.oai_id, record.deleted, xml, audited.data, source, accepted, audit_events.data, field_events, record_info, connection, incremental)
-                if converted_rowid:
+                original_rowid = store_original(record.oai_id, record.deleted, xml, source, accepted, connection, incremental, min_level_errors)
+                #original_rowid, converted, audit_events, field_events, record_info, connection
+                if accepted:
+                    converted_rowid = store_converted(original_rowid, audited.data, audit_events.data, field_events, record_info, connection)
                     converted_rowids.append(converted_rowid)
         finally:
             lock.release()

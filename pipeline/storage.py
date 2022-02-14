@@ -32,8 +32,9 @@ def clean_and_init_storage():
     CREATE TABLE original (
         id INTEGER PRIMARY KEY,
         source TEXT,
-        oai_id, TEXT, -- TODO ADD UNIQUE,
+        oai_id TEXT, -- TODO ADD UNIQUE,
         accepted INTEGER, -- (fake boolean 1/0)
+        rejection_cause TEXT,
         data TEXT
     );
     """)
@@ -365,9 +366,8 @@ def clean_and_init_storage():
         date INT,
         label TEXT,
         valid INT DEFAULT 0,
-        invalid INT DEFAULT 0,
-        PRIMARY KEY (source, date, label)
-    ) WITHOUT ROWID;
+        invalid INT DEFAULT 0
+    );
     """)
     cursor.execute("""
     CREATE INDEX idx_stats_audit_events_source ON stats_audit_events(source);
@@ -384,9 +384,8 @@ def clean_and_init_storage():
         e_unchanged INT DEFAULT 0,
         e_unsuccessful INT DEFAULT 0,
         n_unchanged INT DEFAULT 0,
-        n_normalized INT DEFAULT 0,
-        PRIMARY KEY (field_name, source, date)
-    ) WITHOUT ROWID;
+        n_normalized INT DEFAULT 0
+    );
     """)
 
     connection.commit()
@@ -396,29 +395,32 @@ def open_existing_storage():
     cursor = connection.cursor()
     _set_pragmas(cursor)
 
-def store_original_and_converted(oai_id, deleted, original, converted, source, accepted, audit_events, field_events, record_info, connection, incremental):
+def store_original(oai_id, deleted, original, source, accepted, connection, incremental, min_level_errors):
     cursor = connection.cursor()
-    doc = BibframeSource(converted)
-
-    converted_events = {'audit_events': audit_events, 'field_events': field_events}
-
-    #print(f'Inserting with oai_id {converted["@id"]} : \n\n{json.dumps(converted)}\n\n')
-
     if incremental:
         cursor.execute("""
         DELETE FROM original WHERE oai_id = ?;
         """, (oai_id,))
     
     if deleted:
-        return None
-
-    original_rowid = cursor.execute("""
-    INSERT INTO original(source, data, accepted, oai_id) VALUES(?, ?, ?, ?);
-    """, (source, original, accepted, oai_id)).lastrowid
-
-    if not accepted:
         connection.commit()
         return None
+
+    rejection_cause = None
+    if not accepted:
+        rejection_cause = json.dumps(min_level_errors)
+    original_rowid = cursor.execute("""
+    INSERT INTO original(source, data, accepted, oai_id, rejection_cause) VALUES(?, ?, ?, ?, ?);
+    """, (source, original, accepted, oai_id, rejection_cause)).lastrowid
+
+    connection.commit()
+    return original_rowid
+
+def store_converted(original_rowid, converted, audit_events, field_events, record_info, connection):
+    cursor = connection.cursor()
+    doc = BibframeSource(converted)
+
+    converted_events = {'audit_events': audit_events, 'field_events': field_events}
 
     converted_rowid = cursor.execute("""
     INSERT INTO converted(data, original_id, oai_id, date, source, is_open_access, classification_level, events) VALUES(?, ?, ?, ?, ?, ?, ?, ?);
