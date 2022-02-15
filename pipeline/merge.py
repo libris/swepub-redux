@@ -77,7 +77,7 @@ def _handle(batch): # batch is a list of cluster rows
         union_publication.body['_publication_ids'] = publication_ids
         union_publication.body['_publication_orgs'] = publication_orgs
 
-        results.append( (cluster_id, union_publication.body) )
+        results.append( (cluster_id, union_publication.body ) )
     return results
 
 

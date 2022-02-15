@@ -370,6 +370,15 @@ if __name__ == "__main__":
 
     log.info("Harvesting " + " ".join([source['code'] for source in sources_to_harvest]))
 
+    # TODO: take list of actual source names from args instead
+    if "devdatasingle" in args:
+        sources_to_harvest = [sources[5]]
+
+    if "devdatasmall" in args:
+        sources_to_harvest = [sources[5], sources[40], sources[39]]
+
+    print(sources_to_harvest)
+
     t0 = time.time()
     if incremental:
         open_existing_storage()

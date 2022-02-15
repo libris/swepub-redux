@@ -1,0 +1,52 @@
+
+
+  /*---------------------------*
+  * Variables - Fonts
+  *----------------------------*/
+  $monospace: monospace;
+  $sans-serif: 'Open sans', sans-serif;
+
+  /*---------------------------*
+  * Variables - Colors
+  *----------------------------*/
+  $black: #000;
+  $white: #ffffff;
+  $grey: #949494;
+  $greyLight: #d0d0d0;
+  $greyLighter: #eeeeee;
+  $greyDarker: #727272;
+
+  $shadow: rgba(144, 144, 144, 0.15);
+
+  $dark: #252525;
+  $light: #f9f9f9;
+  $mark: #e0e6e9;
+  $markContrast: #595d61;
+
+  $blue:  #4572b1;
+  $darkBlue: #3a6094;
+  $purple: #461a67;
+  $purpleLight: #e1c8f454;
+
+  $danger: #da3a36;
+  $dangerAlt: #bb322f;
+  $dangerBg: #ffeeee;
+
+  $enrichment: #1C72E3;
+  $validation: #D14200;
+  $audit: #627d49;
+
+  $brandPrimary: $blue;
+  $inactive: $grey;
+  $linkColor: #426DA9;
+  $linkVisited: #609;
+
+  /*---------------------------*
+  * Variables - Sizes
+  *----------------------------*/
+
+  $screen-lg: 1280px;
+  $screen-md: 768px;
+  $screen-xs: 400px;
+
+  $font-base: 1.4rem;
