@@ -117,13 +117,11 @@ class AuditEvents:
         """Return the underlying audit event data."""
         return self._audit_events
 
-    def add_event(self, name, step, result, code=None, initial_value=None, value=None):
+    def add_event(self, name, code, result, initial_value=None, value=None):
         """Add an audit event."""
         if name not in self._audit_events:
             self._audit_events[name] = []
-        audit_event = {'step': step, 'result': result}
-        if code:
-            audit_event['code'] = code
+        audit_event = {'code': code, 'result': result}
         if initial_value:
             audit_event['initial_value'] = initial_value
         if value:
@@ -133,13 +131,13 @@ class AuditEvents:
         #    name=name, type="audit", code=code, step=step, result=result, initial_value=initial_value
         #))
 
-    def get_event_result(self, name, step_name):
-        """Get result for specific audit step or None if not found."""
+    def get_event_result(self, name, code_name):
+        """Get result for specific audit code or None if not found."""
         if name not in self._audit_events:
             return None
-        for step in self._audit_events[name]:
-            if step['step'] == step_name:
-                return step['result']
+        for event in self._audit_events[name]:
+            if event['code'] == code_name:
+                return event['result']
         return None
 
 

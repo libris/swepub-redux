@@ -48,7 +48,6 @@ def clean_and_init_storage():
     CREATE TABLE converted_audit_events (
         converted_id INTEGER,
         name TEXT,
-        step TEXT,
         code TEXT,
         result TEXT,
         initial_value TEXT,
@@ -456,14 +455,13 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
     for name, events in audit_events.items():
         for event in events:
             cursor.execute("""
-            INSERT INTO converted_audit_events(converted_id, code, initial_value, result, name, step, value) VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO converted_audit_events(converted_id, code, initial_value, result, name, value) VALUES (?, ?, ?, ?, ?, ?)
             """, (
                 converted_rowid,
                 event.get("code", None),
                 event.get("initial_value", None),
                 event.get("result", None),
                 name,
-                event.get("step", None),
                 event.get("value", None)
             ))
 

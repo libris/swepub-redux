@@ -40,13 +40,12 @@ def make_event(type=None, code=None, result=None, initial_value=None, value=None
     return {k: v for k, v in result.items() if v is not None}
 
 
-def make_audit_event(type=None, code=None, result=None, initial_value=None, value=None, step=None, name=None):
+def make_audit_event(type=None, code=None, result=None, initial_value=None, value=None, name=None):
     return {
         "type": type,
         "code": code,
         "result": result,
         "initial_value": initial_value,
         "value": value,
-        "step": step,
         "name": name
     }

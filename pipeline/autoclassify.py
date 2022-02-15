@@ -171,15 +171,14 @@ def _find_and_add_subjects():
                     code = "autoclassified"
                     initial_value = old_publication.uka_swe_classification_list
                     value = publication.uka_swe_classification_list
-                    step = "Autoclassifying publication"
                     result = "1"
 
                     cursor.execute("""
                     INSERT INTO converted_audit_events
-                        (converted_id, name, step, code, result, initial_value, value)
+                        (converted_id, name, code, result, initial_value, value)
                     VALUES
-                        (?, ?, ?, ?, ?, ?, ?);
-                    """, (rowid, "AutoclassifierAuditor", step, code, result, json.dumps(initial_value), json.dumps(value)) )
+                        (?, ?, ?, ?, ?, ?);
+                    """, (rowid, "AutoclassifierAuditor", code, result, json.dumps(initial_value), json.dumps(value)) )
                 connection.commit()
 
         # # Add "did nothing"-events (ffs..) for every publication that was not affected by autoclassification

@@ -53,7 +53,7 @@ class SubjectsAuditor(BaseAuditor):
         complimentary_subjects = self._get_complimentary_subjects(publication)
         publication.subjects = subjects + complimentary_subjects
 
-        step = "expand_research_subjects"
+        code = "expand_research_subjects"
         result = False
         if len(complimentary_subjects) > 0:
             #logger.info(
@@ -61,7 +61,7 @@ class SubjectsAuditor(BaseAuditor):
             #    extra={"auditor": self.name},
             #)
             result = True
-        new_audit_events = self._add_audit_event(audit_events, step, result)
+        new_audit_events = self._add_audit_event(audit_events, code, result)
         return (publication, new_audit_events)
 
     def _load_subject_codes(self):
@@ -148,8 +148,8 @@ class SubjectsAuditor(BaseAuditor):
             label = parent["subcategories"][code][lang]
             return _get_subject(code, label, lang, broader_topics)
 
-    def _add_audit_event(self, audit_events, step, is_missing):
-        audit_events.add_event(self.name, step, is_missing)
+    def _add_audit_event(self, audit_events, code, is_missing):
+        audit_events.add_event(self.name, code, is_missing)
         return audit_events
 
 

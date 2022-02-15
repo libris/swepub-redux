@@ -10,7 +10,7 @@ def generate_processing_stats():
 
         for row in cursor.execute("""
             SELECT
-                converted_audit_events.step,
+                converted_audit_events.code,
                 converted.source,
                 converted.date,
                 SUM(CASE WHEN converted_audit_events.result == 1 Then 1 else 0 end) AS result_true,
@@ -20,9 +20,9 @@ def generate_processing_stats():
             LEFT JOIN
                 converted ON converted_audit_events.converted_id=converted.id
             GROUP BY
-                converted.source, converted_audit_events.step, converted.date
+                converted.source, converted_audit_events.code, converted.date
             """):
-            if row['step'] == 'creator_count_check':
+            if row['code'] == 'creator_count_check':
                 valid = row['result_true']
                 invalid = row['result_false']
             else:
@@ -35,7 +35,7 @@ def generate_processing_stats():
                 VALUES
                     (?, ?, ?, ?, ?)
                 """,
-                [row['source'], row['date'], row['step'], valid, invalid])
+                [row['source'], row['date'], row['code'], valid, invalid])
 
         for row in cursor.execute("""
             SELECT

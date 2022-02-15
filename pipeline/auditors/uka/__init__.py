@@ -19,8 +19,8 @@ class UKAAuditor(BaseAuditor):
         return publication, new_audit_events
 
     def _add_audit_event(self, audit_events, comprehensive):
-        step = 'UKA_comprehensive_check'
-        audit_events.add_event(self.name, step, comprehensive)
+        code = 'UKA_comprehensive_check'
+        audit_events.add_event(self.name, code, comprehensive)
         return audit_events
 
     def _only_1digits(self, ukas):

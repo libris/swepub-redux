@@ -668,7 +668,7 @@ def process_get_export(source=None):
             if flag_type == 'audit':
                 for flag_value in flag_values:
                     criteria.append(
-                        (converted_audit_events.step == Parameter('?')) & \
+                        (converted_audit_events.code == Parameter('?')) & \
                         (converted_audit_events.result == Parameter('?'))
                     )
                     int_flag_value = 1 if flag_value == 'valid' else 0
