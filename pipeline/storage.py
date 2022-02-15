@@ -14,6 +14,8 @@ def _set_pragmas(cursor):
 def clean_and_init_storage():
     if os.path.exists(sqlite_path):
         os.remove(sqlite_path)
+    if os.path.exists(f"{sqlite_path}-wal"):
+        os.remove(f"{sqlite_path}-wal")
     connection = sqlite3.connect(sqlite_path)
     cursor = connection.cursor()
     _set_pragmas(cursor)
@@ -27,6 +29,20 @@ def clean_and_init_storage():
     );
     """)
 
+    cursor.execute("""
+    CREATE TABLE harvest_history (
+        id TEXT PRIMARY KEY, -- uuid4
+        source TEXT,
+        harvest_start DATETIME,
+        harvest_completed DATETIME,
+        successes INT,
+        rejected INT
+    );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_harvest_history_source ON harvest_history (source);
+    """)
+
     # Because Swepub APIs expose publications as originally harvested, these must be kept.
     cursor.execute("""
     CREATE TABLE original (
@@ -34,12 +50,25 @@ def clean_and_init_storage():
         source TEXT,
         oai_id TEXT, -- TODO ADD UNIQUE,
         accepted INTEGER, -- (fake boolean 1/0)
-        rejection_cause TEXT,
+        --rejection_cause TEXT,
         data TEXT
     );
     """)
     cursor.execute("""
     CREATE INDEX idx_original_oai_id ON original (oai_id);
+    """)
+
+    cursor.execute("""
+    CREATE TABLE rejected (
+        id INTEGER PRIMARY KEY,
+        harvest_id TEXT,
+        oai_id TEXT,
+        rejection_cause,
+        FOREIGN KEY (harvest_id) REFERENCES harvest_history(id) ON DELETE CASCADE
+    );
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_rejected_harvest_id ON rejected(harvest_id);
     """)
 
     # This table is used to store log entries (validation/normalization errors etc) for
@@ -394,7 +423,7 @@ def open_existing_storage():
     cursor = connection.cursor()
     _set_pragmas(cursor)
 
-def store_original(oai_id, deleted, original, source, accepted, connection, incremental, min_level_errors):
+def store_original(oai_id, deleted, original, source, accepted, connection, incremental, min_level_errors, harvest_id):
     cursor = connection.cursor()
     if incremental:
         cursor.execute("""
@@ -406,11 +435,16 @@ def store_original(oai_id, deleted, original, source, accepted, connection, incr
         return None
 
     rejection_cause = None
+
     if not accepted:
         rejection_cause = json.dumps(min_level_errors)
+        cursor.execute("""
+        INSERT INTO rejected(harvest_id, oai_id, rejection_cause) VALUES(?, ?, ?);
+        """, (harvest_id, oai_id, rejection_cause))
+
     original_rowid = cursor.execute("""
-    INSERT INTO original(source, data, accepted, oai_id, rejection_cause) VALUES(?, ?, ?, ?, ?);
-    """, (source, original, accepted, oai_id, rejection_cause)).lastrowid
+    INSERT INTO original(source, data, accepted, oai_id) VALUES(?, ?, ?, ?);
+    """, (source, original, accepted, oai_id)).lastrowid
 
     connection.commit()
     return original_rowid

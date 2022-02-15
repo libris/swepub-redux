@@ -36,6 +36,37 @@ LABEL_AUDIT_MAP = dict()
 for k, v in AUDIT_LABEL_MAP.items():
     LABEL_AUDIT_MAP.update({v: k})
 
+DELIVERY_STATUS_ERROR_DESCRIPTIONS = {
+    "recordContentSourceViolation": {
+        "swe": "Organisationskod saknas",
+        "eng": "Missing organization code",
+    },
+    "nameViolation": {"swe": "Upphov felaktigt", "eng": "Invalid contribution"},
+    "titleViolation": {"swe": "Titel saknas", "eng": "Missing title"},
+    "publicationOrOutputTypeViolation": {
+        "swe": "Outputtyp/publikationstyp felaktig",
+        "eng": "Invalid output/publication type",
+    },
+    "contentTypeViolation": {
+        "swe": "Innehållstyp felaktig",
+        "eng": "Invalid content type",
+    },
+    "publicationDateViolation": {
+        "swe": "Utgivningsdatum saknas",
+        "eng": "Missing publication date",
+    },
+    "uriViolation": {"swe": "URI saknas", "eng": "Missing URI"},
+    "languageViolation": {"swe": "Språkkod felaktig", "eng": "Invalid language code"},
+    "relatedItemTypeMissing": {
+        "swe": "Värdpublikation saknas",
+        "eng": "Missing host publication",
+    },
+    "relatedItemTypeViolation": {
+        "swe": "Värdpublikation felaktig",
+        "eng": "Invalid host publication",
+    },
+}
+
 
 
 def parse_flags(validation_flags, enrichment_flags, normalization_flags, audit_flags):

@@ -16,6 +16,7 @@ import logging
 import swepublog
 from datetime import datetime, timezone
 import xml.etree.ElementTree as ET
+import uuid
 
 from sickle.oaiexceptions import (
     BadArgument, BadVerb, BadResumptionToken,
@@ -150,8 +151,6 @@ class HarvestFailed(Exception):
 
 
 def harvest(source, lock, harvested_count, harvest_cache, incremental, added_converted_rowids):
-
-    
     fromtime = None
     if incremental:
         lock.acquire()
@@ -168,6 +167,19 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental, added_con
             lock.release()
 
     start_time = time.time()
+    harvest_id = str(uuid.uuid4())
+    harvest_cache['meta'][harvest_id] = [0, 0]
+
+    with get_connection() as connection:
+        cursor = connection.cursor()
+        lock.acquire()
+        try:
+            cursor.execute("""
+            INSERT INTO harvest_history(id, source, harvest_start) VALUES (?, ?, ?)
+            """, (harvest_id, source["code"], datetime.now(timezone.utc).isoformat()))
+            connection.commit()
+        finally:
+            lock.release()
 
     for set in source["sets"]:
         harvest_info = f'{set["url"]} ({set["subset"]}, {set["metadata_prefix"]})'
@@ -201,12 +213,12 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental, added_con
                                     processes[i].join()
                                     del processes[i]
                                 i -= 1
-                        p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, harvest_cache, incremental, added_converted_rowids))
+                        p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, harvest_cache, incremental, added_converted_rowids, harvest_id))
                         batch_count += 1
                         p.start()
                         processes.append( p )
                         batch = []
-            p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, harvest_cache, incremental, added_converted_rowids))
+            p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, harvest_cache, incremental, added_converted_rowids, harvest_id))
             p.start()
             processes.append( p )
             for p in processes:
@@ -257,23 +269,45 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental, added_con
         except HarvestFailed as e:
             log.warn(f'FAILED HARVEST: {source["code"]}')
             continue
+    with get_connection() as connection:
+        cursor = connection.cursor()
+        lock.acquire()
+        try:
+            num_accepted, num_rejected = harvest_cache['meta'][harvest_id]
+            cursor.execute("""
+            UPDATE
+                harvest_history
+            SET
+                harvest_completed = ?, successes = ?, rejected = ?
+            WHERE
+                id = ?""",
+            (datetime.now(timezone.utc).isoformat(), num_accepted, num_rejected, harvest_id))
+            connection.commit()
+        finally:
+            lock.release()
 
-def threaded_handle_harvested(batch, source, lock, harvest_cache, incremental, added_converted_rowids):
+
+def threaded_handle_harvested(batch, source, lock, harvest_cache, incremental, added_converted_rowids, harvest_id):
     converted_rowids = []
+    num_accepted = 0
+    num_rejected = 0
     for record in batch:
         xml = record.xml
         rejected, min_level_errors = should_be_rejected(xml)
         accepted = not rejected
 
         if accepted:
+            num_accepted += 1
             converted = convert(xml)
             (field_events, record_info) = validate(converted, harvest_cache)
             (audited, audit_events) = audit(converted)
+        else:
+            num_rejected += 1
         
         lock.acquire()
         try:
             with get_connection() as connection:
-                original_rowid = store_original(record.oai_id, record.deleted, xml, source, accepted, connection, incremental, min_level_errors)
+                original_rowid = store_original(record.oai_id, record.deleted, xml, source, accepted, connection, incremental, min_level_errors, harvest_id)
                 if accepted:
                     converted_rowid = store_converted(original_rowid, audited.data, audit_events.data, field_events, record_info, connection)
                     converted_rowids.append(converted_rowid)
@@ -283,6 +317,9 @@ def threaded_handle_harvested(batch, source, lock, harvest_cache, incremental, a
     if incremental:
         for rowid in converted_rowids:
             added_converted_rowids[rowid] = None
+
+    prev_accepted, prev_rejected = harvest_cache['meta'][harvest_id]
+    harvest_cache['meta'][harvest_id] = [prev_accepted + num_accepted, prev_rejected + num_rejected]
 
 def _get_source_ids(source_set):
     source_ids = set()
@@ -315,6 +352,7 @@ if __name__ == "__main__":
     if "update" in args:
         args.remove("update")
         incremental = True
+        log.info("Doing incremental update")
 
     if "devdata" in args:
         sources_to_harvest = [sources["mdh"], sources["miun"], sources["mau"]]
@@ -364,7 +402,8 @@ if __name__ == "__main__":
     ids_not_in_issn = set(previously_validated_ids.keys()) - set(known_issns.keys())
     id_cache = manager.dict(dict.fromkeys(ids_not_in_issn, 1))
     issn_cache = manager.dict(known_issns)
-    harvest_cache = manager.dict({'id': id_cache, 'issn': issn_cache})
+    harvest_meta = manager.dict({})
+    harvest_cache = manager.dict({'id': id_cache, 'issn': issn_cache, 'meta': harvest_meta})
 
     added_converted_rowids = manager.dict()
 
