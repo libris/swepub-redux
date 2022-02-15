@@ -160,9 +160,6 @@ def bibliometrics_api():
     q = q.select('data')
     if limit:
         q = q.limit(limit)
-    print(str(q_total))
-    print(str(q))
-    print(list(flatten(values)))
 
     cur = get_db().cursor()
     cur.row_factory = dict_factory
@@ -202,17 +199,24 @@ def bibliometrics_get_record(record_id):
     return doc
 
 
-@app.route("/api/v1/datastatus")
+@app.route("/api/v1/datastatus", methods=['GET'])
 def datastatus():
+    return datastatus_source(source=None)
+
+
+@app.route("/api/v1/datastatus/<source>", methods=['GET'])
+def datastatus_source(source):
     from_yr = request.args.get("from")
     to_yr = request.args.get("to")
     errors, from_yr, to_yr = parse_dates(from_yr, to_yr)
     if errors:
         return _error(errors)
+    if source and source not in INFO_API_SOURCE_ORG_MAPPING:
+        return _error(['Source not found'], status_code=404)
 
     converted = Table('converted')
     values = []
-    result = {"sources": {}}
+    result = {}
 
     q_total = Query \
         .select(fn.Count('*').as_('total_docs')) \
@@ -236,9 +240,21 @@ def datastatus():
 
     if from_yr and to_yr:
         result.update({"from": from_yr, "to": to_yr})
-        for q in [q_total, q_oa, q_ssif, q_swedishlist, q_total_per_source]:
-            q = q.where((converted.date >= Parameter('?')) & (converted.date <= Parameter('?')))
-            values.append([from_yr, to_yr])
+        q_total = q_total.where((converted.date >= Parameter('?')) & (converted.date <= Parameter('?')))
+        q_oa = q_oa.where((converted.date >= Parameter('?')) & (converted.date <= Parameter('?')))
+        q_ssif = q_ssif.where((converted.date >= Parameter('?')) & (converted.date <= Parameter('?')))
+        q_swedishlist = q_swedishlist.where((converted.date >= Parameter('?')) & (converted.date <= Parameter('?')))
+        q_total_per_source = q_total_per_source.where((converted.date >= Parameter('?')) & (converted.date <= Parameter('?')))
+        values.append([from_yr, to_yr])
+
+    if source:
+        result['source'] = source
+        q_total = q_total.where(converted.source == Parameter('?'))
+        q_oa = q_oa.where(converted.source == Parameter('?'))
+        q_ssif = q_ssif.where(converted.source == Parameter('?'))
+        q_swedishlist = q_swedishlist.where(converted.source == Parameter('?'))
+        q_total_per_source = q_total_per_source.where(converted.source == Parameter('?'))
+        values.append(source)
 
     values = list(flatten(values))
     cur = get_db().cursor()
@@ -250,18 +266,19 @@ def datastatus():
     swedishlist = cur.execute(str(q_swedishlist), values).fetchone()['swedishlist']
 
     result.update({
-        "sources": {},
         "total": total_docs,
         "openAccess": {"percentage": get_percentage(oa, total_docs), "total": oa},
         "ssif": {"percentage": get_percentage(ssif, total_docs), "total": ssif},
         "swedishList": {"percentage": get_percentage(swedishlist, total_docs), "total": swedishlist}
     })
 
-    for row in cur.execute(str(q_total_per_source), values):
-        result["sources"][row["source"]] = {
-            "percentage": get_percentage(row["total"], total_docs),
-            "total": row["total"]
-        }
+    if not source:
+        result['sources'] = {}
+        for row in cur.execute(str(q_total_per_source), values):
+            result["sources"][row["source"]] = {
+                "percentage": get_percentage(row["total"], total_docs),
+                "total": row["total"]
+            }
     return result
 
 
@@ -439,7 +456,6 @@ def process_get_rejected_publications(harvest_id):
     return {}
 
 
-# TODO: from/to
 @app.route('/api/v1/process/<source>', methods=['GET'])
 def process_get_stats(source=None):
     if source is None:
@@ -447,8 +463,11 @@ def process_get_stats(source=None):
     if source not in INFO_API_SOURCE_ORG_MAPPING:
         return _error(['Source not found'], status_code=404)
 
-    cur = get_db().cursor()
-    cur.row_factory = dict_factory
+    from_yr = request.args.get("from")
+    to_yr = request.args.get("to")
+    errors, from_yr, to_yr = parse_dates(from_yr, to_yr)
+    if errors:
+        return _error(errors)
 
     result = {
         'code': source,
@@ -460,7 +479,16 @@ def process_get_stats(source=None):
         'total': 0,
     }
 
-    for row in cur.execute("""
+    if from_yr and to_yr:
+        date_sql = f' AND date >= ? AND date <= ?'
+        values = [source, from_yr, to_yr]
+    else:
+        date_sql = ''
+        values = [source]
+
+    cur = get_db().cursor()
+    cur.row_factory = dict_factory
+    for row in cur.execute(f"""
         SELECT
             label, SUM(valid) AS valid, SUM(invalid)
         AS
@@ -469,16 +497,17 @@ def process_get_stats(source=None):
             stats_audit_events
         WHERE
             source = ?
+        {date_sql}
         GROUP BY
             label
-            """, [source]):
+            """, values):
         result['audits'][row['label']] = {}
         if row['valid']:
             result['audits'][row['label']]['valid'] = row['valid']
         if row['invalid']:
             result['audits'][row['label']]['invalid'] = row['invalid']
 
-    for row in cur.execute("""
+    for row in cur.execute(f"""
         SELECT
             field_name,
             SUM(e_enriched) AS e_enriched,
@@ -492,9 +521,10 @@ def process_get_stats(source=None):
             stats_field_events
         WHERE
             source = ?
+        {date_sql}
         GROUP BY
             field_name
-    """, [source]):
+    """, values):
         result['enrichments'][row['field_name']] = {}
         result['normalizations'][row['field_name']] = {}
         result['validations'][row['field_name']] = {}
@@ -546,8 +576,6 @@ def process_get_export(source=None):
         validation_flags, enrichment_flags, normalization_flags, audit_flags)
     if errors:
         return _errors(errors)
-
-    print(selected_flags)
 
     converted, converted_record_info, converted_audit_events = Tables('converted', 'converted_record_info', 'converted_audit_events')
     values = []
@@ -602,8 +630,6 @@ def process_get_export(source=None):
         q = q.limit(limit)
     if offset:
         q = q.offset(offset)
-
-    print(str(q))
 
     handled_at = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
     cur = get_db().cursor()
