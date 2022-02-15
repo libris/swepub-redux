@@ -16,22 +16,10 @@ def build_deduplicated_result(es_result):
     return BibframeSource(hits[0].get("_source")).bibframe_master
 
 
-def build_result(rows, from_yr, to_yr, fields, total):
-    #no_of_hits = len(rows)
-    result = {
-        "from": from_yr,
-        "to": to_yr,
-        "total": total,
-        "hits": []
-    }
+def build_result(row, fields):
     errors = list()
-    for row in rows:
-        (result_hit, errors) = _build_hit(json.loads(row['data']), fields)
-        if len(errors) > 0:
-            break
-        else:
-            result["hits"].append(result_hit)
-    return result, errors
+    (result_hit, errors) = _build_hit(json.loads(row['data']), fields)
+    return result_hit, errors
 
 
 def _build_hit(bibframe_record, fields):

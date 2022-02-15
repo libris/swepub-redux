@@ -5,7 +5,8 @@ import os
 from utils import bibliometrics
 from utils.common import *
 from utils.process import *
-from utils.csv_export import export as csv_export
+from utils.process_csv import export as process_csv_export
+from utils.bibliometrics_csv import export as bibliometrics_csv_export
 
 from datetime import datetime
 from pathlib import Path
@@ -70,6 +71,21 @@ def index_file():
 def bibliometrics_api():
     if request.content_type != 'application/json':
         return _error(errors=['Content-Type must be "application/json"'])
+
+    export_as_csv = False
+    csv_mimetype = 'text/csv'
+    tsv_mimetype = 'text/tab-separated-values'
+    export_mimetype = csv_mimetype
+    csv_flavor = 'csv'
+    accept = request.headers.get('accept')
+    if accept and accept == csv_mimetype:
+        export_as_csv = True
+    elif accept and accept == tsv_mimetype:
+        export_as_csv = True
+        csv_flavor = 'tsv'
+        export_mimetype = tsv_mimetype
+    else:
+        export_mimetype = 'application/json'
 
     query_data = request.json
     try:
@@ -164,27 +180,44 @@ def bibliometrics_api():
 
     cur = get_db().cursor()
     cur.row_factory = dict_factory
-    total = cur.execute(str(q_total), list(flatten(values))).fetchone()
-
-    rows = cur.execute(str(q), list(flatten(values))).fetchall()
-
+    total_docs = cur.execute(str(q_total), list(flatten(values))).fetchone()['total']
     fields = query_data.get("fields", [])
     if fields is None:
         fields = []
-    (result, errors) = bibliometrics.build_result(rows, from_yr, to_yr, fields, total['total'])
-
-    if len(errors) > 0:
-        return _error(errors)
-
     handled_at = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
-    #if export_as_csv:
-    #    return Response(
-    #        csv_export(result['hits'], fields, csv_flavor, query_data, handled_at),
-    #        mimetype=default_mimetype)
-    #else:
-    result["query"] = query_data
-    result["query_handled_at"] = handled_at
-    return jsonify(result)
+
+    # Results are streamed to the client so we're not bothered by limits
+    def get_results():
+        if export_as_csv:
+            yield f"# Swepub bibliometric export. Query handled at {handled_at}. Query parameters: {request.args.to_dict()}\n"
+        else:
+            yield(
+                f'{{"hits": ['
+            )
+
+        total = 0
+        for row in cur.execute(str(q), list(flatten(values))):
+            (result, errors) = bibliometrics.build_result(row, fields)
+            if export_as_csv:
+                yield(bibliometrics_csv_export(result, fields, csv_flavor, total))
+            else:
+                maybe_comma = ',' if total > 0 else ''
+                yield(maybe_comma + json.dumps(result))
+            total += 1
+
+        if not export_as_csv:
+            yield('],')
+            if from_yr and to_yr:
+                yield(f'"from": {from_yr},')
+                yield(f'"to": {to_yr},')
+            yield(
+                f'"query": {json.dumps(query_data)},'
+                f'"query_handled_at": "{handled_at}",'
+                f'"total": {total_docs}'
+                '}'
+            )
+
+    return app.response_class(stream_with_context(get_results()), mimetype=export_mimetype)
 
 
 @app.route("/api/v1/bibliometrics/publications/<record_id>", methods=['GET'])
@@ -676,15 +709,17 @@ def process_get_export(source=None):
                     mods_url)
 
             if export_as_csv:
-                yield(csv_export(export_result, csv_flavor, request.args.to_dict(), handled_at,  total))
+                yield(process_csv_export(export_result, csv_flavor, request.args.to_dict(), handled_at,  total))
             else:
                 maybe_comma = ',' if total > 0 else ''
-                yield(maybe_comma + json.dumps(export_result)
-                )
+                yield(maybe_comma + json.dumps(export_result))
             total += 1
         if not export_as_csv:
+            yield('],')
+            if from_date and to_date:
+                yield(f'"from": {from_date},')
+                yield(f'"to": {to_date},')
             yield(
-                f'],'
                 f'"query": {json.dumps(request.args)},'
                 f'"query_handled_at": "{handled_at}",'
                 f'"source": "{INFO_API_SOURCE_ORG_MAPPING[source]["name"]}",'
