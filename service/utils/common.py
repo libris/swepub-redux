@@ -61,7 +61,6 @@ def parse_dates(from_date, to_date):
     return errors, from_date, to_date
 
 
-MAX_RESULT_SIZE = 10000
 def parse_limit_and_offset(limit, offset):
     """Get limit and offset from query args."""
     errors = []
@@ -70,8 +69,6 @@ def parse_limit_and_offset(limit, offset):
     if limit is not None:
         try:
             limit = int(limit)
-            if limit > MAX_RESULT_SIZE:
-                limit = MAX_RESULT_SIZE
             if limit < 0:
                 errors.append(f"Parameter 'limit' must be non-negative")
         except ValueError:
@@ -80,8 +77,6 @@ def parse_limit_and_offset(limit, offset):
     if offset is not None:
         try:
             offset = int(offset)
-            if offset > MAX_RESULT_SIZE:
-                offset = MAX_RESULT_SIZE
             if offset < 0:
                 errors.append(f"Parameter 'offset' must be non-negative")
         except ValueError:
