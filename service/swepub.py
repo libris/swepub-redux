@@ -5,6 +5,7 @@ import os
 from utils import bibliometrics
 from utils.common import *
 from utils.process import *
+from utils.csv_export import export as csv_export
 
 from datetime import datetime
 from pathlib import Path
@@ -558,6 +559,21 @@ def process_get_export(source=None):
     if source not in INFO_API_SOURCE_ORG_MAPPING:
         return _error(['Source not found'], status_code=404)
 
+    export_as_csv = False
+    csv_mimetype = 'text/csv'
+    tsv_mimetype = 'text/tab-separated-values'
+    export_mimetype = csv_mimetype
+    csv_flavor = 'csv'
+    accept = request.headers.get('accept')
+    if accept and accept == csv_mimetype:
+        export_as_csv = True
+    elif accept and accept == tsv_mimetype:
+        export_as_csv = True
+        csv_flavor = 'tsv'
+        export_mimetype = tsv_mimetype
+    else:
+        export_mimetype = 'application/json'
+
     from_date = request.args.get('from')
     to_date = request.args.get('to')
     limit = request.args.get('limit')
@@ -639,35 +655,44 @@ def process_get_export(source=None):
         # Exports can be large and we don't want to load everything into memory, so we stream
         # the output (each yield is sent directly to the client).
         # Since we send one result at a time, we can't send a ready-made dict when JSON is selected.
-        yield(
-            f'{{"code": "{source}",'
-            f'"hits": ['
-        )
+        if export_as_csv:
+            yield f"# Swepub data processing export. Query handled at {handled_at}. Query parameters: {request.args.to_dict()}\n"
+        else:
+            yield(
+                f'{{"code": "{source}",'
+                f'"hits": ['
+            )
         total = 0
         for row in cur.execute(str(q), list(flatten(values))):
             flask_url = url_for('process_get_original_publication', record_id=row['oai_id'])
             proto = request.headers.get("X-Forwarded-Proto")
             host = request.headers.get("X-Forwarded-Host")
             mods_url = f"{proto}://{host}{flask_url}"
-            maybe_comma = ',' if total > 0 else ''
-            total += 1
-            yield(maybe_comma + json.dumps(build_export_result(
-                json.loads(row['data']),
-                json.loads(row['events']),
-                selected_flags,
-                row['oai_id'],
-                mods_url))
-            )
-        yield(
-            f'],'
-            f'"query": {json.dumps(request.args)},'
-            f'"query_handled_at": "{handled_at}",'
-            f'"source": "{INFO_API_SOURCE_ORG_MAPPING[source]["name"]}",'
-            f'"total": {total}'
-            '}'
-        )
+            export_result = build_export_result(
+                    json.loads(row['data']),
+                    json.loads(row['events']),
+                    selected_flags,
+                    row['oai_id'],
+                    mods_url)
 
-    return app.response_class(stream_with_context(get_results()), mimetype='application/json')
+            if export_as_csv:
+                yield(csv_export(export_result, csv_flavor, request.args.to_dict(), handled_at,  total))
+            else:
+                maybe_comma = ',' if total > 0 else ''
+                yield(maybe_comma + json.dumps(export_result)
+                )
+            total += 1
+        if not export_as_csv:
+            yield(
+                f'],'
+                f'"query": {json.dumps(request.args)},'
+                f'"query_handled_at": "{handled_at}",'
+                f'"source": "{INFO_API_SOURCE_ORG_MAPPING[source]["name"]}",'
+                f'"total": {total}'
+                '}'
+            )
+
+    return app.response_class(stream_with_context(get_results()), mimetype=export_mimetype)
 
 
 if __name__ == '__main__':

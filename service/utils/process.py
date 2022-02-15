@@ -182,7 +182,6 @@ def _get_validation_flags(field, checks, selected_flags):
     validation_flags = {}
     has_selection = has_selected_flags(selected_flags)
     for path, check in checks.items():
-        print("check", check)
         validation_status = check['validation_status']
         selected_validation_flags = []
         if field in selected_flags['validation']:
