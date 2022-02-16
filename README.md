@@ -14,7 +14,7 @@ $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
-(Note that at the moment only Python 3.7 has been used for this project, later versions may also work)
+(Note that at the moment only Python 3.6 and 3.7 has been used for this project, later versions may also work)
 
 ## Pipeline
 
@@ -24,22 +24,22 @@ To run the pipeline do:
 $ python3 pipeline/harvest.py devdata
 ```
 
-Expect this to take a few minutes. If you omit the "devdata" parameter you instead get the full production data which takes 5 or 6 hours. You can also specify one or more individual source(s) (these must exist in `pipeline/sources.json`), e.g.:
+Expect this to take a few minutes. If you omit the "devdata" parameter you instead get the full production data which takes a lot longer. You can also specify one or more individual source(s) (these must exist in `pipeline/sources.json`), e.g.:
 
 ```
 $ python3 pipeline/harvest.py ths uniarts
 ```
 
-There is no state to be considered here and no running "services". Each time the pipeline is executed a new sqlite3 database is produced as output. You may even run more than one in parallell if you like.
+There is no state to be considered here and no running "services". Each time the pipeline is executed a new sqlite3 database is produced as output. You may even run more than one in parallell if you like. As an option you can if you wish update an existing database with whatever new data is avaialable by appending the parameter "update".
 
 The resulting sqlite3 database has roughly the following structure (see storage.py for details):
 
 | Table | Description |
 | --- | --- |
-|original| XML data for every harvested record unchanged. These are kept only because the Swepub API exposes them under "/original". |
-|converted| Converted+validated+normalized versions of each record, foreign key for each row references the 'original' table |
-|cluster| Clusters of converted records that are all considered to be duplicates of the same publication, contains foreign key rowids into the 'converted' table. |
-|finalized| A union or "master" record for each cluster, containing a merger of all the records in the cluster. foreign key references which cluster the union record is for. |
+|original| Original XML data for every harvested record. |
+|converted| Converted+validated+normalized versions of each record. There is foreign key for each row which references the 'original' table |
+|cluster| Clusters of converted records that are all considered to be duplicates of the same publication. There is a foreign key which references the 'converted' table. |
+|finalized| A union or "master" record for each cluster, containing a merger of all the records in the cluster. There is a foreign key which references the 'cluster' table. |
 
 
 ## Service
