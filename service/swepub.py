@@ -36,7 +36,7 @@ INFO_API_SOURCE_ORG_MAPPING = json.load(open(os.path.dirname(__file__) + '/../pi
 CATEGORIES = json.load(open(os.path.dirname(__file__) + '/../pipeline/categories.json'))
 
 # Note: static files should be served by Apache/nginx
-app = Flask(__name__, static_url_path='', static_folder='vue-client/dist')
+app = Flask(__name__, static_url_path='/app', static_folder='vue-client/dist')
 
 
 def get_db():
@@ -61,13 +61,11 @@ def _errors(errors, status_code=400):
     return jsonify(resp), status_code
 
 
-@app.route("/")
-@app.route("/bibliometrics")
-@app.route("/classify")
-@app.route("/datastatus")
-@app.route("/process")
-def index_file():
-    return app.send_static_file('index.html')
+# Catchall routes - the Vue app handles all non-API routes
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    return app.send_static_file("index.html")
 
 
 # ██████╗ ██╗██████╗ ██╗     ██╗ ██████╗ ███╗   ███╗███████╗████████╗██████╗ ██╗ ██████╗███████╗

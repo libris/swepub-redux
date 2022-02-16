@@ -8,7 +8,7 @@ export default new Vuex.Store({
     settings: {
       serviceName: 'Swepub',
       version: `${process.env.VUE_APP_VERSION}`,
-      apiPath: `${process.env.BASE_URL}${process.env.VUE_APP_API_PATH}`,
+      apiPath: `${process.env.VUE_APP_API_PATH}`,
       matomoId: 'MATOMO_ID',
       language: 'swe',
       navigation: [

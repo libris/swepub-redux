@@ -48,6 +48,7 @@ The resulting sqlite3 database has roughly the following structure (see storage.
 
 If you want the frontend, make sure Nodejs/npm/yarn are installed, and then:
 ```
+npm install --prefix service/vue-client/
 yarn --cwd service/vue-client/ build
 ```
 
