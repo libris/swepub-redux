@@ -269,11 +269,11 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental, added_con
         except HarvestFailed as e:
             log.warning(f'FAILED HARVEST: {source["code"]}. Error: {e}')
             continue
+    num_accepted, num_rejected = harvest_cache['meta'][harvest_id]
     with get_connection() as connection:
         cursor = connection.cursor()
         lock.acquire()
         try:
-            num_accepted, num_rejected = harvest_cache['meta'][harvest_id]
             cursor.execute("""
             UPDATE
                 harvest_history
@@ -301,9 +301,9 @@ def threaded_handle_harvested(batch, source, lock, harvest_cache, incremental, a
             converted = convert(xml)
             (field_events, record_info) = validate(converted, harvest_cache)
             (audited, audit_events) = audit(converted)
-        else:
+        elif not record.deleted:
             num_rejected += 1
-        
+
         lock.acquire()
         try:
             with get_connection() as connection:
@@ -318,8 +318,7 @@ def threaded_handle_harvested(batch, source, lock, harvest_cache, incremental, a
         for rowid in converted_rowids:
             added_converted_rowids[rowid] = None
 
-    prev_accepted, prev_rejected = harvest_cache['meta'][harvest_id]
-    harvest_cache['meta'][harvest_id] = [prev_accepted + num_accepted, prev_rejected + num_rejected]
+    harvest_cache['meta'][harvest_id] = [harvest_cache['meta'][harvest_id][0] + num_accepted, harvest_cache['meta'][harvest_id][1] + num_rejected]
 
 def _get_source_ids(source_set):
     source_ids = set()

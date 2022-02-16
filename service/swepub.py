@@ -547,9 +547,6 @@ def datastatus_validations_source(source=None):
     total = sum(row['sum'] for row in rows)
     result = {'total': total, 'validationFlags': {}}
 
-    if not rows:
-        return _errors(["Not Found"], status_code=404)
-
     for row in rows:
         result['validationFlags'][row['field_name']] = {
             'percentage': round((row['sum'] / total) * 100, 2),
