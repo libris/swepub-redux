@@ -12,8 +12,8 @@ from utils.classify import enrich_subject
 from datetime import datetime
 from pathlib import Path
 import sqlite3
-from flask import Flask, g, request, jsonify, Response, stream_with_context, url_for
-from pypika import Query, Tables, Parameter, Table, Criterion
+from flask import Flask, g, request, jsonify, Response, stream_with_context, url_for, make_response
+from pypika import Query, Tables, Parameter, Table, Criterion, Order
 from pypika.terms import BasicCriterion
 from pypika import functions as fn
 from collections import Counter
@@ -589,7 +589,7 @@ def info_output_types():
 def info_sources():
     cur = get_db().cursor()
     cur.row_factory = lambda cursor, row: row[0]
-    codes = cur.execute("SELECT DISTINCT value FROM search_org").fetchall()
+    codes = cur.execute("SELECT DISTINCT source FROM harvest_history").fetchall()
     sources = []
     for code in codes:
         sources.append({'name': INFO_API_SOURCE_ORG_MAPPING[code]['name'], 'code': code})
@@ -708,7 +708,7 @@ def process_get_rejected_publications(harvest_id):
     cur = get_db().cursor()
     cur.row_factory = dict_factory
 
-    total = cur.execute("SELECT COUNT(*) AS total FROM rejected WHERE harvest_id = ?", (harvest_id,)).fetchone()["total"]
+    total_rejections = cur.execute("SELECT COUNT(*) AS total FROM rejected WHERE harvest_id = ?", (harvest_id,)).fetchone()["total"]
     source = cur.execute("SELECT source FROM harvest_history WHERE id = ? LIMIT 1", (harvest_id,)).fetchone()["source"]
 
     rejected = Table('rejected')
@@ -716,7 +716,8 @@ def process_get_rejected_publications(harvest_id):
     q = Query \
         .select(rejected.oai_id, rejected.rejection_cause) \
         .from_(rejected) \
-        .where(rejected.harvest_id == Parameter('?'))
+        .where(rejected.harvest_id == Parameter('?')) \
+        .orderby('id')
 
     if limit:
         q = q.limit(limit)
@@ -726,9 +727,9 @@ def process_get_rejected_publications(harvest_id):
     result = {
         "harvest_id": harvest_id,
         "rejected_publications": [],
-        "source": source,
+        "source_code": source,
         "source_name": INFO_API_SOURCE_ORG_MAPPING[source]['name'],
-        "total": total
+        "total": total_rejections
     }
 
     for row in cur.execute(str(q), (harvest_id,)):
@@ -746,7 +747,15 @@ def process_get_rejected_publications(harvest_id):
             "errors": error_list
         })
 
-    return result
+    resp = make_response(jsonify(result))
+
+    (prev_page, next_page) = process_get_pagination_links(request, url_for('process_get_rejected_publications', harvest_id=harvest_id), limit, offset, total_rejections)
+    if prev_page:
+        resp.headers.add('Link', f"<{prev_page}>", rel="prev")
+    if next_page:
+        resp.headers.add('Link', f"<{next_page}>", rel="next")
+
+    return resp
 
 
 @app.route('/api/v1/process/<source>', methods=['GET'])

@@ -1,4 +1,5 @@
 import re
+from urllib.parse import urlunparse
 
 DEFAULT_FIELDS = [
     'DOI',
@@ -366,3 +367,59 @@ def _get_audit_flags(auditor, checks, selected_flags):
 
 def _should_export_simple(has_selection, status, selected_flags):
     return (status in selected_flags or not has_selection)
+
+
+def get_offsets(limit, offset, total):
+    """Return previous and next offset."""
+    if limit is None:
+        # Without an explicit limit, we return as much as possible (e.g. for export).
+        limit = 999999
+    if offset is None:
+        offset = 0
+    prev_offset = offset - limit
+    if prev_offset < 0:
+        prev_offset = None
+
+    next_offset = offset + limit
+    if next_offset >= total:
+        next_offset = None
+
+    return (prev_offset, next_offset)
+
+
+def process_get_pagination_links(request, endpoint, limit, offset, total):
+    print(f"limit: {limit}, offset: {offset}, total: {total}")
+    """Return prev/next links given a search request."""
+    prev_link = next_link = None
+    (prev_offset, next_offset) = get_offsets(limit, offset, total)
+    print(f"prev_offset: {prev_offset}, next_offset: {next_offset}")
+    # NOTE: These headers are created by Traefik, so this creates a strong dependency.
+    proto = request.headers.get('X-Forwarded-Proto', '')
+    host = request.headers.get('X-Forwarded-Host', '')
+    prefix = request.headers.get('X-Forwarded-Prefix', '')
+    args = {}
+    for key, values in request.args.lists():
+        args[key] = values
+    if not endpoint:
+        return (None, None)
+    if prev_offset is not None:
+        prev_link = _get_pagination_link(proto, host, prefix, endpoint, args, prev_offset)
+    if next_offset is not None:
+        next_link = _get_pagination_link(proto, host, prefix, endpoint, args, next_offset)
+    return (prev_link, next_link)
+
+
+def _get_pagination_link(proto, host, prefix, endpoint, args, offset):
+    params = fragment = None
+    path = f"{prefix}{endpoint}"
+    expanded_args = []
+    if 'offset' not in args:
+        args['offset'] = offset
+    for key, values in args.items():
+        if key == 'offset':
+            expanded_args.append(f"{key}={offset}")
+            continue
+        for value in values:
+            expanded_args.append(f"{key}={value}")
+    query = '&'.join(expanded_args)
+    return urlunparse((proto, host, path, params, query, fragment))
