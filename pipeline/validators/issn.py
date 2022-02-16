@@ -1,5 +1,6 @@
 import re
 from stdnum.issn import is_valid
+from stdnum.issn import format as issn_format
 from validators.shared import remote_verification
 from util import make_event
 
@@ -20,7 +21,11 @@ def _validate(field, session, harvest_cache):
         field.events.append(make_event(type="validation", code="checksum", result="invalid", value=issn))
         return False
 
-    if harvest_cache['issn'].get(issn, 0) or harvest_cache['id'].get(issn, 0):
+    # Formatting/normalizing the ISSN doesn't change validity, it just helps us avoid cache misses,
+    # as the static list of ISSNs should have them correctly formatted.
+    formatted_issn = issn_format(issn)
+
+    if harvest_cache['issn_static'].get(formatted_issn, 0) or harvest_cache['issn_new'].get(issn, 0):
         field.events.append(make_event(type="validation", code="remote.cache", result="valid", value=issn))
         return True
 
@@ -28,7 +33,7 @@ def _validate(field, session, harvest_cache):
         field.events.append(make_event(type="validation", code="remote", result="invalid", value=issn))
         return False
 
-    harvest_cache['id'][issn] = 1
+    harvest_cache['issn_new'][issn] = 1
     field.validation_status = 'valid'
     field.events.append(make_event(type="validation", code="remote", result="valid", value=issn))
     return True

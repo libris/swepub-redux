@@ -40,7 +40,8 @@ RequestExceptions = (
 )
 
 ID_CACHE_PATH = "./id_cache.json"
-ISSN_PATH = "./issn.txt"  # one ISSN per line
+KNOWN_ISSN_PATH = "./known_valid_issn.txt"
+KNOWN_DOI_PATH = "./known_valid_doi.txt"
 
 class RecordIterator:
 
@@ -350,33 +351,45 @@ def _get_harvest_cache_manager(manager):
     # After harvesting we save the cache to disk so that we can use it again next time, greatly
     # improving harvesting speed. This is all optional: harvesting will work fine even if the
     # cache file is missing/corrupt/whatever.
-    previously_validated_ids = {}
+    previously_validated_ids = {"doi": {}, "issn": {}}
     try:
         with open(ID_CACHE_PATH, 'r') as f:
             previously_validated_ids = json.load(f)
         log.info(f"Cache populated with {len(previously_validated_ids)} previously validated IDs from {ID_CACHE_PATH}")
     except FileNotFoundError:
-        log.warn("ID cache file not found, starting fresh")
+        log.warning("ID cache file not found, starting fresh")
     except Exception as e:
-        log.warn(f"Failed loading ID cache file, starting fresh (error: {e})")
+        log.warning(f"Failed loading ID cache file, starting fresh (error: {e})")
 
-    # If we have a file with known ISSN numbers, use it to populate the cache
-    known_issns = {}
+    # If we have files with known ISSN/DOI numbers, use them to populate the cache
+    known_issn = {}
+    known_doi = {}
     try:
-        with open(ISSN_PATH, 'r') as f:
-            for line in f:
-                known_issns[re.split(r'\s|\t', line)[0].strip()] = 1
-            log.info(f"Cache populated with {len(known_issns)} ISSNs from {ISSN_PATH}")
+        with open(KNOWN_ISSN_PATH, 'r') as issn, open(KNOWN_DOI_PATH, 'r') as doi:
+            issn_count = 0
+            doi_count = 0
+            for line in issn:
+                known_issn[line.strip()] = 1
+                issn_count += 1
+            for line in doi:
+                known_doi[line.strip()] = 1
+                doi_count += 1
+            log.info(f"Cache populated with {issn_count} ISSNs from {KNOWN_ISSN_PATH}, {doi_count} DOIs from {KNOWN_DOI_PATH}")
     except Exception as e:
-        log.warning(f"Failed loading ISSN file: {e}")
-    # id_cache (stuff seen during requests to external sources) should be saved,
-    # but we don't want to waste time saving ISSNs already known from issn.txt,
-    # hence separating "stuff learned during harvest" from "stuff learned from static file"
-    ids_not_in_issn = set(previously_validated_ids.keys()) - set(known_issns.keys())
-    id_cache = manager.dict(dict.fromkeys(ids_not_in_issn, 1))
-    issn_cache = manager.dict(known_issns)
+        log.warning(f"Failed loading ISSN/DOI files: {e}")
+    # Stuff seen during requests to external sources should be saved for future use,
+    # but we don't want to waste time saving ISSN/DOIs already known from the 'static' files,
+    # hence separating "stuff learned during harvest" from "stuff learned from static files".
+    doi_not_in_static = set(previously_validated_ids["doi"].keys()) - set(known_doi.keys())
+    issn_not_in_static = set(previously_validated_ids["issn"].keys()) - set(known_issn.keys())
+
+    doi_new = manager.dict(dict.fromkeys(doi_not_in_static, 1))
+    doi_static = manager.dict(known_doi)
+    issn_new = manager.dict(dict.fromkeys(issn_not_in_static, 1))
+    issn_static = manager.dict(known_issn)
     harvest_meta = manager.dict({})
-    return manager.dict({'id': id_cache, 'issn': issn_cache, 'meta': harvest_meta})
+
+    return manager.dict({'doi_new': doi_new, 'doi_static': doi_static, 'issn_new': issn_new, 'issn_static': issn_static, 'meta': harvest_meta})
 
 SOURCES = json.load(open(os.path.dirname(__file__) + '/sources.json'))
 TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = ["cluster", "finalized", "search_single", "search_doi", "search_genre_form", "search_subject", "search_creator", "search_org", "search_fulltext", "stats_field_events", "stats_audit_events"]
@@ -494,8 +507,8 @@ if __name__ == "__main__":
     if not purge:
         # Save ISSN/DOI cache for use next time
         try:
-            log.info(f"Saving {len(harvest_cache['id'])} cached IDs to {ID_CACHE_PATH}")
+            log.info(f'Saving {len(harvest_cache["issn_new"]) + len(harvest_cache["doi_new"])} cached IDs to {ID_CACHE_PATH}')
             with open(ID_CACHE_PATH, 'w') as f:
-                json.dump(dict(harvest_cache['id']), f)
+                json.dump({"doi": dict(harvest_cache['doi_new']), "issn": dict(harvest_cache["issn_new"])}, f)
         except Exception as e:
-            log.warn(f"Failed saving harvest ID cache to {ID_CACHE_PATH}: {e}")
+            log.warning(f"Failed saving harvest ID cache to {ID_CACHE_PATH}: {e}")

@@ -85,7 +85,7 @@ def _validate(field, session, harvest_cache):
         field.events.append(make_event(type="validation", code="format", result="invalid", value=stripped_doi))
         return False
 
-    if harvest_cache['id'].get(stripped_doi, 0):
+    if harvest_cache['doi_static'].get(stripped_doi, 0) or harvest_cache['doi_new'].get(stripped_doi, 0):
         field.events.append(make_event(type="validation", code="remote.cache", result="valid", value=stripped_doi))
         field.value = stripped_doi
         return True
@@ -98,7 +98,7 @@ def _validate(field, session, harvest_cache):
             return False
 
     field.events.append(make_event(type="validation", code="remote", result="valid", value=stripped_doi))
-    harvest_cache['id'][stripped_doi] = 1
+    harvest_cache['doi_new'][stripped_doi] = 1
     field.value = stripped_doi
     return True
 
