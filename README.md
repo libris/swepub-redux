@@ -20,7 +20,7 @@ $ pip install -r requirements.txt
 
 To run the pipeline do:
 
-```
+```bash
 $ python3 pipeline/harvest.py devdata
 ```
 
@@ -30,15 +30,16 @@ Expect this to take a few minutes. If you omit the "devdata" parameter you inste
 $ python3 pipeline/harvest.py ths uniarts
 ```
 
-There is no state to be considered here and no running "services". Each time the pipeline is executed a new sqlite3 database is produced as output. You may even run more than one in parallel if you like. As an option you can if you wish update an existing database with whatever new data is available by appending or prepending the parameter `update`:
+There is no state to be considered here and no running "services". Each time the pipeline is executed a new sqlite3 database is produced as output. You may even run more than one in parallel if you like. As an option you can if you wish update an existing database with whatever new data is available by using the parameter `update`:
 
-```
-$ python3 pipeline/harvest.py update uniarts
+```bash
+$ python3 pipeline/harvest.py update # update all sources
+$ python3 pipeline/harvest.py update uniarts ths # update specific sources
 ```
 
-You can `purge` (delete) one or more sources. In combination with a subsequent `update` command, this lets you completely remove a source and then harvest it fully, while keeping records from other sources in the dabase intact:
+You can `purge` (delete) one or more sources. In combination with a subsequent `update` command, this lets you completely remove a source and then harvest it fully, while keeping records from other sources in the database intact:
 
-```
+```bash
 $ python3 pipeline/harvest.py purge uniarts
 $ python3 pipeline/harvest.py update uniarts
 ```
@@ -56,13 +57,14 @@ The resulting sqlite3 database has roughly the following structure (see storage.
 ## Service
 
 If you want the frontend, make sure Nodejs/npm/yarn are installed, and then:
-```
+
+```bash
 npm install --prefix service/vue-client/
 yarn --cwd service/vue-client/ build
 ```
 
 To start the Swepub service (which provides the API and serves the static frontend files, if they exist):
 
-```
+```bash
 python3 service/swepub.py
 ```
