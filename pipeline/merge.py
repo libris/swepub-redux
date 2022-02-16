@@ -83,5 +83,4 @@ def _handle(batch): # batch is a list of cluster rows
 
 # For debugging
 if __name__ == "__main__":
-    open_existing_storage()
     merge()

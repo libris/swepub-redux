@@ -168,5 +168,4 @@ def is_swedish_list(pub):
 
 # For debugging
 if __name__ == "__main__":
-    open_existing_storage()
     generate_search_tables()

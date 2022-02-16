@@ -418,11 +418,6 @@ def clean_and_init_storage():
 
     connection.commit()
 
-def open_existing_storage():
-    connection = sqlite3.connect(sqlite_path)
-    cursor = connection.cursor()
-    _set_pragmas(cursor)
-
 def store_original(oai_id, deleted, original, source, accepted, connection, incremental, min_level_errors, harvest_id):
     cursor = connection.cursor()
     if incremental:
@@ -520,7 +515,12 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
     return converted_rowid
 
 def get_connection():
-    return sqlite3.connect(sqlite_path)
+    connection = sqlite3.connect(sqlite_path)
+    cursor = connection.cursor()
+    _set_pragmas(cursor)
+    connection.commit()
+    cursor.close()
+    return connection
 
 def dict_factory(cursor, row):
     d = {}

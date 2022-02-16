@@ -407,5 +407,4 @@ def auto_classify(incremental, incrementally_converted_rowids):
 
 # For debugging
 if __name__ == "__main__":
-    open_existing_storage()
     auto_classify()

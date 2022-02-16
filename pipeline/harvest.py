@@ -340,31 +340,7 @@ def _get_has_persistent_deletes(source_set):
     return identify.deletedRecord == "persistent"
 
 
-sources = json.load(open(os.path.dirname(__file__) + '/sources.json'))
-
-if __name__ == "__main__":
-    # To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..
-    log = swepublog.get_default_logger()
-    args = sys.argv[1:]
-
-    incremental = False
-    if "update" in args:
-        args.remove("update")
-        incremental = True
-        log.info("Doing incremental update")
-
-    if "devdata" in args:
-        sources_to_harvest = [sources["mdh"], sources["miun"], sources["mau"]]
-    elif len(args) > 0:
-        sources_to_harvest = []
-        for arg in args:
-            if arg not in sources:
-                log.error(f"Source {arg} does not exist in sources.json")
-                sys.exit(1)
-            sources_to_harvest.append(sources[arg])
-    else:
-        sources_to_harvest = list(sources.values())
-
+def _get_harvest_cache_manager(manager):
     # We check if ISSN and DOI numbers really exist through HTTP requests to external servers,
     # so we cache the results to avoid unnecessary requests. Such requests were previously
     # cached in Redis. We don't care about the whole response, just whether the ISSN/DOI
@@ -393,8 +369,6 @@ if __name__ == "__main__":
             log.info(f"Cache populated with {len(known_issns)} ISSNs from {ISSN_PATH}")
     except Exception as e:
         log.warning(f"Failed loading ISSN file: {e}")
-    # All harvest jobs have access to the same Manager-managed dictionaries
-    manager = Manager()
     # id_cache (stuff seen during requests to external sources) should be saved,
     # but we don't want to waste time saving ISSNs already known from issn.txt,
     # hence separating "stuff learned during harvest" from "stuff learned from static file"
@@ -402,68 +376,98 @@ if __name__ == "__main__":
     id_cache = manager.dict(dict.fromkeys(ids_not_in_issn, 1))
     issn_cache = manager.dict(known_issns)
     harvest_meta = manager.dict({})
-    harvest_cache = manager.dict({'id': id_cache, 'issn': issn_cache, 'meta': harvest_meta})
+    return manager.dict({'id': id_cache, 'issn': issn_cache, 'meta': harvest_meta})
 
-    added_converted_rowids = manager.dict()
+SOURCES = json.load(open(os.path.dirname(__file__) + '/sources.json'))
+TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = ["cluster", "finalized", "search_single", "search_doi", "search_genre_form", "search_subject", "search_creator", "search_org", "search_fulltext", "stats_field_events", "stats_audit_events"]
 
-    log.info("Harvesting " + " ".join([source['code'] for source in sources_to_harvest]))
+if __name__ == "__main__":
+    # To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..
+    log = swepublog.get_default_logger()
+    args = sys.argv[1:]
 
-    # TODO: take list of actual source names from args instead
-    if "devdatasingle" in args:
-        sources_to_harvest = [sources[5]]
+    if "purge" in args and "update" in args:
+        log.error("Can't purge and update at the same time!")
+        sys.exit(1)
 
-    if "devdatasmall" in args:
-        sources_to_harvest = [sources[5], sources[40], sources[39]]
+    purge = False
+    if "purge" in args:
+        args.remove("purge")
+        purge = True
 
-    print(sources_to_harvest)
+    incremental = False
+    if "update" in args:
+        args.remove("update")
+        incremental = True
+        log.info("Doing incremental update")
 
-    t0 = time.time()
-    if incremental:
-        open_existing_storage()
+    if "devdata" in args:
+        sources_to_process = [SOURCES["mdh"], SOURCES["miun"], SOURCES["mau"]]
+    elif len(args) > 0:
+        sources_to_process = []
+        for arg in args:
+            if arg not in SOURCES:
+                log.error(f"Source {arg} does not exist in sources.json")
+                sys.exit(1)
+            sources_to_process.append(SOURCES[arg])
+    else:
+        sources_to_process = list(SOURCES.values())
+
+    t1 = None
+    if purge:
+        log.info("Purging " + " ".join([source['code'] for source in sources_to_process]))
         with get_connection() as connection:
             cursor = connection.cursor()
-            cursor.execute("DELETE FROM cluster")
-            cursor.execute("DELETE FROM finalized")
-            cursor.execute("DELETE FROM search_single")
-            cursor.execute("DELETE FROM search_doi")
-            cursor.execute("DELETE FROM search_genre_form")
-            cursor.execute("DELETE FROM search_subject")
-            cursor.execute("DELETE FROM search_creator")
-            cursor.execute("DELETE FROM search_org")
-            cursor.execute("DELETE FROM search_fulltext")
-            cursor.execute("DELETE FROM stats_field_events")
-            cursor.execute("DELETE FROM stats_audit_events")
+            for source in sources_to_process:
+                cursor.execute("DELETE FROM original WHERE source = ?", [source['code']])
+                cursor.execute("DELETE FROM last_harvest WHERE source = ?", [source['code']])
+            for table in TABLES_DELETED_ON_INCREMENTAL_OR_PURGE:
+                cursor.execute(f"DELETE FROM {table}")
     else:
-        clean_and_init_storage()
-    processes = []
+        # All harvest jobs have access to the same Manager-managed dictionaries
+        manager = Manager()
+        harvest_cache = _get_harvest_cache_manager(manager)
+        added_converted_rowids = manager.dict()
 
-    # Initially synchronization was left up to sqlite3's file locking to handle,
-    # which was fine, except that the try/sleep is somewhat inefficient and risks
-    # starving some processes for a long time.
-    # Instead, using an explicit lock should instead allow the kernel to fairly
-    # distribute the database between the processes.
-    lock = Lock()
+        log.info("Harvesting " + " ".join([source['code'] for source in sources_to_process]))
 
-    harvested_count = Value("I", 0)
+        t0 = time.time()
+        if incremental:
+            with get_connection() as connection:
+                cursor = connection.cursor()
+                for table in TABLES_DELETED_ON_INCREMENTAL_OR_PURGE:
+                    cursor.execute(f"DELETE FROM {table}")
+        else:
+            clean_and_init_storage()
+        processes = []
 
-    for source in sources_to_harvest:
-        p = Process(target=harvest, args=(source, lock, harvested_count, harvest_cache, incremental, added_converted_rowids))
-        p.start()
-        processes.append( p )
-    for p in processes:
-        p.join()
-    
-    t1 = time.time()
-    diff = t1-t0
-    log.info(f"Phase 1 (harvesting) ran for {diff} seconds")
+        # Initially synchronization was left up to sqlite3's file locking to handle,
+        # which was fine, except that the try/sleep is somewhat inefficient and risks
+        # starving some processes for a long time.
+        # Instead, using an explicit lock should instead allow the kernel to fairly
+        # distribute the database between the processes.
+        lock = Lock()
 
-    t0 = t1
-    auto_classify(incremental, added_converted_rowids.keys())
-    t1 = time.time()
-    diff = t1-t0
-    log.info(f"Phase 2 (auto-classification) ran for {diff} seconds")
+        harvested_count = Value("I", 0)
 
-    t0 = t1
+        for source in sources_to_process:
+            p = Process(target=harvest, args=(source, lock, harvested_count, harvest_cache, incremental, added_converted_rowids))
+            p.start()
+            processes.append( p )
+        for p in processes:
+            p.join()
+
+        t1 = time.time()
+        diff = t1-t0
+        log.info(f"Phase 1 (harvesting) ran for {diff} seconds")
+
+        t0 = t1
+        auto_classify(incremental, added_converted_rowids.keys())
+        t1 = time.time()
+        diff = t1-t0
+        log.info(f"Phase 2 (auto-classification) ran for {diff} seconds")
+
+    t0 = t1 if t1 else time.time()
     deduplicate()
     t1 = time.time()
     diff = t1-t0
@@ -487,10 +491,11 @@ if __name__ == "__main__":
     diff = t1-t0
     log.info(f"Phase 6 (generate processing stats) ran for {diff} seconds")
 
-    # Save ISSN/DOI cache for use next time
-    try:
-        log.info(f"Saving {len(harvest_cache['id'])} cached IDs to {ID_CACHE_PATH}")
-        with open(ID_CACHE_PATH, 'w') as f:
-            json.dump(dict(harvest_cache['id']), f)
-    except Exception as e:
-        log.warn(f"Failed saving harvest ID cache to {ID_CACHE_PATH}: {e}")
+    if not purge:
+        # Save ISSN/DOI cache for use next time
+        try:
+            log.info(f"Saving {len(harvest_cache['id'])} cached IDs to {ID_CACHE_PATH}")
+            with open(ID_CACHE_PATH, 'w') as f:
+                json.dump(dict(harvest_cache['id']), f)
+        except Exception as e:
+            log.warn(f"Failed saving harvest ID cache to {ID_CACHE_PATH}: {e}")

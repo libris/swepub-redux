@@ -530,6 +530,5 @@ def deduplicate():
 
             
 # For debugging
-if __name__ == "__main__":    
-    open_existing_storage()
+if __name__ == "__main__":
     deduplicate()

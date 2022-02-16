@@ -30,7 +30,18 @@ Expect this to take a few minutes. If you omit the "devdata" parameter you inste
 $ python3 pipeline/harvest.py ths uniarts
 ```
 
-There is no state to be considered here and no running "services". Each time the pipeline is executed a new sqlite3 database is produced as output. You may even run more than one in parallell if you like. As an option you can if you wish update an existing database with whatever new data is avaialable by appending the parameter "update".
+There is no state to be considered here and no running "services". Each time the pipeline is executed a new sqlite3 database is produced as output. You may even run more than one in parallel if you like. As an option you can if you wish update an existing database with whatever new data is available by appending or prepending the parameter `update`:
+
+```
+$ python3 pipeline/harvest.py update uniarts
+```
+
+You can `purge` (delete) one or more sources. In combination with a subsequent `update` command, this lets you completely remove a source and then harvest it fully, while keeping records from other sources in the dabase intact:
+
+```
+$ python3 pipeline/harvest.py purge uniarts
+$ python3 pipeline/harvest.py update uniarts
+```
 
 The resulting sqlite3 database has roughly the following structure (see storage.py for details):
 
@@ -43,8 +54,6 @@ The resulting sqlite3 database has roughly the following structure (see storage.
 
 
 ## Service
-
-**Work in progress!**
 
 If you want the frontend, make sure Nodejs/npm/yarn are installed, and then:
 ```
