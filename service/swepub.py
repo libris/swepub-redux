@@ -7,6 +7,7 @@ from utils.common import *
 from utils.process import *
 from utils.process_csv import export as process_csv_export
 from utils.bibliometrics_csv import export as bibliometrics_csv_export
+from utils.classify import enrich_subject
 
 from datetime import datetime
 from pathlib import Path
@@ -15,6 +16,7 @@ from flask import Flask, g, request, jsonify, Response, stream_with_context, url
 from pypika import Query, Tables, Parameter, Table, Criterion
 from pypika.terms import BasicCriterion
 from pypika import functions as fn
+from collections import Counter
 
 # Database in parent directory of swepub.py directory
 DATABASE = str(Path.joinpath(Path(__file__).resolve().parents[1], 'swepub.sqlite3'))
@@ -31,6 +33,7 @@ SSIF_LABELS = {
 INFO_API_MAPPINGS = sort_mappings(json.load(open(os.path.dirname(__file__) + '/../pipeline/ssif_research_subjects.json')))
 INFO_API_OUTPUT_TYPES = json.load(open(os.path.dirname(__file__) + '/../pipeline/output_types.json'))
 INFO_API_SOURCE_ORG_MAPPING = json.load(open(os.path.dirname(__file__) + '/../pipeline/sources.json'))
+CATEGORIES = json.load(open(os.path.dirname(__file__) + '/../pipeline/categories.json'))
 
 # Note: static files should be served by Apache/nginx
 app = Flask(__name__, static_url_path='', static_folder='vue-client/dist')
@@ -66,6 +69,13 @@ def _errors(errors, status_code=400):
 def index_file():
     return app.send_static_file('index.html')
 
+
+# ██████╗ ██╗██████╗ ██╗     ██╗ ██████╗ ███╗   ███╗███████╗████████╗██████╗ ██╗ ██████╗███████╗
+# ██╔══██╗██║██╔══██╗██║     ██║██╔═══██╗████╗ ████║██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝██╔════╝
+# ██████╔╝██║██████╔╝██║     ██║██║   ██║██╔████╔██║█████╗     ██║   ██████╔╝██║██║     ███████╗
+# ██╔══██╗██║██╔══██╗██║     ██║██║   ██║██║╚██╔╝██║██╔══╝     ██║   ██╔══██╗██║██║     ╚════██║
+# ██████╔╝██║██████╔╝███████╗██║╚██████╔╝██║ ╚═╝ ██║███████╗   ██║   ██║  ██║██║╚██████╗███████║
+# ╚═════╝ ╚═╝╚═════╝ ╚══════╝╚═╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝ ╚═════╝╚══════╝
 
 @app.route("/api/v1/bibliometrics", methods=['POST'], strict_slashes=False)
 def bibliometrics_api():
@@ -232,6 +242,125 @@ def bibliometrics_get_record(record_id):
     doc.pop('_publication_orgs', None)
     return doc
 
+
+#  ██████╗██╗      █████╗ ███████╗███████╗██╗███████╗██╗   ██╗
+# ██╔════╝██║     ██╔══██╗██╔════╝██╔════╝██║██╔════╝╚██╗ ██╔╝
+# ██║     ██║     ███████║███████╗███████╗██║█████╗   ╚████╔╝ 
+# ██║     ██║     ██╔══██║╚════██║╚════██║██║██╔══╝    ╚██╔╝  
+# ╚██████╗███████╗██║  ██║███████║███████║██║██║        ██║   
+#  ╚═════╝╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝╚═╝        ╚═╝   
+
+@app.route("/api/v1/classify", methods=['POST'])
+def classify():
+    if request.content_type != 'application/json':
+        return _errors('Content-Type must be "application/json"')
+
+    data = request.json
+    abstract = data.get('abstract', '')
+    classes = data.get('classes', 5)
+    level = data.get('level', 3)
+    title = data.get('title', '')
+    keywords = data.get('keywords', '')
+
+    try:
+        classes = int(classes)
+        level = int(level)
+    except ValueError:
+        return _errors("Parameters 'classes' and 'level' must be integers")
+    if level not in [1, 3, 5]:
+        return _errors("Parameter 'level' must be either 1, 3 or 5")
+    if classes < 1:
+        return _errors("Parameter 'classes' must be larger than 0")
+
+    # NOTE! From here on the code is copied/adapted from pipeline's autoclassify.
+
+    # Extract individual words
+    words_set = set()
+    for string in [abstract, title, keywords]:
+        words = re.findall(r'\w+', string)
+        for word in words:
+            if word.isnumeric():
+                continue
+            words_set.add(word.lower())
+    words = list(words_set)[0:150]
+
+    # Out of the extracted words, determine which are the rarest ones
+    cur = get_db().cursor()
+    cur.row_factory = lambda cursor, row: row[0]
+    rare_words = cur.execute(f"""
+        SELECT
+            word
+        FROM
+            abstract_total_word_counts
+        WHERE
+            word IN ({','.join('?'*len(words))})
+        ORDER BY
+            occurrences ASC
+        LIMIT
+            6
+    """, words).fetchall()
+
+    # Find publications sharing those rare words
+    subjects = Counter()
+    publication_subjects = set()
+
+    cur.row_factory = dict_factory
+    for candidate_row in cur.execute(f"""
+        SELECT
+            converted.id, converted.data, group_concat(abstract_rarest_words.word, '\n') AS rarest_words
+        FROM
+            abstract_rarest_words
+        LEFT JOIN
+            converted
+        ON
+            converted.id = abstract_rarest_words.converted_id
+        WHERE
+            abstract_rarest_words.word IN ({','.join('?'*len(rare_words))})
+        GROUP BY
+            abstract_rarest_words.converted_id
+        """, rare_words):
+
+        candidate_rowid = candidate_row["id"]
+        candidate = json.loads(candidate_row["data"])
+        candidate_matched_words = []
+        if isinstance(candidate_row["rarest_words"], str):
+            candidate_matched_words = candidate_row["rarest_words"].split("\n")
+
+        # This is a vital tweaking point. How many _rare_ words do two abstracts need to share
+        # in order to be considered on the same subject? 2 seems a balanced choice. 1 "works" too,
+        # but may be a bit too aggressive (providing a bit too many false positive matches).
+        if len(candidate_matched_words) < 1:
+            continue
+
+        for subject in candidate.get("instanceOf", {}).get("subject", []):
+            try:
+                authority, subject_id = subject['inScheme']['code'], subject['code']
+            except KeyError:
+                continue
+            if authority not in ('hsv', 'uka.se') or len(subject_id) < level:
+                continue
+
+            publication_subjects.add(subject_id[:level])
+        score = len(candidate_matched_words)
+        for sub in publication_subjects:
+            subjects[sub] += score
+
+    subjects = subjects.most_common(classes)
+    status = "match" if len(subjects) > 0 else "no match"
+
+    return {
+        "abstract": abstract,
+        "status": status,
+        "suggestions": enrich_subject(subjects, CATEGORIES)
+    }
+
+
+# ██████╗  █████╗ ████████╗ █████╗ ███████╗████████╗ █████╗ ████████╗██╗   ██╗███████╗
+# ██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗██╔════╝╚══██╔══╝██╔══██╗╚══██╔══╝██║   ██║██╔════╝
+# ██║  ██║███████║   ██║   ███████║███████╗   ██║   ███████║   ██║   ██║   ██║███████╗
+# ██║  ██║██╔══██║   ██║   ██╔══██║╚════██║   ██║   ██╔══██║   ██║   ██║   ██║╚════██║
+# ██████╔╝██║  ██║   ██║   ██║  ██║███████║   ██║   ██║  ██║   ██║   ╚██████╔╝███████║
+# ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚══════╝
 
 @app.route("/api/v1/datastatus", methods=['GET'])
 def datastatus():
@@ -439,6 +568,13 @@ def datastatus_validations_source(source=None):
     return result
 
 
+# ██╗███╗   ██╗███████╗ ██████╗ 
+# ██║████╗  ██║██╔════╝██╔═══██╗
+# ██║██╔██╗ ██║█████╗  ██║   ██║
+# ██║██║╚██╗██║██╔══╝  ██║   ██║
+# ██║██║ ╚████║██║     ╚██████╔╝
+# ╚═╝╚═╝  ╚═══╝╚═╝      ╚═════╝ 
+
 @app.route("/api/v1/info/research-subjects", methods=['GET'])
 def info_research_subjects():
     return jsonify(INFO_API_MAPPINGS)
@@ -459,6 +595,13 @@ def info_sources():
         sources.append({'name': INFO_API_SOURCE_ORG_MAPPING[code]['name'], 'code': code})
     return {'sources': sources}
 
+
+# ██████╗ ██████╗  ██████╗  ██████╗███████╗███████╗███████╗
+# ██╔══██╗██╔══██╗██╔═══██╗██╔════╝██╔════╝██╔════╝██╔════╝
+# ██████╔╝██████╔╝██║   ██║██║     █████╗  ███████╗███████╗
+# ██╔═══╝ ██╔══██╗██║   ██║██║     ██╔══╝  ╚════██║╚════██║
+# ██║     ██║  ██║╚██████╔╝╚██████╗███████╗███████║███████║
+# ╚═╝     ╚═╝  ╚═╝ ╚═════╝  ╚═════╝╚══════╝╚══════╝╚══════╝
 
 @app.route("/api/v1/process/publications/<path:record_id>", methods=['GET'])
 def process_get_publication(record_id=None):

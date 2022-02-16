@@ -28,7 +28,9 @@ def _generate_occurrence_table():
             for summary in converted.get("instanceOf", {}).get("summary", []):
                 strings_to_scan.append(summary.get("label", ""))
             strings_to_scan += publication.keywords
-            
+            strings_to_scan += publication.title or ""
+            strings_to_scan += publication.subtitle or ""
+
             for string in strings_to_scan:
                 words = re.findall(r'\w+', string)
                 for word in words:
