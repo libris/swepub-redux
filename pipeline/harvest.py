@@ -267,7 +267,7 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental, added_con
                         log.info(f"Deleted {len(obsolete_ids)} obsolete records from {source['code']}, after checking their ID-list.")
 
         except HarvestFailed as e:
-            log.warn(f'FAILED HARVEST: {source["code"]}')
+            log.warning(f'FAILED HARVEST: {source["code"]}. Error: {e}')
             continue
     with get_connection() as connection:
         cursor = connection.cursor()
