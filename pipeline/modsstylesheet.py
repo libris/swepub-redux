@@ -48,7 +48,7 @@ class ModsStylesheet:
             return xsl
 
         if 'diva' in self.url:
-            return path.join(path.dirname(path.abspath(__file__)), '../resources/modsstylesheet/general_stylesheet_v3_1.xml')
+            return path.join(path.dirname(path.abspath(__file__)), '../resources/modsstylesheet/general_stylesheet.xml')
 
         return None
 

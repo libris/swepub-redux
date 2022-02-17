@@ -547,46 +547,452 @@
                     </xsl:element>
                 </xsl:for-each>
                 <!-- Finansiär/strategiska forskningsprojekt -->
-                <xsl:for-each select="mods:note[@type= 'funder']">
-                    <xsl:element name="relatedItem">
-                        <xsl:attribute name="type">
-                            <xsl:text>host</xsl:text>
-                        </xsl:attribute>
-                        <xsl:element name="genre">
-                            <xsl:text>grantAgreement</xsl:text>
-                        </xsl:element>
-                        <xsl:element name="name">
-                            <xsl:attribute name="type">
-                                <xsl:text>corporate</xsl:text>
-                            </xsl:attribute>
-                            <xsl:element name="namePart">
-                                <xsl:choose>
-                                    <xsl:when test="contains(., '[')">
-                                        <xsl:value-of select="substring-before(., ' [')"/>
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                        <xsl:value-of select="."/>
-                                    </xsl:otherwise>
-                                </xsl:choose>
-                            </xsl:element>
-                            <xsl:element name="role">
-                                <xsl:element name="roleTerm">
-                                    <xsl:attribute name="type">
-                                        <xsl:text>code</xsl:text>
-                                    </xsl:attribute>
-                                    <xsl:attribute name="authority">
-                                        <xsl:text>marcrelator</xsl:text>
-                                    </xsl:attribute>
-                                    <xsl:text>fnd</xsl:text>
+                <xsl:for-each select="mods:note[@type = 'funder']">
+                    <xsl:choose>
+                        <!-- Strategiska forskningsområden -->
+                        <xsl:when test=". = 'Chalmers Sustainable Transport Initiative'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Chalmers Sustainable Transport Initiative</title>
+                                </titleInfo>
+                                <note type="sfo">Transport-research</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'Strategic Initiative - Materials Science'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Strategic Initiative – Materials Science</title>
+                                </titleInfo>
+                                <note type="sfo">Materialsscience</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'Sustainable Production Initiative'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Sustainable Production Initiative</title>
+                                </titleInfo>
+                                <note type="sfo">Production-technology</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'Chalmers Nano‐initiative'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Chalmers Nano-initiative</title>
+                                </titleInfo>
+                                <note type="sfo">Nanoscience and nanotechnology</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'Chalmers Energy initiative'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Chalmers Energy Initiative</title>
+                                </titleInfo>
+                                <note type="sfo">Energy</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when
+                            test=". = 'Toward Person‐Centered Care in Long‐Term Illness: A Research Core Center'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Toward Person-Centered Care in Long-term Illness: A Research Core
+                                        Center</title>
+                                </titleInfo>
+                                <note type="sfo">Health Care Research</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'Center for Regenerative Medicine'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Center for Regenerativ Medicine</title>
+                                </titleInfo>
+                                <note type="sfo">Stemcells and regenerative medicine</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'Translational Program in Diabetes Research, Education and Care'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Translational Program in Diabetes Research, Education and Care</title>
+                                </titleInfo>
+                                <note type="sfo">Diabetes</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when
+                            test=". = 'Center for Integrated Cancer Studies at Karolinska Institutet - an environment for translational cancer research'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Center for Integrated Cancer Studies at Karolinska Institutet (CICS-KI) - an environment for translational cancer research</title>
+                                </titleInfo>
+                                <note type="sfo">Cancer</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when
+                            test=". = 'Cognitive and Motor functions in Health and Disease during the Lifespan'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Cognitive and Motor functions in Health and Disease during the Lifespan</title>
+                                </titleInfo>
+                                <note type="sfo">Neuroscience</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when
+                            test=". = 'Epidemiology: from mechanism to prevention, from surveillance to safety'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Epidemiology: from mechanism to prevention, from surveillance to safety</title>
+                                </titleInfo>
+                                <note type="sfo">Epidemiology</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when
+                            test=". = 'Bridging Research and Practice for Better Health: The Comprehensive Care Science Centre'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Bridging Research and practice for Better Health: The Comprehensive Care Science Centre</title>
+                                </titleInfo>
+                                <note type="sfo">Health Care Research</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'ICT - The Next Generation'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>ICT – The Next Generation</title>
+                                </titleInfo>
+                                <note type="sfo">IT and mobile communications</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'TrenOp, Transport Research Environment with Novel Perspectives'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>TRENoP, Transport Research Environment with Novel Perspectives</title>
+                                </titleInfo>
+                                <note type="sfo">Transport-research</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'XPRES - Initiative for excellence in production research'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>XPRESS – Initiative for excellence in production research</title>
+                                </titleInfo>
+                                <note type="sfo">Production-technology</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'Swedish e‐Science Research Center'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Swedish e-Science Research Centre</title>
+                                </titleInfo>
+                                <note type="sfo">e-Science</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'Science for Life Laboratory, SciLifeLab'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Science for Life Laboratory – a national resource center for high–throughput molecular bioscience</title>
+                                </titleInfo>
+                                <note type="sfo">Molecular biosciences</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when
+                            test=". = 'International Interdisciplinary Materials Science Laboratory for Advanced Functional Materials (AFM)'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>International Interdisciplinary Materials Science Laboratory for Advanced Functional Materials (AFM)</title>
+                                </titleInfo>
+                                <note type="sfo">Materialsscience</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'Security Link'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Security Link</title>
+                                </titleInfo>
+                                <note type="sfo">Security and emergency preparedness</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when
+                            test=". = 'ELLIIT - The Linköping‐Lund Initiative on IT and Mobile Communications'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>eLLIIT – The Linköping – Lund Initiative on IT and Mobile Communication</title>
+                                </titleInfo>
+                                <note type="sfo">IT and mobile communications</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'Sustainable use of mineral resources - securing the future'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Sustainable use of mineral resources – securing the future</title>
+                                </titleInfo>
+                                <note type="sfo">Sustainable use of natural resources</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when
+                            test=". = 'Epidemiology for health (EpiHealth): for Innovation and Excellence in Open-Access, Basic-Translational and Applied Epidemiological Research'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Epidemiology for Health (EpiHealth): for Innovation and Excellence in Open-Access, Basic-Translational and Applied Epidemiological Research</title>
+                                </titleInfo>
+                                <note type="sfo">Epidemiology</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'National initiative on Stem Cells for Regenerative Therapy'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>National initiative on Stem Cells for Regenerativ Therapy</title>
+                                </titleInfo>
+                                <note type="sfo">Stemcells and regenerative medicine</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'The nanometer Structure Consortium at Lund University'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>The nanometer Structure Consortium at Lund University</title>
+                                </titleInfo>
+                                <note type="sfo">Technology</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'Multidisciplinary research focused on Parkinson’s disease - MultiPark'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Multidisciplinary research focused on Parkinson´s disease – MultiPark</title>
+                                </titleInfo>
+                                <note type="sfo">Neuroscience</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'EXODIAB - Excellence of Diabetes Research in Sweden'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>EXODIAB (Excellence of Diabetes Research in Sweden)</title>
+                                </titleInfo>
+                                <note type="sfo">Diabetes</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when
+                            test=". = 'BioCARE - Biomarkers in Cancer Medicine Improving Health Care Education and Innovation'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>BioCARE – Biomarkers in Cancer Medicine Improving Health Care, Education and Innovation</title>
+                                </titleInfo>
+                                <note type="sfo">Cancer</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'The Middle East in the Contemporary World'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>The Middle East in the Contemporary World (MECW)</title>
+                                </titleInfo>
+                                <note type="sfo">Politically important geographical regions</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'ModElling the Regional and Global Earth system - MERG'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>ModElling the Regional and Global Earth system (MERGE)</title>
+                                </titleInfo>
+                                <note type="sfo">Climate models</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'Biodiversity and Ecosystem Services in a Changing Climate'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Biodiversity and Ecosystem services in a Changing Climate – BECC</title>
+                                </titleInfo>
+                                <note type="sfo">Impact on natural resources</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'Forests and other plants'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Forests and other plants</title>
+                                </titleInfo>
+                                <note type="sfo">Sustainable use of natural resources</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'Modelling initiative of the Bert Bolin Centre for Climate Change'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Modelling initiative of the Bert Bolin Centre for Climate Change</title>
+                                </titleInfo>
+                                <note type="sfo">Climate models </note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when
+                            test=". = 'A multiscale, cross‐disciplinary approach to the study of climate change effect on ecosystem services and biodiversity'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>A multiscale, cross-disciplinary approach to the study of climate change effects on ecosystem and biodiversity services</title>
+                                </titleInfo>
+                                <note type="sfo">Impact on natural resources</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'Ecosystem Approach to the Baltic Sea'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Ecosystem Approach to the Baltic Sea</title>
+                                </titleInfo>
+                                <note type="sfo">Marine environment research</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when
+                            test=". = 'Ecosystem dynamics in the Baltic Sea in a changing climate perspective - ECOCHANGE'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Ecosystem dynamics in the Baltic Sea in a changing climate perspective – ECOCHANGE</title>
+                                </titleInfo>
+                                <note type="sfo">Marine environment research</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'Bio4Energy'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Bio4Energy</title>
+                                </titleInfo>
+                                <note type="sfo">Energy</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'The U‐Can Comprehensive Cancer Consortium'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>The U-Can Comprehensive Cancer Consortium</title>
+                                </titleInfo>
+                                <note type="sfo">Cancer</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when
+                            test=". = 'U‐Care: Better Psychosocial Care at Lower Cost? Evidence-based assessment and Psychosocial Care via Internet, a Swedish Example'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>U-CARE Better Psychosocial Care at a Lower Cost? Evidence-based assessment and Psychosocial Care Via Internet, a Swedish Example</title>
+                                </titleInfo>
+                                <note type="sfo">Health Care Research</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'eSSENCE - An eScience Collaboration'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>eSSENCE – An eScience Collaboration</title>
+                                </titleInfo>
+                                <note type="sfo">e-Science</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'StandUp'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>StandUp</title>
+                                </titleInfo>
+                                <note type="sfo">Energy</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'Uppsala Russian Research Center'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Uppsala Russian Research Center (URRC)</title>
+                                </titleInfo>
+                                <note type="sfo">Politically important geographical regions</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'Center for genomic and proteomic medicine'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Center for genomic and proteomic medicine</title>
+                                </titleInfo>
+                                <note type="sfo">Molecular biosciences</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:when test=". = 'Natural-Disaster Science'">
+                            <relatedItem type="host">
+                                <genre>initiative</genre>
+                                <titleInfo>
+                                    <title>Natural-Disaster Science</title>
+                                </titleInfo>
+                                <note type="sfo">Security and emergency preparedness</note>
+                            </relatedItem>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <!-- Finansiär -->
+                            <xsl:element name="relatedItem">
+                                <xsl:attribute name="type">
+                                    <xsl:text>host</xsl:text>
+                                </xsl:attribute>
+                                <xsl:element name="genre">
+                                    <xsl:text>grantAgreement</xsl:text>
                                 </xsl:element>
+                                <xsl:element name="name">
+                                    <xsl:attribute name="type">
+                                        <xsl:text>corporate</xsl:text>
+                                    </xsl:attribute>
+                                    <xsl:element name="namePart">
+                                        <xsl:choose>
+                                            <xsl:when test="contains(., '[')">
+                                                <xsl:value-of select="substring-before(., ' [')"/>
+                                            </xsl:when>
+                                            <xsl:otherwise>
+                                                <xsl:value-of select="."/>
+                                            </xsl:otherwise>
+                                        </xsl:choose>
+                                    </xsl:element>
+                                    <xsl:element name="role">
+                                        <xsl:element name="roleTerm">
+                                            <xsl:attribute name="type">
+                                                <xsl:text>code</xsl:text>
+                                            </xsl:attribute>
+                                            <xsl:attribute name="authority">
+                                                <xsl:text>marcrelator</xsl:text>
+                                            </xsl:attribute>
+                                            <xsl:text>fnd</xsl:text>
+                                        </xsl:element>
+                                    </xsl:element>
+                                </xsl:element>
+                                <xsl:if test="contains(., '[')">
+                                    <xsl:element name="identifier">
+                                        <xsl:value-of select="substring-before(substring-after(.,' ['),']')"/>
+                                    </xsl:element>
+                                </xsl:if>
                             </xsl:element>
-                        </xsl:element>
-                        <xsl:if test="contains(., '[')">
-                            <xsl:element name="identifier">
-                                <xsl:value-of select="substring-before(substring-after(.,' ['),']')"/>
-                            </xsl:element>
-                        </xsl:if>
-                    </xsl:element>
+                        </xsl:otherwise>
+                    </xsl:choose>
                 </xsl:for-each>
                 <!-- 16. Event -->
                 <!-- Används ej -->
@@ -746,7 +1152,7 @@
                     <xsl:element name="location">
                         <xsl:for-each select="mods:url">
                             <xsl:element name="url">
-                                <xsl:if test="string-length(@displayLabel) &gt; 0 and @displayLabel = 'fulltext'">
+                                <xsl:if test="string-length(@displayLabel) &gt; 0 and contains(translate(@displayLabel, 'FULTEX', 'fultex'), 'fulltext')">
                                     <xsl:if test="contains(.,'diva-portal.org')">
                                         <xsl:attribute name="usage">
                                             <xsl:text>primary</xsl:text>
@@ -758,7 +1164,7 @@
                                         <xsl:value-of select="@displayLabel"></xsl:value-of>
                                     </xsl:attribute>
                                 </xsl:if>
-                                <xsl:if test="string-length(@access) &gt; 0 and @displayLabel = 'fulltext'">
+                                <xsl:if test="string-length(@access) &gt; 0 and contains(translate(@displayLabel, 'FULTEX', 'fultex'), 'fulltext')">
                                     <xsl:attribute name="access">
                                         <xsl:text>raw object</xsl:text>
                                      </xsl:attribute>
@@ -774,7 +1180,7 @@
                     </xsl:element>
                 </xsl:for-each>
                 <!-- 21. Access condition -->
-                <xsl:for-each select="mods:location/mods:url[@displayLabel = 'fulltext' and @note = 'free']">
+                <xsl:for-each select="mods:location/mods:url[contains(translate(@displayLabel, 'FULTEX', 'fultex'), 'fulltext') and @note = 'free']">
                     <xsl:if test="position() = last()">
                         <xsl:element name="accessCondition">
                             <xsl:text>gratis</xsl:text>
