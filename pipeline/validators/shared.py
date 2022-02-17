@@ -20,6 +20,6 @@ def remote_verification(url, session):
     #print(f" * got {r.status_code} on call to: {url}")
     try:
         r = session.head(url, timeout=8)
-    except Timeout: # ReadTimeout ?
+    except Exception: # Timeout, ReadTimeout ?
         return False
     return r.status_code == 200
