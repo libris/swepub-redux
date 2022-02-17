@@ -10,16 +10,15 @@ from utils.bibliometrics_csv import export as bibliometrics_csv_export
 from utils.classify import enrich_subject
 
 from datetime import datetime
-from pathlib import Path
 import sqlite3
 from flask import Flask, g, request, jsonify, Response, stream_with_context, url_for, make_response
-from pypika import Query, Tables, Parameter, Table, Criterion, Order
+from pypika import Query, Tables, Parameter, Table, Criterion
 from pypika.terms import BasicCriterion
 from pypika import functions as fn
 from collections import Counter
 
 # Database in parent directory of swepub.py directory
-DATABASE = str(Path.joinpath(Path(__file__).resolve().parents[1], 'swepub.sqlite3'))
+DATABASE = path.join(path.dirname(path.abspath(__file__)), '../swepub.sqlite3')
 
 SSIF_LABELS = {
     1: "1 Naturvetenskap",
@@ -62,9 +61,9 @@ def _errors(errors, status_code=400):
 
 
 # Catchall routes - the Vue app handles all non-API routes
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def catch_all(path):
+@app.route('/', defaults={'_path': ''})
+@app.route('/<path:_path>')
+def catch_all(_path):
     return app.send_static_file("index.html")
 
 
@@ -80,21 +79,7 @@ def bibliometrics_api():
     if request.content_type != 'application/json':
         return _errors(errors=['Content-Type must be "application/json"'])
 
-    export_as_csv = False
-    csv_mimetype = 'text/csv'
-    tsv_mimetype = 'text/tab-separated-values'
-    export_mimetype = csv_mimetype
-    csv_flavor = 'csv'
-    accept = request.headers.get('accept')
-    if accept and accept == csv_mimetype:
-        export_as_csv = True
-    elif accept and accept == tsv_mimetype:
-        export_as_csv = True
-        csv_flavor = 'tsv'
-        export_mimetype = tsv_mimetype
-    else:
-        export_mimetype = 'application/json'
-
+    export_as_csv, export_mimetype, csv_flavor = export_options(request)
     query_data = request.json
     try:
         limit = query_data.get('limit')
@@ -141,7 +126,7 @@ def bibliometrics_api():
         return _errors(errors=[f"Invalid value for json body query parameter/s."], status_code=400)
 
     finalized, search_single, search_creator, search_fulltext, search_doi, search_genre_form, search_subject, search_org = Tables('finalized', 'search_single', 'search_creator', 'search_fulltext', 'search_doi', 'search_genre_form', 'search_subject', 'search_org')
-    q = Query.from_(finalized)#.select('data')
+    q = Query.from_(finalized)
     values = []
 
     if from_yr and to_yr:
@@ -151,24 +136,24 @@ def bibliometrics_api():
         q = q.where(search_single.swedish_list == 1)
     if open_access:
         q = q.where(search_single.open_access == 1)
-    for k, v in {'content_marking': content_marking, 'publication_status': publication_status}.items():
-        if v:
-            q = q.where(search_single['k'].isin([Parameter(', '.join(['?'] * len(v)))]))
+    for field_name, value in {'content_marking': content_marking, 'publication_status': publication_status}.items():
+        if value:
+            q = q.where(search_single[field_name].isin([Parameter(', '.join(['?'] * len(value)))]))
             values.append(content_marking)
     if any([(from_yr and to_yr), content_marking, publication_status, swedish_list, open_access]):
         q = q.join(search_single).on(finalized.id == search_single.finalized_id)
 
-    for k, v in {'orcid': orcid, 'given_name': given_name, 'family_name': family_name, 'person_local_id': person_local_id, 'person_local_id_by': person_local_id_by}.items():
-        if v:
-            q = q.where(search_creator[k] == Parameter('?'))
-            values.append(v)
+    for field_name, value in {'orcid': orcid, 'given_name': given_name, 'family_name': family_name, 'person_local_id': person_local_id, 'person_local_id_by': person_local_id_by}.items():
+        if value:
+            q = q.where(search_creator[field_name] == Parameter('?'))
+            values.append(value)
     if any([orcid, given_name, family_name, person_local_id, person_local_id_by]):
         q = q.join(search_creator).on(finalized.id == search_creator.finalized_id)
 
-    for k, v in {'title': title, 'keywords': keywords}.items():
-        if v:
-            q = q.where(BasicCriterion(Comparator.match, search_fulltext[k], search_fulltext[k].wrap_constant(Parameter('?'))))
-            values.append(v)
+    for field_name, value in {'title': title, 'keywords': keywords}.items():
+        if value:
+            q = q.where(BasicCriterion(Comparator.match, search_fulltext[field_name], search_fulltext[field_name].wrap_constant(Parameter('?'))))
+            values.append(value)
     if any([title, keywords]):
         q = q.join(search_fulltext).on(finalized.id == search_fulltext.finalized_id)
 
@@ -205,7 +190,7 @@ def bibliometrics_api():
 
         total = 0
         for row in cur.execute(str(q), list(flatten(values))):
-            (result, errors) = bibliometrics.build_result(row, fields)
+            (result, build_errors) = bibliometrics.build_result(row, fields)
             if export_as_csv:
                 yield(bibliometrics_csv_export(result, fields, csv_flavor, total))
             else:
@@ -855,21 +840,7 @@ def process_get_export(source=None):
     if source not in INFO_API_SOURCE_ORG_MAPPING:
         return _errors(['Source not found'], status_code=404)
 
-    export_as_csv = False
-    csv_mimetype = 'text/csv'
-    tsv_mimetype = 'text/tab-separated-values'
-    export_mimetype = csv_mimetype
-    csv_flavor = 'csv'
-    accept = request.headers.get('accept')
-    if accept and accept == csv_mimetype:
-        export_as_csv = True
-    elif accept and accept == tsv_mimetype:
-        export_as_csv = True
-        csv_flavor = 'tsv'
-        export_mimetype = tsv_mimetype
-    else:
-        export_mimetype = 'application/json'
-
+    export_as_csv, export_mimetype, csv_flavor = export_options(request)
     from_date = request.args.get('from')
     to_date = request.args.get('to')
     limit = request.args.get('limit')

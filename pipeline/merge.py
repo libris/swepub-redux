@@ -1,5 +1,5 @@
 from storage import *
-from merger import PublicationMerger
+from publicationmerger import PublicationMerger
 from publication import Publication
 from multiprocessing import Pool
 import time

@@ -25,7 +25,6 @@ def get_percentage(count, total):
     return percentage
 
 
-
 class Comparator(Enum):
     match = " MATCH "
 
@@ -121,3 +120,20 @@ def get_source_org_mapping(oai_sources):
         mapping[source['code']] = source['name']
     return mapping
 
+
+def export_options(request):
+    export_as_csv = False
+    csv_mimetype = 'text/csv'
+    tsv_mimetype = 'text/tab-separated-values'
+    export_mimetype = csv_mimetype
+    csv_flavor = 'csv'
+    accept = request.headers.get('accept')
+    if accept and accept == csv_mimetype:
+        export_as_csv = True
+    elif accept and accept == tsv_mimetype:
+        export_as_csv = True
+        csv_flavor = 'tsv'
+        export_mimetype = tsv_mimetype
+    else:
+        export_mimetype = 'application/json'
+    return export_as_csv, export_mimetype, csv_flavor
