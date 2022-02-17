@@ -351,7 +351,7 @@ def auto_classify(incremental, incrementally_converted_rowids):
         # how many times each word occurs (within all combined abstracts).
         _generate_occurrence_table()
         t1 = time.time()
-        diff = t1-t0
+        diff = round(t1-t0, 2)
         print(f"  auto classify 1 (counting) ran for {diff} seconds")
         t0 = t1
 
@@ -360,7 +360,7 @@ def auto_classify(incremental, incrementally_converted_rowids):
         # Put these rare words in the abstract_rarest_words table.
         _select_rarest_words()
         t1 = time.time()
-        diff = t1-t0
+        diff = round(t1-t0, 2)
         print(f"  auto classify 2 (selecting) ran for {diff} seconds")
         t0 = t1
 
@@ -369,7 +369,7 @@ def auto_classify(incremental, incrementally_converted_rowids):
         # Selectively copy good subjects over
         _find_and_add_subjects()
         t1 = time.time()
-        diff = t1-t0
+        diff = round(t1-t0, 2)
         print(f"  auto classify 3 (adding) ran for {diff} seconds")
         t0 = t1
     

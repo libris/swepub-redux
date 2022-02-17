@@ -45,7 +45,7 @@ def harvest_wrapper(incremental, source):
 
 
 def harvest(incremental, source):
-    log.info(f"HARVEST STARTED:\t\t{source['code']}")
+    log.info(f"[STARTED]\t{source['code']}")
     fromtime = None
     if incremental:
         with get_connection() as connection:
@@ -73,6 +73,7 @@ def harvest(incremental, source):
             lock.release()
 
     harvest_start = datetime.now(timezone.utc)
+    record_count = 0
     for source_set in source["sets"]:
         harvest_info = f'{source_set["url"]} ({source_set["subset"]}, {source_set["metadata_prefix"]})'
 
@@ -88,6 +89,7 @@ def harvest(incremental, source):
             for record in record_iterator:
                 if record.is_successful():
                     batch.append(record)
+                    record_count += 1
                     record_count_since_report += 1
                     # if record_count_since_report == 200:
                     #     record_count_since_report = 0
@@ -150,7 +152,7 @@ def harvest(incremental, source):
                             lock.release()
 
         except HarvestFailed as e:
-            log.warning(f'FAILED HARVEST: {source["code"]}. Error: {e}')
+            log.warning(f'[FAILED]\t{source["code"]}. Error: {e}')
             raise e
 
     num_accepted, num_rejected = harvest_cache['meta'][harvest_id]
@@ -175,7 +177,8 @@ def harvest(incremental, source):
             lock.release()
 
     finish_time = time.time()
-    log.info(f'HARVEST FINISHED:\t{source["code"]} ({finish_time-start_time} seconds)')
+    record_per_s = round(record_count / (finish_time-start_time), 2)
+    log.info(f'[FINISHED]\t{source["code"]} ({round(finish_time-start_time, 2)} seconds, {record_count} records, {record_per_s} records/s)')
 
 
 def threaded_handle_harvested(batch, source, lock, harvest_cache, incremental, added_converted_rowids, harvest_id):
@@ -377,37 +380,37 @@ if __name__ == "__main__":
                 executor.submit(func, source)
 
         t1 = time.time()
-        diff = t1-t0
+        diff = round(t1-t0, 2)
         log.info(f"Phase 1 (harvesting) ran for {diff} seconds")
 
         t0 = t1
         auto_classify(incremental, added_converted_rowids.keys())
         t1 = time.time()
-        diff = t1-t0
+        diff = round(t1-t0, 2)
         log.info(f"Phase 2 (auto-classification) ran for {diff} seconds")
 
     t0 = t1 if t1 else time.time()
     deduplicate()
     t1 = time.time()
-    diff = t1-t0
+    diff = round(t1-t0, 2)
     log.info(f"Phase 3 (deduplication) ran for {diff} seconds")
 
     t0 = t1
     merge()
     t1 = time.time()
-    diff = t1-t0
+    diff = round(t1-t0, 2)
     log.info(f"Phase 4 (merging) ran for {diff} seconds")
 
     t0 = t1
     generate_search_tables()
     t1 = time.time()
-    diff = t1-t0
+    diff = round(t1-t0, 2)
     log.info(f"Phase 5 (generate search tables) ran for {diff} seconds")
 
     t0 = t1
     generate_processing_stats()
     t1 = time.time()
-    diff = t1-t0
+    diff = round(t1-t0, 2)
     log.info(f"Phase 6 (generate processing stats) ran for {diff} seconds")
 
     log.info(f'Sources harvested: {" ".join(harvest_cache["meta"]["sources_succeeded"])}')
