@@ -56,7 +56,7 @@ class RecordIterator:
         return self.records is not None
 
     def _get_records(self):
-        sickle_client = sickle.Sickle(self.set["url"], max_retries=4)
+        sickle_client = sickle.Sickle(self.set["url"], max_retries=4, timeout=30)
         list_record_params = {
             "metadataPrefix": self.set["metadata_prefix"],
             "ignore_deleted": False

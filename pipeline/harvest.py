@@ -213,7 +213,7 @@ def threaded_handle_harvested(batch, source, lock, harvest_cache, incremental, a
 
 def _get_source_ids(source_set):
     source_ids = set()
-    sickle_client = sickle.Sickle(source_set["url"])
+    sickle_client = sickle.Sickle(source_set["url"], max_retries=4, timeout=30)
     list_ids_params = {
         "metadataPrefix": source_set["metadata_prefix"],
         "ignore_deleted": False,
@@ -226,7 +226,7 @@ def _get_source_ids(source_set):
     return source_ids
 
 def _get_has_persistent_deletes(source_set):
-    sickle_client = sickle.Sickle(source_set["url"])
+    sickle_client = sickle.Sickle(source_set["url"], max_retries=4, timeout=30)
     identify = sickle_client.Identify()
     return identify.deletedRecord == "persistent"
 
