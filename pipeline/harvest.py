@@ -27,13 +27,24 @@ KNOWN_DOI_PATH = "./known_valid_doi.txt"
 
 # Wrap the harvest function just to easily log errors from subprocesses
 def harvest_wrapper(incremental, source):
+    harvest_cache["meta"]["sources_to_go"].remove(source["code"])
+    harvest_cache["meta"]["sources_in_progress"].append(source["code"])
     try:
         harvest(incremental, source)
+        harvest_cache["meta"]["sources_in_progress"].remove(source["code"])
+        harvest_cache["meta"]["sources_succeeded"].append(source["code"])
     except Exception as e:
         log.warning(f"Error harvesting {source['code']}: {e}")
+        harvest_cache["meta"]["sources_in_progress"].remove(source["code"])
+        harvest_cache["meta"]["sources_failed"].append(source["code"])
+    if harvest_cache["meta"]["sources_in_progress"]:
+        log.info(f'Sources in progress: {harvest_cache["meta"]["sources_in_progress"]}')
+    if harvest_cache["meta"]["sources_to_go"]:
+        log.info(f'Sources not yet started: {harvest_cache["meta"]["sources_to_go"]}')
 
 
 def harvest(incremental, source):
+    log.info(f"HARVEST STARTED:\t\t{source['code']}")
     fromtime = None
     if incremental:
         lock.acquire()
@@ -64,9 +75,9 @@ def harvest(incremental, source):
         finally:
             lock.release()
 
+    harvest_start = datetime.now(timezone.utc)
     for source_set in source["sets"]:
         harvest_info = f'{source_set["url"]} ({source_set["subset"]}, {source_set["metadata_prefix"]})'
-        harvest_start = datetime.now(timezone.utc)
 
         #fromtime = "2020-05-05T00:00:00Z" # Only while debugging, use to force FROM date to get some incremental test data.
         record_iterator = RecordIterator(source["code"], source_set, fromtime, None)
@@ -106,20 +117,7 @@ def harvest(incremental, source):
             processes.append( p )
             for p in processes:
                 p.join()
-            finish_time = time.time()
-            log.info(f'Harvest of {source["code"]} took {finish_time-start_time} seconds.')
 
-
-            with get_connection() as connection:
-                cursor = connection.cursor()
-                lock.acquire()
-                try:
-                    cursor.execute("""
-                    INSERT INTO last_harvest(source, last_successful_harvest) VALUES (?, ?)
-                    ON CONFLICT(source) DO UPDATE SET last_successful_harvest = ?;""", (source["code"], harvest_start, harvest_start))
-                    connection.commit()
-                finally:
-                    lock.release()
             #print(f"harvested: {record_count_since_report}")
 
             # If we're doing incremental updating: Check if the source uses <deletedRecord>persistent</deletedRecord>.
@@ -148,15 +146,19 @@ def harvest(incremental, source):
                         WHERE oai_id IN ({','.join('?'*len(obsolete_ids))});
                         """, (obsolete_ids,))
                         log.info(f"Deleted {len(obsolete_ids)} obsolete records from {source['code']}, after checking their ID-list.")
-
         except HarvestFailed as e:
             log.warning(f'FAILED HARVEST: {source["code"]}. Error: {e}')
-            continue
+            raise e
+
     num_accepted, num_rejected = harvest_cache['meta'][harvest_id]
     with get_connection() as connection:
         cursor = connection.cursor()
         lock.acquire()
         try:
+            cursor.execute("""
+            INSERT INTO last_harvest(source, last_successful_harvest) VALUES (?, ?)
+            ON CONFLICT(source) DO UPDATE SET last_successful_harvest = ?;""", (source["code"], harvest_start, harvest_start))
+
             cursor.execute("""
             UPDATE
                 harvest_history
@@ -168,6 +170,9 @@ def harvest(incremental, source):
             connection.commit()
         finally:
             lock.release()
+
+    finish_time = time.time()
+    log.info(f'HARVEST FINISHED:\t{source["code"]} ({finish_time-start_time} seconds)')
 
 
 def threaded_handle_harvested(batch, source, lock, harvest_cache, incremental, added_converted_rowids, harvest_id):
@@ -333,6 +338,10 @@ if __name__ == "__main__":
         # All harvest jobs have access to the same Manager-managed dictionaries
         manager = Manager()
         harvest_cache = _get_harvest_cache_manager(manager)
+        harvest_cache["meta"]["sources_to_go"] = manager.list([source['code'] for source in sources_to_process])
+        harvest_cache["meta"]["sources_in_progress"] = manager.list()
+        harvest_cache["meta"]["sources_succeeded"] = manager.list()
+        harvest_cache["meta"]["sources_failed"] = manager.list()
         added_converted_rowids = manager.dict()
 
         log.info("Harvesting " + " ".join([source['code'] for source in sources_to_process]))
@@ -395,6 +404,10 @@ if __name__ == "__main__":
     t1 = time.time()
     diff = t1-t0
     log.info(f"Phase 6 (generate processing stats) ran for {diff} seconds")
+
+    log.info(f'Sources harvested: {" ".join(harvest_cache["meta"]["sources_succeeded"])}')
+    if harvest_cache["meta"]["sources_failed"]:
+        log.warning(f'Sources failed: {" ".join(harvest_cache["meta"]["sources_failed"])}')
 
     if not purge:
         # Save ISSN/DOI cache for use next time
