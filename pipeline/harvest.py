@@ -1,171 +1,60 @@
 from autoclassify import auto_classify
 from merge import merge
-import re
-import sickle
-from modsstylesheet import ModsStylesheet
-import requests
 from convert import convert
 from deduplicate import deduplicate
-import time
-from multiprocessing import Process, Lock, Value, Manager
-import sys
 from storage import *
 from index import generate_search_tables
 from stats import generate_processing_stats
-import logging
-import swepublog
-from datetime import datetime, timezone
-import xml.etree.ElementTree as ET
-import uuid
-
-from sickle.oaiexceptions import (
-    BadArgument, BadVerb, BadResumptionToken,
-    CannotDisseminateFormat, IdDoesNotExist, NoSetHierarchy,
-    NoMetadataFormat, NoRecordsMatch, OAIError
-)
-from modsstylesheet import ModsStylesheet
+from oai import *
 from validate import validate, should_be_rejected
 from audit import audit
+import swepublog
 
-OAIExceptions = (
-    BadArgument, BadVerb, BadResumptionToken,
-    CannotDisseminateFormat, IdDoesNotExist, NoSetHierarchy,
-    NoMetadataFormat, OAIError
-)
+import re
+import time
+from concurrent.futures import ProcessPoolExecutor
+from multiprocessing import Process, Lock, Value, Manager
+import sys
+from datetime import datetime, timezone
+import uuid
+from functools import partial
 
-RequestExceptions = (
-    requests.exceptions.ConnectionError,
-    requests.exceptions.ChunkedEncodingError,
-    requests.exceptions.HTTPError
-)
 
 ID_CACHE_PATH = "./id_cache.json"
 KNOWN_ISSN_PATH = "./known_valid_issn.txt"
 KNOWN_DOI_PATH = "./known_valid_doi.txt"
 
-class RecordIterator:
 
-    def __init__(self, code, source_set, harvest_from, harvest_to):
-        self.set = source_set
-        self.stylesheet = ModsStylesheet(code, self.set["url"])
-        self.records = None
-        self.publication_ids = set()
-        self.harvest_from = harvest_from
-        self.harvest_to = harvest_to
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        try:
-            if not self._has_records():
-                self._get_records()
-            return self._get_next_record()
-        except NoRecordsMatch:
-            #logger.info("OAI-PMH query returned no matches.")
-            raise StopIteration
-        except OAIExceptions + RequestExceptions + (AttributeError,) as e:
-            #logger.exception(e, extra={
-            #    'metadata_prefix': self.set.metadata_prefix,
-            #    'subset': self.set.subset,
-            #})
-            if isinstance(e, AttributeError):
-                return Record()
-            else:
-                raise HarvestFailed(str(e))
-
-    def _has_records(self):
-        return self.records is not None
-
-    def _get_records(self):
-        sickle_client = sickle.Sickle(self.set["url"], max_retries=4)
-        list_record_params = {
-            "metadataPrefix": self.set["metadata_prefix"],
-            "ignore_deleted": False
-        }
-        if self.set["subset"]:
-            list_record_params["set"] = self.set["subset"]
-        if self.harvest_from:
-            list_record_params["from"] = self.harvest_from
-        if self.harvest_to:
-            list_record_params["until"] = self.harvest_to
-        self.records = sickle_client.ListRecords(**list_record_params)
-
-    def _get_next_record(self):
-        record = next(self.records)
-        #print(f"next record: {record.header.identifier}") # status="deleted"
-        root = ET.fromstring(record.header.raw)
-        deleted = "status" in root.attrib and root.attrib["status"] == "deleted"
-        transformed_record = self.stylesheet.apply(record.raw)
-        return Record(record.header.identifier, deleted, transformed_record)
+# Wrap the harvest function just to easily log errors from subprocesses
+def harvest_wrapper(incremental, source):
+    harvest_cache["meta"]["sources_to_go"].remove(source["code"])
+    harvest_cache["meta"]["sources_in_progress"].append(source["code"])
+    try:
+        harvest(incremental, source)
+        harvest_cache["meta"]["sources_in_progress"].remove(source["code"])
+        harvest_cache["meta"]["sources_succeeded"].append(source["code"])
+    except Exception as e:
+        log.warning(f"Error harvesting {source['code']}: {e}")
+        harvest_cache["meta"]["sources_in_progress"].remove(source["code"])
+        harvest_cache["meta"]["sources_failed"].append(source["code"])
+    if harvest_cache["meta"]["sources_in_progress"]:
+        log.info(f'Sources in progress: {harvest_cache["meta"]["sources_in_progress"]}')
+    if harvest_cache["meta"]["sources_to_go"]:
+        log.info(f'Sources not yet started: {harvest_cache["meta"]["sources_to_go"]}')
 
 
-class Record:
-
-    def __init__(self, oai_id=None, deleted=None, xml=''):
-        self.xml = xml
-        self.deleted = deleted
-        self.oai_id = oai_id
-
-    def is_successful(self):
-        return bool(self.xml)
-
-
-class Source:
-
-    def __init__(self, source_dict):
-        self.sets = [Set(**s) for s in source_dict['sets']]
-        self.forced = source_dict['forced']
-        self.code = source_dict['code']
-        self.harvest_from = source_dict['harvest_from']
-        self.harvest_to = source_dict['harvest_to']
-
-    @property
-    def dict(self):
-        return {
-            "sets": [s.dict for s in self.sets],
-            "forced": self.forced,
-            "code": self.code,
-            "harvest_from": self.harvest_from,
-            "harvest_to": self.harvest_to
-        }
-
-
-class Set:
-    def __init__(self, *, url=None, metadata_prefix=None, subset=None):
-        self.url = url
-        self.metadata_prefix = metadata_prefix
-        self.subset = subset
-
-    @property
-    def dict(self):
-        return {
-            "url": self.url,
-            "metadata_prefix": self.metadata_prefix,
-            "subset": self.subset
-        }
-
-
-class HarvestFailed(Exception):
-    pass
-
-
-
-def harvest(source, lock, harvested_count, harvest_cache, incremental, added_converted_rowids):
+def harvest(incremental, source):
+    log.info(f"HARVEST STARTED:\t\t{source['code']}")
     fromtime = None
     if incremental:
-        lock.acquire()
-        try:
-            with get_connection() as connection:
-                cursor = connection.cursor()
-                cursor.execute("""
-                SELECT strftime('%Y-%m-%dT%H:%M:%SZ', last_successful_harvest) from last_harvest WHERE source = ?""",
-                (source["code"],))
-                rows = cursor.fetchall()
-                if rows:
-                    fromtime = rows[0][0]
-        finally:
-            lock.release()
+        with get_connection() as connection:
+            cursor = connection.cursor()
+            cursor.execute("""
+            SELECT strftime('%Y-%m-%dT%H:%M:%SZ', last_successful_harvest) from last_harvest WHERE source = ?""",
+            (source["code"],))
+            rows = cursor.fetchall()
+            if rows:
+                fromtime = rows[0][0]
 
     start_time = time.time()
     harvest_id = str(uuid.uuid4())
@@ -182,19 +71,19 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental, added_con
         finally:
             lock.release()
 
-    for set in source["sets"]:
-        harvest_info = f'{set["url"]} ({set["subset"]}, {set["metadata_prefix"]})'
-        harvest_start = datetime.now(timezone.utc)
+    harvest_start = datetime.now(timezone.utc)
+    for source_set in source["sets"]:
+        harvest_info = f'{source_set["url"]} ({source_set["subset"]}, {source_set["metadata_prefix"]})'
 
         #fromtime = "2020-05-05T00:00:00Z" # Only while debugging, use to force FROM date to get some incremental test data.
-        record_iterator = RecordIterator(source["code"], set, fromtime, None)
+        record_iterator = RecordIterator(source["code"], source_set, fromtime, None)
         try:
             batch_count = 0
             batch = []
             processes = []
             record_count_since_report = 0
             t0 = time.time()
-            
+
             for record in record_iterator:
                 if record.is_successful():
                     batch.append(record)
@@ -224,27 +113,14 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental, added_con
             processes.append( p )
             for p in processes:
                 p.join()
-            finish_time = time.time()
-            log.info(f'Harvest of {source["code"]} took {finish_time-start_time} seconds.')
 
-
-            with get_connection() as connection:
-                cursor = connection.cursor()
-                lock.acquire()
-                try:
-                    cursor.execute("""
-                    INSERT INTO last_harvest(source, last_successful_harvest) VALUES (?, ?)
-                    ON CONFLICT(source) DO UPDATE SET last_successful_harvest = ?;""", (source["code"], harvest_start, harvest_start))
-                    connection.commit()
-                finally:
-                    lock.release()
             #print(f"harvested: {record_count_since_report}")
 
             # If we're doing incremental updating: Check if the source uses <deletedRecord>persistent</deletedRecord>.
             # If it does not, we need to "ListIdentifiers" all of their records to figure out if any were deleted.
             if incremental:
-                if not _get_has_persistent_deletes(set):
-                    all_source_ids = _get_source_ids(set)
+                if not _get_has_persistent_deletes(source_set):
+                    all_source_ids = _get_source_ids(source_set)
                     obsolete_ids = []
                     with get_connection() as connection:
                         cursor = connection.cursor()
@@ -260,21 +136,31 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental, added_con
                             if existing_oai_id not in all_source_ids:
                                 obsolete_ids.append(existing_oai_id)
 
-                        cursor.execute(f"""
-                        DELETE FROM
-                            original
-                        WHERE oai_id IN ({','.join('?'*len(obsolete_ids))});
-                        """, (obsolete_ids,))
-                        log.info(f"Deleted {len(obsolete_ids)} obsolete records from {source['code']}, after checking their ID-list.")
+                        lock.acquire()
+                        try:
+                            cursor.execute(f"""
+                            DELETE FROM
+                                original
+                            WHERE oai_id IN ({','.join('?'*len(obsolete_ids))});
+                            """, (obsolete_ids,))
+                            log.info(f"Deleted {len(obsolete_ids)} obsolete records from {source['code']}, after checking their ID-list.")
+                            connection.commit()
+                        finally:
+                            lock.release()
 
         except HarvestFailed as e:
             log.warning(f'FAILED HARVEST: {source["code"]}. Error: {e}')
-            continue
+            raise e
+
     num_accepted, num_rejected = harvest_cache['meta'][harvest_id]
     with get_connection() as connection:
         cursor = connection.cursor()
         lock.acquire()
         try:
+            cursor.execute("""
+            INSERT INTO last_harvest(source, last_successful_harvest) VALUES (?, ?)
+            ON CONFLICT(source) DO UPDATE SET last_successful_harvest = ?;""", (source["code"], harvest_start, harvest_start))
+
             cursor.execute("""
             UPDATE
                 harvest_history
@@ -286,6 +172,9 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental, added_con
             connection.commit()
         finally:
             lock.release()
+
+    finish_time = time.time()
+    log.info(f'HARVEST FINISHED:\t{source["code"]} ({finish_time-start_time} seconds)')
 
 
 def threaded_handle_harvested(batch, source, lock, harvest_cache, incremental, added_converted_rowids, harvest_id):
@@ -391,6 +280,17 @@ def _get_harvest_cache_manager(manager):
 
     return manager.dict({'doi_new': doi_new, 'doi_static': doi_static, 'issn_new': issn_new, 'issn_static': issn_static, 'meta': harvest_meta})
 
+def init(l, c, a, lg):
+    global lock
+    global harvest_cache
+    global added_converted_rowids
+    global log
+    lock = l
+    harvest_cache = c
+    added_converted_rowids = a
+    log = lg
+
+
 SOURCES = json.load(open(os.path.dirname(__file__) + '/sources.json'))
 TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = ["cluster", "finalized", "search_single", "search_doi", "search_genre_form", "search_subject", "search_creator", "search_org", "search_fulltext", "stats_field_events", "stats_audit_events"]
 
@@ -440,6 +340,10 @@ if __name__ == "__main__":
         # All harvest jobs have access to the same Manager-managed dictionaries
         manager = Manager()
         harvest_cache = _get_harvest_cache_manager(manager)
+        harvest_cache["meta"]["sources_to_go"] = manager.list([source['code'] for source in sources_to_process])
+        harvest_cache["meta"]["sources_in_progress"] = manager.list()
+        harvest_cache["meta"]["sources_succeeded"] = manager.list()
+        harvest_cache["meta"]["sources_failed"] = manager.list()
         added_converted_rowids = manager.dict()
 
         log.info("Harvesting " + " ".join([source['code'] for source in sources_to_process]))
@@ -461,14 +365,13 @@ if __name__ == "__main__":
         # distribute the database between the processes.
         lock = Lock()
 
-        harvested_count = Value("I", 0)
-
-        for source in sources_to_process:
-            p = Process(target=harvest, args=(source, lock, harvested_count, harvest_cache, incremental, added_converted_rowids))
-            p.start()
-            processes.append( p )
-        for p in processes:
-            p.join()
+        # Process (max) 8 sources at any given time to keep a steady flow 
+        with ProcessPoolExecutor(max_workers=8, initializer=init, initargs=(lock, harvest_cache, added_converted_rowids, log,)) as executor:
+            for source in sources_to_process:
+                # Partial to add a second argument to harvest_wrapper (note: the `incremental` will appear
+                # _before_ source)
+                func = partial(harvest_wrapper, incremental)
+                executor.submit(func, source)
 
         t1 = time.time()
         diff = t1-t0
@@ -503,6 +406,10 @@ if __name__ == "__main__":
     t1 = time.time()
     diff = t1-t0
     log.info(f"Phase 6 (generate processing stats) ran for {diff} seconds")
+
+    log.info(f'Sources harvested: {" ".join(harvest_cache["meta"]["sources_succeeded"])}')
+    if harvest_cache["meta"]["sources_failed"]:
+        log.warning(f'Sources failed: {" ".join(harvest_cache["meta"]["sources_failed"])}')
 
     if not purge:
         # Save ISSN/DOI cache for use next time
