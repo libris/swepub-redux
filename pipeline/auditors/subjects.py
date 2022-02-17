@@ -1,6 +1,6 @@
 import requests
 from auditors import BaseAuditor
-from os import environ
+from os import environ, path
 import json
 
 #INFO_API = environ.get("SWEPUB_INFO_API")
@@ -35,7 +35,7 @@ def sort_mappings(unsorted):
             sorted_subjects[k[:1]]['subcategories'][k[:3]]['subcategories'][k] = v
     return sorted_subjects
 
-mappings = sort_mappings(json.load(open("./pipeline/ssif_research_subjects.json")))
+mappings = sort_mappings(json.load(open(path.join(path.dirname(path.abspath(__file__)), '../../resources/ssif_research_subjects.json'))))
 
 
 class SubjectsAuditor(BaseAuditor):

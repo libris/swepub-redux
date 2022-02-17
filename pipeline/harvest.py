@@ -24,6 +24,8 @@ import psutil
 ID_CACHE_PATH = "./id_cache.json"
 KNOWN_ISSN_PATH = "./known_valid_issn.txt"
 KNOWN_DOI_PATH = "./known_valid_doi.txt"
+SOURCES = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../resources/sources.json')))
+TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = ["cluster", "finalized", "search_single", "search_doi", "search_genre_form", "search_subject", "search_creator", "search_org", "search_fulltext", "stats_field_events", "stats_audit_events"]
 
 
 # Wrap the harvest function just to easily log errors from subprocesses
@@ -289,6 +291,7 @@ def _get_harvest_cache_manager(manager):
 
     return manager.dict({'doi_new': doi_new, 'doi_static': doi_static, 'issn_new': issn_new, 'issn_static': issn_static, 'meta': harvest_meta})
 
+
 def init(l, c, a, lg):
     global lock
     global harvest_cache
@@ -299,9 +302,6 @@ def init(l, c, a, lg):
     added_converted_rowids = a
     log = lg
 
-
-SOURCES = json.load(open(os.path.dirname(__file__) + '/sources.json'))
-TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = ["cluster", "finalized", "search_single", "search_doi", "search_genre_form", "search_subject", "search_creator", "search_org", "search_fulltext", "stats_field_events", "stats_audit_events"]
 
 if __name__ == "__main__":
     # To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..

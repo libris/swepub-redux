@@ -4,7 +4,7 @@ from enum import Enum
 from os import path
 
 
-DEFAULT_FILE_PATH = path.join(path.dirname(__file__), 'swedish_list.csv')
+DEFAULT_FILE_PATH = path.join(path.dirname(path.abspath(__file__)), '../../resources/swedish_list.csv')
 
 
 class Level(Enum):

@@ -10,7 +10,7 @@ from os import path
 from multiprocessing import Process
 from tempfile import TemporaryDirectory
 
-categories = load(open(path.join(path.dirname(__file__), 'categories.json')))
+categories = load(open(path.join(path.dirname(path.abspath(__file__)), '../resources/categories.json')))
 
 def _generate_occurrence_table():
     with get_connection() as connection:

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import json
-import os
+from os import path
 
 from utils import bibliometrics
 from utils.common import *
@@ -30,10 +30,10 @@ SSIF_LABELS = {
     6: "6 Humaniora och konst"
 }
 
-INFO_API_MAPPINGS = sort_mappings(json.load(open(os.path.dirname(__file__) + '/../pipeline/ssif_research_subjects.json')))
-INFO_API_OUTPUT_TYPES = json.load(open(os.path.dirname(__file__) + '/../pipeline/output_types.json'))
-INFO_API_SOURCE_ORG_MAPPING = json.load(open(os.path.dirname(__file__) + '/../pipeline/sources.json'))
-CATEGORIES = json.load(open(os.path.dirname(__file__) + '/../pipeline/categories.json'))
+INFO_API_MAPPINGS = sort_mappings(json.load(open(path.join(path.dirname(path.abspath(__file__)), '../resources/ssif_research_subjects.json'))))
+INFO_API_OUTPUT_TYPES = json.load(open(path.join(path.dirname(path.abspath(__file__)), '../resources/output_types.json')))
+INFO_API_SOURCE_ORG_MAPPING = json.load(open(path.join(path.dirname(path.abspath(__file__)), '../resources/sources.json')))
+CATEGORIES = json.load(open(path.join(path.dirname(path.abspath(__file__)), '../resources/categories.json')))
 
 # Note: static files should be served by Apache/nginx
 app = Flask(__name__, static_url_path='/app', static_folder='vue-client/dist')

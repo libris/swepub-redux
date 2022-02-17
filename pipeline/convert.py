@@ -1,12 +1,13 @@
 import lxml.etree as et
 from lxml.etree import parse, XSLT, fromstring, LxmlError, XMLSyntaxError
 from io import StringIO
+from os import path
 
 class ModsParser(object):
 
     IDENTIFIER = '{http://www.openarchives.org/OAI/2.0/}identifier'
     MODS = '{http://www.loc.gov/mods/v3}mods'
-    PARSED_XSL = parse('./pipeline/mods_to_xjsonld.xsl')
+    PARSED_XSL = parse(path.join(path.dirname(path.abspath(__file__)), '../resources/mods_to_xjsonld.xsl'))
     _convert = XSLT(PARSED_XSL)
 
     def _xjson(self, x):

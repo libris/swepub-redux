@@ -4,6 +4,7 @@ from enrichers.issn import recover_issn
 from jsonpath_rw_ext import parse
 import itertools
 import requests
+from os import path
 from normalize import *
 
 from util import update_at_path, unicode_translate, make_event
@@ -25,7 +26,7 @@ from enrichers.orcid import recover_orcid
 from enrichers.doi import recover_doi
 from enrichers.unicode import recover_unicode
 
-MINIMUM_LEVEL_FILTER = et.XSLT(et.parse('./pipeline/minimumlevelfilter.xsl'))
+MINIMUM_LEVEL_FILTER = et.XSLT(et.parse(path.join(path.dirname(path.abspath(__file__)), '../resources/minimumlevelfilter.xsl')))
 
 PATHS = {
     'URI': ('identifiedBy[?(@.@type=="URI")].value', ),

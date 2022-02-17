@@ -1,7 +1,7 @@
-import os
 import lxml
 import lxml.etree as et
 import sys
+from os import path
 
 class ModsStylesheet:
     parsed_stylesheets = {}
@@ -43,12 +43,12 @@ class ModsStylesheet:
         self._add_to_cache()
 
     def _get_xsl_file_path(self):
-        xsl = f"./pipeline/modsstylesheet/{self.code}_stylesheet.xml"
-        if os.path.isfile(xsl):
+        xsl = path.join(path.dirname(path.abspath(__file__)), f'../resources/modsstylesheet/{self.code}_stylesheet.xml')
+        if path.isfile(xsl):
             return xsl
 
         if 'diva' in self.url:
-            return './pipeline/modsstylesheet/general_stylesheet_v3_1.xml'
+            return path.join(path.dirname(path.abspath(__file__)), '../resources/modsstylesheet/general_stylesheet_v3_1.xml')
 
         return None
 
