@@ -47,18 +47,14 @@ def harvest(incremental, source):
     log.info(f"HARVEST STARTED:\t\t{source['code']}")
     fromtime = None
     if incremental:
-        lock.acquire()
-        try:
-            with get_connection() as connection:
-                cursor = connection.cursor()
-                cursor.execute("""
-                SELECT strftime('%Y-%m-%dT%H:%M:%SZ', last_successful_harvest) from last_harvest WHERE source = ?""",
-                (source["code"],))
-                rows = cursor.fetchall()
-                if rows:
-                    fromtime = rows[0][0]
-        finally:
-            lock.release()
+        with get_connection() as connection:
+            cursor = connection.cursor()
+            cursor.execute("""
+            SELECT strftime('%Y-%m-%dT%H:%M:%SZ', last_successful_harvest) from last_harvest WHERE source = ?""",
+            (source["code"],))
+            rows = cursor.fetchall()
+            if rows:
+                fromtime = rows[0][0]
 
     start_time = time.time()
     harvest_id = str(uuid.uuid4())
@@ -140,12 +136,18 @@ def harvest(incremental, source):
                             if existing_oai_id not in all_source_ids:
                                 obsolete_ids.append(existing_oai_id)
 
-                        cursor.execute(f"""
-                        DELETE FROM
-                            original
-                        WHERE oai_id IN ({','.join('?'*len(obsolete_ids))});
-                        """, (obsolete_ids,))
-                        log.info(f"Deleted {len(obsolete_ids)} obsolete records from {source['code']}, after checking their ID-list.")
+                        lock.acquire()
+                        try:
+                            cursor.execute(f"""
+                            DELETE FROM
+                                original
+                            WHERE oai_id IN ({','.join('?'*len(obsolete_ids))});
+                            """, (obsolete_ids,))
+                            log.info(f"Deleted {len(obsolete_ids)} obsolete records from {source['code']}, after checking their ID-list.")
+                            connection.commit()
+                        finally:
+                            lock.release()
+
         except HarvestFailed as e:
             log.warning(f'FAILED HARVEST: {source["code"]}. Error: {e}')
             raise e
