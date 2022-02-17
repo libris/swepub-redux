@@ -18,6 +18,7 @@ import sys
 from datetime import datetime, timezone
 import uuid
 from functools import partial
+import psutil
 
 
 ID_CACHE_PATH = "./id_cache.json"
@@ -365,8 +366,10 @@ if __name__ == "__main__":
         # distribute the database between the processes.
         lock = Lock()
 
-        # Process (max) 8 sources at any given time to keep a steady flow 
-        with ProcessPoolExecutor(max_workers=8, initializer=init, initargs=(lock, harvest_cache, added_converted_rowids, log,)) as executor:
+        # We want to keep a steady flow without overloading the system, so have a pool with N
+        # workers, where N is the number of ("real") CPUs or 8, whichever is higher.
+        max_workers = max(psutil.cpu_count(logical=False), 8)
+        with ProcessPoolExecutor(max_workers=max_workers, initializer=init, initargs=(lock, harvest_cache, added_converted_rowids, log,)) as executor:
             for source in sources_to_process:
                 # Partial to add a second argument to harvest_wrapper (note: the `incremental` will appear
                 # _before_ source)
