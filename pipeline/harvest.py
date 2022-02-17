@@ -38,6 +38,11 @@ def harvest_wrapper(incremental, source):
         log.warning(f"Error harvesting {source['code']}: {e}")
         harvest_cache["meta"]["sources_in_progress"].remove(source["code"])
         harvest_cache["meta"]["sources_failed"].append(source["code"])
+
+    if harvest_cache["meta"]["sources_succeeded"]:
+        log.info(f'Sources finished: {harvest_cache["meta"]["sources_succeeded"]}')
+    if harvest_cache["meta"]["sources_failed"]:
+        log.info(f'Sources failed: {harvest_cache["meta"]["sources_failed"]}')
     if harvest_cache["meta"]["sources_in_progress"]:
         log.info(f'Sources in progress: {harvest_cache["meta"]["sources_in_progress"]}')
     if harvest_cache["meta"]["sources_to_go"]:
