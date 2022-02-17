@@ -1,5 +1,4 @@
 wheel
-Sickle==0.6.3
 urllib3==1.21.1
 jsonpath-rw-ext==1.1.3
 python-stdnum==1.9
@@ -8,3 +7,4 @@ requests==2.22.0
 python-dateutil==2.8.0
 Flask==2.0.2
 PyPika==0.48.8
+lxml==4.7.1

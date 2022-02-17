@@ -78,7 +78,7 @@ class RecordIterator:
         return self.records is not None
 
     def _get_records(self):
-        sickle_client = sickle.Sickle(self.set["url"])
+        sickle_client = sickle.Sickle(self.set["url"], max_retries=4)
         list_record_params = {
             "metadataPrefix": self.set["metadata_prefix"],
             "ignore_deleted": False
@@ -102,7 +102,7 @@ class RecordIterator:
 
 class Record:
 
-    def __init__(self, oai_id, deleted, xml=''):
+    def __init__(self, oai_id=None, deleted=None, xml=''):
         self.xml = xml
         self.deleted = deleted
         self.oai_id = oai_id
