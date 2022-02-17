@@ -12,10 +12,12 @@ import swepublog
 
 import re
 import time
+from concurrent.futures import ProcessPoolExecutor
 from multiprocessing import Process, Lock, Value, Manager
 import sys
 from datetime import datetime, timezone
 import uuid
+from functools import partial
 
 
 ID_CACHE_PATH = "./id_cache.json"
@@ -23,7 +25,15 @@ KNOWN_ISSN_PATH = "./known_valid_issn.txt"
 KNOWN_DOI_PATH = "./known_valid_doi.txt"
 
 
-def harvest(source, lock, harvested_count, harvest_cache, incremental, added_converted_rowids):
+# Wrap the harvest function just to easily log errors from subprocesses
+def harvest_wrapper(incremental, source):
+    try:
+        harvest(incremental, source)
+    except Exception as e:
+        log.warning(f"Error harvesting {source['code']}: {e}")
+
+
+def harvest(incremental, source):
     fromtime = None
     if incremental:
         lock.acquire()
@@ -54,19 +64,19 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental, added_con
         finally:
             lock.release()
 
-    for set in source["sets"]:
-        harvest_info = f'{set["url"]} ({set["subset"]}, {set["metadata_prefix"]})'
+    for source_set in source["sets"]:
+        harvest_info = f'{source_set["url"]} ({source_set["subset"]}, {source_set["metadata_prefix"]})'
         harvest_start = datetime.now(timezone.utc)
 
         #fromtime = "2020-05-05T00:00:00Z" # Only while debugging, use to force FROM date to get some incremental test data.
-        record_iterator = RecordIterator(source["code"], set, fromtime, None)
+        record_iterator = RecordIterator(source["code"], source_set, fromtime, None)
         try:
             batch_count = 0
             batch = []
             processes = []
             record_count_since_report = 0
             t0 = time.time()
-            
+
             for record in record_iterator:
                 if record.is_successful():
                     batch.append(record)
@@ -115,8 +125,8 @@ def harvest(source, lock, harvested_count, harvest_cache, incremental, added_con
             # If we're doing incremental updating: Check if the source uses <deletedRecord>persistent</deletedRecord>.
             # If it does not, we need to "ListIdentifiers" all of their records to figure out if any were deleted.
             if incremental:
-                if not _get_has_persistent_deletes(set):
-                    all_source_ids = _get_source_ids(set)
+                if not _get_has_persistent_deletes(source_set):
+                    all_source_ids = _get_source_ids(source_set)
                     obsolete_ids = []
                     with get_connection() as connection:
                         cursor = connection.cursor()
@@ -263,6 +273,17 @@ def _get_harvest_cache_manager(manager):
 
     return manager.dict({'doi_new': doi_new, 'doi_static': doi_static, 'issn_new': issn_new, 'issn_static': issn_static, 'meta': harvest_meta})
 
+def init(l, c, a, lg):
+    global lock
+    global harvest_cache
+    global added_converted_rowids
+    global log
+    lock = l
+    harvest_cache = c
+    added_converted_rowids = a
+    log = lg
+
+
 SOURCES = json.load(open(os.path.dirname(__file__) + '/sources.json'))
 TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = ["cluster", "finalized", "search_single", "search_doi", "search_genre_form", "search_subject", "search_creator", "search_org", "search_fulltext", "stats_field_events", "stats_audit_events"]
 
@@ -333,14 +354,13 @@ if __name__ == "__main__":
         # distribute the database between the processes.
         lock = Lock()
 
-        harvested_count = Value("I", 0)
-
-        for source in sources_to_process:
-            p = Process(target=harvest, args=(source, lock, harvested_count, harvest_cache, incremental, added_converted_rowids))
-            p.start()
-            processes.append( p )
-        for p in processes:
-            p.join()
+        # Process (max) 8 sources at any given time to keep a steady flow 
+        with ProcessPoolExecutor(max_workers=8, initializer=init, initargs=(lock, harvest_cache, added_converted_rowids, log,)) as executor:
+            for source in sources_to_process:
+                # Partial to add a second argument to harvest_wrapper (note: the `incremental` will appear
+                # _before_ source)
+                func = partial(harvest_wrapper, incremental)
+                executor.submit(func, source)
 
         t1 = time.time()
         diff = t1-t0
