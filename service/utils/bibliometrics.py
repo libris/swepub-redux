@@ -2,10 +2,18 @@ import json
 import os
 import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../.."))
 from pipeline.bibframesource import BibframeSource
 
-CREATOR_FIELDS = ["familyName", "givenName", "localId", "localIdBy", "ORCID", "affiliation", "freetext_affiliations"]
+CREATOR_FIELDS = [
+    "familyName",
+    "givenName",
+    "localId",
+    "localIdBy",
+    "ORCID",
+    "affiliation",
+    "freetext_affiliations",
+]
 SUBJECT_FIELDS = ["oneDigitTopics", "threeDigitTopics", "fiveDigitTopics"]
 
 
@@ -18,7 +26,7 @@ def build_deduplicated_result(es_result):
 
 def build_result(row, fields):
     errors = list()
-    (result_hit, errors) = _build_hit(json.loads(row['data']), fields)
+    (result_hit, errors) = _build_hit(json.loads(row["data"]), fields)
     return result_hit, errors
 
 
@@ -56,7 +64,7 @@ def _build_hit(bibframe_record, fields):
         "subjects": "uka_subjects",
         "summary": "summary",
         "swedishList": "swedish_list",
-        "title": "title"
+        "title": "title",
     }
 
     result = dict()

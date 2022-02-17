@@ -1,7 +1,15 @@
 from io import StringIO
 import csv
 
-CREATOR_FIELDS = ["familyName", "givenName", "localId", "localIdBy", "ORCID", "affiliation", "freetext_affiliations"]
+CREATOR_FIELDS = [
+    "familyName",
+    "givenName",
+    "localId",
+    "localIdBy",
+    "ORCID",
+    "affiliation",
+    "freetext_affiliations",
+]
 
 # maps column names to use in result csv file to labels in api result json
 column_name_label_dict = {
@@ -35,14 +43,14 @@ column_name_label_dict = {
     "publisher": "publisher",
     "ISSN": "ISSN",
     "swedish_list": "swedishList",
-    "series_title": "seriesTitle"
+    "series_title": "seriesTitle",
 }
 
 
-def export(api_result_data, chosen_fields, flavor='csv', total=0):
-    delimiter = ','
-    if flavor == 'tsv':
-        delimiter = '\t'
+def export(api_result_data, chosen_fields, flavor="csv", total=0):
+    delimiter = ","
+    if flavor == "tsv":
+        delimiter = "\t"
 
     column_names = []
     include_all = False
@@ -51,16 +59,18 @@ def export(api_result_data, chosen_fields, flavor='csv', total=0):
         # include all fields as default
         include_all = True
 
-    elif any(cf in chosen_fields for cf in CREATOR_FIELDS) and "creators" not in chosen_fields:
+    elif (
+        any(cf in chosen_fields for cf in CREATOR_FIELDS)
+        and "creators" not in chosen_fields
+    ):
         chosen_fields.append("creators")
 
     for column_name, label in column_name_label_dict.items():
         if include_all or label in chosen_fields:
             column_names.append(column_name)
 
-    rows = []
-    rows.append(_get_row(api_result_data, column_names, include_all, chosen_fields, flavor))
-    output = StringIO(newline='')
+    rows = [_get_row(api_result_data, column_names, include_all, chosen_fields, flavor)]
+    output = StringIO(newline="")
     writer = csv.DictWriter(output, fieldnames=column_names, delimiter=delimiter)
     if total == 0:
         writer.writeheader()
@@ -68,7 +78,7 @@ def export(api_result_data, chosen_fields, flavor='csv', total=0):
     return output.getvalue()
 
 
-def _get_row(data, column_names, include_all, chosen_fields, flavor='csv'):
+def _get_row(data, column_names, include_all, chosen_fields, flavor="csv"):
     row = dict()
 
     for column_name in column_names:
@@ -77,10 +87,23 @@ def _get_row(data, column_names, include_all, chosen_fields, flavor='csv'):
             value = _get_creator_string(data, include_all, chosen_fields, flavor)
         elif column_name == "open_access":
             value = "true" if data.get("openAccess", False) else "false"
-        elif column_name in ("DOI", "ISBN", "ISSN", "keywords", "source", "output_types"):
+        elif column_name in (
+            "DOI",
+            "ISBN",
+            "ISSN",
+            "keywords",
+            "source",
+            "output_types",
+        ):
             value = _make_string_from_list(data.get(label, []), flavor)
-        elif column_name in ("one_digit_topics", "three_digit_topics", "five_digit_topics"):
-            value = _make_string_from_list(data.get("subjects", {}).get(label, []), flavor)
+        elif column_name in (
+            "one_digit_topics",
+            "three_digit_topics",
+            "five_digit_topics",
+        ):
+            value = _make_string_from_list(
+                data.get("subjects", {}).get(label, []), flavor
+            )
         elif column_name == "duplicate_ids":
             value = _make_string_from_list(data.get(label, []), flavor)
         elif column_name == "languages":
@@ -92,7 +115,7 @@ def _get_row(data, column_names, include_all, chosen_fields, flavor='csv'):
     return row
 
 
-def _get_creator_string(data, include_all, chosen_fields, flavor='csv'):
+def _get_creator_string(data, include_all, chosen_fields, flavor="csv"):
     result_string = ""
     creators = data.get("creators", {})
 
@@ -111,7 +134,9 @@ def _get_creator_string(data, include_all, chosen_fields, flavor='csv'):
                 if field == "freetext_affiliations":
                     creator_parts.append(_get_freetext_affiliations(c.get(field)))
                 else:
-                    creator_parts.append(c.get(field, "") if c.get(field) is not None else "")
+                    creator_parts.append(
+                        c.get(field, "") if c.get(field) is not None else ""
+                    )
 
         creator_substring = _make_string_from_list(creator_parts, flavor)
 
@@ -123,12 +148,12 @@ def _get_creator_string(data, include_all, chosen_fields, flavor='csv'):
     return result_string
 
 
-def _make_string_from_list(list, flavor='csv'):
-    delim = ','
-    if flavor == 'tsv':
-        delim = '\t'
+def _make_string_from_list(creator_parts, flavor="csv"):
+    delim = ","
+    if flavor == "tsv":
+        delim = "\t"
     result_string = ""
-    for index, item in enumerate(list):
+    for index, item in enumerate(creator_parts):
         if index == 0:
             result_string = item
         else:

@@ -1,6 +1,7 @@
 from collections.abc import Iterable
 from enum import Enum
 
+
 # https://stackoverflow.com/a/3300514
 def dict_factory(cursor, row):
     d = {}
@@ -9,8 +10,8 @@ def dict_factory(cursor, row):
     return d
 
 
-def flatten(l):
-    for el in l:
+def flatten(possibly_nested_list):
+    for el in possibly_nested_list:
         if isinstance(el, Iterable) and not isinstance(el, (str, bytes)):
             yield from flatten(el)
         else:
@@ -30,9 +31,9 @@ class Comparator(Enum):
 
 
 def parse_dates(from_date, to_date):
-    if from_date == '':
+    if from_date == "":
         from_date = None
-    if to_date == '':
+    if to_date == "":
         to_date = None
     # we require either both dates or no dates
     if from_date is None and to_date is None:
@@ -81,7 +82,7 @@ def parse_limit_and_offset(limit, offset):
         except ValueError:
             errors.append(f"Invalid value for 'offset' parameter: {offset}")
             offset = None
-    return (errors, limit, offset)
+    return errors, limit, offset
 
 
 def sort_mappings(unsorted):
@@ -100,40 +101,40 @@ def sort_mappings(unsorted):
                 sorted_subjects[k] = v
         elif len(k) == 3:
             assert k[:1] in sorted_subjects
-            if 'subcategories' not in sorted_subjects[k[:1]]:
-                sorted_subjects[k[:1]]['subcategories'] = {}
-            sorted_subjects[k[:1]]['subcategories'][k] = v
+            if "subcategories" not in sorted_subjects[k[:1]]:
+                sorted_subjects[k[:1]]["subcategories"] = {}
+            sorted_subjects[k[:1]]["subcategories"][k] = v
         elif len(k) == 5:
             assert k[:1] in sorted_subjects
             # `subcategories` key should have been added in the previous case
-            assert 'subcategories' in sorted_subjects[k[:1]]
-            assert k[:3] in sorted_subjects[k[:1]]['subcategories']
-            if 'subcategories' not in sorted_subjects[k[:1]]['subcategories'][k[:3]]:
-                sorted_subjects[k[:1]]['subcategories'][k[:3]]['subcategories'] = {}
-            sorted_subjects[k[:1]]['subcategories'][k[:3]]['subcategories'][k] = v
+            assert "subcategories" in sorted_subjects[k[:1]]
+            assert k[:3] in sorted_subjects[k[:1]]["subcategories"]
+            if "subcategories" not in sorted_subjects[k[:1]]["subcategories"][k[:3]]:
+                sorted_subjects[k[:1]]["subcategories"][k[:3]]["subcategories"] = {}
+            sorted_subjects[k[:1]]["subcategories"][k[:3]]["subcategories"][k] = v
     return sorted_subjects
 
 
 def get_source_org_mapping(oai_sources):
     mapping = {}
     for source in oai_sources:
-        mapping[source['code']] = source['name']
+        mapping[source["code"]] = source["name"]
     return mapping
 
 
 def export_options(request):
     export_as_csv = False
-    csv_mimetype = 'text/csv'
-    tsv_mimetype = 'text/tab-separated-values'
+    csv_mimetype = "text/csv"
+    tsv_mimetype = "text/tab-separated-values"
     export_mimetype = csv_mimetype
-    csv_flavor = 'csv'
-    accept = request.headers.get('accept')
+    csv_flavor = "csv"
+    accept = request.headers.get("accept")
     if accept and accept == csv_mimetype:
         export_as_csv = True
     elif accept and accept == tsv_mimetype:
         export_as_csv = True
-        csv_flavor = 'tsv'
+        csv_flavor = "tsv"
         export_mimetype = tsv_mimetype
     else:
-        export_mimetype = 'application/json'
+        export_mimetype = "application/json"
     return export_as_csv, export_mimetype, csv_flavor
