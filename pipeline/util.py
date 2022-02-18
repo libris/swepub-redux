@@ -1,4 +1,3 @@
-import json                                                                                                                                                                             
 from jsonpath_rw import jsonpath, parse
 
 

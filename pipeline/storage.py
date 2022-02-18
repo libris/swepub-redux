@@ -1,6 +1,6 @@
 import sqlite3
 from sqlite3.dbapi2 import connect
-import json
+import orjson as json
 import os
 from bibframesource import BibframeSource
 

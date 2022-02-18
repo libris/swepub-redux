@@ -2,7 +2,7 @@ from storage import *
 from multiprocessing import Pool
 from bibframesource import BibframeSource
 import time
-import json
+import orjson as json
 
 
 def generate_search_tables():

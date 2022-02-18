@@ -1,4 +1,4 @@
-import json
+import orjson as json
 import time
 from multiprocessing import Pool
 from difflib import SequenceMatcher

@@ -3,7 +3,7 @@ from publicationmerger import PublicationMerger
 from publication import Publication
 from multiprocessing import Pool
 import time
-import json
+import orjson as json
 
 def merge():
     # Set up batching

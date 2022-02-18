@@ -19,12 +19,14 @@ from datetime import datetime, timezone
 import uuid
 from functools import partial
 import psutil
+import orjson as json
+from json import load
 
 
 ID_CACHE_PATH = "./id_cache.json"
 KNOWN_ISSN_PATH = "./known_valid_issn.txt"
 KNOWN_DOI_PATH = "./known_valid_doi.txt"
-SOURCES = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../resources/sources.json')))
+SOURCES = load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../resources/sources.json')))
 TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = ["cluster", "finalized", "search_single", "search_doi", "search_genre_form", "search_subject", "search_creator", "search_org", "search_fulltext", "stats_field_events", "stats_audit_events"]
 
 
@@ -253,8 +255,8 @@ def _get_harvest_cache_manager(manager):
     # cache file is missing/corrupt/whatever.
     previously_validated_ids = {"doi": {}, "issn": {}}
     try:
-        with open(ID_CACHE_PATH, 'r') as f:
-            previously_validated_ids = json.load(f)
+        with open(ID_CACHE_PATH, 'rb') as f:
+            previously_validated_ids = json.loads(f.read())
         log.info(f"Cache populated with {len(previously_validated_ids)} previously validated IDs from {ID_CACHE_PATH}")
     except FileNotFoundError:
         log.warning("ID cache file not found, starting fresh")
@@ -426,7 +428,7 @@ if __name__ == "__main__":
         # Save ISSN/DOI cache for use next time
         try:
             log.info(f'Saving {len(harvest_cache["issn_new"]) + len(harvest_cache["doi_new"])} cached IDs to {ID_CACHE_PATH}')
-            with open(ID_CACHE_PATH, 'w') as f:
-                json.dump({"doi": dict(harvest_cache['doi_new']), "issn": dict(harvest_cache["issn_new"])}, f)
+            with open(ID_CACHE_PATH, 'wb') as f:
+                f.write(json.dumps({"doi": dict(harvest_cache['doi_new']), "issn": dict(harvest_cache["issn_new"])}))
         except Exception as e:
             log.warning(f"Failed saving harvest ID cache to {ID_CACHE_PATH}: {e}")
