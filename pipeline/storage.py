@@ -7,9 +7,11 @@ from bibframesource import BibframeSource
 sqlite_path = "./swepub.sqlite3"
 
 def _set_pragmas(cursor):
-    cursor.execute("PRAGMA journal_mode=WAL;")
-    cursor.execute("PRAGMA synchronous=OFF;")
-    cursor.execute("PRAGMA foreign_keys=ON;")
+    cursor.execute("PRAGMA journal_mode=WAL")
+    cursor.execute("PRAGMA synchronous=OFF")
+    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.execute("PRAGMA cache_size=-64000") # negative number = kibibytes
+    cursor.execute("PRAGMA temp_store=MEMORY")
 
 def clean_and_init_storage():
     if os.path.exists(sqlite_path):

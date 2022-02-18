@@ -9,6 +9,7 @@ from json import load
 from os import path
 from multiprocessing import Process
 from tempfile import TemporaryDirectory
+import orjson as json
 
 categories = load(open(path.join(path.dirname(path.abspath(__file__)), '../resources/categories.json')))
 
@@ -140,7 +141,7 @@ def _find_and_add_subjects():
                 p.join()
 
             for file in os.listdir(temp_dir):
-                with open(f"{temp_dir}/{file}", "r") as f:
+                with open(f"{temp_dir}/{file}", encoding="utf-8") as f:
                     rowid = f.readline()
                     if not rowid:
                         continue
@@ -212,19 +213,18 @@ def _conc_find_subjects(converted_rows, temp_dir, file_sequence_number):
     with get_connection() as connection:
         cursor = connection.cursor()
         
-        with open(f"{temp_dir}/{file_sequence_number}", "w") as output:
-
+        # orjson's dumps() returns bytes, hence binary mode
+        with open(f"{temp_dir}/{file_sequence_number}", "wb") as output:
             for converted_row in converted_rows:
                 converted_rowid = converted_row[0]
                 converted = json.loads(converted_row[1])
 
                 added_count, new_data = find_subjects_for(converted_rowid, converted, cursor)
                 if added_count:
-
-                    output.write(str(converted_rowid))
-                    output.write("\n")
+                    output.write(str(converted_rowid).encode())
+                    output.write("\n".encode())
                     output.write(json.dumps(new_data))
-                    output.write("\n")
+                    output.write("\n".encode())
 
 def find_subjects_for(converted_rowid, converted, cursor):
     level = 3
@@ -407,4 +407,4 @@ def auto_classify(incremental, incrementally_converted_rowids):
 
 # For debugging
 if __name__ == "__main__":
-    auto_classify()
+    auto_classify(False, [])
