@@ -247,7 +247,6 @@ def find_subjects_for(converted_rowid, converted, cursor):
             abstract_rarest_words.converted_id;
         """, (converted_rowid,)):
             candidate_rowid = candidate_row[0]
-            candidate = json.loads(candidate_row[1])
             candidate_matched_words = []
             if isinstance(candidate_row[2], str):
                 candidate_matched_words = candidate_row[2].split("\n")
@@ -262,7 +261,7 @@ def find_subjects_for(converted_rowid, converted, cursor):
                 continue
 
             #print(f"Matched {converted_rowid} with {candidate_rowid} based on shared rare words: {candidate_matched_words}")
-    
+            candidate = json.loads(candidate_row[1])
             for subject in candidate.get("instanceOf", {}).get("subject", []):
                 try:
                     authority, subject_id = subject['inScheme']['code'], subject['code']
