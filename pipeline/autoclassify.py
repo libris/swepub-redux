@@ -234,46 +234,47 @@ def _find_and_add_subjects():
 
             for file in os.listdir(temp_dir):
                 with open(f"{temp_dir}/{file}", encoding="utf-8") as f:
-                    rowid = f.readline()
-                    if not rowid:
-                        continue
-                    jsontext = f.readline().rstrip()
+                    while True:
+                        rowid = f.readline()
+                        if not rowid:
+                            break
+                        jsontext = f.readline().rstrip()
 
-                    #print(f"About to write at id: {rowid}, data:\n{jsontext}")
+                        #print(f"About to write at id: {rowid}, data:\n{jsontext}")
 
-                    cursor.execute("""
-                    SELECT
-                        data
-                    FROM
-                        converted
-                    WHERE
-                        id = ? ;
-                    """, (rowid,) )
-                    old_converted = cursor.fetchall()[0][0]
-                    old_publication = Publication(json.loads(old_converted))
+                        cursor.execute("""
+                        SELECT
+                            data
+                        FROM
+                            converted
+                        WHERE
+                            id = ? ;
+                        """, (rowid,) )
+                        old_converted = cursor.fetchall()[0][0]
+                        old_publication = Publication(json.loads(old_converted))
 
-                    
-                    cursor.execute("""
-                    UPDATE
-                        converted
-                    SET
-                        data = ?
-                    WHERE
-                        id = ? ;
-                    """, (jsontext, rowid) )
 
-                    publication = Publication(json.loads(jsontext))
-                    code = "autoclassified"
-                    initial_value = old_publication.uka_swe_classification_list
-                    value = publication.uka_swe_classification_list
-                    result = "1"
+                        cursor.execute("""
+                        UPDATE
+                            converted
+                        SET
+                            data = ?
+                        WHERE
+                            id = ? ;
+                        """, (jsontext, rowid) )
 
-                    cursor.execute("""
-                    INSERT INTO converted_audit_events
-                        (converted_id, name, code, result, initial_value, value)
-                    VALUES
-                        (?, ?, ?, ?, ?, ?);
-                    """, (rowid, "AutoclassifierAuditor", code, result, json.dumps(initial_value), json.dumps(value)) )
+                        publication = Publication(json.loads(jsontext))
+                        code = "autoclassified"
+                        initial_value = old_publication.uka_swe_classification_list
+                        value = publication.uka_swe_classification_list
+                        result = "1"
+
+                        cursor.execute("""
+                        INSERT INTO converted_audit_events
+                            (converted_id, name, code, result, initial_value, value)
+                        VALUES
+                            (?, ?, ?, ?, ?, ?);
+                        """, (rowid, "AutoclassifierAuditor", code, result, json.dumps(initial_value), json.dumps(value)) )
                 connection.commit()
 
         # # Add "did nothing"-events (ffs..) for every publication that was not affected by autoclassification
