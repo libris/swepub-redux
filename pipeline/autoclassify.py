@@ -1,6 +1,5 @@
 from storage import *
 from collections import Counter
-from audit import Publication
 import re
 import time
 import os
@@ -11,6 +10,100 @@ from tempfile import TemporaryDirectory
 import orjson as json
 
 categories = load(open(path.join(path.dirname(path.abspath(__file__)), '../resources/categories.json')))
+
+
+class Publication:
+    def __init__(self, publication):
+        self._publication = publication
+
+    @property
+    def data(self):
+        return self._publication
+
+    @property
+    def title(self):
+        titles = self._publication.get("instanceOf", {}).get("hasTitle", [])
+        if titles:
+            if titles[0].get("@type", "") == "Title":
+                return titles[0].get("mainTitle", None)
+        return None
+
+    @property
+    def subtitle(self):
+        titles = self._publication.get("instanceOf", {}).get("hasTitle", [])
+        if titles:
+            if titles[0].get("@type", "") == "Title":
+                return titles[0].get("subTitle", None)
+        return None
+
+    @property
+    def keywords(self):
+        subjects = self.subjects
+        keywords = []
+        for subj in subjects:
+            if 'inScheme' in subj and 'code' in subj['inScheme']:
+                code = subj['inScheme']['code']
+                if code == "hsv" or code == "uka.se":
+                    continue
+            if 'prefLabel' in subj:
+                keywords.append(subj['prefLabel'])
+        return keywords
+
+    @property
+    def subjects(self):
+        subjects = []
+        for subject in self._publication.get("instanceOf", {}).get("subject", []):
+            if subject.get("@type", "") == "Topic":
+                subjects.append(subject)
+        return subjects
+
+    @property
+    def subject_codes(self):
+        return [subj['@id'] for subj in self.subjects if '@id' in subj]
+
+    @property
+    def uka_swe_classification_list(self):
+        classification_list = []
+        uka_prefix = "https://id.kb.se/term/uka/"
+        swe_lang_id = "https://id.kb.se/language/swe"
+        for subj in self._publication.get("instanceOf", {}).get("subject", {}):
+            if subj.get("@type", "") == "Topic":
+                code = subj.get("@id")
+                if not code:
+                    continue
+                if not code.startswith(uka_prefix):
+                    continue
+                if subj.get("language", {}).get("@id", "") == swe_lang_id:
+                    code = subj.get("code")
+                    label = subj.get("prefLabel")
+                    cl_string = f"{code}" if code else ""
+                    cl_string += f" {label}" if label else ""
+                    if cl_string:
+                        classification_list.append(cl_string)
+        return classification_list
+
+    def add_subjects(self, subjects):
+        """Add a list of subjects to the publication.
+
+        Each subject is flagged with "Autoclassified by Swepub"."""
+        if 'instanceOf' not in self._publication:
+            self._publication['instanceOf'] = {}
+        if 'subject' not in self._publication['instanceOf']:
+            self._publication['instanceOf']['subject'] = []
+        flag = "Autoclassified by Swepub"
+        marked_subjects = [self._add_note(subj, flag) for subj in subjects]
+        self._publication['instanceOf']['subject'].extend(marked_subjects)
+
+    def _add_note(self, obj, text):
+        if 'hasNote' not in obj:
+            obj['hasNote'] = []
+        note = {
+            "@type": "Note",
+            "label": text
+        }
+        obj['hasNote'].append(note)
+        return obj
+
 
 def _generate_occurrence_table():
     with get_connection() as connection:
@@ -276,8 +369,8 @@ def find_subjects_for(converted_rowid, converted, cursor):
             for sub in publication_subjects:
                 subjects[sub] += score
     subjects = subjects.most_common(classes)
-    publication = Publication(converted)
     if len(subjects) > 0:
+        publication = Publication(converted)
         enriched_subjects =_enrich_subject(subjects)
         #print(f"enriched subjects for {converted_rowid}: {str(enriched_subjects)}")
 
@@ -290,6 +383,8 @@ def find_subjects_for(converted_rowid, converted, cursor):
         
         publication.add_subjects(classifications)
 
+        return True, publication.data
+
         # print(f"Into publication: {converted_rowid}")
         # for summary in converted.get("instanceOf", {}).get("summary", []):
         #     print(f"  with summary:\"{summary}\"")
@@ -298,8 +393,7 @@ def find_subjects_for(converted_rowid, converted, cursor):
         # for classification in classifications:
         #     print(f"  added subject: {classification['prefLabel']}")
         # print("\n")
-
-    return len(subjects) > 0, publication.data
+    return False, None
 
 def _enrich_subject(subjects):
     ret = []
