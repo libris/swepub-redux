@@ -82,6 +82,16 @@ class Publication:
                         classification_list.append(cl_string)
         return classification_list
 
+    @property
+    def uka_subject_codes(self):
+        uka_subject_codes = []
+        for subject in self._publication.get("instanceOf", {}).get("subject", {}):
+            if subject.get("inScheme", {}).get("code", "") == "uka.se" and subject.get("@type", "") == "Topic":
+                subject_code = subject.get("code", "").strip()
+                if subject_code:
+                    uka_subject_codes.append(subject_code)
+        return set(uka_subject_codes)
+
     def add_subjects(self, subjects):
         """Add a list of subjects to the publication.
 
@@ -369,10 +379,14 @@ def find_subjects_for(converted_rowid, converted, cursor):
             score = len(candidate_matched_words)
             for sub in publication_subjects:
                 subjects[sub] += score
+
+    publication = Publication(converted)
+    old_subject_codes = publication.uka_subject_codes
     subjects = subjects.most_common(classes)
-    if len(subjects) > 0:
+    new_subjects = [(subject, score) for subject, score in subjects if subject not in old_subject_codes]
+    if len(new_subjects) > 0:
         publication = Publication(converted)
-        enriched_subjects =_enrich_subject(subjects)
+        enriched_subjects =_enrich_subject(new_subjects)
         #print(f"enriched subjects for {converted_rowid}: {str(enriched_subjects)}")
 
         LANGS = ['eng', 'swe']
