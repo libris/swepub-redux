@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import json
-from os import path
+from os import path, getenv
 
 from utils import bibliometrics
 from utils.common import *
@@ -26,8 +26,8 @@ from pypika.terms import BasicCriterion
 from pypika import functions as fn
 from collections import Counter
 
-# Database in parent directory of swepub.py directory
-DATABASE = path.join(path.dirname(path.abspath(__file__)), "../swepub.sqlite3")
+# sqlite DB path defaults to file in parent directory of swepub.py directory if SWEPUB_DB_READONLY not set
+SWEPUB_DB_READONLY = getenv("SWEPUB_DB_READONLY", path.join(path.dirname(path.abspath(__file__)), "../swepub.sqlite3"))
 
 SSIF_LABELS = {
     1: "1 Naturvetenskap",
@@ -71,7 +71,10 @@ app = Flask(__name__, static_url_path="/app", static_folder="vue-client/dist")
 def get_db():
     db = getattr(g, "_database", None)
     if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
+        db = g._database = sqlite3.connect(f"file:{SWEPUB_DB_READONLY}?mode=ro")
+        cursor = db.cursor()
+        cursor.execute("PRAGMA cache_size=-64000") # negative number = kibibytes
+        cursor.execute("PRAGMA temp_store=MEMORY")
     return db
 
 
