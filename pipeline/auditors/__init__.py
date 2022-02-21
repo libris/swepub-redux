@@ -7,5 +7,5 @@ class BaseAuditor():
     both.
     """
 
-    def audit(self, publication, audit_events):
+    def audit(self, publication, audit_events, harvest_cache):
         raise NotImplementedError

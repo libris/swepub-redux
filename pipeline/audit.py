@@ -2,6 +2,7 @@ import itertools
 from functools import reduce
 from dateutil.parser import parse as parse_date
 from jsonpath_rw_ext import parse
+import datetime
 from auditors.swedishlist import Level
 
 from auditors.swedishlist import SwedishListAuditor
@@ -10,6 +11,7 @@ from auditors.uka import UKAAuditor
 from auditors.contributor import ContributorAuditor
 from auditors.issn import ISSNAuditor
 from auditors.subjects import SubjectsAuditor
+from auditors.oa import OAAuditor
 from util import make_audit_event
 
 AUDITORS = [
@@ -19,6 +21,7 @@ AUDITORS = [
     UKAAuditor(),
     ISSNAuditor(),
     SubjectsAuditor(),
+    OAAuditor(),
 ]
 
 auditors = AUDITORS
@@ -103,6 +106,18 @@ REPORT_TYPES = REPORT_PUB_TYPES + REPORT_OUTPUT_TYPES
 
 RAW_UKA_PATH = 'instanceOf.subject[?(@.inScheme.code=="uka.se")].code'
 UKA_PATH = parse(RAW_UKA_PATH)
+
+RAW_ISBN_PATHS = [
+    'identifiedBy[?(@.@type=="ISBN")].value',
+    'partOf.[*].identifiedBy[?(@.@type=="ISBN")].value'
+]
+ISBN_PATHS = [parse(p) for p in RAW_ISBN_PATHS]
+
+RAW_DOI_PATH = 'identifiedBy[?(@.@type=="DOI")].value'
+DOI_PATH = parse(RAW_DOI_PATH)
+
+RAW_PARTOF_DOI_PATH = 'partOf.[*].identifiedBy[?(@.@type=="DOI")].value'
+PARTOF_DOI_PATH = parse(RAW_PARTOF_DOI_PATH)
 
 class AuditEvents:
     """An encapsulated representation of the audit event log."""
@@ -523,13 +538,140 @@ class Publication:
                         classification_list.append(cl_string)
         return classification_list
 
+    @property
+    def identifiedby_isbns(self):
+        """Return a list of all ISBN (including partOf)"""
+        isbns = itertools.chain.from_iterable(
+            isbn_path.find(self._publication) for isbn_path in ISBN_PATHS)
+        return [isbn.value for isbn in isbns if isbn.value]
+
+    @property
+    def identifiedby_dois(self):
+        """Returns a list of all DOI identifiedBy"""
+        identifiers = DOI_PATH.find(self._publication)
+        return [identifier.value for identifier in identifiers if identifier.value]
+
+    @property
+    def identifiedby_partof_dois(self):
+        """Returns a list of all DOI partOf identifiedBy"""
+        identifiers = PARTOF_DOI_PATH.find(self._publication)
+        return [identifier.value for identifier in identifiers if identifier.value]
+
+    @property
+    def electroniclocator_uris(self):
+        return list(itertools.chain.from_iterable(
+            [d.get('uri') for d in self._publication['electronicLocator'] if d.get('uri') is not None]
+        ))
+
+    def add_doab_download_uris(self, download_uris):
+        """Add a MediaObject in electronicLocator for each DOAB download URI
+        that's not already in the publication."""
+        if 'electronicLocator' not in self._publication:
+            self._publication['electronicLocator'] = []
+
+        # Make sure we don't add URIs that are already in the record
+        new_uris = set(download_uris) - set(self.electroniclocator_uris)
+        new_electroniclocators = []
+        if new_uris:
+            for new_uri in new_uris:
+
+                new_electroniclocators.append(
+                    {
+                        '@type': 'MediaObject',
+                        'meta': [
+                            {
+                                '@type': 'AdminMetadata',
+                                'sourceConsulted': [
+                                    {
+                                        '@type': 'SourceData',
+                                        'label': 'Information om ÖT hämtad från DOAB.',
+                                        'uri': 'https://www.doabooks.org/',
+                                        'date': datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc).isoformat()
+                                    }
+                                ]
+                            }
+                        ],
+                        'uri': new_uri,
+                        'usageAndAccessPolicy': [
+                            {
+                                '@id': 'https://id.kb.se/policy/oa/gratis'
+                            }
+                        ]
+                    }
+                )
+            self._publication['electronicLocator'].extend(new_electroniclocators)
+            return True, new_electroniclocators
+        return False
+
+    def add_unpaywall_data(self, doi_object):
+        """Add a MediaObject in electronicLocator for the Unpaywall download URI
+        if it's not already in the publication."""
+        if 'electronicLocator' not in self._publication:
+            self._publication['electronicLocator'] = []
+
+        new_electroniclocator = {
+            '@type': 'MediaObject',
+            'meta': [
+                {
+                    '@type': 'AdminMetadata',
+                    'sourceConsulted': [
+                        {
+                            '@type': 'SourceData',
+                            'label': 'Information om ÖT hämtad från Unpaywall.',
+                            'uri': 'https://unpaywall.org/',
+                            'date': datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc).isoformat()
+                        }
+                    ]
+                }
+            ]
+        }
+
+        if not doi_object['is_oa']:
+            new_electroniclocator['usageAndAccessPolicy'] = [
+                {
+                    '@id': 'https://id.kb.se/policy/oa/restricted'
+                }
+            ]
+            self._publication['electronicLocator'].append(new_electroniclocator)
+            return True, new_electroniclocator
+
+        if doi_object['best_oa_location']['url'] not in self.electroniclocator_uris:
+            new_electroniclocator['usageAndAccessPolicy'] = [
+                {
+                    '@id': 'https://id.kb.se/policy/oa/gratis'
+                }
+            ]
+            new_electroniclocator['uri'] = doi_object['best_oa_location']['url']
+            version = None
+            if doi_object['best_oa_location']['version'] == 'submittedVersion':
+                version = 'https://id.kb.se/term/swepub/Submitted'
+            elif doi_object['best_oa_location']['version'] == 'acceptedVersion':
+                version = 'https://id.kb.se/term/swepub/Accepted'
+            elif doi_object['best_oa_location']['version'] == 'publishedVersion':
+                version = 'https://id.kb.se/term/swepub/Published'
+            if version:
+                new_electroniclocator['hasNote'] = [
+                    {'@id': version}
+                ]
+
+            if doi_object['journal_is_in_doaj']:
+                if 'status' not in self._publication['instanceOf']:
+                    self._publication['instanceOf']['status'] = []
+                self._publication['instanceOf']['status'].append(
+                    {'@id': "https://id.kb.se/term/swepub/journal-is-in-doaj"}
+                )
+
+            self._publication['electronicLocator'].append(new_electroniclocator)
+            return True, new_electroniclocator
+        return False, None
+
 
 def _is_unmarked(gform):
     levels = [Level.PEERREVIEWED.value, Level.NONPEERREVIEWED.value]
     return '@id' not in gform or gform['@id'] not in levels
 
 
-def audit(body):    
+def audit(body, harvest_cache):    
     initial_val = (Publication(body), AuditEvents())
-    (updated_publication, audit_events) = reduce(lambda acc, auditor: auditor.audit(*acc), auditors, initial_val)
+    (updated_publication, audit_events) = reduce(lambda acc, auditor: auditor.audit(*acc, harvest_cache), auditors, initial_val)
     return updated_publication, audit_events

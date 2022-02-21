@@ -485,6 +485,11 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
 
     for name, events in audit_events.items():
         for event in events:
+            if event.get("value"):
+                value = json.dumps(event.get("value"))
+            else:
+                value = None
+
             cursor.execute("""
             INSERT INTO converted_audit_events(converted_id, code, initial_value, result, name, value) VALUES (?, ?, ?, ?, ?, ?)
             """, (
@@ -493,7 +498,8 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
                 event.get("initial_value", None),
                 event.get("result", None),
                 name,
-                event.get("value", None)
+                value
+                #event.get("value", None)
             ))
 
     identifiers = []
@@ -520,8 +526,6 @@ def get_connection():
     connection = sqlite3.connect(sqlite_path)
     cursor = connection.cursor()
     _set_pragmas(cursor)
-    connection.commit()
-    cursor.close()
     return connection
 
 def dict_factory(cursor, row):

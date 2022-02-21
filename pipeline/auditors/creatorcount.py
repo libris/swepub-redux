@@ -6,7 +6,7 @@ class CreatorCountAuditor(BaseAuditor):
     def __init__(self):
         self.name = CreatorCountAuditor.__name__
 
-    def audit(self, publication, audit_events):
+    def audit(self, publication, audit_events, _harvest_cache):
         """Verify existance and value of CreatorCount."""
         cc_exists = False
         msg = 'CreatorCount not found'

@@ -21,12 +21,23 @@ from functools import partial
 import psutil
 import orjson as json
 from json import load
+from os import getenv, path
+from contextlib import closing
+import codecs
+import csv
+from pathlib import Path
 
+CACHE_DIR = os.path.join(path.dirname(path.abspath(__file__)), '../cache/')
 
-ID_CACHE_PATH = "./id_cache.json"
-KNOWN_ISSN_PATH = "./known_valid_issn.txt"
-KNOWN_DOI_PATH = "./known_valid_doi.txt"
-SOURCES = load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../resources/sources.json')))
+SWEPUB_DOAB_URL = getenv("SWEPUB_DOAB_URL", "https://directory.doabooks.org/download-export?format=csv")
+DOAB_CACHE_FILE = os.path.join(path.dirname(path.abspath(__file__)), '../cache/doab.json')
+DOAB_CACHE_TIME = 604800
+
+ID_CACHE_FILE = os.path.join(path.dirname(path.abspath(__file__)), '../cache/id_cache.json')
+KNOWN_ISSN_FILE = "./known_valid_issn.txt"
+KNOWN_DOI_FILE = "./known_valid_doi.txt"
+
+SOURCES = load(open(path.join(path.dirname(path.abspath(__file__)), '../resources/sources.json')))
 TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = ["cluster", "finalized", "search_single", "search_doi", "search_genre_form", "search_subject", "search_creator", "search_org", "search_fulltext", "stats_field_events", "stats_audit_events"]
 
 
@@ -203,7 +214,7 @@ def threaded_handle_harvested(batch, source, lock, harvest_cache, incremental, a
             num_accepted += 1
             converted = convert(xml)
             (field_events, record_info) = validate(converted, harvest_cache)
-            (audited, audit_events) = audit(converted)
+            (audited, audit_events) = audit(converted, harvest_cache)
         elif not record.deleted:
             num_rejected += 1
 
@@ -243,6 +254,37 @@ def _get_has_persistent_deletes(source_set):
     return identify.deletedRecord == "persistent"
 
 
+def _load_doab():
+    doab_data = {}
+    if Path(DOAB_CACHE_FILE).is_file() and (time.time() - path.getmtime(DOAB_CACHE_FILE) < DOAB_CACHE_TIME):
+        log.info(f"DOAB data still fresh enough (< {DOAB_CACHE_TIME} seconds), not refreshing")
+        with open(DOAB_CACHE_FILE, 'rb') as f:
+            doab_data = json.loads(f.read())
+    else:
+        try:
+            log.info("Refreshing DOAB data")
+            with closing(requests.get(SWEPUB_DOAB_URL, stream=True)) as r:
+                reader = csv.DictReader(codecs.iterdecode(r.iter_lines(), 'utf-8'), delimiter=',')
+                for idx, row in enumerate(reader, 1):
+                    if row['oapen.relation.isbn']:
+                        for isbn in re.split(r';|\|\|', row['oapen.relation.isbn']):
+                            if len(isbn) > 9:  # sanity check
+                                cleaned_isbn = isbn.strip().replace('-', '')
+                                doab_data[cleaned_isbn] = row['BITSTREAM Download URL']
+                    if row['oapen.identifier.doi']:
+                        for doi in row['oapen.identifier.doi'].split('||'):
+                            if '10.' in doi:
+                                cleaned_doi = doi[doi.find('10.'):]
+                                if '/' in cleaned_doi and len(cleaned_doi) > 5:
+                                    doab_data[cleaned_doi] = row['BITSTREAM Download URL']
+            with open(DOAB_CACHE_FILE, 'wb') as f:
+                f.write(json.dumps(doab_data))
+        except Exception as e:
+            log.warning(f"Failed reading DOAB data: {e}")
+    log.info(f"Finished loading DOAB data (cached to disk for {DOAB_CACHE_TIME} seconds)")
+    return doab_data
+
+
 def _get_harvest_cache_manager(manager):
     # We check if ISSN and DOI numbers really exist through HTTP requests to external servers,
     # so we cache the results to avoid unnecessary requests. Such requests were previously
@@ -255,9 +297,9 @@ def _get_harvest_cache_manager(manager):
     # cache file is missing/corrupt/whatever.
     previously_validated_ids = {"doi": {}, "issn": {}}
     try:
-        with open(ID_CACHE_PATH, 'rb') as f:
+        with open(ID_CACHE_FILE, 'rb') as f:
             previously_validated_ids = json.loads(f.read())
-        log.info(f"Cache populated with {len(previously_validated_ids)} previously validated IDs from {ID_CACHE_PATH}")
+        log.info(f"Cache populated with {len(previously_validated_ids)} previously validated IDs from {ID_CACHE_FILE}")
     except FileNotFoundError:
         log.warning("ID cache file not found, starting fresh")
     except Exception as e:
@@ -267,7 +309,7 @@ def _get_harvest_cache_manager(manager):
     known_issn = {}
     known_doi = {}
     try:
-        with open(KNOWN_ISSN_PATH, 'r') as issn, open(KNOWN_DOI_PATH, 'r') as doi:
+        with open(KNOWN_ISSN_FILE, 'r') as issn, open(KNOWN_DOI_FILE, 'r') as doi:
             issn_count = 0
             doi_count = 0
             for line in issn:
@@ -276,7 +318,7 @@ def _get_harvest_cache_manager(manager):
             for line in doi:
                 known_doi[line.strip()] = 1
                 doi_count += 1
-            log.info(f"Cache populated with {issn_count} ISSNs from {KNOWN_ISSN_PATH}, {doi_count} DOIs from {KNOWN_DOI_PATH}")
+            log.info(f"Cache populated with {issn_count} ISSNs from {KNOWN_ISSN_FILE}, {doi_count} DOIs from {KNOWN_DOI_FILE}")
     except Exception as e:
         log.warning(f"Failed loading ISSN/DOI files: {e}")
     # Stuff seen during requests to external sources should be saved for future use,
@@ -290,8 +332,9 @@ def _get_harvest_cache_manager(manager):
     issn_new = manager.dict(dict.fromkeys(issn_not_in_static, 1))
     issn_static = manager.dict(known_issn)
     harvest_meta = manager.dict({})
+    doab = manager.dict(_load_doab())
 
-    return manager.dict({'doi_new': doi_new, 'doi_static': doi_static, 'issn_new': issn_new, 'issn_static': issn_static, 'meta': harvest_meta})
+    return manager.dict({'doi_new': doi_new, 'doi_static': doi_static, 'issn_new': issn_new, 'issn_static': issn_static, 'meta': harvest_meta, 'doab': doab})
 
 
 def init(l, c, a, lg):
@@ -309,6 +352,9 @@ if __name__ == "__main__":
     # To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..
     log = swepublog.get_default_logger()
     args = sys.argv[1:]
+
+    # Make sure cache directory exists
+    Path(CACHE_DIR).mkdir(parents=True, exist_ok=True)
 
     if "purge" in args and "update" in args:
         log.error("Can't purge and update at the same time!")
@@ -427,8 +473,8 @@ if __name__ == "__main__":
     if not purge:
         # Save ISSN/DOI cache for use next time
         try:
-            log.info(f'Saving {len(harvest_cache["issn_new"]) + len(harvest_cache["doi_new"])} cached IDs to {ID_CACHE_PATH}')
-            with open(ID_CACHE_PATH, 'wb') as f:
+            log.info(f'Saving {len(harvest_cache["issn_new"]) + len(harvest_cache["doi_new"])} cached IDs to {ID_CACHE_FILE}')
+            with open(ID_CACHE_FILE, 'wb') as f:
                 f.write(json.dumps({"doi": dict(harvest_cache['doi_new']), "issn": dict(harvest_cache["issn_new"])}))
         except Exception as e:
-            log.warning(f"Failed saving harvest ID cache to {ID_CACHE_PATH}: {e}")
+            log.warning(f"Failed saving harvest ID cache to {ID_CACHE_FILE}: {e}")
