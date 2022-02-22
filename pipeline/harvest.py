@@ -27,17 +27,19 @@ import codecs
 import csv
 from pathlib import Path
 
-CACHE_DIR = os.path.join(path.dirname(path.abspath(__file__)), '../cache/')
+FILE_PATH = path.dirname(path.abspath(__file__))
+
+CACHE_DIR = path.join(FILE_PATH, '../cache/')
 
 SWEPUB_DOAB_URL = getenv("SWEPUB_DOAB_URL", "https://directory.doabooks.org/download-export?format=csv")
-DOAB_CACHE_FILE = os.path.join(path.dirname(path.abspath(__file__)), '../cache/doab.json')
+DOAB_CACHE_FILE = path.join(FILE_PATH, '../cache/doab.json')
 DOAB_CACHE_TIME = 604800
 
-ID_CACHE_FILE = os.path.join(path.dirname(path.abspath(__file__)), '../cache/id_cache.json')
-KNOWN_ISSN_FILE = "./known_valid_issn.txt"
-KNOWN_DOI_FILE = "./known_valid_doi.txt"
+ID_CACHE_FILE = path.join(FILE_PATH, "../cache/id_cache.json")
+KNOWN_ISSN_FILE = path.join(FILE_PATH, "../resources/known_valid_issn.txt")
+KNOWN_DOI_FILE = path.join(FILE_PATH, "../resources/known_valid_doi.txt")
 
-SOURCES = load(open(path.join(path.dirname(path.abspath(__file__)), '../resources/sources.json')))
+SOURCES = load(open(path.join(FILE_PATH, '../resources/sources.json')))
 TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = ["cluster", "finalized", "search_single", "search_doi", "search_genre_form", "search_subject", "search_creator", "search_org", "search_fulltext", "stats_field_events", "stats_audit_events"]
 
 

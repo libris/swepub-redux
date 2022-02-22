@@ -26,8 +26,13 @@ from pypika.terms import BasicCriterion
 from pypika import functions as fn
 from collections import Counter
 
+FILE_PATH = path.dirname(path.abspath(__file__))
+
 # sqlite DB path defaults to file in parent directory of swepub.py directory if SWEPUB_DB_READONLY not set
-SWEPUB_DB_READONLY = getenv("SWEPUB_DB_READONLY", path.join(path.dirname(path.abspath(__file__)), "../swepub.sqlite3"))
+SWEPUB_DB_READONLY = getenv(
+    "SWEPUB_DB_READONLY",
+    path.join(path.dirname(path.abspath(__file__)), "../swepub.sqlite3"),
+)
 
 SSIF_LABELS = {
     1: "1 Naturvetenskap",
@@ -42,27 +47,19 @@ INFO_API_MAPPINGS = sort_mappings(
     json.load(
         open(
             path.join(
-                path.dirname(path.abspath(__file__)),
+                FILE_PATH,
                 "../resources/ssif_research_subjects.json",
             )
         )
     )
 )
 INFO_API_OUTPUT_TYPES = json.load(
-    open(
-        path.join(
-            path.dirname(path.abspath(__file__)), "../resources/output_types.json"
-        )
-    )
+    open(path.join(FILE_PATH, "../resources/output_types.json"))
 )
 INFO_API_SOURCE_ORG_MAPPING = json.load(
-    open(path.join(path.dirname(path.abspath(__file__)), "../resources/sources.json"))
+    open(path.join(FILE_PATH, "../resources/sources.json"))
 )
-CATEGORIES = json.load(
-    open(
-        path.join(path.dirname(path.abspath(__file__)), "../resources/categories.json")
-    )
-)
+CATEGORIES = json.load(open(path.join(FILE_PATH, "../resources/categories.json")))
 
 # Note: static files should be served by Apache/nginx
 app = Flask(__name__, static_url_path="/app", static_folder="vue-client/dist")
@@ -73,7 +70,7 @@ def get_db():
     if db is None:
         db = g._database = sqlite3.connect(f"file:{SWEPUB_DB_READONLY}?mode=ro")
         cursor = db.cursor()
-        cursor.execute("PRAGMA cache_size=-64000") # negative number = kibibytes
+        cursor.execute("PRAGMA cache_size=-64000")  # negative number = kibibytes
         cursor.execute("PRAGMA temp_store=MEMORY")
     return db
 
