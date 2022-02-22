@@ -360,7 +360,7 @@ def handle_args():
     group = parser.add_mutually_exclusive_group()
     group.add_argument("-f", "--force-new", action="store_false", help="Forcibly creates a new database, removing the existing one if one exists as the given path")
     group.add_argument("-u", "--update", action="store_true", help="Updates sources incrementally. Creates database and harvests from the beginning if the database doesn't already exist.")
-    group.add_argument("-p", "--purge", default=None, help="Delete records (from specified sources, if sources are specified, otherwise everything (but harvest history is kept)")
+    group.add_argument("-p", "--purge", action="store_true", help="Delete records (from specified sources, if sources are specified, otherwise everything (but harvest history is kept)")
 
     parser.add_argument("-d", "--database", default="swepub.sqlite3", help="Path to sqlite3 database (to be created or updated; overrides SWEPUB_DB")
     parser.add_argument("-e", "--env", default=None, help="One of DEV, QA, PROD (default DEV). Overrides SWEPUB_ENV.")
