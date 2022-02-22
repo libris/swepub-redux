@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from autoclassify import auto_classify
 from merge import merge
 from convert import convert
@@ -21,15 +22,16 @@ from functools import partial
 import psutil
 import orjson as json
 from json import load
-from os import getenv, path
+from os import getenv, path, environ
 from contextlib import closing
 import codecs
 import csv
 from pathlib import Path
+from argparse import ArgumentParser, RawTextHelpFormatter
 
-SWEPUB_ENV = getenv("SWEPUB_ENV", "DEV") # or QA, PROD
-
+DEFAULT_SWEPUB_ENV = getenv("SWEPUB_ENV", "DEV") # or QA, PROD
 FILE_PATH = path.dirname(path.abspath(__file__))
+DEFAULT_SWEPUB_DB = path.join(FILE_PATH, "../swepub.sqlite3")
 
 CACHE_DIR = path.join(FILE_PATH, '../cache/')
 
@@ -352,45 +354,65 @@ def init(l, c, a, lg):
     log = lg
 
 
+def handle_args():
+    parser = ArgumentParser()
+
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("-f", "--force-new", action="store_false", help="Forcibly creates a new database, removing the existing one if one exists as the given path")
+    group.add_argument("-u", "--update", action="store_true", help="Updates sources incrementally. Creates database and harvests from the beginning if the database doesn't already exist.")
+    group.add_argument("-p", "--purge", default=None, help="Delete records (from specified sources, if sources are specified, otherwise everything (but harvest history is kept)")
+
+    parser.add_argument("-d", "--database", default="swepub.sqlite3", help="Path to sqlite3 database (to be created or updated; overrides SWEPUB_DB")
+    parser.add_argument("-e", "--env", default=None, help="One of DEV, QA, PROD (default DEV). Overrides SWEPUB_ENV.")
+    parser.add_argument("sources", nargs="*", default="", help="Sources to process (if not specified, everything in sources.json will be processed, e.g. uniarts ths mdh")
+
+    parser.set_defaults(update=True)
+
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
     # To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..
     log = swepublog.get_default_logger()
-    args = sys.argv[1:]
+    args = handle_args()
 
     # Make sure cache directory exists
     Path(CACHE_DIR).mkdir(parents=True, exist_ok=True)
 
-    if "purge" in args and "update" in args:
-        log.error("Can't purge and update at the same time!")
-        sys.exit(1)
+    if args.database:
+        environ["SWEPUB_DB"] = args.database
+    elif not getenv("SWEPUB_DB", None):
+        environ["SWEPUB_DB"] = DEFAULT_SWEPUB_DB
 
-    purge = False
-    if "purge" in args:
-        args.remove("purge")
-        purge = True
+    if args.env:
+        environ["SWEPUB_ENV"] = args.env
+    elif not getenv("SWEPUB_ENV", None):
+        environ["SWEPUB_ENV"] = DEFAULT_SWEPUB_ENV
 
     incremental = False
-    if "update" in args:
-        args.remove("update")
+    if args.update:
         incremental = True
         log.info("Doing incremental update")
+        if not storage_exists():
+            log.info(f"Database {get_sqlite_path()} doesn't exist; creating it")
+            clean_and_init_storage()
 
-    if "devdata" in args:
-        sources_to_process = [SOURCES["mdh"], SOURCES["miun"], SOURCES["mau"]]
-    elif len(args) > 0:
-        sources_to_process = []
-        for arg in args:
-            if arg not in SOURCES:
-                log.error(f"Source {arg} does not exist in sources.json")
+    sources_to_process = []
+    if args.sources:
+        for code in args.sources:
+            if code not in SOURCES:
+                log.error(f"Source {code} does not exist in sources.json")
                 sys.exit(1)
             # Some sources should have different URIs/settings for different environments
-            SOURCES[arg]["sets"][:] = [item for item in SOURCES[arg]["sets"] if SWEPUB_ENV in item.get("envs", []) or "envs" not in item]
-            sources_to_process.append(SOURCES[arg])
+            SOURCES[code]["sets"][:] = [item for item in SOURCES[code]["sets"] if getenv("SWEPUB_ENV") in item.get("envs", []) or "envs" not in item]
+            sources_to_process.append(SOURCES[code])
     else:
-        sources_to_process = list(SOURCES.values())
-
+        for source in SOURCES.values():
+            source["sets"][:] = [item for item in source["sets"] if getenv("SWEPUB_ENV")  in item.get("envs", []) or "envs" not in item]
+            sources_to_process.append(source)
+ 
     t1 = None
-    if purge:
+    if args.purge:
         log.info("Purging " + " ".join([source['code'] for source in sources_to_process]))
         with get_connection() as connection:
             cursor = connection.cursor()
@@ -472,11 +494,10 @@ if __name__ == "__main__":
     diff = round(t1-t0, 2)
     log.info(f"Phase 6 (generate processing stats) ran for {diff} seconds")
 
-    log.info(f'Sources harvested: {" ".join(harvest_cache["meta"]["sources_succeeded"])}')
-    if harvest_cache["meta"]["sources_failed"]:
-        log.warning(f'Sources failed: {" ".join(harvest_cache["meta"]["sources_failed"])}')
-
-    if not purge:
+    if not args.purge:
+        log.info(f'Sources harvested: {" ".join(harvest_cache["meta"]["sources_succeeded"])}')
+        if harvest_cache["meta"]["sources_failed"]:
+            log.warning(f'Sources failed: {" ".join(harvest_cache["meta"]["sources_failed"])}')
         # Save ISSN/DOI cache for use next time
         try:
             log.info(f'Saving {len(harvest_cache["issn_new"]) + len(harvest_cache["doi_new"])} cached IDs to {ID_CACHE_FILE}')

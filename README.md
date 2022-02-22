@@ -18,31 +18,30 @@ $ pip install -r requirements.txt
 
 ## Pipeline
 
-To run the pipeline do:
+To run the pipeline and harvest a few sources do:
 
 ```bash
-$ python3 pipeline/harvest.py devdata
+$ python3 pipeline/harvest.py mdh miun mau
 ```
 
-Expect this to take a few minutes. If you omit the "devdata" parameter you instead get the full production data which takes a lot longer. You can also specify one or more individual source(s) (these must exist in `pipeline/sources.json`), e.g.:
+Expect this to take a few minutes. If you don't specify source(s) you instead get the full production data which takes a lot longer. Sources must exist in `pipeline/sources.json`.
 
-```
-$ python3 pipeline/harvest.py ths uniarts
-```
+The above is equivalent to `python3 pipeline/harvest.py --update mdh miun mau`: if the database doesn't exist, it will be created; if it already exists, sources will be incrementally updated.
 
-There is no state to be considered here and no running "services". Each time the pipeline is executed a new sqlite3 database is produced as output. You may even run more than one in parallel if you like. As an option you can if you wish update an existing database with whatever new data is available by using the parameter `update`:
+To forcibly create a new database, run `python3 pipeline/harvest.py --force` (or `-f`).
 
-```bash
-$ python3 pipeline/harvest.py update # update all sources
-$ python3 pipeline/harvest.py update uniarts ths # update specific sources
-```
+Run `python3 pipeline/harvest.py` to see all options. 
+
+There are no running "services". Each time the pipeline is executed, an sqlite3 database is either created or updated. You may even run more than one `harvest.py` (with a different database path) in parallel if you like.
 
 You can `purge` (delete) one or more sources. In combination with a subsequent `update` command, this lets you completely remove a source and then harvest it fully, while keeping records from other sources in the database intact:
 
 ```bash
-$ python3 pipeline/harvest.py purge uniarts
-$ python3 pipeline/harvest.py update uniarts
+$ python3 pipeline/harvest.py --purge uniarts
+$ python3 pipeline/harvest.py --update uniarts
 ```
+
+(If you omit the source name, all sources' records will be purged and fully harvested.)
 
 The resulting sqlite3 database has roughly the following structure (see storage.py for details):
 

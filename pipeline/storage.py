@@ -4,10 +4,6 @@ import orjson as json
 import os
 from bibframesource import BibframeSource
 
-SQLITE_FILE = os.getenv(
-    "SWEPUB_DB",
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), "../swepub.sqlite3")
-)
 
 def _set_pragmas(cursor):
     cursor.execute("PRAGMA journal_mode=WAL")
@@ -16,14 +12,26 @@ def _set_pragmas(cursor):
     cursor.execute("PRAGMA cache_size=-64000") # negative number = kibibytes
     cursor.execute("PRAGMA temp_store=MEMORY")
 
+
+def get_sqlite_path():
+    return os.getenv("SWEPUB_DB", os.path.join(os.path.dirname(os.path.abspath(__file__)), "../swepub.sqlite3")
+)
+
+
+def storage_exists():
+    return os.path.exists(get_sqlite_path())
+
+
 def clean_and_init_storage():
-    if os.path.exists(SQLITE_FILE):
-        os.remove(SQLITE_FILE)
-    if os.path.exists(f"{SQLITE_FILE}-wal"):
-        os.remove(f"{SQLITE_FILE}-wal")
-    if os.path.exists(f"{SQLITE_FILE}-shm"):
-        os.remove(f"{SQLITE_FILE}-shm")
-    connection = sqlite3.connect(SQLITE_FILE)
+    sqlite_path = get_sqlite_path()
+
+    if os.path.exists(sqlite_path):
+        os.remove(sqlite_path)
+    if os.path.exists(f"{sqlite_path}-wal"):
+        os.remove(f"{sqlite_path}-wal")
+    if os.path.exists(f"{sqlite_path}-shm"):
+        os.remove(f"{sqlite_path}-shm")
+    connection = sqlite3.connect(sqlite_path)
     cursor = connection.cursor()
     _set_pragmas(cursor)
 
@@ -528,7 +536,7 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
     return converted_rowid
 
 def get_connection():
-    connection = sqlite3.connect(SQLITE_FILE)
+    connection = sqlite3.connect(get_sqlite_path())
     cursor = connection.cursor()
     _set_pragmas(cursor)
     return connection
