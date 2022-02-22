@@ -4,7 +4,10 @@ import orjson as json
 import os
 from bibframesource import BibframeSource
 
-sqlite_path = "./swepub.sqlite3"
+SQLITE_FILE = os.getenv(
+    "SWEPUB_DB",
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "../swepub.sqlite3")
+)
 
 def _set_pragmas(cursor):
     cursor.execute("PRAGMA journal_mode=WAL")
@@ -14,11 +17,13 @@ def _set_pragmas(cursor):
     cursor.execute("PRAGMA temp_store=MEMORY")
 
 def clean_and_init_storage():
-    if os.path.exists(sqlite_path):
-        os.remove(sqlite_path)
-    if os.path.exists(f"{sqlite_path}-wal"):
-        os.remove(f"{sqlite_path}-wal")
-    connection = sqlite3.connect(sqlite_path)
+    if os.path.exists(SQLITE_FILE):
+        os.remove(SQLITE_FILE)
+    if os.path.exists(f"{SQLITE_FILE}-wal"):
+        os.remove(f"{SQLITE_FILE}-wal")
+    if os.path.exists(f"{SQLITE_FILE}-shm"):
+        os.remove(f"{SQLITE_FILE}-shm")
+    connection = sqlite3.connect(SQLITE_FILE)
     cursor = connection.cursor()
     _set_pragmas(cursor)
 
@@ -50,7 +55,7 @@ def clean_and_init_storage():
     CREATE TABLE original (
         id INTEGER PRIMARY KEY,
         source TEXT,
-        oai_id TEXT, -- TODO ADD UNIQUE,
+        oai_id TEXT UNIQUE,
         accepted INTEGER, -- (fake boolean 1/0)
         --rejection_cause TEXT,
         data TEXT
@@ -523,7 +528,7 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
     return converted_rowid
 
 def get_connection():
-    connection = sqlite3.connect(sqlite_path)
+    connection = sqlite3.connect(SQLITE_FILE)
     cursor = connection.cursor()
     _set_pragmas(cursor)
     return connection
