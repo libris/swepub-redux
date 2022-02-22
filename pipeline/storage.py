@@ -63,7 +63,7 @@ def clean_and_init_storage():
     CREATE TABLE original (
         id INTEGER PRIMARY KEY,
         source TEXT,
-        oai_id TEXT UNIQUE,
+        oai_id TEXT -- TODO: UNIQUE,
         accepted INTEGER, -- (fake boolean 1/0)
         --rejection_cause TEXT,
         data TEXT
