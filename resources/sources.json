@@ -352,7 +352,14 @@
       {
         "url": "http://hkr.diva-portal.org/dice/oai",
         "subset": "SwePub-hkr",
-        "metadata_prefix": "swepub_mods"
+        "metadata_prefix": "swepub_mods",
+        "envs": ["PROD", "QA"]
+      },
+      {
+        "url": "https://cust-uk-cc-hkrdevel.devel.elsevierpure.com/ws/oai",
+        "subset": "publications:all",
+        "metadata_prefix": "mods_swepub",
+        "envs": ["DEV"]
       }
     ]
   },
@@ -416,9 +423,16 @@
     "name": "Göteborgs universitet",
     "sets": [
       {
+        "url": "https://gup-staging.ub.gu.se/oai",
+        "subset": "",
+        "metadata_prefix": "mods",
+        "envs": ["DEV", "QA"]
+      },
+      {
         "url": "https://gup.ub.gu.se/oai",
         "subset": "",
-        "metadata_prefix": "mods"
+        "metadata_prefix": "mods",
+        "envs": ["PROD"]
       }
     ]
   },

@@ -27,6 +27,8 @@ import codecs
 import csv
 from pathlib import Path
 
+SWEPUB_ENV = getenv("SWEPUB_ENV", "DEV") # or QA, PROD
+
 FILE_PATH = path.dirname(path.abspath(__file__))
 
 CACHE_DIR = path.join(FILE_PATH, '../cache/')
@@ -381,6 +383,8 @@ if __name__ == "__main__":
             if arg not in SOURCES:
                 log.error(f"Source {arg} does not exist in sources.json")
                 sys.exit(1)
+            # Some sources should have different URIs/settings for different environments
+            SOURCES[arg]["sets"][:] = [item for item in SOURCES[arg]["sets"] if SWEPUB_ENV in item.get("envs", []) or "envs" not in item]
             sources_to_process.append(SOURCES[arg])
     else:
         sources_to_process = list(SOURCES.values())
