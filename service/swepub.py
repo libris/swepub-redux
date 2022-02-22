@@ -68,7 +68,7 @@ app = Flask(__name__, static_url_path="/app", static_folder="vue-client/dist")
 def get_db():
     db = getattr(g, "_database", None)
     if db is None:
-        db = g._database = sqlite3.connect(f"file:{SWEPUB_DB_READONLY}?mode=ro")
+        db = g._database = sqlite3.connect(f"{SWEPUB_DB_READONLY}")
         cursor = db.cursor()
         cursor.execute("PRAGMA cache_size=-64000")  # negative number = kibibytes
         cursor.execute("PRAGMA temp_store=MEMORY")
