@@ -494,8 +494,8 @@ def auto_classify(incremental, incrementally_converted_rowids):
                     id = ?;
                 """, (converted_rowid,))
                 row = cursor.fetchall()[0] # Can only be one
-                converted = row[0]
-                
+                converted = json.loads(row[0])
+
                 added_count, new_data = find_subjects_for(converted_rowid, converted, cursor)
                 if added_count:
                     cursor.execute("""
