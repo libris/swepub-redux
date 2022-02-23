@@ -87,7 +87,7 @@ class PublicationMerger:
         return master
 
     def _merge_has_notes(self, master, candidate):
-        """ Merge hasNotes by keeping pubicationstatus and creator_count from master if it exist
+        """ Merge hasNotes by keeping publicationstatus and creator_count from master if it exists,
         otherwise try to get from candidate. Merge new notes from candidate.
         """
         if master.publication_status is None and candidate.publication_status is not None:

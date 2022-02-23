@@ -1,5 +1,4 @@
 import sqlite3
-from sqlite3.dbapi2 import connect
 import orjson as json
 import os
 from bibframesource import BibframeSource
@@ -9,13 +8,12 @@ def _set_pragmas(cursor):
     cursor.execute("PRAGMA journal_mode=WAL")
     cursor.execute("PRAGMA synchronous=OFF")
     cursor.execute("PRAGMA foreign_keys=ON")
-    cursor.execute("PRAGMA cache_size=-64000") # negative number = kibibytes
+    cursor.execute("PRAGMA cache_size=-64000")  # negative number = kibibytes
     cursor.execute("PRAGMA temp_store=MEMORY")
 
 
 def get_sqlite_path():
-    return os.getenv("SWEPUB_DB", os.path.join(os.path.dirname(os.path.abspath(__file__)), "../swepub.sqlite3")
-)
+    return os.getenv("SWEPUB_DB", os.path.join(os.path.dirname(os.path.abspath(__file__)), "../swepub.sqlite3"))
 
 
 def storage_exists():
@@ -31,20 +29,20 @@ def clean_and_init_storage():
         os.remove(f"{sqlite_path}-wal")
     if os.path.exists(f"{sqlite_path}-shm"):
         os.remove(f"{sqlite_path}-shm")
-    connection = sqlite3.connect(sqlite_path)
-    cursor = connection.cursor()
-    _set_pragmas(cursor)
+    con = sqlite3.connect(sqlite_path)
+    cur = con.cursor()
+    _set_pragmas(cur)
 
     # To allow incremental updates, we must know the last successful (start of-) harvest time
     # for each source
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE last_harvest (
         source TEXT PRIMARY KEY,
         last_successful_harvest DATETIME
     );
     """)
 
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE harvest_history (
         id TEXT PRIMARY KEY, -- uuid4
         source TEXT,
@@ -54,12 +52,10 @@ def clean_and_init_storage():
         rejected INT
     );
     """)
-    cursor.execute("""
-    CREATE INDEX idx_harvest_history_source ON harvest_history (source);
-    """)
+    cur.execute("CREATE INDEX idx_harvest_history_source ON harvest_history (source)")
 
     # Because Swepub APIs expose publications as originally harvested, these must be kept.
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE original (
         id INTEGER PRIMARY KEY,
         source TEXT,
@@ -69,11 +65,9 @@ def clean_and_init_storage():
         data TEXT
     );
     """)
-    cursor.execute("""
-    CREATE INDEX idx_original_oai_id ON original (oai_id);
-    """)
+    cur.execute("CREATE INDEX idx_original_oai_id ON original (oai_id)")
 
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE rejected (
         id INTEGER PRIMARY KEY,
         harvest_id TEXT,
@@ -82,13 +76,11 @@ def clean_and_init_storage():
         FOREIGN KEY (harvest_id) REFERENCES harvest_history(id) ON DELETE CASCADE
     );
     """)
-    cursor.execute("""
-    CREATE INDEX idx_rejected_harvest_id ON rejected(harvest_id);
-    """)
+    cur.execute("CREATE INDEX idx_rejected_harvest_id ON rejected(harvest_id)")
 
-    # This table is used to store log entries (validation/normalization errors etc) for
+    # This table is used to store log entries (validation/normalization errors etc.) for
     # each publication
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE converted_audit_events (
         converted_id INTEGER,
         name TEXT,
@@ -99,11 +91,9 @@ def clean_and_init_storage():
         FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
     );
     """)
-    cursor.execute("""
-    CREATE INDEX idx_converted_audit_events_converted_id ON converted_audit_events(converted_id);
-    """)
+    cur.execute("CREATE INDEX idx_converted_audit_events_converted_id ON converted_audit_events(converted_id)")
 
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE converted_record_info (
         converted_id INTEGER,
         field_name TEXT,
@@ -113,27 +103,17 @@ def clean_and_init_storage():
         FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
     );
     """)
-    cursor.execute("""
-    CREATE INDEX idx_converted_record_info_converted_id ON converted_record_info(converted_id);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_converted_record_info_field_name ON converted_record_info(field_name);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_converted_record_info_validation_status ON converted_record_info(validation_status);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_converted_record_info_enrichment_status ON converted_record_info(enrichment_status);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_converted_record_info_normalization_status ON converted_record_info(normalization_status);
-    """)
+    cur.execute("CREATE INDEX idx_converted_record_info_converted_id ON converted_record_info(converted_id)")
+    cur.execute("CREATE INDEX idx_converted_record_info_field_name ON converted_record_info(field_name)")
+    cur.execute("CREATE INDEX idx_converted_record_info_validation_status ON converted_record_info(validation_status)")
+    cur.execute("CREATE INDEX idx_converted_record_info_enrichment_status ON converted_record_info(enrichment_status)")
+    cur.execute("CREATE INDEX idx_converted_record_info_normalization_status ON converted_record_info(normalization_status)")
 
     # After conversion, validation and normalization each publication is stored in this
     # form, for later in use in deduplication.
     # The original_id foreign key is *NOT* ON DELETE CASCADE, because we need to keep the (mostly-emptied)
     # converted record around. See triggers below.
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE converted (
         id INTEGER PRIMARY KEY,
         oai_id TEXT UNIQUE, -- e.g. "oai:DiVA.org:ri-6513"
@@ -149,48 +129,30 @@ def clean_and_init_storage():
         FOREIGN KEY (original_id) REFERENCES original(id)
     );
     """)
-    cursor.execute("""
-    CREATE INDEX idx_converted_oai_id ON converted(oai_id);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_converted_date ON converted(date);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_converted_source ON converted(source);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_converted_is_open_access ON converted(is_open_access);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_converted_classification_level ON converted(classification_level);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_converted_modified ON converted(modified);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_converted_deleted ON converted(deleted);
-    """)
+    cur.execute("CREATE INDEX idx_converted_oai_id ON converted(oai_id)")
+    cur.execute("CREATE INDEX idx_converted_date ON converted(date)")
+    cur.execute("CREATE INDEX idx_converted_source ON converted(source)")
+    cur.execute("CREATE INDEX idx_converted_is_open_access ON converted(is_open_access)")
+    cur.execute("CREATE INDEX idx_converted_classification_level ON converted(classification_level)")
+    cur.execute("CREATE INDEX idx_converted_modified ON converted(modified)")
+    cur.execute("CREATE INDEX idx_converted_deleted ON converted(deleted)")
 
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE converted_ssif_1 (
         converted_id INTEGER,
         value INTEGER,
         FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
     );
     """)
-    cursor.execute("""
-    CREATE INDEX idx_converted_ssif_1_converted_id ON converted_ssif_1(converted_id);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_converted_ssif_1_value ON converted_ssif_1(value);
-    """)
+    cur.execute("CREATE INDEX idx_converted_ssif_1_converted_id ON converted_ssif_1(converted_id)")
+    cur.execute("CREATE INDEX idx_converted_ssif_1_value ON converted_ssif_1(value)")
 
-    # To facilitate deduplication, store all of each publications ids (regardless of type)
-    # in this table. This includes (a mangled form of) maintitles. Grouping on
+    # To facilitate deduplication, store all of each publication's ids (regardless of type)
+    # in this table. This includes (a mangled form of) mainTitles. Grouping on
     # 'identifier' in this table, will produce the raw candidates for deduplication.
-    # These, to be clear, will overlap. But overlaping clusters will be joined in a later
+    # These, to be clear, will overlap. But overlapping clusters will be joined in a later
     # step. This table should be considered temporary and dropped after deduplication.
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE clusteringidentifiers (
         id INTEGER PRIMARY KEY,
         identifier TEXT,
@@ -202,33 +164,29 @@ def clean_and_init_storage():
     # Deduplicated clusters, multiple rows per cluster. So for example, a cluster consisting
     # of publications A, B and C would look something like:
     # cluster_id | converted_id
-    #---------------------------
+    # ---------------------------
     # 123        | A
     # 123        | B
     # 123        | C
-    #---------------------------
+    # ---------------------------
     # These may initially overlap (publication A may be in more than one cluster).
     # But any overlaps should have been joined into a single cluster by the end of deduplication.
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE cluster (
         cluster_id INTEGER,
         converted_id INTEGER,
         FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
     );
     """)
-    cursor.execute("""
-    CREATE INDEX idx_clusters_clusterid ON cluster (cluster_id);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_clusters_convertedid ON cluster (converted_id);
-    """)
+    cur.execute("CREATE INDEX idx_clusters_clusterid ON cluster (cluster_id)")
+    cur.execute("CREATE INDEX idx_clusters_convertedid ON cluster (converted_id)")
 
     # The final form of a publication in swepub. Each row in this table contains a merged
     # publication, that represents one of the clusters found in the deduplication process.
     # cluster_id references into the cluster table, but cannot acutally be a formal
     # foreign key, because cluster_id is not (and cannot be) unique. See the cluster
     # definition above.
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE finalized (
         id INTEGER PRIMARY KEY,
         cluster_id INTEGER,
@@ -236,12 +194,10 @@ def clean_and_init_storage():
         data TEXT
     );
     """)
-    cursor.execute("""
-    CREATE INDEX idx_finalized_oai_id ON finalized(oai_id);
-    """)
+    cur.execute("CREATE INDEX idx_finalized_oai_id ON finalized(oai_id)")
 
     # To facilitate "auto classification", store (for each publication) the N rarest
-    # words that occurr in that publications abstract.
+    # words that occur in that publication's abstract.
     #
     # The idea here, is that when you are to auto classify publication A, list the
     # rarest words in A's abstract. Then find all other publications (B, C, D) that
@@ -253,7 +209,7 @@ def clean_and_init_storage():
     # copy that subject to our own publication (A).
     #
     # This is a temporary table, it should be dropped after AutoClassification
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE abstract_rarest_words (
         id INTEGER PRIMARY KEY,
         word TEXT,
@@ -261,33 +217,27 @@ def clean_and_init_storage():
         FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
     );
     """)
-    cursor.execute("""
-    CREATE INDEX idx_abstract_rarest_words ON abstract_rarest_words (word, converted_id);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_abstract_rarest_words_id ON abstract_rarest_words (converted_id);
-    """)
+    cur.execute("CREATE INDEX idx_abstract_rarest_words ON abstract_rarest_words (word, converted_id)")
+    cur.execute("CREATE INDEX idx_abstract_rarest_words_id ON abstract_rarest_words (converted_id)")
 
     # In order to calculate values (rarity) for the above table, we also need an answer
     # to the question:
     #
-    # How many times does 'word' occurr inside abstracts of any of our publications?
+    # How many times does 'word' occur inside abstracts of any of our publications?
     #
     # This is a temporary table, it should be dropped after AutoClassification
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE abstract_total_word_counts (
         id INTEGER PRIMARY KEY,
         word TEXT,
         occurrences INTEGER
     );
     """)
-    cursor.execute("""
-    CREATE INDEX idx_abstract_total_word_counts ON abstract_total_word_counts (word, occurrences);
-    """)
+    cur.execute("CREATE INDEX idx_abstract_total_word_counts ON abstract_total_word_counts (word, occurrences)")
 
     # SUGGESTED BY SQLITE: CREATE INDEX abstract_total_word_counts_idx_77e8bc04 ON abstract_total_word_counts(word, occurrences);
 
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE search_single (
         id INTEGER PRIMARY KEY,
         finalized_id INTEGER,
@@ -299,69 +249,44 @@ def clean_and_init_storage():
         FOREIGN KEY (finalized_id) REFERENCES finalized(id) ON DELETE CASCADE
     );
     """)
-    cursor.execute("""
-    CREATE INDEX idx_search_single_finalized_id ON search_single(finalized_id);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_search_single_finalized_year ON search_single(year);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_search_single_finalized_content_marking ON search_single(content_marking);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_search_single_publication_status ON search_single(publication_status);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_search_single_swedish_list ON search_single(swedish_list);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_search_single_open_access ON search_single(open_access);
-    """)
+    cur.execute("CREATE INDEX idx_search_single_finalized_id ON search_single(finalized_id)")
+    cur.execute("CREATE INDEX idx_search_single_finalized_year ON search_single(year)")
+    cur.execute("CREATE INDEX idx_search_single_finalized_content_marking ON search_single(content_marking)")
+    cur.execute("CREATE INDEX idx_search_single_publication_status ON search_single(publication_status)")
+    cur.execute("CREATE INDEX idx_search_single_swedish_list ON search_single(swedish_list)")
+    cur.execute("CREATE INDEX idx_search_single_open_access ON search_single(open_access)")
 
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE search_doi (
         finalized_id INTEGER,
         value TEXT,
         FOREIGN KEY (finalized_id) REFERENCES finalized(id) ON DELETE CASCADE
     );
     """)
-    cursor.execute("""
-    CREATE INDEX idx_search_doi_finalized_id ON search_doi(finalized_id);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_search_doi_value ON search_doi(value);
-    """)
+    cur.execute("CREATE INDEX idx_search_doi_finalized_id ON search_doi(finalized_id)")
+    cur.execute("CREATE INDEX idx_search_doi_value ON search_doi(value)")
 
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE search_genre_form (
         finalized_id INTEGER,
         value TEXT,
         FOREIGN KEY (finalized_id) REFERENCES finalized(id) ON DELETE CASCADE
     );
     """)
-    cursor.execute("""
-    CREATE INDEX idx_search_genre_form_finalized_id ON search_genre_form(finalized_id);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_search_genre_form_value ON search_genre_form(value);
-    """)
+    cur.execute("CREATE INDEX idx_search_genre_form_finalized_id ON search_genre_form(finalized_id)")
+    cur.execute("CREATE INDEX idx_search_genre_form_value ON search_genre_form(value)")
 
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE search_subject (
         finalized_id INTEGER,
         value INTEGER,
         FOREIGN KEY (finalized_id) REFERENCES finalized(id) ON DELETE CASCADE
     );
     """)
-    cursor.execute("""
-    CREATE INDEX idx_search_subject_finalized_id ON search_subject(finalized_id);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_search_subject_value ON search_subject(value);
-    """)
+    cur.execute("CREATE INDEX idx_search_subject_finalized_id ON search_subject(finalized_id)")
+    cur.execute("CREATE INDEX idx_search_subject_value ON search_subject(value)")
 
-
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE search_creator (
         finalized_id INTEGER,
         orcid TEXT,
@@ -372,40 +297,24 @@ def clean_and_init_storage():
         FOREIGN KEY (finalized_id) REFERENCES finalized(id) ON DELETE CASCADE
     );
     """)
-    cursor.execute("""
-    CREATE INDEX idx_search_creator_finalized_id ON search_creator(finalized_id);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_search_creator_orcid ON search_creator(orcid);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_search_creator_family_name ON search_creator(family_name);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_search_creator_given_name ON search_creator(given_name);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_search_creator_local_id ON search_creator(local_id);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_search_creator_local_id_by ON search_creator(local_id_by);
-    """)
+    cur.execute("CREATE INDEX idx_search_creator_finalized_id ON search_creator(finalized_id)")
+    cur.execute("CREATE INDEX idx_search_creator_orcid ON search_creator(orcid)")
+    cur.execute("CREATE INDEX idx_search_creator_family_name ON search_creator(family_name)")
+    cur.execute("CREATE INDEX idx_search_creator_given_name ON search_creator(given_name)")
+    cur.execute("CREATE INDEX idx_search_creator_local_id ON search_creator(local_id)")
+    cur.execute("CREATE INDEX idx_search_creator_local_id_by ON search_creator(local_id_by)")
 
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE search_org (
         finalized_id INTEGER,
         value TEXT,
         FOREIGN KEY (finalized_id) REFERENCES finalized(id) ON DELETE CASCADE
     );
     """)
-    cursor.execute("""
-    CREATE INDEX idx_search_org_finalized_id ON search_org(finalized_id);
-    """)
-    cursor.execute("""
-    CREATE INDEX idx_search_org_value ON search_org(value);
-    """)
+    cur.execute("CREATE INDEX idx_search_org_finalized_id ON search_org(finalized_id)")
+    cur.execute("CREATE INDEX idx_search_org_value ON search_org(value)")
 
-    cursor.execute("""
+    cur.execute("""
     CREATE VIRTUAL TABLE search_fulltext USING FTS5 (
         finalized_id,
         title,
@@ -413,7 +322,7 @@ def clean_and_init_storage():
     );
     """)
 
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE stats_audit_events (
         source TEXT,
         date INT,
@@ -422,11 +331,9 @@ def clean_and_init_storage():
         invalid INT DEFAULT 0
     );
     """)
-    cursor.execute("""
-    CREATE INDEX idx_stats_audit_events_source ON stats_audit_events(source);
-    """)
+    cur.execute("CREATE INDEX idx_stats_audit_events_source ON stats_audit_events(source)")
 
-    cursor.execute("""
+    cur.execute("""
     CREATE TABLE stats_field_events (
         field_name TEXT,
         source TEXT,
@@ -445,7 +352,7 @@ def clean_and_init_storage():
     # because we need to keep information about the deletion for the legacy search sync.
     # However, we can remove most of the data, and set deleted=1, which will trigger the
     # other trigger below.
-    cursor.execute("""
+    cur.execute("""
     CREATE TRIGGER set_deleted_on_converted BEFORE DELETE ON original
     BEGIN
         UPDATE
@@ -460,7 +367,7 @@ def clean_and_init_storage():
     # _Normally_ deletion of the following would be handled by "ON DELETE CASCADE" on the foreign key
     # relationship to converted.id, but since we need to keep track of what has been deleted when
     # updating the legacy search database, we can't remove the entire `converted` record.
-    cursor.execute("""
+    cur.execute("""
     CREATE TRIGGER remove_converted_stuff_on_deleted AFTER UPDATE OF deleted ON converted WHEN NEW.deleted = 1
     BEGIN
         DELETE FROM converted_audit_events WHERE converted_audit_events.converted_id = OLD.id;
@@ -472,7 +379,8 @@ def clean_and_init_storage():
     END
     """)
 
-    connection.commit()
+    con.commit()
+
 
 def store_original(oai_id, deleted, original, source, accepted, connection, incremental, min_level_errors, harvest_id):
     cursor = connection.cursor()
@@ -485,13 +393,10 @@ def store_original(oai_id, deleted, original, source, accepted, connection, incr
         connection.commit()
         return None
 
-    rejection_cause = None
-
     if not accepted:
-        rejection_cause = json.dumps(min_level_errors)
         cursor.execute("""
         INSERT INTO rejected(harvest_id, oai_id, rejection_cause) VALUES(?, ?, ?);
-        """, (harvest_id, oai_id, rejection_cause))
+        """, (harvest_id, oai_id, json.dumps(min_level_errors)))
 
     original_rowid = cursor.execute("""
     INSERT INTO original(source, data, accepted, oai_id) VALUES(?, ?, ?, ?);
@@ -521,7 +426,7 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
         doc.source_org_master,
         doc.open_access,
         doc.level,
-        json.dumps(converted_events, default=lambda o: o.__dict__) #, default=lambda o: o.__dict__)
+        json.dumps(converted_events, default=lambda o: o.__dict__)
     ))
 
     # If we inserted a *new* record into converted above, we could just get .lastrowid; but if
@@ -562,14 +467,13 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
                 event.get("result", None),
                 name,
                 value
-                #event.get("value", None)
             ))
 
     identifiers = []
     for title in converted["instanceOf"]["hasTitle"]:
         main_title = title.get("mainTitle")
         if main_title is not None and isinstance(main_title, str):
-            identifiers.append(main_title) # TODO: STRIP AWAY WHITESPACE ETC
+            identifiers.append(main_title)  # TODO: STRIP AWAY WHITESPACE ETC
     
     for id_object in converted["identifiedBy"]:
         if id_object["@type"] != "Local":

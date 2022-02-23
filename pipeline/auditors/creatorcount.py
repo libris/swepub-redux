@@ -9,13 +9,9 @@ class CreatorCountAuditor(BaseAuditor):
     def audit(self, publication, audit_events, _harvest_cache):
         """Verify existance and value of CreatorCount."""
         cc_exists = False
-        msg = 'CreatorCount not found'
         creator_count = publication.creator_count
         if creator_count is not None:
             cc_exists = True
-            msg = 'CreatorCount found'
-
-        #logger.info(msg, extra={'auditor': self.name})
 
         code = 'creator_count_note_exists'
         new_audit_events = self._add_audit_event(
@@ -23,7 +19,6 @@ class CreatorCountAuditor(BaseAuditor):
 
         if creator_count:
             is_valid_count = True
-            msg = 'Valid CreatorCount'
             actual_creator_count = publication.count_creators()
             if actual_creator_count > creator_count:
                 is_valid_count = False
@@ -31,15 +26,12 @@ class CreatorCountAuditor(BaseAuditor):
                        f'expected at least {actual_creator_count}')
         else:
             is_valid_count = False
-            msg = "Invalid CreatorCount: not found"
-
-        #logger.info(msg, extra={'auditor': self.name})
 
         code = 'creator_count_check'
         new_audit_events = self._add_audit_event(
             new_audit_events, code, is_valid_count)
 
-        return (publication, new_audit_events)
+        return publication, new_audit_events
 
     def _add_audit_event(self, audit_events, code, is_missing):
         audit_events.add_event(self.name, code, is_missing)
