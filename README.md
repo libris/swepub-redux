@@ -21,7 +21,7 @@ $ pip install -r requirements.txt
 To run the pipeline and harvest a few sources do:
 
 ```bash
-$ python3 pipeline/harvest.py --update mdh miun mau
+$ python3 pipeline/harvest.py --update --skip-unpaywall mdh miun mau
 ```
 
 Expect this to take a few minutes. If you don't specify source(s) you instead get the full production data which takes a lot longer. Sources must exist in `pipeline/sources.json`. If the database doesn't exist, it will be created; if it already exists, sources will be incrementally updated (harvesting records added/updated/deleted since the previous execution of `harvest.py --update`).

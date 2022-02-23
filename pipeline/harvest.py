@@ -364,6 +364,7 @@ def handle_args():
 
     parser.add_argument("-d", "--database", default="swepub.sqlite3", help="Path to sqlite3 database (to be created or updated; overrides SWEPUB_DB)")
     parser.add_argument("-e", "--env", default=None, help="One of DEV, QA, PROD (default DEV). Overrides SWEPUB_ENV.")
+    parser.add_argument("--skip-unpaywall", action="store_true", help="Skip Unpaywall check")
     parser.add_argument("source", nargs="*", default="", help="Source(s) to process (if not specified, everything in sources.json will be processed, e.g. uniarts ths mdh")
 
     parser.set_defaults(update=True)
@@ -387,6 +388,9 @@ if __name__ == "__main__":
         environ["SWEPUB_ENV"] = args.env
     elif not getenv("SWEPUB_ENV", None):
         environ["SWEPUB_ENV"] = DEFAULT_SWEPUB_ENV
+
+    if args.skip_unpaywall:
+        environ["SWEPUB_SKIP_UNPAYWALL"] = "1"
 
     incremental = False
     if args.update:

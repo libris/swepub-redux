@@ -20,7 +20,7 @@ class OAAuditor(BaseAuditor):
     def audit(self, publication, audit_events, harvest_cache):
         publication, new_audit_events, result = self._check_doab(publication, audit_events, harvest_cache)
 
-        if not result:
+        if not result and not getenv("SWEPUB_SKIP_UNPAYWALL", False):
             publication, new_audit_events, result = self._check_unpaywall(publication, audit_events)
 
         return publication, new_audit_events
