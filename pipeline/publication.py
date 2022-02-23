@@ -1,47 +1,106 @@
-#from utils import compare_text, empty_string, split_title_subtitle_first_colon
+import itertools
+import datetime
+from dateutil.parser import parse as parse_date
+from auditors.swedishlist import Level
+from util import *
+from jsonpath_rw_ext import parse
 
-from difflib import SequenceMatcher
+
+RAW_ISSN_PATHS = (
+    'partOf.[*].identifiedBy[?(@.@type=="ISSN")].value',
+    'partOf.[*].indirectlyIdentifiedBy[?(@.@type=="ISSN")].value',
+    'partOf.[*].hasSeries.[*].identifiedBy[?(@.@type=="ISSN")].value',
+    'partOf.[*].hasSeries.[*].indirectlyIdentifiedBy[?(@.@type=="ISSN")].value',
+    'hasSeries.[*].identifiedBy[?(@.@type=="ISSN")].value',
+    'hasSeries.[*].indirectlyIdentifiedBy[?(@.@type=="ISSN")].value',
+    'identifiedBy[?(@.@type=="ISSN")].value',
+    'indirectlyIdentifiedBy[?(@.@type=="ISSN")].value',
+)
+ISSN_PATHS = [parse(p) for p in RAW_ISSN_PATHS]
+
+RAW_DATE_PATH = 'publication[?(@.@type=="Publication")].date'
+DATE_PATH = parse(RAW_DATE_PATH)
+
+RAW_TITLE_PATH = 'instanceOf.hasTitle[?(@.@type=="Title")].mainTitle'
+TITLE_PATH = parse(RAW_TITLE_PATH)
+
+RAW_SUBTITLE_PATH = 'instanceOf.hasTitle[?(@.@type=="Title")].subtitle'
+SUBTITLE_PATH = parse(RAW_SUBTITLE_PATH)
+
+RAW_LANGUAGE_PATH = 'instanceOf.language[?(@.@type=="Language")].code'
+LANGUAGE_PATH = parse(RAW_LANGUAGE_PATH)
+
+RAW_SUMMARY_PATH = 'instanceOf.summary[?(@.@type=="Summary")]'
+SUMMARY_PATH = parse(RAW_SUMMARY_PATH)
+
+RAW_SUMMARY_LANG_PATH = 'instanceOf.summary[?(@.@type=="Summary")].language.@id'
+SUMMARY_LANG_PATH = parse(RAW_SUMMARY_LANG_PATH)
+
+RAW_PUBLICATION_STATUS_PATH = 'instanceOf.hasNote[?(@.@type=="PublicationStatus")].@id'
+PUBLICATION_STATUS_PATH = parse(RAW_PUBLICATION_STATUS_PATH)
+
+RAW_SUBJECT_PATH = 'instanceOf.subject[?(@.@type=="Topic")]'
+SUBJECT_PATH = parse(RAW_SUBJECT_PATH)
+
+RAW_CREATORCOUNT_PATH = 'instanceOf.[*].hasNote[?(@.@type=="CreatorCount")].label'
+CREATORCOUNT_PATH = parse(RAW_CREATORCOUNT_PATH)
+
+RAW_GENREFORM_PATH = 'instanceOf.genreForm.[*].@id'
+GENREFORM_PATH = parse(RAW_GENREFORM_PATH)
+
+RAW_CONTRIB_PATH = 'instanceOf.contribution[?(@.@type=="Contribution")]'
+CONTRIB_PATH = parse(RAW_CONTRIB_PATH)
+
+RAW_ARTICLE_PATHS = (
+    'instanceOf.genreForm[?(@.@id=="https://id.kb.se/term/swepub/JournalArticle")]',
+    'instanceOf.genreForm[?(@.@id=="https://id.kb.se/term/swepub/journal-article")]',
+    'instanceOf.genreForm[?(@.@id=="https://id.kb.se/term/swepub/magazine-article")]',
+    'instanceOf.genreForm[?(@.@id=="https://id.kb.se/term/swepub/newspaper-article")]',
+    'instanceOf.genreForm[?(@.@id=="https://id.kb.se/term/swepub/journal-issue")]',
+)
+ARTICLE_PATHS = [parse(a) for a in RAW_ARTICLE_PATHS]
+
+RAW_UKA_PATH = 'instanceOf.subject[?(@.inScheme.code=="uka.se")].code'
+UKA_PATH = parse(RAW_UKA_PATH)
+
+RAW_ISBN_PATHS = [
+    'identifiedBy[?(@.@type=="ISBN")].value',
+    'partOf.[*].identifiedBy[?(@.@type=="ISBN")].value'
+]
+ISBN_PATHS = [parse(p) for p in RAW_ISBN_PATHS]
+
+RAW_DOI_PATH = 'identifiedBy[?(@.@type=="DOI")].value'
+DOI_PATH = parse(RAW_DOI_PATH)
+
+RAW_PARTOF_DOI_PATH = 'partOf.[*].identifiedBy[?(@.@type=="DOI")].value'
+PARTOF_DOI_PATH = parse(RAW_PARTOF_DOI_PATH)
 
 """Max length in characters to compare text"""
 MAX_LENGTH_STRING_TO_COMPARE = 1000
 
+AUT_ROLES = [
+    "http://id.loc.gov/vocabulary/relators/aut",
+    "http://id.loc.gov/vocabulary/relators/cre"
+]
+EDT_ROLES = ["http://id.loc.gov/vocabulary/relators/edt"]
 
-def compare_text(master_text, candidate_text, match_ratio):
-    if empty_string(master_text) and empty_string(candidate_text):
-        return True
-    if empty_string(master_text) or empty_string(candidate_text):
-        return False
-    master_text = master_text[0:MAX_LENGTH_STRING_TO_COMPARE]
-    candidate_text = candidate_text[0:MAX_LENGTH_STRING_TO_COMPARE]
-    master_text = master_text.lower()
-    candidate_text = candidate_text.lower()
-    sequence_matcher = SequenceMatcher(a=master_text,
-                                       b=candidate_text)
-    sequence_matcher_ratio = sequence_matcher.quick_ratio()
-    return sequence_matcher_ratio >= match_ratio
-
-
-def empty_string(s):
-    if s and isinstance(s, str):
-        if not s.strip():
-            return True
-        else:
-            return False
-    return True
-
-
-def split_title_subtitle_first_colon(title):
-    try:
-        splited = title.split(':', 1)
-        maintitle = splited[0]
-        subtitle = None
-        if len(splited) == 2:
-            subtitle = splited[1]
-            subtitle = subtitle.strip()
-        return maintitle, subtitle
-    except AttributeError:
-        return title, None
-
+EDT_PUB_TYPES = [
+    "https://id.kb.se/term/swepub/EditorialCollection",
+    "https://id.kb.se/term/swepub/EditorialProceedings"
+]
+REPORT_PUB_TYPES = [
+    "https://id.kb.se/term/swepub/Report"
+]
+EDT_OUTPUT_TYPES = [
+    "https://id.kb.se/term/swepub/publication/edited-book",
+    "https://id.kb.se/term/swepub/publication/journal-issue",
+    "https://id.kb.se/term/swepub/conference/proceeding"
+]
+REPORT_OUTPUT_TYPES = [
+    "https://id.kb.se/term/swepub/publication/report"
+]
+EDT_TYPES = EDT_PUB_TYPES + EDT_OUTPUT_TYPES
+REPORT_TYPES = REPORT_PUB_TYPES + REPORT_OUTPUT_TYPES
 
 
 class Publication:
@@ -71,7 +130,9 @@ class Publication:
     @property
     def id(self):
         """Return local publication id"""
-        return self.body['@id']
+        if '@id' in self.body:
+            return self.body['@id']
+        return None
 
     @property
     def source_org(self):
@@ -93,59 +154,48 @@ class Publication:
 
     @property
     def main_title(self):
-        """Return value for instanceOf.hasTitle[?(@.@type=="Title")].mainTitle if exist and there are no subtitle.
-        If subtitle exist then return value is splited with colon and first string is returned,
-        i.e 'main:sub' returns main.
-        None otherwise """
-        has_title_array = self.body.get('instanceOf', {}).get('hasTitle', [])
-        for h_t in has_title_array:
-            if isinstance(h_t, dict) and h_t.get('@type') == 'Title':
-                main_title_raw = h_t.get('mainTitle')
-                sub_title_raw = h_t.get('subtitle')
-                break
-        if not empty_string(sub_title_raw):
-            return main_title_raw
-        main_title, sub_title = split_title_subtitle_first_colon(main_title_raw)
-        if not empty_string(main_title):
-            return main_title
-        else:
-            return None
+        return get_main_title(self.body)
 
     @property
     def sub_title(self):
-        """Return value for instanceOf.hasTitle[?(@.@type=="Title")].subtitle if exist,
-        if it does not exist then value of instanceOf.hasTitle[?(@.@type=="Title")].mainTitle is splited
-        with colon and second string is returned, i.e 'main:sub' returns sub.
-        None otherwise """
-        sub_title_array = self.body.get('instanceOf', {}).get('hasTitle', [])
-        for h_t in sub_title_array:
-            if isinstance(h_t, dict) and h_t.get('@type') == 'Title' and h_t.get('subtitle'):
-                return h_t.get('subtitle')
-            else:
-                main_title_raw = h_t.get('mainTitle')
-                break
-        main_title, sub_title = split_title_subtitle_first_colon(main_title_raw)
-        if not empty_string(sub_title):
-            return sub_title
+        return get_sub_title(self.body)
+
+    @property
+    def language(self):
+        """Return the publication's language."""
+        language = LANGUAGE_PATH.find(self.body)
+        if len(language) == 1 and language[0].value:
+            return language[0].value
+        return None
+
+    @property
+    def summary(self):
+        return get_summary(self.body)
+
+    @property
+    def publication_date(self):
+        return get_publication_date(self.body)
+
+    @property
+    def year(self):
+        """Return the publication year as a string or None if missing or invalid."""
+        dates = DATE_PATH.find(self.body)
+        # TODO add logging?
+        if len(dates) == 1 and dates[0].value:
+            try:
+                parsed_date = parse_date(dates[0].value)
+                return '{}'.format(parsed_date.year)
+            except ValueError:
+                return None
         else:
             return None
 
     @property
-    def summary(self):
-        """ Return value for instanceOf.summary[?(@.@type=="Summary")].label if exist, None otherwise """
-        summary_array = self.body.get('instanceOf', {}).get('summary', [])
-        for s in summary_array:
-            if isinstance(s, dict) and s.get('@type') == 'Summary':
-                return s.get('label')
-        return None
-
-    @property
-    def publication_date(self):
-        """ Return value for publication[?(@.@type=="Publication")].date if exist, None otherwise """
-        publication_information = self.publication_information
-        if publication_information:
-            return publication_information.date
-        return None
+    def issns(self):
+        """Return a list of all ISSNs ordered by importance."""
+        issns = itertools.chain.from_iterable(
+            issn_path.find(self.body) for issn_path in ISSN_PATHS)
+        return [issn.value for issn in issns if issn.value]
 
     @property
     def publication_information(self):
@@ -164,11 +214,11 @@ class Publication:
     @publication_information.setter
     def publication_information(self, publication_information):
         """ Sets array for publication_information from array of PublicationInformation objects """
-        self.body['publication'] = [publication_information.body]
+        self._body['publication'] = [publication_information.body]
         # TODO: Remove check for provisionActivity (see https://jira.kb.se/browse/SWEPUB2-718)
         provision_activity_array = self.body.get('provisionActivity', [])
         provision_activity_array = [p for p in provision_activity_array if p.get('@type') != 'Publication']
-        self.body['provisionActivity'] = provision_activity_array
+        self._body['provisionActivity'] = provision_activity_array
 
     @property
     def usage_and_access_policy(self):
@@ -178,7 +228,7 @@ class Publication:
     @usage_and_access_policy.setter
     def usage_and_access_policy(self, policies):
         """Sets usage and access policies to supplied list"""
-        self.body["usageAndAccessPolicy"] = policies
+        self._body["usageAndAccessPolicy"] = policies
 
     @property
     def usage_and_access_policy_by_type(self):
@@ -197,18 +247,11 @@ class Publication:
                 links.append(item)
             else:
                 others.append(item)
-
-        return (access_policies, embargoes, links, others)
+        return access_policies, embargoes, links, others
 
     @property
     def genre_form(self):
-        """ Return array of values from instanceOf.genreForm.[*].@id """
-        genre_forms = []
-        genre_form_array = self.body.get('instanceOf', {}).get('genreForm', [])
-        for g_f in genre_form_array:
-            if isinstance(g_f, dict):
-                genre_forms.append(g_f.get('@id'))
-        return [gf for gf in genre_forms if gf]
+        return genre_form(self.body)
 
     def add_genre_form(self, new_genre_forms):
         """ Sets array of genreforms for instanceOf.genreForm.[*].@id """
@@ -229,16 +272,21 @@ class Publication:
     @contributions.setter
     def contributions(self, contributions):
         """ Sets array for instanceOf.contribution from array of Contributions objects """
-        self.body['instanceOf']['contribution'] = [c.body for c in contributions]
+        self._body['instanceOf']['contribution'] = [c.body for c in contributions]
 
     @property
     def publication_status(self):
         """ Return value for instanceOf.hasNote[?(@.@type=="PublicationStatus")].@id if exist, None otherwise """
         publication_date_array = self.body.get('instanceOf', {}).get('hasNote', [])
+        pub_statuses = []
         for p_d in publication_date_array:
             if isinstance(p_d, dict) and p_d.get('@type') == 'PublicationStatus':
-                return p_d.get('@id')
-        return None
+                pub_statuses.append(p_d.get('@id'))
+        # FIXME Can we have more than one pub status?
+        if len(pub_statuses) == 1 and pub_statuses[0]:
+            return pub_statuses[0]
+        else:
+            return None
 
     @publication_status.setter
     def publication_status(self, new_status):
@@ -246,19 +294,54 @@ class Publication:
         i = 0
         for n in self.body.get('instanceOf', {}).get('hasNote', []):
             if n['@type'] == 'PublicationStatus':
-                self.body['instanceOf']['hasNote'][i]['@id'] = new_status
+                self._body['instanceOf']['hasNote'][i]['@id'] = new_status
                 break
             else:
                 i += 1
 
     @property
+    def is_classified(self):
+        """Return True if publication has at least one 3 or 5 level UKA subject."""
+        SUBJECT_PREFIX = 'https://id.kb.se/term/uka/'
+        for code in self.subject_codes:
+            if not code.startswith(SUBJECT_PREFIX):
+                continue
+            short = code[len(SUBJECT_PREFIX):]
+            if len(short) == 3 or len(short) == 5:
+                return True
+        return False
+
+    @property
+    def subject_codes(self):
+        """Return a list of all subject identifiers."""
+        return [subj['@id'] for subj in self.subjects if '@id' in subj]
+
+    @property
+    def subjects(self):
+        """ Return array of subjects from instanceOf.subject """
+        subjects_json_array = self.body.get('instanceOf', {}).get('subject', [])
+        if subjects_json_array is None:
+            return []
+        return subjects_json_array
+
+    @subjects.setter
+    def subjects(self, subjects):
+        """ Sets array of subjects for instanceOf.subject """
+        self._body['instanceOf']['subject'] = subjects
+
+    @property
     def creator_count(self):
-        """ Return value for instanceOf.[*].hasNote[?(@.@type=="CreatorCount")].label """
-        creator_count_array = self.body.get('instanceOf', {}).get('hasNote', [])
-        for c_c in creator_count_array:
-            if isinstance(c_c, dict) and c_c.get('@type') == 'CreatorCount':
-                return c_c.get('label')
-        return None
+        """Return creator count or None if missing."""
+        creator_count = CREATORCOUNT_PATH.find(self.body)
+        if len(creator_count) != 1:
+            return None
+        count = creator_count[0].value
+        if not count:
+            return None
+        try:
+            return int(count)
+        except ValueError:
+            return None
 
     @creator_count.setter
     def creator_count(self, new_creator_count):
@@ -266,10 +349,182 @@ class Publication:
         i = 0
         for n in self.body.get('instanceOf', {}).get('hasNote', []):
             if n['@type'] == 'CreatorCount':
-                self.body['instanceOf']['hasNote'][i]['label'] = new_creator_count
+                self._body['instanceOf']['hasNote'][i]['label'] = new_creator_count
                 break
             else:
                 i += 1
+
+    def count_creators(self):
+        """Return actual creator count based on publication and output type."""
+        # Reports need to be handled separately
+        if self.is_report:
+            return self._count_creators_report()
+
+        roles = AUT_ROLES
+        if self.has_editors:
+            roles = EDT_ROLES
+        return self._simple_count_creators(roles)
+
+    def _count_creators_report(self):
+        edt_count = 0
+        count = 0
+        for contribution in CONTRIB_PATH.find(self.body):
+            if contribution.value and 'role' in contribution.value:
+                for role in contribution.value['role']:
+                    if role['@id'] in AUT_ROLES:
+                        count += 1
+                        # If we find an `AUT_ROLE`, we don't care about other roles
+                        break
+                    elif role['@id'] in EDT_ROLES:
+                        edt_count += 1
+
+        # If a report only has editors, we return that count
+        if count == 0 and edt_count > 0:
+            return edt_count
+        # otherwise, we only count aut/cre
+        else:
+            return count
+
+    def _simple_count_creators(self, roles):
+        count = 0
+        for contribution in CONTRIB_PATH.find(self.body):
+            if contribution.value and 'role' in contribution.value:
+                for role in contribution.value['role']:
+                    if role['@id'] in roles:
+                        count += 1
+                        # We only count max one role per contribution
+                        break
+        return count
+
+    @property
+    def has_editors(self):
+        """Return True if publication is proceeding or collection."""
+        genreforms = GENREFORM_PATH.find(self.body)
+        has_editors = False
+        for gf in genreforms:
+            if gf.value in EDT_TYPES:
+                has_editors = True
+                break
+        return has_editors
+
+    @property
+    def is_report(self):
+        """Return True if publication is report."""
+        genreforms = GENREFORM_PATH.find(self.body)
+        is_report = False
+        for gf in genreforms:
+            if gf.value in REPORT_TYPES:
+                is_report = True
+                break
+        return is_report
+
+    @property
+    def level(self):
+        """Return the publication's level according to the Swedish List."""
+        if ('instanceOf' not in self.body
+                or 'genreForm' not in self.body['instanceOf']):
+            return None
+
+        for gform in self.body['instanceOf']['genreForm']:
+            # Peer-reviewed always trumps non-peer-reviewed
+            if '@id' in gform and gform['@id'] == Level.PEERREVIEWED.value:
+                return Level.PEERREVIEWED
+
+            if '@id' in gform and gform['@id'] == Level.NONPEERREVIEWED.value:
+                return Level.NONPEERREVIEWED
+
+        return None
+
+    @level.setter
+    def level(self, level):
+        """Set the publication's level."""
+        # Ensure that the publication is unmarked
+        self._body = self._purge_markings(self.body)
+        if level is None:
+            return
+
+        if 'instanceOf' not in self.body:
+            self.body['instanceOf'] = {}
+        if 'genreForm' not in self.body['instanceOf']:
+            self.body['instanceOf']['genreForm'] = []
+        genreforms = self.body['instanceOf']['genreForm']
+        genreforms.append({'@id': level.value})
+        self.body['instanceOf']['genreForm'] = genreforms
+
+    def _is_unmarked(self, gform):
+        levels = [Level.PEERREVIEWED.value, Level.NONPEERREVIEWED.value]
+        return '@id' not in gform or gform['@id'] not in levels
+
+    def _purge_markings(self, publication):
+        if 'instanceOf' not in publication:
+            return publication
+        if 'genreForm' not in publication['instanceOf']:
+            return publication
+        genreforms = publication['instanceOf']['genreForm']
+        new_gforms = [gform for gform in genreforms if self._is_unmarked(gform)]
+        publication['instanceOf']['genreForm'] = new_gforms
+        return publication
+
+    def ukas(self):
+        """Return a unique list of all UKAs"""
+        ukas = UKA_PATH.find(self.body)
+        return list(set([uka.value for uka in ukas if uka.value]))
+
+    @property
+    def has_duplicate_contributor_persons(self):
+        """Returns True if publication has more than one contributor person \
+        with same identifiedBy, givenName, familyName and role."""
+        try:
+            contributions = self.body.get('instanceOf').get('contribution')
+            p: dict
+            persons = [p for p in contributions if p.get('agent') and p.get('agent').get('@type') == "Person"]
+        except AttributeError:
+            return False
+        # Compare two or more persons
+        if len(persons) < 2:
+            return False
+        # Compare person a and the next person in the range, person b
+        for person_a_index in range(0, len(persons) - 1):
+            for person_b_index in range(person_a_index + 1, len(persons)):
+                person_a = persons[person_a_index]
+                person_b = persons[person_b_index]
+                agent_a = person_a.get('agent')
+                agent_b = person_b.get('agent')
+                # Compare identifiedBy by converting to sets
+                identified_by_set_a = {self._tuplify_dicts_recursively(d) for d in agent_a.get('identifiedBy', [])}
+                identified_by_set_b = {self._tuplify_dicts_recursively(d) for d in agent_b.get('identifiedBy', [])}
+                if identified_by_set_a == identified_by_set_b:
+                    # Found matching identifiedBy's
+                    # Let's check names and roles
+                    if all([agent_a.get('givenName'), agent_a.get('familyName'), agent_b.get('givenName'),
+                            agent_b.get('familyName')]):
+                        person_a_givenName = agent_a.get('givenName').strip().lower()
+                        person_a_familyName = agent_a.get('familyName').strip().lower()
+                        person_b_givenName = agent_b.get('givenName').strip().lower()
+                        person_b_familyName = agent_b.get('familyName').strip().lower()
+                        if person_a_givenName == person_b_givenName and person_a_familyName == person_b_familyName:
+                            # Found matching name
+                            # Compare roles by converting to sets
+                            roles_list_a = person_a.get('role', [])
+                            roles_set_a = set(tuple(d.items()) for d in roles_list_a)
+                            roles_list_b = person_b.get('role', [])
+                            roles_set_b = set(tuple(d.items()) for d in roles_list_b)
+                            if roles_set_a == roles_set_b:
+                                return True
+        return False
+
+    @staticmethod
+    def _tuplify_dicts_recursively(dictionary):
+        tuplified = []
+        for k, v in dictionary.items():
+            tuplified.append((k, Publication._tuplify_dicts_recursively(v) if isinstance(v, dict) else v))
+        return tuple(sorted(tuplified))
+
+    @property
+    def is_article(self):
+        articles = itertools.chain.from_iterable(article_path.find(self.body) for article_path in ARTICLE_PATHS)
+        article_values = [article.value for article in articles if article.value]
+        return len(article_values) > 0
 
     @property
     def notes(self):
@@ -287,19 +542,6 @@ class Publication:
         new_notes = list(set(new_notes) - set(self.notes))
         for new_note in new_notes:
             self.body['instanceOf']['hasNote'].append({'@type': 'Note', 'label': new_note})
-
-    @property
-    def subjects(self):
-        """ Return array of subjects from instanceOf.subject """
-        subjects_json_array = self.body.get('instanceOf', {}).get('subject', [])
-        if subjects_json_array is None:
-            return []
-        return subjects_json_array
-
-    @subjects.setter
-    def subjects(self, subjects):
-        """ Sets array of subjects for instanceOf.subject """
-        self.body['instanceOf']['subject'] = subjects
 
     @property
     def has_series(self):
@@ -321,6 +563,168 @@ class Publication:
             self.body['hasSeries'] = [has_serie.body for has_serie in self_has_series]
 
     @property
+    def missing_issn_or_any_empty_issn(self):
+        return len(self.issns) == 0 or any(issn.strip() == '' for issn in self.issns)
+
+    @property
+    def get_publication_status_list(self):
+        notes = []
+        if self.body.get('instanceOf') and self.body.get('instanceOf').get('hasNote'):
+            notes = self.body.get('instanceOf').get('hasNote')
+        publication_status = [note.get('@id') for note in notes if
+                              note.get('@type') and note.get('@type') == 'PublicationStatus']
+        return publication_status
+
+    @property
+    def uka_swe_classification_list(self):
+        """Returns a list of all uka classifications in Swedish with code and prefLabel for each"""
+        classification_list = []
+        uka_prefix = "https://id.kb.se/term/uka/"
+        swe_lang_id = "https://id.kb.se/language/swe"
+        for subj in self.body.get("instanceOf", {}).get("subject", {}):
+            if subj.get("@type", "") == "Topic":
+                code = subj.get("@id")
+                if not code:
+                    continue
+                if not code.startswith(uka_prefix):
+                    continue
+                if subj.get("language", {}).get("@id", "") == swe_lang_id:
+                    code = subj.get("code")
+                    label = subj.get("prefLabel")
+                    cl_string = f"{code}" if code else ""
+                    cl_string += f" {label}" if label else ""
+                    if cl_string:
+                        classification_list.append(cl_string)
+        return classification_list
+
+    @property
+    def identifiedby_isbns(self):
+        """Return a list of all ISBN (including partOf)"""
+        isbns = itertools.chain.from_iterable(
+            isbn_path.find(self.body) for isbn_path in ISBN_PATHS)
+        return [isbn.value for isbn in isbns if isbn.value]
+
+    @property
+    def identifiedby_dois(self):
+        """Returns a list of all DOI identifiedBy"""
+        identifiers = DOI_PATH.find(self.body)
+        return [identifier.value for identifier in identifiers if identifier.value]
+
+    @property
+    def identifiedby_partof_dois(self):
+        """Returns a list of all DOI partOf identifiedBy"""
+        identifiers = PARTOF_DOI_PATH.find(self.body)
+        return [identifier.value for identifier in identifiers if identifier.value]
+
+    @property
+    def electroniclocator_uris(self):
+        return list(itertools.chain.from_iterable(
+            [d.get('uri') for d in self.body['electronicLocator'] if d.get('uri') is not None]
+        ))
+
+    def add_doab_download_uris(self, download_uris):
+        """Add a MediaObject in electronicLocator for each DOAB download URI
+        that's not already in the publication."""
+        if 'electronicLocator' not in self._body:
+            self._body['electronicLocator'] = []
+
+        # Make sure we don't add URIs that are already in the record
+        new_uris = set(download_uris) - set(self.electroniclocator_uris)
+        new_electroniclocators = []
+        if new_uris:
+            for new_uri in new_uris:
+                new_electroniclocators.append(
+                    {
+                        '@type': 'MediaObject',
+                        'meta': [
+                            {
+                                '@type': 'AdminMetadata',
+                                'sourceConsulted': [
+                                    {
+                                        '@type': 'SourceData',
+                                        'label': 'Information om ÖT hämtad från DOAB.',
+                                        'uri': 'https://www.doabooks.org/',
+                                        'date': datetime.datetime.utcnow().replace(
+                                            tzinfo=datetime.timezone.utc).isoformat()
+                                    }
+                                ]
+                            }
+                        ],
+                        'uri': new_uri,
+                        'usageAndAccessPolicy': [
+                            {
+                                '@id': 'https://id.kb.se/policy/oa/gratis'
+                            }
+                        ]
+                    }
+                )
+            self._body['electronicLocator'].extend(new_electroniclocators)
+            return True, new_electroniclocators
+        return False
+
+    def add_unpaywall_data(self, doi_object):
+        """Add a MediaObject in electronicLocator for the Unpaywall download URI
+        if it's not already in the publication."""
+        if 'electronicLocator' not in self._body:
+            self._body['electronicLocator'] = []
+
+        new_electroniclocator = {
+            '@type': 'MediaObject',
+            'meta': [
+                {
+                    '@type': 'AdminMetadata',
+                    'sourceConsulted': [
+                        {
+                            '@type': 'SourceData',
+                            'label': 'Information om ÖT hämtad från Unpaywall.',
+                            'uri': 'https://unpaywall.org/',
+                            'date': datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc).isoformat()
+                        }
+                    ]
+                }
+            ]
+        }
+
+        if not doi_object['is_oa']:
+            new_electroniclocator['usageAndAccessPolicy'] = [
+                {
+                    '@id': 'https://id.kb.se/policy/oa/restricted'
+                }
+            ]
+            self._body['electronicLocator'].append(new_electroniclocator)
+            return True, new_electroniclocator
+
+        if doi_object['best_oa_location']['url'] not in self.electroniclocator_uris:
+            new_electroniclocator['usageAndAccessPolicy'] = [
+                {
+                    '@id': 'https://id.kb.se/policy/oa/gratis'
+                }
+            ]
+            new_electroniclocator['uri'] = doi_object['best_oa_location']['url']
+            version = None
+            if doi_object['best_oa_location']['version'] == 'submittedVersion':
+                version = 'https://id.kb.se/term/swepub/Submitted'
+            elif doi_object['best_oa_location']['version'] == 'acceptedVersion':
+                version = 'https://id.kb.se/term/swepub/Accepted'
+            elif doi_object['best_oa_location']['version'] == 'publishedVersion':
+                version = 'https://id.kb.se/term/swepub/Published'
+            if version:
+                new_electroniclocator['hasNote'] = [
+                    {'@id': version}
+                ]
+
+            if doi_object['journal_is_in_doaj']:
+                if 'status' not in self._body['instanceOf']:
+                    self.body['instanceOf']['status'] = []
+                self._body['instanceOf']['status'].append(
+                    {'@id': "https://id.kb.se/term/swepub/journal-is-in-doaj"}
+                )
+
+            self._body['electronicLocator'].append(new_electroniclocator)
+            return True, new_electroniclocator
+        return False, None
+
+    @property
     def electronic_locators(self):
         """ Return array of ElectronicLocator objects from electronicLocator field """
         electronic_locators = []
@@ -334,7 +738,7 @@ class Publication:
     @electronic_locators.setter
     def electronic_locators(self, electronic_locators):
         """ Sets array for electronicLocator field from array of ElectronicLocator objects """
-        self.body['electronicLocator'] = [e.body for e in electronic_locators]
+        self._body['electronicLocator'] = [e.body for e in electronic_locators]
 
     @property
     def part_of(self):
@@ -350,16 +754,11 @@ class Publication:
     @part_of.setter
     def part_of(self, part_of):
         """ Sets array for partOf from array of PartOf objects """
-        self.body['partOf'] = [part.body for part in part_of]
+        self._body['partOf'] = [part.body for part in part_of]
 
     @property
     def part_of_with_title(self):
-        """ Return partOf object that has @type Title, None otherwise"""
-        part_of_with_title = [p for p in self.part_of if p.main_title]
-        if len(part_of_with_title) > 0:
-            return part_of_with_title[0]
-        else:
-            return None
+        return part_of_with_title(self.body)
 
     @property
     def identifiedby_ids(self):
@@ -369,7 +768,7 @@ class Publication:
     @identifiedby_ids.setter
     def identifiedby_ids(self, identifiedby_ids):
         """Sets identifiedBy array, ex identifiedby_ids= [{'@type': 'DOI', 'value': 'DOI_1'}] """
-        self.body['identifiedBy'] = identifiedby_ids
+        self._body['identifiedBy'] = identifiedby_ids
 
     @property
     def indirectly_identifiedby_ids(self):
@@ -379,28 +778,28 @@ class Publication:
     @indirectly_identifiedby_ids.setter
     def indirectly_identifiedby_ids(self, indirectly_identifiedby_ids):
         """Sets indirectlyIdentifiedBy array, ex indirectly_identifiedby_ids= [{'@type': 'DOI', 'value': 'DOI_1'}] """
-        self.body['indirectlyIdentifiedBy'] = indirectly_identifiedby_ids
+        self._body['indirectlyIdentifiedBy'] = indirectly_identifiedby_ids
 
     def get_identifiedby_ids(self, identifier=''):
         """Return either identifiedBy ids values if identifier is set otherwise whole identifiedBy array """
-        return _get_ids(self.body, 'identifiedBy', identifier)
+        return get_ids(self.body, 'identifiedBy', identifier)
 
     def get_indirectly_identifiedby_ids(self, identifier=''):
         """Return either indirectlyIdentifiedBy ids values if identifier is set
         otherwise whole indirectlyIdentifiedBy array """
-        return _get_ids(self.body, 'indirectlyIdentifiedBy', identifier)
+        return get_ids(self.body, 'indirectlyIdentifiedBy', identifier)
 
     def has_same_main_title(self, publication):
         """True if publication has the same main title"""
-        return compare_text(self.main_title, publication.main_title, self.STRING_MATCH_RATIO_MAIN_TITLE)
+        return compare_text(self.main_title, publication.main_title, self.STRING_MATCH_RATIO_MAIN_TITLE, MAX_LENGTH_STRING_TO_COMPARE)
 
     def has_same_sub_title(self, publication):
         """True if publication has the same sub title"""
-        return compare_text(self.sub_title, publication.sub_title, self.STRING_MATCH_RATIO_SUB_TITLE)
+        return compare_text(self.sub_title, publication.sub_title, self.STRING_MATCH_RATIO_SUB_TITLE, MAX_LENGTH_STRING_TO_COMPARE)
 
     def has_same_summary(self, publication):
         """True if publication has the same summary"""
-        return compare_text(self.summary, publication.summary, self.STRING_MATCH_RATIO_SUMMARY)
+        return compare_text(self.summary, publication.summary, self.STRING_MATCH_RATIO_SUMMARY, MAX_LENGTH_STRING_TO_COMPARE)
 
     def has_same_partof_main_title(self, publication):
         """ Returns True if partOf has the same main title """
@@ -414,59 +813,6 @@ class Publication:
         if self.genre_form and publication.genre_form:
             return set(self.genre_form) == set(publication.genre_form)
         return False
-
-    def has_same_publication_date(self, publication):
-        """True if publication dates are the same by comparing the shortest date"""
-        master_pub_date_str = self.publication_date
-        candidate_pub_date_str = publication.publication_date
-        if empty_string(master_pub_date_str) or empty_string(candidate_pub_date_str):
-            return False
-        master_pub_date_str = master_pub_date_str.strip()
-        candidate_pub_date_str = candidate_pub_date_str.strip()
-        if len(master_pub_date_str) > len(candidate_pub_date_str):
-            master_pub_date_str = master_pub_date_str[:len(candidate_pub_date_str)]
-        elif len(master_pub_date_str) < len(candidate_pub_date_str):
-            candidate_pub_date_str = candidate_pub_date_str[:len(master_pub_date_str)]
-        return master_pub_date_str == candidate_pub_date_str
-
-    def has_same_ids(self, publication):
-        """ True if one of ids DOI, PMID, ISI, ScopusID and ISBN are the same for identifiedBy
-        or if ISBN id are the same for indirectlyIdentifiedBy"""
-        if self._same_ids(self.get_identifiedby_ids('DOI'), publication.get_identifiedby_ids('DOI')):
-            return True
-        if self._same_ids(self.get_identifiedby_ids('PMID'), publication.get_identifiedby_ids('PMID')):
-            return True
-        if self._same_ids(self.get_identifiedby_ids('ISI'), publication.get_identifiedby_ids('ISI')):
-            return True
-        if self._same_ids(self.get_identifiedby_ids('ScopusID'),
-                          publication.get_identifiedby_ids('ScopusID')):
-            return True
-        if self._same_ids(self.get_identifiedby_ids('ISBN'), publication.get_identifiedby_ids('ISBN')):
-            return True
-        if self._same_ids(self.get_indirectly_identifiedby_ids('ISBN'),
-                          publication.get_indirectly_identifiedby_ids('ISBN')):
-            return True
-        return False
-
-    def has_compatible_doi_set(self, publication):
-        l1 = self.get_identifiedby_ids('DOI')
-        l2 = publication.get_identifiedby_ids('DOI')
-
-        # If either set is empty, they're compatible
-        if (not l1) or (not l2):
-            return True
-
-        l1.sort()
-        l2.sort()
-        if l1 == l2:
-            return True
-        return False
-
-    @staticmethod
-    def _same_ids(master_ids, candidate_ids):
-        if len(master_ids) == 0 or len(candidate_ids) == 0:
-            return False
-        return set(master_ids) == set(candidate_ids)
 
     def has_higher_publication_status_ranking(self, publication):
         """ True of publication.publication_status is higher than self.publication_status using
@@ -548,7 +894,7 @@ class Contribution:
     @affiliations.setter
     def affiliations(self, affiliations):
         """ Sets hasAffiliation values """
-        self.body['hasAffiliation'] = affiliations
+        self._body['hasAffiliation'] = affiliations
 
     @property
     def identified_bys(self):
@@ -558,7 +904,7 @@ class Contribution:
     @identified_bys.setter
     def identified_bys(self, identified_bys):
         """ Sets identifiedBy values """
-        self.body['agent']['identifiedBy'] = identified_bys
+        self._body['agent']['identifiedBy'] = identified_bys
 
 
 def safe_concat(first, second, separator=' '):
@@ -595,12 +941,7 @@ class HasSeries:
 
     @property
     def main_title(self):
-        """Return value for hasTitle[?(@.@type=="Title")].mainTitle, None if not exist """
-        main_title_array = self.body.get('hasTitle', [])
-        for m_t in main_title_array:
-            if isinstance(m_t, dict) and m_t.get('@type') == 'Title':
-                return m_t.get('mainTitle')
-        return None
+        return get_main_title(self.body)
 
     @property
     def issn(self):
@@ -715,21 +1056,11 @@ class PartOf:
 
     @property
     def main_title(self):
-        """Return value for hasTitle[?(@.@type=="Title")].mainTitle, None if not exist """
-        main_title_array = self.body.get('hasTitle', [])
-        for m_t in main_title_array:
-            if isinstance(m_t, dict) and m_t.get('@type') == 'Title':
-                return m_t.get('mainTitle')
-        return None
+        return get_main_title(self.body)
 
     @property
     def sub_title(self):
-        """Return value for hasTitle[?(@.@type=="Title")].subtitle, None if not exist """
-        main_title_array = self.body.get('hasTitle', [])
-        for m_t in main_title_array:
-            if isinstance(m_t, dict) and m_t.get('@type') == 'Title':
-                return m_t.get('subtitle')
-        return None
+        return get_sub_title(self.body)
 
     @property
     def volume_number(self):
@@ -751,7 +1082,7 @@ class PartOf:
     @property
     def issns(self):
         """Return values for identifiedBy[?(@.@type=="ISSN")].value, Empty array if not exist """
-        return _get_ids(self.body, 'identifiedBy', 'ISSN')
+        return get_ids(self.body, 'identifiedBy', 'ISSN')
 
     def add_issns(self, part_of):
         """ Adds ISSN from part_of if not already exist, if it does then adds 'qualifier' if not set """
@@ -770,7 +1101,7 @@ class PartOf:
     @property
     def isbns(self):
         """Return values for identifiedBy[?(@.@type=="ISBN")].value, Empty array if not exist """
-        return _get_ids(self.body, 'identifiedBy', 'ISBN')
+        return get_ids(self.body, 'identifiedBy', 'ISBN')
 
     def add_isbns(self, part_of):
         """ Adds ISBN from part_of if not already exist, if it does then adds 'qualifier' if not set """
@@ -849,7 +1180,7 @@ class PublicationInformation:
     @agent.setter
     def agent(self, agent):
         """ Sets agent from agent dict """
-        self.body['agent'] = agent
+        self._body['agent'] = agent
 
     @property
     def place(self):
@@ -858,21 +1189,7 @@ class PublicationInformation:
     @place.setter
     def place(self, place):
         """ Sets place from place dict """
-        self.body['place'] = place
-
-
-def _get_ids(body, path, type):
-    if type:
-        ids = []
-        ids_array = body.get(path, [])
-        for id in ids_array:
-            if isinstance(id, dict) and id.get('@type') == type:
-                ids.append(id.get('value'))
-        return [id for id in ids if id]
-    else:
-        if body.get(path):
-            return body[path]
-    return []
+        self._body['place'] = place
 
 
 def _get_identified_by_dict(body, type, value):

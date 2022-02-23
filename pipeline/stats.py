@@ -1,5 +1,4 @@
 from storage import *
-from collections import defaultdict
 
 
 def generate_processing_stats():
@@ -57,7 +56,7 @@ def generate_processing_stats():
                 converted ON converted_record_info.converted_id=converted.id
             GROUP BY
                 converted.source, converted_record_info.field_name, converted.date
-            """):
+        """):
             inner_cursor.execute("""
                 INSERT INTO
                     stats_field_events(

@@ -7,12 +7,9 @@ import requests
 from os import path
 from normalize import *
 
-from util import update_at_path, unicode_translate, make_event
-
 from validators.datetime import validate_date_time
 from validators.doi import validate_doi
 from validators.issn import validate_issn
-from validators.shared import validate_base_unicode
 from validators.isbn import validate_isbn
 from validators.isi import validate_isi
 from validators.orcid import validate_orcid
@@ -63,7 +60,6 @@ def should_be_rejected(raw_xml):
     error_list = []
     parsed_xml = et.parse(StringIO(raw_xml))
     errors = MINIMUM_LEVEL_FILTER(parsed_xml)
-    min_level_errors = None
     if errors.getroot() is not None:
         for error in errors.getroot():
             error_list.append(error.text)
@@ -193,6 +189,7 @@ def get_clean_events(field_events):
                     'enrichment_status': values.enrichment_status
                 }
     return events_only
+
 
 def validate(body, harvest_cache):
     session = requests.Session()

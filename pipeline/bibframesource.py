@@ -130,7 +130,11 @@ class BibframeSource:
     RAW_SUBJECT_PATH = 'instanceOf.subject[?(@.@type=="Topic")]'
     SUBJECT_PATH = parse(RAW_SUBJECT_PATH)
 
-    def __init__(self, bibframe_source={}, fields=[]):
+    def __init__(self, bibframe_source=None, fields=None):
+        if fields is None:
+            fields = []
+        if bibframe_source is None:
+            bibframe_source = {}
         self._bibframe_master = bibframe_source
         self._bibframe_publication_ids = bibframe_source.get("_publication_ids", [])
         self._bibframe_publication_orgs = bibframe_source.get("_publication_orgs", [])
@@ -223,8 +227,8 @@ class BibframeSource:
     @property
     def content_marking(self):
         svep_url = 'https://id.kb.se/term/swepub/svep/'
-        genreForm = self.bibframe_master.get("instanceOf", {}).get("genreForm", [])
-        for gf in genreForm:
+        genre_form = self.bibframe_master.get("instanceOf", {}).get("genreForm", [])
+        for gf in genre_form:
             gf_id = gf.get("@id", "")
             if gf_id.strip().startswith(svep_url):
                 prefix_len = len(svep_url)
@@ -446,13 +450,14 @@ class BibframeSource:
                     if m.group(0):
                         if len(m.group(0).split("/")) > 1:
                             free_from = m.group(0).split("/")[1]
+                            free_from_date = None
                             if free_from and len(free_from) > 1:
                                 try:
                                     free_from_date = dateutil_parse(free_from).date()
                                 except ValueError:
                                     continue
                             now_date = datetime.now().date()
-                            if now_date >= free_from_date:
+                            if free_from_date and now_date >= free_from_date:
                                 return True
                         else:
                             # ok, if note without date, eg "free"

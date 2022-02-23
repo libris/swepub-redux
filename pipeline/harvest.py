@@ -229,7 +229,7 @@ def threaded_handle_harvested(batch, source, lock, harvest_cache, incremental, a
             with get_connection() as connection:
                 original_rowid = store_original(record.oai_id, record.deleted, xml, source, accepted, connection, incremental, min_level_errors, harvest_id)
                 if accepted:
-                    converted_rowid = store_converted(original_rowid, audited.data, audit_events.data, field_events, record_info, connection)
+                    converted_rowid = store_converted(original_rowid, audited.body, audit_events.data, field_events, record_info, connection)
                     converted_rowids.append(converted_rowid)
         finally:
             lock.release()

@@ -10,6 +10,7 @@ levels = {
     "CRITICAL": logging.CRITICAL
     }
 
+
 # By Sergey Pleshakov, CC BY-SA 4.0, https://stackoverflow.com/a/56944256
 class CustomFormatter(logging.Formatter):
     grey = "\x1b[38;20m"
