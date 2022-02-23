@@ -367,7 +367,6 @@ def handle_args():
     parser.add_argument("--skip-unpaywall", action="store_true", help="Skip Unpaywall check")
     parser.add_argument("source", nargs="*", default="", help="Source(s) to process (if not specified, everything in sources.json will be processed, e.g. uniarts ths mdh")
 
-    parser.set_defaults(update=True)
     return parser.parse_args()
 
 
