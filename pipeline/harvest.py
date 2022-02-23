@@ -269,7 +269,7 @@ def _load_doab():
     else:
         try:
             log.info("Refreshing DOAB data")
-            with closing(requests.get(SWEPUB_DOAB_URL, stream=True)) as r:
+            with closing(requests.get(SWEPUB_DOAB_URL, stream=True, timeout=30)) as r:
                 reader = csv.DictReader(codecs.iterdecode(r.iter_lines(), 'utf-8'), delimiter=',')
                 for idx, row in enumerate(reader, 1):
                     if row['oapen.relation.isbn']:
@@ -357,17 +357,16 @@ def init(l, c, a, lg):
 def handle_args():
     parser = ArgumentParser()
 
-    group = parser.add_mutually_exclusive_group()
+    group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("-f", "--force-new", action="store_false", help="Forcibly creates a new database, removing the existing one if one exists as the given path")
     group.add_argument("-u", "--update", action="store_true", help="Updates sources incrementally. Creates database and harvests from the beginning if the database doesn't already exist.")
     group.add_argument("-p", "--purge", action="store_true", help="Delete records (from specified sources, if sources are specified, otherwise everything (but harvest history is kept)")
 
-    parser.add_argument("-d", "--database", default="swepub.sqlite3", help="Path to sqlite3 database (to be created or updated; overrides SWEPUB_DB")
+    parser.add_argument("-d", "--database", default="swepub.sqlite3", help="Path to sqlite3 database (to be created or updated; overrides SWEPUB_DB)")
     parser.add_argument("-e", "--env", default=None, help="One of DEV, QA, PROD (default DEV). Overrides SWEPUB_ENV.")
-    parser.add_argument("sources", nargs="*", default="", help="Sources to process (if not specified, everything in sources.json will be processed, e.g. uniarts ths mdh")
+    parser.add_argument("source", nargs="*", default="", help="Source(s) to process (if not specified, everything in sources.json will be processed, e.g. uniarts ths mdh")
 
     parser.set_defaults(update=True)
-
     return parser.parse_args()
 
 
@@ -398,8 +397,8 @@ if __name__ == "__main__":
             clean_and_init_storage()
 
     sources_to_process = []
-    if args.sources:
-        for code in args.sources:
+    if args.source:
+        for code in args.source:
             if code not in SOURCES:
                 log.error(f"Source {code} does not exist in sources.json")
                 sys.exit(1)

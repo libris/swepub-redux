@@ -60,7 +60,7 @@ class OAAuditor(BaseAuditor):
         added_electroniclocators = []
         for doi in publication.identifiedby_dois:
             try:
-                r = requests.get(f'{UNPAYWALL_URL}{self._clean_identifier(doi)}')
+                r = requests.get(f'{UNPAYWALL_URL}{self._clean_identifier(doi)}', timeout=10)
                 if r.status_code == 200:
                     #print(f'Unpaywall match found')
                     doi_object = r.json()
