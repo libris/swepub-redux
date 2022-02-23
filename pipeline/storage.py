@@ -398,20 +398,30 @@ def store_original(oai_id, deleted, original, source, accepted, connection, incr
         INSERT INTO rejected(harvest_id, oai_id, rejection_cause) VALUES(?, ?, ?);
         """, (harvest_id, oai_id, json.dumps(min_level_errors)))
 
+    # It *shouldn't* happen that an OAI ID occurs twice in the same dataset, but it can happen...
     original_rowid = cursor.execute("""
-    INSERT INTO original(source, data, accepted, oai_id) VALUES(?, ?, ?, ?);
+    INSERT INTO
+        original(source, data, accepted, oai_id)
+    VALUES
+        (?, ?, ?, ?)
+    ON CONFLICT(oai_id) DO UPDATE SET
+        source=excluded.source, data=excluded.data, accepted=excluded.accepted, oai_id=excluded.oai_id
     """, (source, original, accepted, oai_id)).lastrowid
+
+    # ...and in the rare case that it does happen, we don't get a lastrowid, so we have to fetch it separately:
+    if not original_rowid:
+        original_rowid = cursor.execute("SELECT id FROM original WHERE oai_id = ?", [oai_id]).fetchone()[0]
 
     connection.commit()
     return original_rowid
 
+
 def store_converted(original_rowid, converted, audit_events, field_events, record_info, connection):
     cursor = connection.cursor()
     doc = BibframeSource(converted)
-
     converted_events = {'audit_events': audit_events, 'field_events': field_events}
 
-    cursor.execute("""
+    converted_rowid = cursor.execute("""
     INSERT INTO
         converted(data, original_id, oai_id, date, source, is_open_access, classification_level, events)
     VALUES
@@ -427,11 +437,12 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
         doc.open_access,
         doc.level,
         json.dumps(converted_events, default=lambda o: o.__dict__)
-    ))
+    )).lastrowid
 
     # If we inserted a *new* record into converted above, we could just get .lastrowid; but if
-    # the row already exists, that won't work, hence the following select to cover both cases.
-    converted_rowid = cursor.execute("SELECT id FROM converted WHERE oai_id = ?", [doc.record_id]).fetchone()[0]
+    # the row already exists, that won't work.
+    if not converted_rowid:
+        converted_rowid = cursor.execute("SELECT id FROM converted WHERE oai_id = ?", [doc.record_id]).fetchone()[0]
 
     for ssif_1 in doc.ssif_1_codes:
         cursor.execute("""
@@ -489,11 +500,13 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
     connection.commit()
     return converted_rowid
 
+
 def get_connection():
     connection = sqlite3.connect(get_sqlite_path())
     cursor = connection.cursor()
     _set_pragmas(cursor)
     return connection
+
 
 def dict_factory(cursor, row):
     d = {}

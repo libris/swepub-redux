@@ -14,7 +14,7 @@ import swepublog
 import re
 import time
 from concurrent.futures import ProcessPoolExecutor
-from multiprocessing import Process, Lock, Value, Manager
+from multiprocessing import Process, Lock, Manager
 import sys
 from datetime import datetime, timezone
 import uuid
@@ -27,7 +27,7 @@ from contextlib import closing
 import codecs
 import csv
 from pathlib import Path
-from argparse import ArgumentParser, RawTextHelpFormatter
+from argparse import ArgumentParser
 
 DEFAULT_SWEPUB_ENV = getenv("SWEPUB_ENV", "DEV") # or QA, PROD
 FILE_PATH = path.dirname(path.abspath(__file__))
@@ -101,8 +101,6 @@ def harvest(incremental, source):
     harvest_start = datetime.now(timezone.utc)
     record_count = 0
     for source_set in source["sets"]:
-        harvest_info = f'{source_set["url"]} ({source_set["subset"]}, {source_set["metadata_prefix"]})'
-
         #fromtime = "2020-05-05T00:00:00Z" # Only while debugging, use to force FROM date to get some incremental test data.
         record_iterator = RecordIterator(source["code"], source_set, fromtime, None)
         try:
@@ -110,7 +108,6 @@ def harvest(incremental, source):
             batch = []
             processes = []
             record_count_since_report = 0
-            t0 = time.time()
 
             for record in record_iterator:
                 if record.is_successful():
@@ -122,8 +119,8 @@ def harvest(incremental, source):
                     #     diff = time.time() - start_time
                     #     harvested_count.value += 200
                     #     print(f"{harvested_count.value/diff} per sec, running average, {harvested_count.value} done in total.")
-                    if (len(batch) >= 128):
-                        while (len(processes) >= 4):
+                    if len(batch) >= 128:
+                        while len(processes) >= 4:
                             time.sleep(0)
                             n = len(processes)
                             i = n-1
@@ -227,9 +224,26 @@ def threaded_handle_harvested(batch, source, lock, harvest_cache, incremental, a
         lock.acquire()
         try:
             with get_connection() as connection:
-                original_rowid = store_original(record.oai_id, record.deleted, xml, source, accepted, connection, incremental, min_level_errors, harvest_id)
+                original_rowid = store_original(
+                    record.oai_id,
+                    record.deleted,
+                    xml,
+                    source,
+                    accepted,
+                    connection,
+                    incremental,
+                    min_level_errors,
+                    harvest_id
+                )
                 if accepted:
-                    converted_rowid = store_converted(original_rowid, audited.body, audit_events.data, field_events, record_info, connection)
+                    converted_rowid = store_converted(
+                        original_rowid,
+                        audited.body,
+                        audit_events.data,
+                        field_events,
+                        record_info,
+                        connection
+                    )
                     converted_rowids.append(converted_rowid)
         finally:
             lock.release()
@@ -238,7 +252,11 @@ def threaded_handle_harvested(batch, source, lock, harvest_cache, incremental, a
         for rowid in converted_rowids:
             added_converted_rowids[rowid] = None
 
-    harvest_cache['meta'][harvest_id] = [harvest_cache['meta'][harvest_id][0] + num_accepted, harvest_cache['meta'][harvest_id][1] + num_rejected]
+    harvest_cache['meta'][harvest_id] = [
+        harvest_cache['meta'][harvest_id][0] + num_accepted,
+        harvest_cache['meta'][harvest_id][1] + num_rejected
+    ]
+
 
 def _get_source_ids(source_set):
     source_ids = set()
@@ -253,6 +271,7 @@ def _get_source_ids(source_set):
     for header in headers:
         source_ids.add(header.identifier)
     return source_ids
+
 
 def _get_has_persistent_deletes(source_set):
     sickle_client = sickle.Sickle(source_set["url"], max_retries=4, timeout=30)
@@ -412,7 +431,8 @@ if __name__ == "__main__":
         for source in SOURCES.values():
             source["sets"][:] = [item for item in source["sets"] if getenv("SWEPUB_ENV")  in item.get("envs", []) or "envs" not in item]
             sources_to_process.append(source)
- 
+
+    harvest_cache = None
     t1 = None
     if args.purge:
         log.info("Purging " + " ".join([source['code'] for source in sources_to_process]))
@@ -496,7 +516,7 @@ if __name__ == "__main__":
     diff = round(t1-t0, 2)
     log.info(f"Phase 6 (generate processing stats) ran for {diff} seconds")
 
-    if not args.purge:
+    if harvest_cache and not args.purge:
         log.info(f'Sources harvested: {" ".join(harvest_cache["meta"]["sources_succeeded"])}')
         if harvest_cache["meta"]["sources_failed"]:
             log.warning(f'Sources failed: {" ".join(harvest_cache["meta"]["sources_failed"])}')
