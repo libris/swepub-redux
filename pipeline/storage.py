@@ -136,7 +136,7 @@ def clean_and_init_storage():
     cursor.execute("""
     CREATE TABLE converted (
         id INTEGER PRIMARY KEY,
-        oai_id TEXT, -- TODO ADD UNIQUE, -- e.g. "oai:DiVA.org:ri-6513"
+        oai_id TEXT UNIQUE, -- e.g. "oai:DiVA.org:ri-6513"
         data TEXT, -- JSON
         original_id INTEGER,
         date INTEGER, -- year
@@ -480,7 +480,7 @@ def store_original(oai_id, deleted, original, source, accepted, connection, incr
         cursor.execute("""
         DELETE FROM original WHERE oai_id = ?;
         """, (oai_id,))
-    
+
     if deleted:
         connection.commit()
         return None
@@ -506,8 +506,13 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
 
     converted_events = {'audit_events': audit_events, 'field_events': field_events}
 
-    converted_rowid = cursor.execute("""
-    INSERT INTO converted(data, original_id, oai_id, date, source, is_open_access, classification_level, events) VALUES(?, ?, ?, ?, ?, ?, ?, ?);
+    cursor.execute("""
+    INSERT INTO
+        converted(data, original_id, oai_id, date, source, is_open_access, classification_level, events)
+    VALUES
+        (?, ?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(oai_id) DO UPDATE SET
+        data = excluded.data, original_id = excluded.original_id, oai_id = excluded.oai_id, date = excluded.date, source = excluded.source, is_open_access = excluded.is_open_access, classification_level = excluded.classification_level, events = excluded.events, deleted = 0
     """, (
         json.dumps(converted),
         original_rowid,
@@ -517,7 +522,11 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
         doc.open_access,
         doc.level,
         json.dumps(converted_events, default=lambda o: o.__dict__) #, default=lambda o: o.__dict__)
-    )).lastrowid
+    ))
+
+    # If we inserted a *new* record into converted above, we could just get .lastrowid; but if
+    # the row already exists, that won't work, hence the following select to cover both cases.
+    converted_rowid = cursor.execute("SELECT id FROM converted WHERE oai_id = ?", [doc.record_id]).fetchone()[0]
 
     for ssif_1 in doc.ssif_1_codes:
         cursor.execute("""
