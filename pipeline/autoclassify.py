@@ -123,7 +123,9 @@ def _generate_occurrence_table():
         SELECT
             data
         FROM
-            converted;
+            converted
+        WHERE
+            deleted = 0
         """):
             converted = json.loads(converted_row[0])
             publication = Publication(converted)
@@ -159,7 +161,9 @@ def _select_rarest_words():
         SELECT
             id, data
         FROM
-            converted;
+            converted
+        WHERE
+            deleted = 0
         """):
             converted_rowid = converted_row[0]
             converted = json.loads(converted_row[1])
@@ -215,7 +219,9 @@ def _find_and_add_subjects():
             SELECT
                 converted.id, converted.data
             FROM
-                converted;
+                converted
+            WHERE
+                deleted = 0
             """):
                 
                 
@@ -491,7 +497,7 @@ def auto_classify(incremental, incrementally_converted_rowids):
                 FROM
                     converted
                 WHERE
-                    id = ?;
+                    id = ? AND deleted = 0
                 """, (converted_rowid,))
                 row = cursor.fetchall()[0] # Can only be one
                 converted = json.loads(row[0])

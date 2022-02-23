@@ -63,7 +63,7 @@ def clean_and_init_storage():
     CREATE TABLE original (
         id INTEGER PRIMARY KEY,
         source TEXT,
-        oai_id TEXT, -- TODO: UNIQUE,
+        oai_id TEXT UNIQUE,
         accepted INTEGER, -- (fake boolean 1/0)
         --rejection_cause TEXT,
         data TEXT
@@ -131,6 +131,8 @@ def clean_and_init_storage():
 
     # After conversion, validation and normalization each publication is stored in this
     # form, for later in use in deduplication.
+    # The original_id foreign key is *NOT* ON DELETE CASCADE, because we need to keep the (mostly-emptied)
+    # converted record around. See triggers below.
     cursor.execute("""
     CREATE TABLE converted (
         id INTEGER PRIMARY KEY,
@@ -142,7 +144,9 @@ def clean_and_init_storage():
         is_open_access INTEGER,
         classification_level INT, -- 0 = https://id.kb.se/term/swepub/swedishlist/non-peer-reviewed, 1 = peer-reviewed (1 also means "is_swedishlist")
         events TEXT,
-        FOREIGN KEY (original_id) REFERENCES original(id) ON DELETE CASCADE
+        modified INTEGER DEFAULT (strftime('%s', 'now')), -- seconds since epoch
+        deleted INTEGER DEFAULT 0,-- bool
+        FOREIGN KEY (original_id) REFERENCES original(id)
     );
     """)
     cursor.execute("""
@@ -159,6 +163,12 @@ def clean_and_init_storage():
     """)
     cursor.execute("""
     CREATE INDEX idx_converted_classification_level ON converted(classification_level);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_modified ON converted(modified);
+    """)
+    cursor.execute("""
+    CREATE INDEX idx_converted_deleted ON converted(deleted);
     """)
 
     cursor.execute("""
@@ -222,7 +232,7 @@ def clean_and_init_storage():
     CREATE TABLE finalized (
         id INTEGER PRIMARY KEY,
         cluster_id INTEGER,
-        oai_id TEXT,
+        oai_id TEXT UNIQUE,
         data TEXT
     );
     """)
@@ -429,6 +439,37 @@ def clean_and_init_storage():
         n_unchanged INT DEFAULT 0,
         n_normalized INT DEFAULT 0
     );
+    """)
+
+    # When an original is deleted, we *don't* remove the corresponding converted record,
+    # because we need to keep information about the deletion for the legacy search sync.
+    # However, we can remove most of the data, and set deleted=1, which will trigger the
+    # other trigger below.
+    cursor.execute("""
+    CREATE TRIGGER set_deleted_on_converted BEFORE DELETE ON original
+    BEGIN
+        UPDATE
+            converted
+        SET
+            data = null, original_id = null, events = null, date = null, source = null, is_open_access = null, classification_level = null, modified = (strftime('%s', 'now')), deleted = 1
+        WHERE
+            original_id = OLD.id;
+    END
+    """)
+
+    # _Normally_ deletion of the following would be handled by "ON DELETE CASCADE" on the foreign key
+    # relationship to converted.id, but since we need to keep track of what has been deleted when
+    # updating the legacy search database, we can't remove the entire `converted` record.
+    cursor.execute("""
+    CREATE TRIGGER remove_converted_stuff_on_deleted AFTER UPDATE OF deleted ON converted WHEN NEW.deleted = 1
+    BEGIN
+        DELETE FROM converted_audit_events WHERE converted_audit_events.converted_id = OLD.id;
+        DELETE FROM converted_record_info WHERE converted_record_info.converted_id = OLD.id;
+        DELETE FROM converted_ssif_1 WHERE converted_ssif_1.converted_id = OLD.id;
+        DELETE FROM clusteringidentifiers WHERE clusteringidentifiers.converted_id = OLD.id;
+        DELETE FROM cluster WHERE cluster.converted_id = OLD.id;
+        DELETE FROM abstract_rarest_words WHERE abstract_rarest_words.converted_id = OLD.id;
+    END
     """)
 
     connection.commit()

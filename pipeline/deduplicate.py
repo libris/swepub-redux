@@ -360,6 +360,8 @@ def _generate_clusters():
                 clusteringidentifiers
             LEFT JOIN
                 converted ON clusteringidentifiers.converted_id = converted.id
+            WHERE
+                converted.deleted = 0
             GROUP BY
                 clusteringidentifiers.identifier;
             """):
@@ -508,7 +510,8 @@ def _join_overlapping_clusters(next_cluster_id):
                     converted_id
                 FROM
                     cluster
-            );
+            )
+            AND deleted = 0
         """)
         rows = cursor.fetchall() # This is necessary in order to allow modification of the table while iterating
         for solitary_row in rows:
