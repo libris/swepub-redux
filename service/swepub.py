@@ -86,7 +86,7 @@ def close_connection(_exception):
 
 def _errors(errors, status_code=400):
     resp = {"errors": errors, "status_code": status_code}
-    return jsonify(resp), status_code
+    abort(jsonify(resp), status_code)
 
 
 def check_from_to(f):
@@ -96,10 +96,15 @@ def check_from_to(f):
         g.to_yr = request.args.get("to")
         errors, from_yr, to_yr = parse_dates(g.from_yr, g.to_yr)
         if errors:
-            abort(jsonify(errors), 400)
-            return _errors(errors)
+            _errors(errors)
         return f(*args, **kwargs)
     return decorated_function
+
+
+@app.before_request
+def valid_source():
+    if request.view_args and "source" in request.view_args and request.view_args["source"] not in INFO_API_SOURCE_ORG_MAPPING:
+        _errors(["Source not found"], status_code=404)
 
 
 # Catchall routes - the Vue app handles all non-API routes
@@ -121,7 +126,7 @@ def catch_all(_path):
 @check_from_to
 def bibliometrics_api():
     if request.content_type != "application/json":
-        return _errors(errors=['Content-Type must be "application/json"'])
+        _errors(errors=['Content-Type must be "application/json"'])
 
     export_as_csv, export_mimetype, csv_flavor = export_options(request)
     query_data = request.json
@@ -150,7 +155,7 @@ def bibliometrics_api():
         ]
         if len(content_marking) > 0:
             if not (all(cm in ("ref", "vet", "pop") for cm in content_marking)):
-                return _errors(
+                _errors(
                     errors=[f"Invalid value for content marking."], status_code=400
                 )
 
@@ -163,7 +168,7 @@ def bibliometrics_api():
             if not all(
                 ps in ("published", "epub", "submitted") for ps in publication_status
             ):
-                return _errors(
+                _errors(
                     errors=[f"Invalid value for publication status."], status_code=400
                 )
 
@@ -177,7 +182,7 @@ def bibliometrics_api():
         person_local_id_by = query_data.get("creator", {}).get("localIdBy")
 
     except (AttributeError, ValueError, TypeError):
-        return _errors(
+        _errors(
             errors=[f"Invalid value for json body query parameter/s."], status_code=400
         )
 
@@ -331,7 +336,7 @@ def bibliometrics_get_record(record_id):
         "SELECT data FROM finalized WHERE oai_id = ?", [record_id]
     ).fetchone()
     if not row:
-        return _errors(["Not Found"], status_code=404)
+        _errors(["Not Found"], status_code=404)
     doc = json.loads(row[0])
     # TODO: Don't store the following in the actual document
     doc.pop("_publication_ids", None)
@@ -350,7 +355,7 @@ def bibliometrics_get_record(record_id):
 @app.route("/api/v1/classify", methods=["POST"])
 def classify():
     if request.content_type != "application/json":
-        return _errors('Content-Type must be "application/json"')
+        _errors('Content-Type must be "application/json"')
 
     data = request.json
     abstract = data.get("abstract", "")
@@ -363,11 +368,11 @@ def classify():
         classes = int(classes)
         level = int(level)
     except ValueError:
-        return _errors("Parameters 'classes' and 'level' must be integers")
+        _errors("Parameters 'classes' and 'level' must be integers")
     if level not in [1, 3, 5]:
-        return _errors("Parameter 'level' must be either 1, 3 or 5")
+        _errors("Parameter 'level' must be either 1, 3 or 5")
     if classes < 1:
-        return _errors("Parameter 'classes' must be larger than 0")
+        _errors("Parameter 'classes' must be larger than 0")
 
     # NOTE! From here on the code is copied/adapted from pipeline's autoclassify.
 
@@ -473,9 +478,6 @@ def datastatus():
 @app.route("/api/v1/datastatus/<source>", methods=["GET"], strict_slashes=False)
 @check_from_to
 def datastatus_source(source):
-    if source and source not in INFO_API_SOURCE_ORG_MAPPING:
-        return _errors(["Source not found"], status_code=404)
-
     converted = Table("converted")
     values = []
     result = {}
@@ -571,9 +573,6 @@ def datastatus_ssif_endpoint():
 @app.route("/api/v1/datastatus/ssif/<source>")
 @check_from_to
 def datastatus_ssif_source_api(source=None):
-    if source and source not in INFO_API_SOURCE_ORG_MAPPING:
-        return _errors(["Source not found"], status_code=404)
-
     converted, converted_ssif_1 = Tables("converted", "converted_ssif_1")
     values = []
     result = {"ssif": {}}
@@ -634,9 +633,6 @@ def datastatus_validations():
 @app.route("/api/v1/datastatus/validations/<source>", methods=["GET"])
 @check_from_to
 def datastatus_validations_source(source=None):
-    if source and source not in INFO_API_SOURCE_ORG_MAPPING:
-        return _errors(["Source not found"], status_code=404)
-
     stats_field_events = Table("stats_field_events")
 
     values = []
@@ -725,38 +721,33 @@ def info_sources():
 @app.route("/api/v1/process/publications/<path:record_id>", methods=["GET"])
 def process_get_publication(record_id=None):
     if record_id is None:
-        return _errors(['Missing parameter: "record_id"'], status_code=400)
+        _errors(['Missing parameter: "record_id"'], status_code=400)
 
     cur = get_db().cursor()
     row = cur.execute(
         "SELECT data FROM converted WHERE oai_id = ?", [record_id]
     ).fetchone()
     if not row:
-        return _errors(["Not Found"], status_code=404)
+        _errors(["Not Found"], status_code=404)
     return Response(row[0], mimetype="application/ld+json")
 
 
 @app.route("/api/v1/process/publications/<path:record_id>/original", methods=["GET"])
 def process_get_original_publication(record_id=None):
     if record_id is None:
-        return _errors(['Missing parameter: "record_id"'], status_code=400)
+        _errors(['Missing parameter: "record_id"'], status_code=400)
 
     cur = get_db().cursor()
     row = cur.execute(
         "SELECT data FROM original WHERE oai_id = ?", [record_id]
     ).fetchone()
     if not row:
-        return _errors(["Not Found"], status_code=404)
+        _errors(["Not Found"], status_code=404)
     return Response(row[0], mimetype="application/xml; charset=utf-8")
 
 
 @app.route("/api/v1/process/<source>/status")
 def process_get_harvest_status(source):
-    if source is None:
-        return _errors(['Missing parameter: "source"'], status_code=400)
-    if source not in INFO_API_SOURCE_ORG_MAPPING:
-        return _errors(["Source not found"], status_code=404)
-
     cur = get_db().cursor()
     cur.row_factory = dict_factory
 
@@ -783,11 +774,6 @@ def process_get_harvest_status(source):
 
 @app.route("/api/v1/process/<source>/status/history")
 def process_get_harvest_status_history(source):
-    if source is None:
-        return _errors(['Missing parameter: "source"'], status_code=400)
-    if source not in INFO_API_SOURCE_ORG_MAPPING:
-        return _errors(["Source not found"], status_code=404)
-
     result = {
         "harvest_history": [],
         "source_code": source,
@@ -834,14 +820,11 @@ def process_get_harvest_status_history(source):
 # TODO: 404, 500, ..
 @app.route("/api/v1/process/<harvest_id>/rejected")
 def process_get_rejected_publications(harvest_id):
-    if harvest_id is None:
-        return _errors(['Missing parameter: "harvest_id"'])
-
     limit = request.args.get("limit")
     offset = request.args.get("offset")
     (errors, limit, offset) = parse_limit_and_offset(limit, offset)
     if errors:
-        return _errors(errors)
+        _errors(errors)
 
     cur = get_db().cursor()
     cur.row_factory = dict_factory
@@ -909,11 +892,6 @@ def process_get_rejected_publications(harvest_id):
 @app.route("/api/v1/process/<source>", methods=["GET"])
 @check_from_to
 def process_get_stats(source=None):
-    if source is None:
-        return _errors(['Missing parameter: "source"'], status_code=400)
-    if source not in INFO_API_SOURCE_ORG_MAPPING:
-        return _errors(["Source not found"], status_code=404)
-
     result = {
         "code": source,
         "source": INFO_API_SOURCE_ORG_MAPPING[source]["name"],
@@ -1013,17 +991,12 @@ def process_get_stats(source=None):
 @app.route("/api/v1/process/<source>/export", methods=["GET"])
 @check_from_to
 def process_get_export(source=None):
-    if source is None:
-        return _errors(['Missing parameter: "source"'], status_code=400)
-    if source not in INFO_API_SOURCE_ORG_MAPPING:
-        return _errors(["Source not found"], status_code=404)
-
     export_as_csv, export_mimetype, csv_flavor = export_options(request)
     limit = request.args.get("limit")
     offset = request.args.get("offset")
     (errors, limit, offset) = parse_limit_and_offset(limit, offset)
     if errors:
-        return _errors(errors)
+        _errors(errors)
     validation_flags = request.args.get("validation_flags")
     enrichment_flags = request.args.get("enrichment_flags")
     normalization_flags = request.args.get("normalization_flags")
@@ -1032,7 +1005,7 @@ def process_get_export(source=None):
         validation_flags, enrichment_flags, normalization_flags, audit_flags
     )
     if errors:
-        return _errors(errors)
+        _errors(errors)
 
     converted, converted_record_info, converted_audit_events = Tables(
         "converted", "converted_record_info", "converted_audit_events"
