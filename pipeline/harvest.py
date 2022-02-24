@@ -472,9 +472,13 @@ if __name__ == "__main__":
         # distribute the database between the processes.
         lock = Lock()
 
-        # We want to keep a steady flow without overloading the system, so have a pool with N
-        # workers, where N is the number of ("real") CPUs or 8, whichever is higher.
-        max_workers = max(psutil.cpu_count(logical=False), 8)
+        # We want a lot of parallellism. The point of this is not only to saturate _our_ cores
+        # which may well be "overloaded" during parts of the process, but also to keep as many
+        # as possible of the sources working all at once feeding us data. Ideally we want our
+        # network buffers full at all times, with data ready to consume for any core available.
+        # Having many processes going at once is not a liability in terms of overhead.
+        # Context switching is a cost payed per core, not per thread/process.
+        max_workers = max(psutil.cpu_count(logical=True) * 2, 8)
         with ProcessPoolExecutor(max_workers=max_workers, initializer=init, initargs=(lock, harvest_cache, added_converted_rowids, log,)) as executor:
             for source in sources_to_process:
                 # Partial to add a second argument to harvest_wrapper (note: the `incremental` will appear
