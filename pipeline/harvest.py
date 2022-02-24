@@ -9,7 +9,9 @@ from stats import generate_processing_stats
 from oai import *
 from validate import validate, should_be_rejected
 from audit import audit
-import swepublog
+from legacy_sync import legacy_sync
+# To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..
+from swepublog import logger as log
 
 import re
 import time
@@ -129,12 +131,12 @@ def harvest(incremental, source):
                                     processes[i].join()
                                     del processes[i]
                                 i -= 1
-                        p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, harvest_cache, incremental, added_converted_rowids, harvest_id))
+                        p = Process(target=threaded_handle_harvested, args=(batch, source["code"], source_set["subset"], lock, harvest_cache, incremental, added_converted_rowids, harvest_id))
                         batch_count += 1
                         p.start()
                         processes.append( p )
                         batch = []
-            p = Process(target=threaded_handle_harvested, args=(batch, source["code"], lock, harvest_cache, incremental, added_converted_rowids, harvest_id))
+            p = Process(target=threaded_handle_harvested, args=(batch, source["code"], source_set["subset"], lock, harvest_cache, incremental, added_converted_rowids, harvest_id))
             p.start()
             processes.append( p )
             for p in processes:
@@ -204,7 +206,7 @@ def harvest(incremental, source):
     log.info(f'[FINISHED]\t{source["code"]} ({round(finish_time-start_time, 2)} seconds, {record_count} records, {record_per_s} records/s)')
 
 
-def threaded_handle_harvested(batch, source, lock, harvest_cache, incremental, added_converted_rowids, harvest_id):
+def threaded_handle_harvested(batch, source, source_subset, lock, harvest_cache, incremental, added_converted_rowids, harvest_id):
     converted_rowids = []
     num_accepted = 0
     num_rejected = 0
@@ -229,6 +231,7 @@ def threaded_handle_harvested(batch, source, lock, harvest_cache, incremental, a
                     record.deleted,
                     xml,
                     source,
+                    source_subset,
                     accepted,
                     connection,
                     incremental,
@@ -390,8 +393,6 @@ def handle_args():
 
 
 if __name__ == "__main__":
-    # To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..
-    log = swepublog.get_default_logger()
     args = handle_args()
 
     # Make sure cache directory exists
@@ -519,6 +520,13 @@ if __name__ == "__main__":
     t1 = time.time()
     diff = round(t1-t0, 2)
     log.info(f"Phase 6 (generate processing stats) ran for {diff} seconds")
+
+    if environ.get("SWEPUB_LEGACY_SEARCH_DATABASE"):
+        t0 = t1
+        legacy_sync()
+        t1 = time.time()
+        diff = round(t1-t0, 2)
+        log.info(f"Phase 7 (legacy search sync) ran for {diff} seconds")
 
     if harvest_cache and not args.purge:
         log.info(f'Sources harvested: {" ".join(harvest_cache["meta"]["sources_succeeded"])}')

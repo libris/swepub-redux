@@ -33,17 +33,14 @@ class CustomFormatter(logging.Formatter):
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)
 
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
 
-def get_default_logger():
-    logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
-
-    # create console handler with a higher log level
-    ch = logging.StreamHandler()
-    if LOG_LEVEL in levels:
-        logger.setLevel(levels[LOG_LEVEL])
-    else:
-        raise Exception("Invalid log level")
-    ch.setFormatter(CustomFormatter())
-    logger.addHandler(ch)
-    return logger
+# create console handler with a higher log level
+ch = logging.StreamHandler()
+if LOG_LEVEL in levels:
+    logger.setLevel(levels[LOG_LEVEL])
+else:
+    raise Exception("Invalid log level")
+ch.setFormatter(CustomFormatter())
+logger.addHandler(ch)

@@ -59,6 +59,7 @@ def clean_and_init_storage():
     CREATE TABLE original (
         id INTEGER PRIMARY KEY,
         source TEXT,
+        source_subset TEXT,
         oai_id TEXT UNIQUE,
         accepted INTEGER, -- (fake boolean 1/0)
         --rejection_cause TEXT,
@@ -352,6 +353,8 @@ def clean_and_init_storage():
     # because we need to keep information about the deletion for the legacy search sync.
     # However, we can remove most of the data, and set deleted=1, which will trigger the
     # other trigger below.
+    # We also bump the `modified` timestamp of any other records belonging to the same
+    # cluster, so that these will be properly updated by the legacy search sync.
     cur.execute("""
     CREATE TRIGGER set_deleted_on_converted BEFORE DELETE ON original
     BEGIN
@@ -370,6 +373,17 @@ def clean_and_init_storage():
     cur.execute("""
     CREATE TRIGGER remove_converted_stuff_on_deleted AFTER UPDATE OF deleted ON converted WHEN NEW.deleted = 1
     BEGIN
+        UPDATE
+            converted
+        SET
+            modified = (strftime('%s', 'now'))
+        WHERE
+            id IN (
+                SELECT converted_id FROM cluster WHERE cluster_id IN (
+                    SELECT cluster_id FROM cluster WHERE converted_id = OLD.id
+                ) AND converted_id != OLD.id
+            );
+
         DELETE FROM converted_audit_events WHERE converted_audit_events.converted_id = OLD.id;
         DELETE FROM converted_record_info WHERE converted_record_info.converted_id = OLD.id;
         DELETE FROM converted_ssif_1 WHERE converted_ssif_1.converted_id = OLD.id;
@@ -382,7 +396,7 @@ def clean_and_init_storage():
     con.commit()
 
 
-def store_original(oai_id, deleted, original, source, accepted, connection, incremental, min_level_errors, harvest_id):
+def store_original(oai_id, deleted, original, source, source_subset, accepted, connection, incremental, min_level_errors, harvest_id):
     cursor = connection.cursor()
     if incremental:
         cursor.execute("""
@@ -401,12 +415,12 @@ def store_original(oai_id, deleted, original, source, accepted, connection, incr
     # It *shouldn't* happen that an OAI ID occurs twice in the same dataset, but it can happen...
     original_rowid = cursor.execute("""
     INSERT INTO
-        original(source, data, accepted, oai_id)
+        original(source, source_subset, data, accepted, oai_id)
     VALUES
-        (?, ?, ?, ?)
+        (?, ?, ?, ?, ?)
     ON CONFLICT(oai_id) DO UPDATE SET
-        source=excluded.source, data=excluded.data, accepted=excluded.accepted, oai_id=excluded.oai_id
-    """, (source, original, accepted, oai_id)).lastrowid
+        source=excluded.source, source_subset=excluded.source_subset, data=excluded.data, accepted=excluded.accepted, oai_id=excluded.oai_id
+    """, (source, source_subset, original, accepted, oai_id)).lastrowid
 
     # ...and in the rare case that it does happen, we don't get a lastrowid, so we have to fetch it separately:
     if not original_rowid:
