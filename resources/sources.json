@@ -1,4 +1,77 @@
 {
+  "cth": {
+    "code": "cth",
+    "name": "Chalmers tekniska högskola",
+    "sets": [
+      {
+        "url": "http://research.chalmers.se/oai-pmh/swepub",
+        "subset": "CHALMERS_SWEPUB",
+        "metadata_prefix": "mods"
+      }
+    ]
+  },
+  "gu": {
+    "code": "gu",
+    "name": "Göteborgs universitet",
+    "sets": [
+      {
+        "url": "https://gup-staging.ub.gu.se/oai",
+        "subset": "",
+        "metadata_prefix": "mods",
+        "envs": ["DEV", "QA"]
+      },
+      {
+        "url": "https://gup.ub.gu.se/oai",
+        "subset": "",
+        "metadata_prefix": "mods",
+        "envs": ["PROD"]
+      }
+    ]
+  },
+  "kth": {
+    "code": "kth",
+    "name": "Kungliga Tekniska högskolan",
+    "sets": [
+      {
+        "url": "http://kth.diva-portal.org/dice/oai",
+        "subset": "SwePub-kth",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "lu": {
+    "code": "lu",
+    "name": "Lunds universitet",
+    "sets": [
+      {
+        "url": "http://lup.lub.lu.se/oai",
+        "subset": "LU_SWEPUB",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "uu": {
+    "code": "uu",
+    "name": "Uppsala universitet",
+    "sets": [
+      {
+        "url": "http://uu.diva-portal.org/dice/oai",
+        "subset": "SwePub-uu",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "su": {
+    "code": "su",
+    "name": "Stockholms universitet",
+    "sets": [
+      {
+        "url": "http://su.diva-portal.org/dice/oai",
+        "subset": "SwePub-su",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
   "oru": {
     "code": "oru",
     "name": "Örebro universitet",
@@ -40,17 +113,6 @@
         "url": "http://slubar.slu.se/sps/cgi/oai2",
         "subset": "swepub",
         "metadata_prefix": "mods_sp30_sp3"
-      }
-    ]
-  },
-  "su": {
-    "code": "su",
-    "name": "Stockholms universitet",
-    "sets": [
-      {
-        "url": "http://su.diva-portal.org/dice/oai",
-        "subset": "SwePub-su",
-        "metadata_prefix": "swepub_mods"
       }
     ]
   },
@@ -197,17 +259,6 @@
       }
     ]
   },
-  "lu": {
-    "code": "lu",
-    "name": "Lunds universitet",
-    "sets": [
-      {
-        "url": "http://lup.lub.lu.se/oai",
-        "subset": "LU_SWEPUB",
-        "metadata_prefix": "swepub_mods"
-      }
-    ]
-  },
   "ltu": {
     "code": "ltu",
     "name": "Luleå tekniska universitet",
@@ -259,17 +310,6 @@
       {
         "url": "http://kkh.diva-portal.org/dice/oai",
         "subset": "SwePub-kkh",
-        "metadata_prefix": "swepub_mods"
-      }
-    ]
-  },
-  "kth": {
-    "code": "kth",
-    "name": "Kungliga Tekniska högskolan",
-    "sets": [
-      {
-        "url": "http://kth.diva-portal.org/dice/oai",
-        "subset": "SwePub-kth",
         "metadata_prefix": "swepub_mods"
       }
     ]
@@ -418,24 +458,6 @@
       }
     ]
   },
-  "gu": {
-    "code": "gu",
-    "name": "Göteborgs universitet",
-    "sets": [
-      {
-        "url": "https://gup-staging.ub.gu.se/oai",
-        "subset": "",
-        "metadata_prefix": "mods",
-        "envs": ["DEV", "QA"]
-      },
-      {
-        "url": "https://gup.ub.gu.se/oai",
-        "subset": "",
-        "metadata_prefix": "mods",
-        "envs": ["PROD"]
-      }
-    ]
-  },
   "gih": {
     "code": "gih",
     "name": "Gymnastik- och idrottshögskolan",
@@ -476,28 +498,6 @@
       {
         "url": "http://bth.diva-portal.org/dice/oai",
         "subset": "SwePub-bth",
-        "metadata_prefix": "swepub_mods"
-      }
-    ]
-  },
-  "cth": {
-    "code": "cth",
-    "name": "Chalmers tekniska högskola",
-    "sets": [
-      {
-        "url": "http://research.chalmers.se/oai-pmh/swepub",
-        "subset": "CHALMERS_SWEPUB",
-        "metadata_prefix": "mods"
-      }
-    ]
-  },
-  "uu": {
-    "code": "uu",
-    "name": "Uppsala universitet",
-    "sets": [
-      {
-        "url": "http://uu.diva-portal.org/dice/oai",
-        "subset": "SwePub-uu",
         "metadata_prefix": "swepub_mods"
       }
     ]
