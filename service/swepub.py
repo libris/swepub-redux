@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+from functools import wraps
 from os import path, getenv
 
 from utils import bibliometrics
@@ -20,6 +21,7 @@ from flask import (
     stream_with_context,
     url_for,
     make_response,
+    abort,
 )
 from pypika import Query, Tables, Parameter, Table, Criterion
 from pypika.terms import BasicCriterion
@@ -76,7 +78,7 @@ def get_db():
 
 
 @app.teardown_appcontext
-def close_connection(exception):
+def close_connection(_exception):
     db = getattr(g, "_database", None)
     if db is not None:
         db.close()
@@ -85,6 +87,19 @@ def close_connection(exception):
 def _errors(errors, status_code=400):
     resp = {"errors": errors, "status_code": status_code}
     return jsonify(resp), status_code
+
+
+def check_from_to(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        g.from_yr = request.args.get("from")
+        g.to_yr = request.args.get("to")
+        errors, from_yr, to_yr = parse_dates(g.from_yr, g.to_yr)
+        if errors:
+            abort(jsonify(errors), 400)
+            return _errors(errors)
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 # Catchall routes - the Vue app handles all non-API routes
@@ -103,6 +118,7 @@ def catch_all(_path):
 
 
 @app.route("/api/v1/bibliometrics", methods=["POST"], strict_slashes=False)
+@check_from_to
 def bibliometrics_api():
     if request.content_type != "application/json":
         return _errors(errors=['Content-Type must be "application/json"'])
@@ -126,12 +142,6 @@ def bibliometrics_api():
         if isinstance(subjects, str):
             subjects = subjects.split(",")
         subjects = [s.strip() for s in subjects if len(s.strip()) > 0]
-
-        from_yr = query_data.get("years", {}).get("from")
-        to_yr = query_data.get("years", {}).get("to")
-        errors, from_yr, to_yr = parse_dates(from_yr, to_yr)
-        if errors:
-            return _errors(errors)
 
         content_marking = [
             cm.strip()
@@ -193,12 +203,12 @@ def bibliometrics_api():
     q = Query.from_(finalized)
     values = []
 
-    if from_yr and to_yr:
+    if g.from_yr and g.to_yr:
         q = q.where(
             (search_single.year >= Parameter("?"))
             & (search_single.year <= Parameter("?"))
         )
-        values.append([from_yr, to_yr])
+        values.append([g.from_yr, g.to_yr])
     if swedish_list:
         q = q.where(search_single.swedish_list == 1)
     if open_access:
@@ -216,7 +226,7 @@ def bibliometrics_api():
             values.append(content_marking)
     if any(
         [
-            (from_yr and to_yr),
+            (g.from_yr and g.to_yr),
             content_marking,
             publication_status,
             swedish_list,
@@ -299,9 +309,9 @@ def bibliometrics_api():
 
         if not export_as_csv:
             yield "],"
-            if from_yr and to_yr:
-                yield f'"from": {from_yr},'
-                yield f'"to": {to_yr},'
+            if g.from_yr and g.to_yr:
+                yield f'"from": {g.from_yr},'
+                yield f'"to": {g.to_yr},'
             yield (
                 f'"query": {json.dumps(query_data)},'
                 f'"query_handled_at": "{handled_at}",'
@@ -455,18 +465,14 @@ def classify():
 # ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚══════╝
 
 
-@app.route("/api/v1/datastatus", methods=["GET"])
+@app.route("/api/v1/datastatus", methods=["GET"], strict_slashes=False)
 def datastatus():
     return datastatus_source(source=None)
 
 
-@app.route("/api/v1/datastatus/<source>", methods=["GET"])
+@app.route("/api/v1/datastatus/<source>", methods=["GET"], strict_slashes=False)
+@check_from_to
 def datastatus_source(source):
-    from_yr = request.args.get("from")
-    to_yr = request.args.get("to")
-    errors, from_yr, to_yr = parse_dates(from_yr, to_yr)
-    if errors:
-        return _errors(errors)
     if source and source not in INFO_API_SOURCE_ORG_MAPPING:
         return _errors(["Source not found"], status_code=404)
 
@@ -496,8 +502,8 @@ def datastatus_source(source):
         .groupby(converted.source)
     )
 
-    if from_yr and to_yr:
-        result.update({"from": from_yr, "to": to_yr})
+    if g.from_yr and g.to_yr:
+        result.update({"from": g.from_yr, "to": g.to_yr})
         q_total = q_total.where(
             (converted.date >= Parameter("?")) & (converted.date <= Parameter("?"))
         )
@@ -513,7 +519,7 @@ def datastatus_source(source):
         q_total_per_source = q_total_per_source.where(
             (converted.date >= Parameter("?")) & (converted.date <= Parameter("?"))
         )
-        values.append([from_yr, to_yr])
+        values.append([g.from_yr, g.to_yr])
 
     if source:
         result["source"] = source
@@ -563,13 +569,8 @@ def datastatus_ssif_endpoint():
 
 
 @app.route("/api/v1/datastatus/ssif/<source>")
+@check_from_to
 def datastatus_ssif_source_api(source=None):
-    from_yr = request.args.get("from")
-    to_yr = request.args.get("to")
-    errors, from_yr, to_yr = parse_dates(from_yr, to_yr)
-    if errors:
-        return _errors(errors)
-
     if source and source not in INFO_API_SOURCE_ORG_MAPPING:
         return _errors(["Source not found"], status_code=404)
 
@@ -585,7 +586,7 @@ def datastatus_ssif_source_api(source=None):
         .groupby(converted_ssif_1.value)
     )
 
-    if source or (from_yr and to_yr):
+    if source or (g.from_yr and g.to_yr):
         q_total = q_total.left_join(converted).on(
             converted_ssif_1.converted_id == converted.id
         )
@@ -599,15 +600,15 @@ def datastatus_ssif_source_api(source=None):
         q_ssif = q_ssif.where(converted.source == Parameter("?"))
         values.append(source)
 
-    if from_yr and to_yr:
-        result.update({"from": from_yr, "to": to_yr})
+    if g.from_yr and g.to_yr:
+        result.update({"from": g.from_yr, "to": g.to_yr})
         q_total = q_total.where(
             (converted.date >= Parameter("?")) & (converted.date <= Parameter("?"))
         )
         q_ssif = q_ssif.where(
             (converted.date >= Parameter("?")) & (converted.date <= Parameter("?"))
         )
-        values.append([from_yr, to_yr])
+        values.append([g.from_yr, g.to_yr])
 
     values = list(flatten(values))
     cur = get_db().cursor()
@@ -631,13 +632,8 @@ def datastatus_validations():
 
 
 @app.route("/api/v1/datastatus/validations/<source>", methods=["GET"])
+@check_from_to
 def datastatus_validations_source(source=None):
-    from_yr = request.args.get("from")
-    to_yr = request.args.get("to")
-    errors, from_yr, to_yr = parse_dates(from_yr, to_yr)
-    if errors:
-        return _errors(errors)
-
     if source and source not in INFO_API_SOURCE_ORG_MAPPING:
         return _errors(["Source not found"], status_code=404)
 
@@ -657,12 +653,12 @@ def datastatus_validations_source(source=None):
         q = q.where(stats_field_events.source == Parameter("?"))
         values.append(source)
 
-    if from_yr and to_yr:
+    if g.from_yr and g.to_yr:
         q = q.where(
             (stats_field_events.date >= Parameter("?"))
             & (stats_field_events.date <= Parameter("?"))
         )
-        values.append([from_yr, to_yr])
+        values.append([g.from_yr, g.to_yr])
 
     cur = get_db().cursor()
     cur.row_factory = dict_factory
@@ -680,9 +676,9 @@ def datastatus_validations_source(source=None):
     if source:
         result["source"] = source
 
-    if from_yr and to_yr:
-        result["from"] = from_yr
-        result["to_yr"] = to_yr
+    if g.from_yr and g.to_yr:
+        result["from"] = g.from_yr
+        result["to_yr"] = g.to_yr
 
     return result
 
@@ -911,17 +907,12 @@ def process_get_rejected_publications(harvest_id):
 
 
 @app.route("/api/v1/process/<source>", methods=["GET"])
+@check_from_to
 def process_get_stats(source=None):
     if source is None:
         return _errors(['Missing parameter: "source"'], status_code=400)
     if source not in INFO_API_SOURCE_ORG_MAPPING:
         return _errors(["Source not found"], status_code=404)
-
-    from_yr = request.args.get("from")
-    to_yr = request.args.get("to")
-    errors, from_yr, to_yr = parse_dates(from_yr, to_yr)
-    if errors:
-        return _errors(errors)
 
     result = {
         "code": source,
@@ -933,9 +924,9 @@ def process_get_stats(source=None):
         "total": 0,
     }
 
-    if from_yr and to_yr:
+    if g.from_yr and g.to_yr:
         date_sql = f" AND date >= ? AND date <= ?"
-        values = [source, from_yr, to_yr]
+        values = [source, g.from_yr, g.to_yr]
     else:
         date_sql = ""
         values = [source]
@@ -1020,6 +1011,7 @@ def process_get_stats(source=None):
 
 
 @app.route("/api/v1/process/<source>/export", methods=["GET"])
+@check_from_to
 def process_get_export(source=None):
     if source is None:
         return _errors(['Missing parameter: "source"'], status_code=400)
@@ -1027,14 +1019,9 @@ def process_get_export(source=None):
         return _errors(["Source not found"], status_code=404)
 
     export_as_csv, export_mimetype, csv_flavor = export_options(request)
-    from_date = request.args.get("from")
-    to_date = request.args.get("to")
     limit = request.args.get("limit")
     offset = request.args.get("offset")
     (errors, limit, offset) = parse_limit_and_offset(limit, offset)
-    if errors:
-        return _errors(errors)
-    (errors, from_date, to_date) = parse_dates(from_date, to_date)
     if errors:
         return _errors(errors)
     validation_flags = request.args.get("validation_flags")
@@ -1080,11 +1067,11 @@ def process_get_export(source=None):
             converted.id == converted_audit_events.converted_id
         )
 
-    if from_date and to_date:
+    if g.from_date and g.to_date:
         q = q.where(
             (converted.date >= Parameter("?")) & (converted.date <= Parameter("?"))
         )
-        values.append([from_date, to_date])
+        values.append([g.from_date, g.to_date])
 
     # Specified flags should be OR'd together, so we build up a list of criteria and use
     # pypika's Criterion.any.
@@ -1158,9 +1145,9 @@ def process_get_export(source=None):
             total += 1
         if not export_as_csv:
             yield "],"
-            if from_date and to_date:
-                yield f'"from": {from_date},'
-                yield f'"to": {to_date},'
+            if g.from_date and g.to_date:
+                yield f'"from": {g.from_date},'
+                yield f'"to": {g.to_date},'
             yield (
                 f'"query": {json.dumps(request.args)},'
                 f'"query_handled_at": "{handled_at}",'
