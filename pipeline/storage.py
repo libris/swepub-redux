@@ -67,6 +67,7 @@ def clean_and_init_storage():
     );
     """)
     cur.execute("CREATE INDEX idx_original_oai_id ON original (oai_id)")
+    cur.execute("CREATE INDEX idx_original_source ON original (source)")
 
     cur.execute("""
     CREATE TABLE rejected (
