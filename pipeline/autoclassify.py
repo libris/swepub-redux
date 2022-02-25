@@ -8,6 +8,8 @@ from os import path
 from multiprocessing import Process
 from tempfile import TemporaryDirectory
 import orjson as json
+from concurrent.futures import ProcessPoolExecutor
+from functools import partial
 
 categories = load(open(path.join(path.dirname(path.abspath(__file__)), '../resources/categories.json')))
 
@@ -212,41 +214,26 @@ def _find_and_add_subjects():
         # The 'file_sequence_number' is the file each process should be writing results into.
         with TemporaryDirectory() as temp_dir:
             file_sequence_number = 0
-            
-            batch = []
-            processes = []
-            for converted_row in cursor.execute("""
-            SELECT
-                converted.id, converted.data
-            FROM
-                converted
-            WHERE
-                deleted = 0
-            """):
-                
-                
-                batch.append(converted_row)
-                if (len(batch) >= 256):
-                    while (len(processes) >= 20):
-                        time.sleep(0)
-                        n = len(processes)
-                        i = n-1
-                        while i > -1:
-                            if not processes[i].is_alive():
-                                processes[i].join()
-                                del processes[i]
-                            i -= 1
-                    p = Process(target=_conc_find_subjects, args=(batch,temp_dir,file_sequence_number))
-                    file_sequence_number += 1
-                    p.start()
-                    processes.append( p )
-                    batch = []
-            p = Process(target=_conc_find_subjects, args=(batch,temp_dir,file_sequence_number))
-            file_sequence_number += 1
-            p.start()
-            processes.append( p )
-            for p in processes:
-                p.join()
+            with ProcessPoolExecutor(max_workers=20) as executor:
+                batch = []
+                processes = []
+                for converted_row in cursor.execute("""
+                SELECT
+                    converted.id, converted.data
+                FROM
+                    converted
+                WHERE
+                    deleted = 0
+                """):
+                    batch.append(converted_row)
+                    if (len(batch) >= 256):
+                        func = partial(_conc_find_subjects, temp_dir, file_sequence_number)
+                        executor.submit(func, batch)
+                        file_sequence_number += 1
+                        batch = []
+                file_sequence_number += 1
+                func = partial(_conc_find_subjects, temp_dir, file_sequence_number)
+                executor.submit(func, batch)
 
             for file in os.listdir(temp_dir):
                 with open(f"{temp_dir}/{file}", encoding="utf-8") as f:
@@ -318,7 +305,7 @@ def _find_and_add_subjects():
         # connection.commit()
         
 
-def _conc_find_subjects(converted_rows, temp_dir, file_sequence_number):
+def _conc_find_subjects(temp_dir, file_sequence_number, converted_rows):
     with get_connection() as connection:
         cursor = connection.cursor()
         
