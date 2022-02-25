@@ -1,5 +1,6 @@
-from storage import *
+from storage import get_connection, dict_factory
 from legacy_publication import Publication
+from swepublog import logger as log
 
 import time
 import mysql.connector
@@ -9,7 +10,6 @@ from mysql.connector import errorcode
 import json
 import orjson
 from datetime import datetime
-from swepublog import logger as log
 
 LEGACY_SEARCH_USER = environ.get("SWEPUB_LEGACY_SEARCH_USER")
 LEGACY_SEARCH_PASSWORD = environ.get("SWEPUB_LEGACY_SEARCH_PASSWORD")
@@ -125,7 +125,6 @@ def legacy_sync(hours=24):
         # processed below as well (since A will now be the master). This is handled by
         # a trigger that, when a record is deleted, bumps the timestamp of related records
         # in converted (related = belonging to the same cluster). See storage.py.
-
         counter = 0
         for row in cur.execute("""
         SELECT
@@ -157,6 +156,7 @@ def legacy_sync(hours=24):
             duplicateof = None
             if row["duplicateof"] != identifier:
                 duplicateof = row["duplicateof"]
+
             if duplicateof:
                 json_data = row["converted_json"]
                 body = orjson.loads(row["converted_json"])
@@ -164,15 +164,17 @@ def legacy_sync(hours=24):
                 json_data = row["finalized_json"]
                 body = orjson.loads(row["finalized_json"])
 
-            publication = Publication(body)
+            publication_body = Publication(body).body_with_required_legacy_search_fields
+            # TODO: Don't store the following in the actual document?
+            publication_body.pop("_publication_ids", None)
+            publication_body.pop("_publication_orgs", None)
+            updated_json = json.dumps(publication_body, ensure_ascii=False)
+
             xml_data = row["xml"]
 
             origin = row["source_subset"] # SwePub-ths
             target = "SWEPUB"
             format = "swepub_mods"
-
-            updated_json = json.dumps(publication.body_with_required_legacy_search_fields, ensure_ascii=False)
-
             sets = _sets(xml_data)
             timestamp = datetime.fromtimestamp(row["modified"]).isoformat()
             remote_timestamp = _remote_timestamp(xml_data)
