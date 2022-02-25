@@ -122,25 +122,27 @@ def harvest(incremental, source):
                     #     harvested_count.value += 200
                     #     print(f"{harvested_count.value/diff} per sec, running average, {harvested_count.value} done in total.")
                     if len(batch) >= 128:
-                        while len(processes) >= 4:
-                            time.sleep(0)
-                            n = len(processes)
-                            i = n-1
-                            while i > -1:
-                                if not processes[i].is_alive():
-                                    processes[i].join()
-                                    del processes[i]
-                                i -= 1
-                        p = Process(target=threaded_handle_harvested, args=(batch, source["code"], source_set["subset"], lock, harvest_cache, incremental, added_converted_rowids, harvest_id))
-                        batch_count += 1
-                        p.start()
-                        processes.append( p )
+                        # while len(processes) >= 4:
+                        #     time.sleep(0)
+                        #     n = len(processes)
+                        #     i = n-1
+                        #     while i > -1:
+                        #         if not processes[i].is_alive():
+                        #             processes[i].join()
+                        #             del processes[i]
+                        #         i -= 1
+                        # p = Process(target=threaded_handle_harvested, args=(batch, source["code"], source_set["subset"], lock, harvest_cache, incremental, added_converted_rowids, harvest_id))
+                        # batch_count += 1
+                        # p.start()
+                        # processes.append( p )
+                        threaded_handle_harvested(batch, source["code"], source_set["subset"], lock, harvest_cache, incremental, added_converted_rowids, harvest_id)
                         batch = []
-            p = Process(target=threaded_handle_harvested, args=(batch, source["code"], source_set["subset"], lock, harvest_cache, incremental, added_converted_rowids, harvest_id))
-            p.start()
-            processes.append( p )
-            for p in processes:
-                p.join()
+            # p = Process(target=threaded_handle_harvested, args=(batch, source["code"], source_set["subset"], lock, harvest_cache, incremental, added_converted_rowids, harvest_id))
+            # p.start()
+            # processes.append( p )
+            # for p in processes:
+            #     p.join()
+            threaded_handle_harvested(batch, source["code"], source_set["subset"], lock, harvest_cache, incremental, added_converted_rowids, harvest_id)
 
             #print(f"harvested: {record_count_since_report}")
 
