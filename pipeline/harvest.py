@@ -50,11 +50,11 @@ TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = ["cluster", "finalized", "search_single
 
 
 # Wrap the harvest function just to easily log errors from subprocesses
-def harvest_wrapper(incremental, source):
+def harvest_wrapper(source):
     harvest_cache["meta"]["sources_to_go"].remove(source["code"])
     harvest_cache["meta"]["sources_in_progress"].append(source["code"])
     try:
-        harvest(incremental, source)
+        harvest(source)
         harvest_cache["meta"]["sources_in_progress"].remove(source["code"])
         harvest_cache["meta"]["sources_succeeded"].append(source["code"])
     except Exception as e:
@@ -72,7 +72,7 @@ def harvest_wrapper(incremental, source):
         log.info(f'Sources not yet started: {harvest_cache["meta"]["sources_to_go"]}')
 
 
-def harvest(incremental, source):
+def harvest(source):
     log.info(f"[STARTED]\t{source['code']}")
     fromtime = None
     if incremental:
@@ -102,49 +102,34 @@ def harvest(incremental, source):
 
     harvest_start = datetime.now(timezone.utc)
     record_count = 0
+
     for source_set in source["sets"]:
-        #fromtime = "2020-05-05T00:00:00Z" # Only while debugging, use to force FROM date to get some incremental test data.
         record_iterator = RecordIterator(source["code"], source_set, fromtime, None)
         try:
-            batch_count = 0
-            batch = []
-            processes = []
-            record_count_since_report = 0
+            with ProcessPoolExecutor(max_workers=4, initializer=init, initargs=(lock, harvest_cache, added_converted_rowids, log, incremental,)) as executor:
+                #fromtime = "2020-05-05T00:00:00Z" # Only while debugging, use to force FROM date to get some incremental test data.
+                batch = []
+                record_count_since_report = 0
 
-            for record in record_iterator:
-                if record.is_successful():
-                    batch.append(record)
-                    record_count += 1
-                    record_count_since_report += 1
-                    # if record_count_since_report == 200:
-                    #     record_count_since_report = 0
-                    #     diff = time.time() - start_time
-                    #     harvested_count.value += 200
-                    #     print(f"{harvested_count.value/diff} per sec, running average, {harvested_count.value} done in total.")
-                    if len(batch) >= 128:
-                        # while len(processes) >= 4:
-                        #     time.sleep(0)
-                        #     n = len(processes)
-                        #     i = n-1
-                        #     while i > -1:
-                        #         if not processes[i].is_alive():
-                        #             processes[i].join()
-                        #             del processes[i]
-                        #         i -= 1
-                        # p = Process(target=threaded_handle_harvested, args=(batch, source["code"], source_set["subset"], lock, harvest_cache, incremental, added_converted_rowids, harvest_id))
-                        # batch_count += 1
-                        # p.start()
-                        # processes.append( p )
-                        threaded_handle_harvested(batch, source["code"], source_set["subset"], lock, harvest_cache, incremental, added_converted_rowids, harvest_id)
-                        batch = []
-            # p = Process(target=threaded_handle_harvested, args=(batch, source["code"], source_set["subset"], lock, harvest_cache, incremental, added_converted_rowids, harvest_id))
-            # p.start()
-            # processes.append( p )
-            # for p in processes:
-            #     p.join()
-            threaded_handle_harvested(batch, source["code"], source_set["subset"], lock, harvest_cache, incremental, added_converted_rowids, harvest_id)
+                for record in record_iterator:
+                    if record.is_successful():
+                        batch.append(record)
+                        if len(batch) >= 128:
+                            # Partial to add additional arguments to threaded_handle_harvested.
+                            # Note: `batch` will appear as the _last_ argument.
+                            func = partial(threaded_handle_harvested, source["code"], source_set["subset"], harvest_id)
+                            executor.submit(func, batch)
+                            batch = []
 
-            #print(f"harvested: {record_count_since_report}")
+                            record_count += 1
+                            record_count_since_report += 1
+                            # if record_count_since_report == 200:
+                            #     record_count_since_report = 0
+                            #     diff = time.time() - start_time
+                            #     harvested_count.value += 200
+                            #     print(f"{harvested_count.value/diff} per sec, running average, {harvested_count.value} done in total.")
+                func = partial(threaded_handle_harvested, source["code"], source_set["subset"], harvest_id)
+                executor.submit(func, batch)
 
             # If we're doing incremental updating: Check if the source uses <deletedRecord>persistent</deletedRecord>.
             # If it does not, we need to "ListIdentifiers" all of their records to figure out if any were deleted.
@@ -177,7 +162,6 @@ def harvest(incremental, source):
                             connection.commit()
                         finally:
                             lock.release()
-
         except HarvestFailed as e:
             log.warning(f'[FAILED]\t{source["code"]}. Error: {e}')
             raise e
@@ -208,7 +192,7 @@ def harvest(incremental, source):
     log.info(f'[FINISHED]\t{source["code"]} ({round(finish_time-start_time, 2)} seconds, {record_count} records, {record_per_s} records/s)')
 
 
-def threaded_handle_harvested(batch, source, source_subset, lock, harvest_cache, incremental, added_converted_rowids, harvest_id):
+def threaded_handle_harvested(source, source_subset, harvest_id, batch):
     converted_rowids = []
     num_accepted = 0
     num_rejected = 0
@@ -367,15 +351,17 @@ def _get_harvest_cache_manager(manager):
     return manager.dict({'doi_new': doi_new, 'doi_static': doi_static, 'issn_new': issn_new, 'issn_static': issn_static, 'meta': harvest_meta, 'doab': doab})
 
 
-def init(l, c, a, lg):
+def init(l, c, a, lg, inc):
     global lock
     global harvest_cache
     global added_converted_rowids
     global log
+    global incremental
     lock = l
     harvest_cache = c
     added_converted_rowids = a
     log = lg
+    incremental = inc
 
 
 def handle_args():
@@ -482,12 +468,9 @@ if __name__ == "__main__":
         # Having many processes going at once is not a liability in terms of overhead.
         # Context switching is a cost payed per core, not per thread/process.
         max_workers = max(psutil.cpu_count(logical=True) * 2, 8)
-        with ProcessPoolExecutor(max_workers=max_workers, initializer=init, initargs=(lock, harvest_cache, added_converted_rowids, log,)) as executor:
+        with ProcessPoolExecutor(max_workers=max_workers, initializer=init, initargs=(lock, harvest_cache, added_converted_rowids, log, incremental,)) as executor:
             for source in sources_to_process:
-                # Partial to add a second argument to harvest_wrapper (note: the `incremental` will appear
-                # _before_ source)
-                func = partial(harvest_wrapper, incremental)
-                executor.submit(func, source)
+                executor.submit(harvest_wrapper, source)
 
         t1 = time.time()
         diff = round(t1-t0, 2)
