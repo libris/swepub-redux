@@ -130,6 +130,7 @@ def harvest(source):
                             #     print(f"{harvested_count.value/diff} per sec, running average, {harvested_count.value} done in total.")
                 func = partial(threaded_handle_harvested, source["code"], source_set["subset"], harvest_id)
                 executor.submit(func, batch)
+                executor.shutdown(wait=True)
 
             # If we're doing incremental updating: Check if the source uses <deletedRecord>persistent</deletedRecord>.
             # If it does not, we need to "ListIdentifiers" all of their records to figure out if any were deleted.
@@ -471,6 +472,7 @@ if __name__ == "__main__":
         with ProcessPoolExecutor(max_workers=max_workers, initializer=init, initargs=(lock, harvest_cache, added_converted_rowids, log, incremental,)) as executor:
             for source in sources_to_process:
                 executor.submit(harvest_wrapper, source)
+            executor.shutdown(wait=True)
 
         t1 = time.time()
         diff = round(t1-t0, 2)

@@ -234,6 +234,7 @@ def _find_and_add_subjects():
                 file_sequence_number += 1
                 func = partial(_conc_find_subjects, temp_dir, file_sequence_number)
                 executor.submit(func, batch)
+                executor.shutdown(wait=True)
 
             for file in os.listdir(temp_dir):
                 with open(f"{temp_dir}/{file}", encoding="utf-8") as f:
