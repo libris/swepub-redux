@@ -138,6 +138,7 @@ def clean_and_init_storage():
     cur.execute("CREATE INDEX idx_converted_classification_level ON converted(classification_level)")
     cur.execute("CREATE INDEX idx_converted_modified ON converted(modified)")
     cur.execute("CREATE INDEX idx_converted_deleted ON converted(deleted)")
+    cur.execute("CREATE INDEX idx_converted_original_id ON converted(original_id)")
 
     cur.execute("""
     CREATE TABLE converted_ssif_1 (
@@ -162,6 +163,7 @@ def clean_and_init_storage():
         FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
     );
     """)
+    cur.execute("CREATE INDEX idx_clusteringidentifiers_convertedid ON clusteringidentifiers(converted_id)")
 
     # Deduplicated clusters, multiple rows per cluster. So for example, a cluster consisting
     # of publications A, B and C would look something like:
