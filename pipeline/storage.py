@@ -60,13 +60,11 @@ def clean_and_init_storage():
         id INTEGER PRIMARY KEY,
         source TEXT,
         source_subset TEXT,
-        oai_id TEXT UNIQUE,
+        oai_id TEXT UNIQUE, -- NOTE: if you remove UNIQUE for whatever reason, _do_ create an index on oai_id
         accepted INTEGER, -- (fake boolean 1/0)
-        --rejection_cause TEXT,
         data TEXT
     );
     """)
-    cur.execute("CREATE INDEX idx_original_oai_id ON original (oai_id)")
     cur.execute("CREATE INDEX idx_original_source ON original (source)")
 
     cur.execute("""
