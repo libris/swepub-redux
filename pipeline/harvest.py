@@ -30,6 +30,7 @@ import codecs
 import csv
 from pathlib import Path
 from argparse import ArgumentParser
+import traceback
 
 DEFAULT_SWEPUB_ENV = getenv("SWEPUB_ENV", "DEV") # or QA, PROD
 FILE_PATH = path.dirname(path.abspath(__file__))
@@ -59,6 +60,7 @@ def harvest_wrapper(source):
         harvest_cache["meta"]["sources_succeeded"].append(source["code"])
     except Exception as e:
         log.warning(f"Error harvesting {source['code']}: {e}")
+        log.warning(traceback.format_exc())
         harvest_cache["meta"]["sources_in_progress"].remove(source["code"])
         harvest_cache["meta"]["sources_failed"].append(source["code"])
 
@@ -151,18 +153,18 @@ def harvest(source):
                             existing_oai_id = original_id_row[0]
                             if existing_oai_id not in all_source_ids:
                                 obsolete_ids.append(existing_oai_id)
-
-                        lock.acquire()
-                        try:
-                            cursor.execute(f"""
-                            DELETE FROM
-                                original
-                            WHERE oai_id IN ({','.join('?'*len(obsolete_ids))});
-                            """, (obsolete_ids,))
-                            log.info(f"Deleted {len(obsolete_ids)} obsolete records from {source['code']}, after checking their ID-list.")
-                            connection.commit()
-                        finally:
-                            lock.release()
+                        if obsolete_ids:
+                            lock.acquire()
+                            try:
+                                cursor.execute(f"""
+                                DELETE FROM
+                                    original
+                                WHERE oai_id IN ({','.join('?'*len(obsolete_ids))});
+                                """, (obsolete_ids,))
+                                log.info(f"Deleted {len(obsolete_ids)} obsolete records from {source['code']}, after checking their ID-list.")
+                                connection.commit()
+                            finally:
+                                lock.release()
         except HarvestFailed as e:
             log.warning(f'[FAILED]\t{source["code"]}. Error: {e}')
             raise e
