@@ -122,14 +122,13 @@ def harvest(source):
                             func = partial(threaded_handle_harvested, source["code"], source_set["subset"], harvest_id)
                             executor.submit(func, batch)
                             batch = []
-
-                            record_count += 1
-                            record_count_since_report += 1
-                            # if record_count_since_report == 200:
-                            #     record_count_since_report = 0
-                            #     diff = time.time() - start_time
-                            #     harvested_count.value += 200
-                            #     print(f"{harvested_count.value/diff} per sec, running average, {harvested_count.value} done in total.")
+                        record_count += 1
+                        record_count_since_report += 1
+                        # if record_count_since_report == 200:
+                        #     record_count_since_report = 0
+                        #     diff = time.time() - start_time
+                        #     harvested_count.value += 200
+                        #     print(f"{harvested_count.value/diff} per sec, running average, {harvested_count.value} done in total.")
                 func = partial(threaded_handle_harvested, source["code"], source_set["subset"], harvest_id)
                 executor.submit(func, batch)
                 executor.shutdown(wait=True)
@@ -199,46 +198,47 @@ def threaded_handle_harvested(source, source_subset, harvest_id, batch):
     converted_rowids = []
     num_accepted = 0
     num_rejected = 0
-    for record in batch:
-        xml = record.xml
-        rejected, min_level_errors = should_be_rejected(xml)
-        accepted = not rejected
+    with requests.Session() as session:
+        for record in batch:
+            xml = record.xml
+            rejected, min_level_errors = should_be_rejected(xml)
+            accepted = not rejected
 
-        if accepted:
-            num_accepted += 1
-            converted = convert(xml)
-            (field_events, record_info) = validate(converted, harvest_cache)
-            (audited, audit_events) = audit(converted, harvest_cache)
-        elif not record.deleted:
-            num_rejected += 1
+            if accepted:
+                num_accepted += 1
+                converted = convert(xml)
+                (field_events, record_info) = validate(converted, harvest_cache, session)
+                (audited, audit_events) = audit(converted, harvest_cache, session)
+            elif not record.deleted:
+                num_rejected += 1
 
-        lock.acquire()
-        try:
-            with get_connection() as connection:
-                original_rowid = store_original(
-                    record.oai_id,
-                    record.deleted,
-                    xml,
-                    source,
-                    source_subset,
-                    accepted,
-                    connection,
-                    incremental,
-                    min_level_errors,
-                    harvest_id
-                )
-                if accepted:
-                    converted_rowid = store_converted(
-                        original_rowid,
-                        audited.body,
-                        audit_events.data,
-                        field_events,
-                        record_info,
-                        connection
+            lock.acquire()
+            try:
+                with get_connection() as connection:
+                    original_rowid = store_original(
+                        record.oai_id,
+                        record.deleted,
+                        xml,
+                        source,
+                        source_subset,
+                        accepted,
+                        connection,
+                        incremental,
+                        min_level_errors,
+                        harvest_id
                     )
-                    converted_rowids.append(converted_rowid)
-        finally:
-            lock.release()
+                    if accepted:
+                        converted_rowid = store_converted(
+                            original_rowid,
+                            audited.body,
+                            audit_events.data,
+                            field_events,
+                            record_info,
+                            connection
+                        )
+                        converted_rowids.append(converted_rowid)
+            finally:
+                lock.release()
 
     if incremental:
         for rowid in converted_rowids:

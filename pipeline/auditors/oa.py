@@ -4,7 +4,6 @@ import re
 from contextlib import closing
 from os import getenv
 
-import requests
 import swepublog
 from auditors import BaseAuditor
 
@@ -17,11 +16,11 @@ class OAAuditor(BaseAuditor):
     def __init__(self):
         self.name = OAAuditor.__name__
 
-    def audit(self, publication, audit_events, harvest_cache):
+    def audit(self, publication, audit_events, harvest_cache, session):
         publication, new_audit_events, result = self._check_doab(publication, audit_events, harvest_cache)
 
         if not result and not getenv("SWEPUB_SKIP_UNPAYWALL", False):
-            publication, new_audit_events, result = self._check_unpaywall(publication, audit_events)
+            publication, new_audit_events, result = self._check_unpaywall(publication, audit_events, session)
 
         return publication, new_audit_events
 
@@ -53,14 +52,14 @@ class OAAuditor(BaseAuditor):
         else:
             return publication, audit_events, result
 
-    def _check_unpaywall(self, publication, audit_events):
+    def _check_unpaywall(self, publication, audit_events, session):
         result = False
         code = "add_unpaywall"
 
         added_electroniclocators = []
         for doi in publication.identifiedby_dois:
             try:
-                r = requests.get(f'{UNPAYWALL_URL}{self._clean_identifier(doi)}', timeout=10)
+                r = session.get(f'{UNPAYWALL_URL}{self._clean_identifier(doi)}', timeout=10)
                 if r.status_code == 200:
                     #print(f'Unpaywall match found')
                     doi_object = r.json()

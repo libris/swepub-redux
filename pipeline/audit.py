@@ -58,7 +58,7 @@ class AuditEvents:
         return None
 
 
-def audit(body, harvest_cache):    
+def audit(body, harvest_cache, session):
     initial_val = (Publication(body), AuditEvents())
-    (updated_publication, audit_events) = reduce(lambda acc, auditor: auditor.audit(*acc, harvest_cache), auditors, initial_val)
+    (updated_publication, audit_events) = reduce(lambda acc, auditor: auditor.audit(*acc, harvest_cache, session), auditors, initial_val)
     return updated_publication, audit_events

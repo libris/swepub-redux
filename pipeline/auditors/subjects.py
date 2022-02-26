@@ -45,7 +45,7 @@ class SubjectsAuditor(BaseAuditor):
         self.name = SubjectsAuditor.__name__
         self.subjects = subjects
 
-    def audit(self, publication, audit_events, _harvest_cache):
+    def audit(self, publication, audit_events, _harvest_cache, _session):
         """Expand research subjects if possible."""
         if self.subjects is None:
             self._load_subject_codes()

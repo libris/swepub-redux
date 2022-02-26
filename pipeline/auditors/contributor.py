@@ -6,7 +6,7 @@ class ContributorAuditor(BaseAuditor):
     def __init__(self):
         self.name = ContributorAuditor.__name__
 
-    def audit(self, publication, audit_events, _harvest_cache):
+    def audit(self, publication, audit_events, _harvest_cache, _session):
         code = 'contributor_duplicate_check'
         result = False
         if publication.has_duplicate_contributor_persons:

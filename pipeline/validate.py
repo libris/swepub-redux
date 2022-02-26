@@ -191,8 +191,7 @@ def get_clean_events(field_events):
     return events_only
 
 
-def validate(body, harvest_cache):
-    session = requests.Session()
+def validate(body, harvest_cache, session):
     field_events = {}
     # For each path, create a FieldMeta object that we'll use during all
     # enrichments/validations/normalizations to keep some necessary state
