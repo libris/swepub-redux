@@ -30,7 +30,7 @@ def generate_search_tables():
 
                 if (len(batch) >= 64):
                     while (len(tasks) >= 32):
-                        time.sleep(0)
+                        time.sleep(1)
                         n = len(tasks)
                         i = n-1
                         while i > -1:
@@ -47,7 +47,7 @@ def generate_search_tables():
                 tasks.append(pool.map_async(_handle, (batch,)))
             for task in tasks:
                 while not task.ready():
-                    time.sleep(0)
+                    time.sleep(1)
                 result = task.get()
                 write_results(result, inner_cursor, connection)
 

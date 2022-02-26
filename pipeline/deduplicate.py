@@ -189,7 +189,7 @@ def _generate_clusters():
 
                     if (len(batch) >= 32):
                         while (len(tasks) >= 32):
-                            time.sleep(0)
+                            time.sleep(1)
                             n = len(tasks)
                             i = n-1
                             while i > -1:
@@ -207,7 +207,7 @@ def _generate_clusters():
                 tasks.append(pool.map_async(_check_candidate_groups, (batch,)))
             for task in tasks:
                 while not task.ready():
-                    time.sleep(0)
+                    time.sleep(1)
                 result = task.get()
                 write_detected_duplicate_pairs(result, inner_cursor, next_cluster_id)
                 next_cluster_id += len(result[0])
