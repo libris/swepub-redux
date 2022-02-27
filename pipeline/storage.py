@@ -197,6 +197,7 @@ def clean_and_init_storage():
     );
     """)
     cur.execute("CREATE INDEX idx_finalized_oai_id ON finalized(oai_id)")
+    cur.execute("CREATE INDEX idx_finalized_cluster_id ON finalized(cluster_id)")
 
     # To facilitate "auto classification", store (for each publication) the N rarest
     # words that occur in that publication's abstract.
