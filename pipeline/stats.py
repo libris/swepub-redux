@@ -9,6 +9,42 @@ def generate_processing_stats():
 
         for row in cursor.execute("""
             SELECT
+                source, date, count(*) AS total, sum(is_open_access) AS open_access, sum (classification_level) AS swedishlist
+            FROM
+                converted
+            GROUP BY
+                source, date
+            """):
+            inner_cursor.execute("""
+                INSERT INTO
+                    stats_converted(source, date, total, open_access, swedishlist)
+                VALUES
+                    (?, ?, ?, ?, ?)
+                """,
+                [row["source"], row["date"], row["total"], row["open_access"], row["swedishlist"]])
+
+        for row in cursor.execute("""
+            SELECT
+                converted.source, converted.date, converted_ssif_1.value, count(*) AS total
+            FROM
+                converted
+            LEFT JOIN
+                converted_ssif_1 ON converted_ssif_1.converted_id=converted.id
+            WHERE
+                converted_ssif_1.value NOT NULL
+            GROUP BY
+                converted.source, converted.date, converted_ssif_1.value
+            """):
+            inner_cursor.execute("""
+                INSERT INTO
+                    stats_ssif_1(source, date, ssif_1, total)
+                VALUES
+                    (?, ?, ?, ?)
+                """,
+                [row["source"], row["date"], row["value"], row["total"]])
+
+        for row in cursor.execute("""
+            SELECT
                 converted_audit_events.code,
                 converted.source,
                 converted.date,

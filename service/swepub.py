@@ -479,60 +479,38 @@ def datastatus():
 @app.route("/api/v1/datastatus/<source>", methods=["GET"], strict_slashes=False)
 @check_from_to
 def datastatus_source(source):
-    converted = Table("converted")
+    stats_converted = Table("stats_converted")
     values = []
     result = {}
 
-    q_total = Query.select(fn.Count("*").as_("total_docs")).from_(converted)
-    q_oa = (
-        Query.select(fn.Count("*").as_("oa"))
-        .from_(converted)
-        .where(converted.is_open_access == 1)
+    q = (
+        Query.select(
+            stats_converted.source,
+            fn.Sum(stats_converted.total).as_("total_docs"),
+            fn.Sum(stats_converted.open_access).as_("open_access"),
+            fn.Count(stats_converted.has_ssif_1).as_("ssif"),
+            fn.Sum(stats_converted.swedishlist).as_("swedishlist"),
+        )
+        .from_(stats_converted)
+        .groupby(stats_converted.source)
     )
-    q_ssif = (
-        Query.select(fn.Count("*").as_("ssif"))
-        .from_(converted)
-        .where(converted.ssif_1 > 0)
-    )
-    q_swedishlist = (
-        Query.select(fn.Count("*").as_("swedishlist"))
-        .from_(converted)
-        .where(converted.classification_level == 1)
-    )
-    q_total_per_source = (
-        Query.select(converted.source, fn.Count("*").as_("total"))
-        .from_(converted)
-        .groupby(converted.source)
-    )
+
+    q_total = Query.select(fn.Sum(stats_converted.total).as_("total_docs")).from_(stats_converted)
 
     if g.from_yr and g.to_yr:
         result.update({"from": g.from_yr, "to": g.to_yr})
         q_total = q_total.where(
-            (converted.date >= Parameter("?")) & (converted.date <= Parameter("?"))
+            (stats_converted.date >= Parameter("?")) & (stats_converted.date <= Parameter("?"))
         )
-        q_oa = q_oa.where(
-            (converted.date >= Parameter("?")) & (converted.date <= Parameter("?"))
-        )
-        q_ssif = q_ssif.where(
-            (converted.date >= Parameter("?")) & (converted.date <= Parameter("?"))
-        )
-        q_swedishlist = q_swedishlist.where(
-            (converted.date >= Parameter("?")) & (converted.date <= Parameter("?"))
-        )
-        q_total_per_source = q_total_per_source.where(
-            (converted.date >= Parameter("?")) & (converted.date <= Parameter("?"))
+        q = q.where(
+            (stats_converted.date >= Parameter("?")) & (stats_converted.date <= Parameter("?"))
         )
         values.append([g.from_yr, g.to_yr])
 
     if source:
         result["source"] = source
-        q_total = q_total.where(converted.source == Parameter("?"))
-        q_oa = q_oa.where(converted.source == Parameter("?"))
-        q_ssif = q_ssif.where(converted.source == Parameter("?"))
-        q_swedishlist = q_swedishlist.where(converted.source == Parameter("?"))
-        q_total_per_source = q_total_per_source.where(
-            converted.source == Parameter("?")
-        )
+        q_total = q_total.where(stats_converted.source == Parameter("?"))
+        q = q.where(stats_converted.source == Parameter("?"))
         values.append(source)
 
     values = list(flatten(values))
@@ -540,28 +518,28 @@ def datastatus_source(source):
     cur.row_factory = dict_factory
 
     total_docs = cur.execute(str(q_total), values).fetchone()["total_docs"]
-    oa = cur.execute(str(q_oa), values).fetchone()["oa"]
-    ssif = cur.execute(str(q_ssif), values).fetchone()["ssif"]
-    swedishlist = cur.execute(str(q_swedishlist), values).fetchone()["swedishlist"]
+    rows = cur.execute(str(q), values).fetchall()
+
+    total_docs = sum(item["total_docs"] for item in rows)
+    total_open_access = sum(item["open_access"] for item in rows)
+    total_ssif = sum(item["ssif"] for item in rows)
+    total_swedishlist = sum(item["swedishlist"] for item in rows)
 
     result.update(
         {
             "total": total_docs,
-            "openAccess": {"percentage": get_percentage(oa, total_docs), "total": oa},
-            "ssif": {"percentage": get_percentage(ssif, total_docs), "total": ssif},
-            "swedishList": {
-                "percentage": get_percentage(swedishlist, total_docs),
-                "total": swedishlist,
-            },
+            "openAccess": {"percentage": get_percentage(total_open_access, total_docs), "total": total_open_access},
+            "ssif": {"percentage": get_percentage(total_ssif, total_docs), "total": total_ssif},
+            "swedishList": {"percentage": get_percentage(total_swedishlist, total_docs), "total": total_swedishlist,},
         }
     )
 
     if not source:
         result["sources"] = {}
-        for row in cur.execute(str(q_total_per_source), values):
+        for row in rows:
             result["sources"][row["source"]] = {
-                "percentage": get_percentage(row["total"], total_docs),
-                "total": row["total"],
+                "percentage": get_percentage(row["total_docs"], total_docs),
+                "total": row["total_docs"],
             }
     return result
 
@@ -574,55 +552,50 @@ def datastatus_ssif_endpoint():
 @app.route("/api/v1/datastatus/ssif/<source>")
 @check_from_to
 def datastatus_ssif_source_api(source=None):
-    converted, converted_ssif_1 = Tables("converted", "converted_ssif_1")
+    stats_ssif_1, stats_converted = Tables("stats_ssif_1", "stats_converted")
     values = []
     result = {"ssif": {}}
 
-    q_total = Query.select(fn.Count("*").as_("total_docs")).from_(converted_ssif_1)
-
-    q_ssif = (
-        Query.select(converted_ssif_1.value.as_("ssif_1"), fn.Count("*").as_("total"))
-        .from_(converted_ssif_1)
-        .groupby(converted_ssif_1.value)
+    q = (
+        Query.select(
+            stats_ssif_1.ssif_1,
+            fn.Count("*").as_("total"),
+        )
+        .from_(stats_ssif_1)
+        .groupby(stats_ssif_1.ssif_1)
     )
 
-    if source or (g.from_yr and g.to_yr):
-        q_total = q_total.left_join(converted).on(
-            converted_ssif_1.converted_id == converted.id
-        )
-        q_ssif = q_ssif.left_join(converted).on(
-            converted_ssif_1.converted_id == converted.id
-        )
-
-    if source:
-        result["source"] = source
-        q_total = q_total.where(converted.source == Parameter("?"))
-        q_ssif = q_ssif.where(converted.source == Parameter("?"))
-        values.append(source)
+    q_total = Query.select(fn.Sum(stats_converted.total).as_("total_docs")).from_(stats_converted)
 
     if g.from_yr and g.to_yr:
         result.update({"from": g.from_yr, "to": g.to_yr})
-        q_total = q_total.where(
-            (converted.date >= Parameter("?")) & (converted.date <= Parameter("?"))
+        q = q.where(
+            (stats_ssif_1.date >= Parameter("?")) & (stats_ssif_1.date <= Parameter("?"))
         )
-        q_ssif = q_ssif.where(
-            (converted.date >= Parameter("?")) & (converted.date <= Parameter("?"))
+        q_total = q_total.where(
+            (stats_converted.date >= Parameter("?")) & (stats_converted.date <= Parameter("?"))
         )
         values.append([g.from_yr, g.to_yr])
+
+    if source:
+        result["source"] = source
+        q = q.where(stats_ssif_1.source == Parameter("?"))
+        q_total = q_total.where(stats_converted.source == Parameter("?"))
+        values.append(source)
 
     values = list(flatten(values))
     cur = get_db().cursor()
     cur.row_factory = dict_factory
 
     result["total"] = cur.execute(str(q_total), values).fetchone()["total_docs"]
-    for row in cur.execute(str(q_ssif), values):
+
+    for row in cur.execute(str(q), values):
         if row["ssif_1"]:
             ssif_label = SSIF_LABELS[row["ssif_1"]]
             result["ssif"][ssif_label] = {
                 "total": row["total"],
                 "percentage": get_percentage(row["total"], result["total"]),
             }
-
     return result
 
 

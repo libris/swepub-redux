@@ -351,6 +351,31 @@ def clean_and_init_storage():
     );
     """)
 
+    cur.execute("""
+    CREATE TABLE stats_converted (
+        source TEXT,
+        date INT,
+        total INT,
+        open_access INT DEFAULT 0,
+        swedishlist INT DEFAULT 0,
+        has_ssif_1 INT DEFAULT 0
+    );
+    """)
+    cur.execute("CREATE INDEX idx_stats_converted ON stats_converted(source)")
+
+    cur.execute("""
+    CREATE TABLE stats_ssif_1 (
+        source TEXT,
+        date INT,
+        ssif_1 INT,
+        total INT
+    );
+    """)
+    cur.execute("CREATE INDEX idx_stats_ssif_1_source ON stats_ssif_1(source)")
+
+    # source | date | ssif_1
+
+
     # When an original is deleted, we *don't* remove the corresponding converted record,
     # because we need to keep information about the deletion for the legacy search sync.
     # However, we can remove most of the data, and set deleted=1, which will trigger the
