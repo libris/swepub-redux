@@ -74,6 +74,7 @@ def get_db():
         cursor = db.cursor()
         cursor.execute("PRAGMA cache_size=-64000")  # negative number = kibibytes
         cursor.execute("PRAGMA temp_store=MEMORY")
+        cursor.execute("PRAGMA journal_mode=WAL")
     return db
 
 
