@@ -9,11 +9,13 @@ def generate_processing_stats():
 
         for row in cursor.execute("""
             SELECT
-                source, date, count(*) AS total, sum(is_open_access) AS open_access, sum(classification_level) AS swedishlist, count(converted_ssif_1.value) AS ssif_1
+                source, date, count(distinct id) AS total, sum(is_open_access) AS open_access, sum(classification_level) AS swedishlist, count(distinct converted_ssif_1.converted_id) AS ssif_1
             FROM
                 converted
             LEFT JOIN
                 converted_ssif_1 ON converted.id=converted_ssif_1.converted_id
+            WHERE
+                converted.deleted = 0
             GROUP BY
                 source, date
             """):
@@ -33,7 +35,7 @@ def generate_processing_stats():
             LEFT JOIN
                 converted_ssif_1 ON converted_ssif_1.converted_id=converted.id
             WHERE
-                converted_ssif_1.value NOT NULL
+                converted_ssif_1.value NOT NULL AND converted.deleted = 0
             GROUP BY
                 converted.source, converted.date, converted_ssif_1.value
             """):
@@ -56,6 +58,8 @@ def generate_processing_stats():
                 converted_audit_events
             LEFT JOIN
                 converted ON converted_audit_events.converted_id=converted.id
+            WHERE
+                converted.deleted = 0
             GROUP BY
                 converted.source, converted_audit_events.code, converted.date
             """):
@@ -92,6 +96,8 @@ def generate_processing_stats():
                 converted_record_info
             LEFT JOIN
                 converted ON converted_record_info.converted_id=converted.id
+            WHERE
+                converted.deleted = 0
             GROUP BY
                 converted.source, converted_record_info.field_name, converted.date
         """):

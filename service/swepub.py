@@ -699,7 +699,7 @@ def process_get_publication(record_id=None):
 
     cur = get_db().cursor()
     row = cur.execute(
-        "SELECT data FROM converted WHERE oai_id = ?", [record_id]
+        "SELECT data FROM converted WHERE oai_id = ? AND deleted = 0", [record_id]
     ).fetchone()
     if not row:
         _errors(["Not Found"], status_code=404)
@@ -956,7 +956,7 @@ def process_get_stats(source=None):
             result["validations"][row["field_name"]]["invalid"] = row["v_invalid"]
 
     result["total"] = cur.execute(
-        "SELECT COUNT(*) AS total_docs FROM converted WHERE source = ?", [source]
+        "SELECT SUM(total) AS total_docs FROM stats_converted WHERE source = ?", [source]
     ).fetchone()["total_docs"]
 
     return result
@@ -991,6 +991,7 @@ def process_get_export(source=None):
         .select(converted.date, converted.data, converted.events)
         .from_(converted)
         .where(converted.source == Parameter("?"))
+        .where(converted.deleted == 0)
     )
 
     values.append(source)
