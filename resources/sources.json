@@ -4,7 +4,7 @@
     "name": "Chalmers tekniska högskola",
     "sets": [
       {
-        "url": "http://research.chalmers.se/oai-pmh/swepub",
+        "url": "https://research.chalmers.se/oai-pmh/swepub",
         "subset": "CHALMERS_SWEPUB",
         "metadata_prefix": "mods"
       }
