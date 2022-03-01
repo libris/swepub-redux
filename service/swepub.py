@@ -488,7 +488,7 @@ def datastatus_source(source):
             stats_converted.source,
             fn.Sum(stats_converted.total).as_("total_docs"),
             fn.Sum(stats_converted.open_access).as_("open_access"),
-            fn.Count(stats_converted.has_ssif_1).as_("ssif"),
+            fn.Sum(stats_converted.has_ssif_1).as_("ssif"),
             fn.Sum(stats_converted.swedishlist).as_("swedishlist"),
         )
         .from_(stats_converted)

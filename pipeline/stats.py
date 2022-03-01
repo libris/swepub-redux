@@ -9,19 +9,21 @@ def generate_processing_stats():
 
         for row in cursor.execute("""
             SELECT
-                source, date, count(*) AS total, sum(is_open_access) AS open_access, sum (classification_level) AS swedishlist
+                source, date, count(*) AS total, sum(is_open_access) AS open_access, sum(classification_level) AS swedishlist, count(converted_ssif_1.value) AS ssif_1
             FROM
                 converted
+            LEFT JOIN
+                converted_ssif_1 ON converted.id=converted_ssif_1.converted_id
             GROUP BY
                 source, date
             """):
             inner_cursor.execute("""
                 INSERT INTO
-                    stats_converted(source, date, total, open_access, swedishlist)
+                    stats_converted(source, date, total, open_access, swedishlist, has_ssif_1)
                 VALUES
-                    (?, ?, ?, ?, ?)
+                    (?, ?, ?, ?, ?, ?)
                 """,
-                [row["source"], row["date"], row["total"], row["open_access"], row["swedishlist"]])
+                [row["source"], row["date"], row["total"], row["open_access"], row["swedishlist"], row["ssif_1"]])
 
         for row in cursor.execute("""
             SELECT
