@@ -124,7 +124,6 @@ def catch_all(_path):
 
 
 @app.route("/api/v1/bibliometrics", methods=["POST"], strict_slashes=False)
-@check_from_to
 def bibliometrics_api():
     if request.content_type != "application/json":
         _errors(errors=['Content-Type must be "application/json"'])
@@ -148,6 +147,12 @@ def bibliometrics_api():
         if isinstance(subjects, str):
             subjects = subjects.split(",")
         subjects = [s.strip() for s in subjects if len(s.strip()) > 0]
+
+        from_yr = query_data.get("years", {}).get("from")
+        to_yr = query_data.get("years", {}).get("to")
+        errors, from_yr, to_yr = parse_dates(from_yr, to_yr)
+        if errors:
+            return _errors(errors)
 
         content_marking = [
             cm.strip()
@@ -209,12 +214,12 @@ def bibliometrics_api():
     q = Query.from_(finalized)
     values = []
 
-    if g.from_yr and g.to_yr:
+    if from_yr and to_yr:
         q = q.where(
             (search_single.year >= Parameter("?"))
             & (search_single.year <= Parameter("?"))
         )
-        values.append([g.from_yr, g.to_yr])
+        values.append([from_yr, to_yr])
     if swedish_list:
         q = q.where(search_single.swedish_list == 1)
     if open_access:
@@ -232,7 +237,7 @@ def bibliometrics_api():
             values.append(content_marking)
     if any(
         [
-            (g.from_yr and g.to_yr),
+            (from_yr and to_yr),
             content_marking,
             publication_status,
             swedish_list,
@@ -315,9 +320,9 @@ def bibliometrics_api():
 
         if not export_as_csv:
             yield "],"
-            if g.from_yr and g.to_yr:
-                yield f'"from": {g.from_yr},'
-                yield f'"to": {g.to_yr},'
+            if from_yr and to_yr:
+                yield f'"from": {from_yr},'
+                yield f'"to": {to_yr},'
             yield (
                 f'"query": {json.dumps(query_data)},'
                 f'"query_handled_at": "{handled_at}",'
@@ -520,10 +525,10 @@ def datastatus_source(source):
     total_docs = cur.execute(str(q_total), values).fetchone()["total_docs"]
     rows = cur.execute(str(q), values).fetchall()
 
-    total_docs = sum(item["total_docs"] for item in rows)
-    total_open_access = sum(item["open_access"] for item in rows)
-    total_ssif = sum(item["ssif"] for item in rows)
-    total_swedishlist = sum(item["swedishlist"] for item in rows)
+    total_docs = sum(filter(None, [item["total_docs"] for item in rows]))
+    total_open_access = sum(filter(None, [item["open_access"] for item in rows]))
+    total_ssif = sum(filter(None, [item["ssif"] for item in rows]))
+    total_swedishlist = sum(filter(None, [item["swedishlist"] for item in rows]))
 
     result.update(
         {
@@ -638,8 +643,13 @@ def datastatus_validations_source(source=None):
     result = {"total": total, "validationFlags": {}}
 
     for row in rows:
+        if total:
+            percentage = round((row["sum"] / total) * 100, 2)
+        else:
+            percentage = 0
+
         result["validationFlags"][row["field_name"]] = {
-            "percentage": round((row["sum"] / total) * 100, 2),
+            "percentage": percentage,
             "total": row["sum"],
         }
 
