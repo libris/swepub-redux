@@ -164,7 +164,7 @@ def harvest(source):
                                     DELETE FROM
                                         original
                                     WHERE oai_id IN ({','.join('?'*len(group))});
-                                    """, (group,))
+                                    """, group)
                                 log.info(f"Deleted {len(obsolete_ids)} obsolete records from {source['code']}, after checking their ID list.")
                                 connection.commit()
                             finally:
