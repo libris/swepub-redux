@@ -3,6 +3,10 @@ from difflib import SequenceMatcher
 from jsonpath_rw import parse
 
 
+def chunker(seq, size):
+    return (seq[pos:pos + size] for pos in range(0, len(seq), size))
+
+
 def update_at_path(root, path, new_value):
     basepath, key = path.rsplit('.', 1)
     found = parse(basepath).find(root)

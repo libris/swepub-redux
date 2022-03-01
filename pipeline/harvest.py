@@ -12,6 +12,7 @@ from audit import audit
 from legacy_sync import legacy_sync
 # To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..
 from swepublog import logger as log
+from util import chunker
 
 import re
 import time
@@ -154,13 +155,17 @@ def harvest(source):
                                 obsolete_ids.append(existing_oai_id)
                         if obsolete_ids:
                             lock.acquire()
+                            # We can't do `WHERE oai_id IN ({','.join('?'*len(obsolete_ids))})` because len(obsolete_ids) 
+                            # could be > SQLITE_MAX_VARIABLE_NUMBER ("defaults to 999 for SQLite versions prior to 3.32.0
+                            # (2020-05-22) or 32766 for SQLite versions after 3.32.0."). So, we do it by chunks.
                             try:
-                                cursor.execute(f"""
-                                DELETE FROM
-                                    original
-                                WHERE oai_id IN ({','.join('?'*len(obsolete_ids))});
-                                """, (obsolete_ids,))
-                                log.info(f"Deleted {len(obsolete_ids)} obsolete records from {source['code']}, after checking their ID-list.")
+                                for group in chunker(obsolete_ids, 100):
+                                    cursor.execute(f"""
+                                    DELETE FROM
+                                        original
+                                    WHERE oai_id IN ({','.join('?'*len(group))});
+                                    """, (group,))
+                                log.info(f"Deleted {len(obsolete_ids)} obsolete records from {source['code']}, after checking their ID list.")
                                 connection.commit()
                             finally:
                                 lock.release()
