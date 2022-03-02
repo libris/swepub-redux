@@ -737,7 +737,7 @@ def process_get_harvest_status(source):
 
     row = cur.execute(
         """
-    SELECT id, strftime('%Y-%m-%dT%H:%M:%SZ', harvest_start) AS start, strftime('%Y-%m-%dT%H:%M:%SZ', harvest_completed) AS completed, successes, rejected
+    SELECT id, strftime('%Y-%m-%dT%H:%M:%SZ', harvest_start) AS start, strftime('%Y-%m-%dT%H:%M:%SZ', harvest_completed) AS completed, harvest_succeeded, successes, rejected
     FROM harvest_history
     WHERE source = ?
     ORDER BY harvest_completed DESC
@@ -746,14 +746,19 @@ def process_get_harvest_status(source):
         (source,),
     ).fetchone()
 
-    return {
-        "completed_timestamp": row["completed"],
+    result = {
         "rejected": row["rejected"],
         "successes": row["successes"],
         "source_code": source,
         "source_name": INFO_API_SOURCE_ORG_MAPPING[source]["name"],
         "start_timestamp": row["start"],
     }
+
+    if row["harvest_succeeded"]:
+        result["completed_timestamp"] = row["completed"]
+    else:
+        result["failed_timestamp"] = row["completed"]
+    return result
 
 
 @app.route("/api/v1/process/<source>/status/history")
@@ -769,22 +774,24 @@ def process_get_harvest_status_history(source):
 
     for row in cur.execute(
         """
-        SELECT id, harvest_start, harvest_completed, successes, rejected
+        SELECT id, harvest_start, harvest_completed, harvest_succeeded, successes, rejected
         FROM harvest_history
         WHERE source = ?
         ORDER BY harvest_completed DESC
     """,
         (source,),
     ):
-        result["harvest_history"].append(
-            {
-                "completed_timestamp": row["harvest_completed"],
-                "harvest_id": row["id"],
-                "rejected": row["rejected"],
-                "successes": row["successes"],
-                "start_timestamp": row["harvest_start"],
-            }
-        )
+        history_record = {
+            "harvest_id": row["id"],
+            "rejected": row["rejected"],
+            "successes": row["successes"],
+            "start_timestamp": row["harvest_start"],
+        }
+        if row["harvest_succeeded"]:
+            history_record["completed_timestamp"] = row["harvest_completed"]
+        else:
+            history_record["failed_timestamp"] = row["harvest_completed"]
+        result["harvest_history"].append(history_record)
 
     oldest_harvest = cur.execute(
         "SELECT MIN(harvest_start) AS oldest FROM harvest_history WHERE source = ?",

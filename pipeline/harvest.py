@@ -91,6 +91,7 @@ def harvest(source):
     start_time = time.time()
     harvest_id = str(uuid.uuid4())
     harvest_cache['meta'][harvest_id] = [0, 0]
+    harvest_succeeded = True
 
     with get_connection() as connection:
         cursor = connection.cursor()
@@ -169,34 +170,39 @@ def harvest(source):
                                 connection.commit()
                             finally:
                                 lock.release()
-        except HarvestFailed as e:
+        except Exception as e:
             log.warning(f'[FAILED]\t{source["code"]}. Error: {e}')
-            raise e
+            log.warning(traceback.format_exc())
+            harvest_succeeded = False
 
     num_accepted, num_rejected = harvest_cache['meta'][harvest_id]
     with get_connection() as connection:
         cursor = connection.cursor()
         lock.acquire()
         try:
-            cursor.execute("""
-            INSERT INTO last_harvest(source, last_successful_harvest) VALUES (?, ?)
-            ON CONFLICT(source) DO UPDATE SET last_successful_harvest = ?;""", (source["code"], harvest_start, harvest_start))
+            if harvest_succeeded:
+                cursor.execute("""
+                INSERT INTO last_harvest(source, last_successful_harvest) VALUES (?, ?)
+                ON CONFLICT(source) DO UPDATE SET last_successful_harvest = ?;""", (source["code"], harvest_start, harvest_start))
 
             cursor.execute("""
             UPDATE
                 harvest_history
             SET
-                harvest_completed = ?, successes = ?, rejected = ?
+                harvest_completed = ?, successes = ?, rejected = ?, harvest_succeeded = ?
             WHERE
                 id = ?""",
-            (datetime.now(timezone.utc).isoformat(), num_accepted, num_rejected, harvest_id))
+            (datetime.now(timezone.utc).isoformat(), num_accepted, num_rejected, harvest_succeeded, harvest_id))
             connection.commit()
         finally:
             lock.release()
 
     finish_time = time.time()
     record_per_s = round(record_count / (finish_time-start_time), 2)
-    log.info(f'[FINISHED]\t{source["code"]} ({round(finish_time-start_time, 2)} seconds, {record_count} records, {record_per_s} records/s)')
+    if harvest_succeeded:
+        log.info(f'[FINISHED]\t{source["code"]} ({round(finish_time-start_time, 2)} seconds, {record_count} records, {record_per_s} records/s)')
+    else:
+        log.info(f'[ABORTED]\t{source["code"]} ({round(finish_time-start_time, 2)} seconds, {record_count} records, {record_per_s} records/s)')
 
 
 def threaded_handle_harvested(source, source_subset, harvest_id, batch):

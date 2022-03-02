@@ -48,6 +48,7 @@ def clean_and_init_storage():
         source TEXT,
         harvest_start DATETIME,
         harvest_completed DATETIME,
+        harvest_succeeded INT,
         successes INT,
         rejected INT
     );
