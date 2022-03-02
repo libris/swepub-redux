@@ -44,7 +44,7 @@
     "name": "Lunds universitet",
     "sets": [
       {
-        "url": "http://lup.lub.lu.se/oai",
+        "url": "https://lup.lub.lu.se/oai",
         "subset": "LU_SWEPUB",
         "metadata_prefix": "swepub_mods"
       }

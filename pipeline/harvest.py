@@ -279,7 +279,7 @@ def _get_source_ids(source_set):
 def _get_has_persistent_deletes(source_set):
     sickle_client = sickle.Sickle(source_set["url"], max_retries=8, timeout=90)
     identify = sickle_client.Identify()
-    return identify.deletedRecord == "persistent"
+    return identify.deletedRecord == "persistent" or identify.deletedRecord == "transient"
 
 
 def _load_doab():
