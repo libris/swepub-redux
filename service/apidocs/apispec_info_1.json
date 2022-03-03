@@ -1,0 +1,191 @@
+{
+  "info": {
+    "title": "Swepub Info API",
+    "description": "API for retrieving sources, output-types and ssif subjects from Swepub.<br><br>Same version as for <a href=https://bibliometri.swepub.kb.se/>https://bibliometri.swepub.kb.se/</a>. Each API may have been changed with added functionality in regards to each new version of the Swepub system. The APIs are backwards compatible as long as the version number of Swepub does not begin with a new number (for the major version).",
+    "contact": {
+      "name": "National Library of Sweden",
+      "url": "https://www.kb.se"
+    },
+    "version": ""
+  },
+  "paths": {
+    "/research-subjects": {
+      "get": {
+        "summary": "List research subjects",
+        "responses": {
+          "200": {
+            "description": "A list of research subjects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Subjects"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/output-types": {
+      "get": {
+        "summary": "List output types",
+        "responses": {
+          "200": {
+            "description": "A list of output types",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OutputTypes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sources": {
+      "get": {
+        "summary": "List existing sources",
+        "description": "This returns a list of all sources in the system.<br/>",
+        "responses": {
+          "200": {
+            "description": "A map of source names",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "sources": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "example": "Karlstads universitet"
+                          },
+                          "code": {
+                            "type": "string",
+                            "example": "kau"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "openapi": "3.0.3",
+  "servers": [
+    {
+      "url": "/api/v1/info"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "Subjects": {
+        "type": "object",
+        "properties": {
+          "1": {
+            "type": "object",
+            "properties": {
+              "eng": {
+                "type": "string",
+                "example": "Natural Sciences"
+              },
+              "swe": {
+                "type": "string",
+                "example": "Naturvetenskap"
+              },
+              "subcategories": {
+                "type": "object",
+                "properties": {
+                  "101": {
+                    "type": "object",
+                    "properties": {
+                      "eng": {
+                        "type": "string",
+                        "example": "Mathematics"
+                      },
+                      "swe": {
+                        "type": "string",
+                        "example": "Matematik"
+                      },
+                      "subcategories": {
+                        "type": "object",
+                        "properties": {
+                          "10101": {
+                            "type": "object",
+                            "properties": {
+                              "eng": {
+                                "type": "string",
+                                "example": "Mathematical Analysis"
+                              },
+                              "swe": {
+                                "type": "string",
+                                "example": "Matematisk analys"
+                              }
+                            }
+                          },
+                          "...": {
+                            "type": "object",
+                            "properties": {}
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "...": {
+                    "type": "object",
+                    "properties": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "OutputTypes": {
+        "type": "object",
+        "properties": {
+          "publication": {
+            "type": "object",
+            "properties": {
+              "swe": {
+                "type": "string",
+                "example": "Publikation"
+              },
+              "subcategories": {
+                "type": "object",
+                "properties": {
+                  "newspaper-article": {
+                    "type": "object",
+                    "properties": {
+                      "swe": {
+                        "type": "string",
+                        "example": "Artikel i dags-/nyhetstidning"
+                      }
+                    }
+                  },
+                  "...": {
+                    "type": "object",
+                    "properties": {}
+                  }
+                }
+              }
+            }
+          },
+          "...": {
+            "type": "object",
+            "properties": {}
+          }
+        }
+      }
+    }
+  }
+}

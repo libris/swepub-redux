@@ -1,0 +1,583 @@
+{
+  "components": {
+    "schemas": {
+      "InvalidFlag": {
+        "description": "Number and percentage of records with invalid  validation",
+        "properties": {
+          "percentage": {
+            "description": "Percentage of invalid validation flags out of total amount",
+            "type": "number"
+          },
+          "total": {
+            "description": "Total number of invalid validation flags of this type",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "OpenAccess": {
+        "description": "Number and percentage for publications with open access",
+        "properties": {
+          "percentage": {
+            "description": "Percentage of publications with open access",
+            "type": "number"
+          },
+          "total": {
+            "description": "Total number of open access publications",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "SSIF": {
+        "description": "Number and percentage of publications with SSIF classification",
+        "properties": {
+          "percentage": {
+            "description": "Percentage of publications with SSIF classification",
+            "type": "number"
+          },
+          "total": {
+            "description": "Total number of SSIF classified publications",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "SSIFCategory": {
+        "description": "Number and percentage of classified publications",
+        "properties": {
+          "percentage": {
+            "description": "Percentage of classified publications out of total amount",
+            "type": "number"
+          },
+          "total": {
+            "description": "Total number of classified publications in this category",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "Source": {
+        "description": "Number and percentage of records for this source",
+        "properties": {
+          "percentage": {
+            "description": "Percentage of records for this source out of total amount in Swepub",
+            "type": "number"
+          },
+          "total": {
+            "description": "Total number of records for this source",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "SwedishList": {
+        "description": "Number and percentage of publications with Swedish list",
+        "properties": {
+          "percentage": {
+            "description": "Percentage of records with Swedish list",
+            "type": "number"
+          },
+          "total": {
+            "description": "Total number of Swedish list records",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "contact": {
+      "name": "National Library of Sweden",
+      "url": "https://www.kb.se"
+    },
+    "description": "API for Swepub datastatus.<br><br>Same version as for <a href=https://bibliometri.swepub.kb.se/>https://bibliometri.swepub.kb.se/</a>. Each API may have been changed with added functionality in regards to each new version of the Swepub system. The APIs are backwards compatible as long as the version number of Swepub does not begin with a new number (for the major version).",
+    "title": "Swepub Status API",
+    "version": ""
+  },
+  "openapi": "3.0.3",
+  "paths": {
+    "/": {
+      "get": {
+        "description": "Get statistics about the amount of records in Swepub (duplicated) metadata set.",
+        "parameters": [
+          {
+            "description": "Optional start year, e.g. '2018'",
+            "in": "query",
+            "name": "from",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Optional end year, e.g. '2020'",
+            "in": "query",
+            "name": "to",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "from": {
+                      "description": "From year, if provided in api request",
+                      "example": 2018,
+                      "type": "integer"
+                    },
+                    "openAccess": {
+                      "description": "Number of records with open access",
+                      "properties": {},
+                      "type": "object"
+                    },
+                    "sources": {
+                      "description": "Statistics for all sources",
+                      "properties": {},
+                      "type": "object"
+                    },
+                    "ssif": {
+                      "description": "Number of ssif classified publications",
+                      "properties": {},
+                      "type": "object"
+                    },
+                    "swedishList": {
+                      "description": "Number of peer-reviewed Swedish list publications",
+                      "properties": {},
+                      "type": "object"
+                    },
+                    "to": {
+                      "description": "To year, if provided in api request",
+                      "example": 2020,
+                      "type": "integer"
+                    },
+                    "total": {
+                      "description": "Total number of records",
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "JSON response with total number of documents in Swepub and proportion of documents for each source University/institution."
+          }
+        },
+        "summary": "Data status endpoint"
+      }
+    },
+    "/ssif": {
+      "get": {
+        "description": "Get statistics about ssif classification (1-digit level) in Swepub (duplicated) metadata set.",
+        "parameters": [
+          {
+            "description": "Optional start year, e.g. '2018'",
+            "in": "query",
+            "name": "from",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Optional end year, e.g. '2020'",
+            "in": "query",
+            "name": "to",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "from": {
+                      "description": "From year, if provided in api request",
+                      "example": 2018,
+                      "type": "integer"
+                    },
+                    "ssif": {
+                      "properties": {
+                        "1 Naturvetenskap": {
+                          "$ref": "#/components/schemas/SSIFCategory"
+                        },
+                        "2 Teknik": {
+                          "$ref": "#/components/schemas/SSIFCategory"
+                        },
+                        "3 Medicin och hälsovetenskap": {
+                          "$ref": "#/components/schemas/SSIFCategory"
+                        },
+                        "4 Lantbruksvetenskap och veterinärmedicin": {
+                          "$ref": "#/components/schemas/SSIFCategory"
+                        },
+                        "5 Samhällsvetenskap": {
+                          "$ref": "#/components/schemas/SSIFCategory"
+                        },
+                        "6 Humaniora och konst": {
+                          "$ref": "#/components/schemas/SSIFCategory"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "to": {
+                      "description": "To year, if provided in api request",
+                      "example": 2020,
+                      "type": "integer"
+                    },
+                    "total": {
+                      "description": "Total number of root level classifications",
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "JSON response with ssif classification statistics"
+          }
+        },
+        "summary": "Datastatus ssif endpoint"
+      }
+    },
+    "/ssif/{source}": {
+      "get": {
+        "description": "Get statistics about ssif classification (1-digit level) in Swepub (duplicated) metadata set for chosen source University/institution.",
+        "parameters": [
+          {
+            "description": "Source code, e.g. 'ths'",
+            "in": "path",
+            "name": "source",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Optional start year, e.g. '2018'",
+            "in": "query",
+            "name": "from",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Optional end year, e.g. '2020'",
+            "in": "query",
+            "name": "to",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "from": {
+                      "description": "From year, if provided in api request",
+                      "example": 2018,
+                      "type": "integer"
+                    },
+                    "source": {
+                      "description": "Source code provided in api request url",
+                      "type": "string"
+                    },
+                    "ssif": {
+                      "properties": {
+                        "1 Naturvetenskap": {
+                          "$ref": "#/components/schemas/SSIFCategory"
+                        },
+                        "2 Teknik": {
+                          "$ref": "#/components/schemas/SSIFCategory"
+                        },
+                        "3 Medicin och hälsovetenskap": {
+                          "$ref": "#/components/schemas/SSIFCategory"
+                        },
+                        "4 Lantbruksvetenskap och veterinärmedicin": {
+                          "$ref": "#/components/schemas/SSIFCategory"
+                        },
+                        "5 Samhällsvetenskap": {
+                          "$ref": "#/components/schemas/SSIFCategory"
+                        },
+                        "6 Humaniora och konst": {
+                          "$ref": "#/components/schemas/SSIFCategory"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "to": {
+                      "description": "To year, if provided in api request",
+                      "example": 2020,
+                      "type": "integer"
+                    },
+                    "total": {
+                      "description": "Total number of root level classifications",
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "JSON response with ssif classification statistics for chosen University/institution"
+          },
+          "400": {
+            "content": {},
+            "description": "Missing or invalid values for parameter(s)"
+          },
+          "404": {
+            "content": {},
+            "description": "Not found, source provided in URL does not exist in Swepub"
+          },
+          "500": {
+            "content": {},
+            "description": "Error in the API"
+          }
+        },
+        "summary": "Datastatus source ssif endpoint"
+      }
+    },
+    "/validations": {
+      "get": {
+        "description": "Get statistics about invalid validation flags in Swepub (duplicated) metadata set.",
+        "parameters": [
+          {
+            "description": "Optional start year, e.g. '2018'",
+            "in": "query",
+            "name": "from",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Optional end year, e.g. '2020'",
+            "in": "query",
+            "name": "to",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "from": {
+                      "description": "From year, if provided in api request",
+                      "example": 2018,
+                      "type": "integer"
+                    },
+                    "to": {
+                      "description": "To year, if provided in api request",
+                      "example": 2020,
+                      "type": "integer"
+                    },
+                    "total": {
+                      "description": "Total number of invalid validation flags",
+                      "type": "integer"
+                    },
+                    "validationFlags": {
+                      "properties": {},
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "JSON response with total number of invalid validation flags and amount of each type of flag"
+          }
+        },
+        "summary": "Datastatus validations endpoint"
+      }
+    },
+    "/validations/{source}": {
+      "get": {
+        "description": "Get statistics about invalid validation flags in Swepub (duplicated) metadata set for chosen source University/institution.",
+        "parameters": [
+          {
+            "description": "Source code, e.g. 'ths'",
+            "in": "path",
+            "name": "source",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Optional start year, e.g. '2018'",
+            "in": "query",
+            "name": "from",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Optional end year, e.g. '2020'",
+            "in": "query",
+            "name": "to",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "from": {
+                      "description": "From year, if provided in api request",
+                      "example": 2018,
+                      "type": "integer"
+                    },
+                    "source": {
+                      "description": "Source code provided in api request url",
+                      "type": "string"
+                    },
+                    "to": {
+                      "description": "To year, if provided in api request",
+                      "example": 2020,
+                      "type": "integer"
+                    },
+                    "total": {
+                      "description": "Total number of invalid validation flags",
+                      "type": "integer"
+                    },
+                    "validationFlags": {
+                      "properties": {},
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "JSON response with total number of invalid validation flags and amount of each type of flag"
+          },
+          "400": {
+            "content": {},
+            "description": "Missing or invalid values for parameter(s)"
+          },
+          "404": {
+            "content": {},
+            "description": "Not found, source provided in URL does not exist in Swepub"
+          },
+          "500": {
+            "content": {},
+            "description": "Error in the API"
+          }
+        },
+        "summary": "Datastatus source validations endpoint"
+      }
+    },
+    "/{source}": {
+      "get": {
+        "description": "Get statistics about the amount of records in Swepub (duplicated) metadata set for a chosen source University/institution.",
+        "parameters": [
+          {
+            "description": "Source code, e.g. 'ths'",
+            "in": "path",
+            "name": "source",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Optional start year, e.g. '2018'",
+            "in": "query",
+            "name": "from",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Optional end year, e.g. '2020'",
+            "in": "query",
+            "name": "to",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "from": {
+                      "description": "From year, if provided in api request",
+                      "example": 2018,
+                      "type": "integer"
+                    },
+                    "openAccess": {
+                      "description": "Number of records with open access",
+                      "properties": {},
+                      "type": "object"
+                    },
+                    "source": {
+                      "description": "Source code provided in api request url",
+                      "type": "string"
+                    },
+                    "ssif": {
+                      "description": "Number of ssif classified publications",
+                      "properties": {},
+                      "type": "object"
+                    },
+                    "swedishList": {
+                      "description": "Number of peer-reviewed Swedish list publications",
+                      "properties": {},
+                      "type": "object"
+                    },
+                    "to": {
+                      "description": "To year, if provided in api request",
+                      "example": 2020,
+                      "type": "integer"
+                    },
+                    "total": {
+                      "description": "Total number of records",
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "JSON response with total number of documents in Swepub for this source University/institution."
+          },
+          "400": {
+            "content": {},
+            "description": "Missing or invalid values for parameter(s)"
+          },
+          "404": {
+            "content": {},
+            "description": "Not found, source provided in URL does not exist in Swepub"
+          },
+          "500": {
+            "content": {},
+            "description": "Error in the API"
+          }
+        },
+        "summary": "Data status source endpoint"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "/api/v1/datastatus"
+    }
+  ]
+}

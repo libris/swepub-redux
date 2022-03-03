@@ -65,3 +65,5 @@ To start the Swepub service (which provides the API and serves the static fronte
 ```bash
 python3 service/swepub.py
 ```
+
+Then visit http://localhost:5000. API docs are available on http://localhost:5000/api/v1/apidocs.

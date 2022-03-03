@@ -22,6 +22,7 @@ from flask import (
     url_for,
     make_response,
     abort,
+    send_from_directory,
 )
 from pypika import Query, Tables, Parameter, Table, Criterion
 from pypika.terms import BasicCriterion
@@ -1138,6 +1139,16 @@ def process_get_export(source=None):
     return app.response_class(
         stream_with_context(get_results()), mimetype=export_mimetype
     )
+
+
+@app.route("/api/v1/apidocs", methods=["GET"])
+def api_docs():
+    return send_from_directory(app.root_path, "apidocs/index.html")
+
+
+@app.route('/api-static/<path:filename>')
+def custom_static(filename):
+    return send_from_directory(app.root_path + '/apidocs/', filename)
 
 
 if __name__ == "__main__":

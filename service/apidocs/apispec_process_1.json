@@ -1,0 +1,849 @@
+{
+  "components": {
+    "schemas": {
+      "Flag": {
+        "description": "Information about a specific check made by Swepub",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "new_value": {
+            "type": "string"
+          },
+          "old_value": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "FlagCount": {
+        "description": "Count per flag type",
+        "properties": {
+          "flag_name": {
+            "description": "DOI, ISBN, etc.",
+            "properties": {
+              "enriched": {
+                "description": "Only used for enrichments and auto classify audit",
+                "type": "integer"
+              },
+              "invalid": {
+                "description": "Only used for validations and audits (except auto classify)",
+                "type": "integer"
+              },
+              "normalized": {
+                "description": "Only used for normalizations",
+                "type": "integer"
+              },
+              "unchanged": {
+                "description": "Used for both enrichments and normalizations (and auto classify audit)",
+                "type": "integer"
+              },
+              "unsuccessful": {
+                "description": "Used for both enrichments and normalizations",
+                "type": "integer"
+              },
+              "valid": {
+                "description": "Only used for validations and audits (except auto classify)",
+                "type": "integer"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "Flags": {
+        "description": "A collection of flags split on check type and field",
+        "properties": {
+          "audit": {
+            "properties": {
+              "UKA": {
+                "items": {
+                  "$ref": "#/components/schemas/Flag"
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          },
+          "enrichment": {
+            "properties": {
+              "UKA": {
+                "items": {
+                  "$ref": "#/components/schemas/Flag"
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          },
+          "normalization": {
+            "properties": {
+              "UKA": {
+                "items": {
+                  "$ref": "#/components/schemas/Flag"
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          },
+          "validation": {
+            "properties": {
+              "UKA": {
+                "items": {
+                  "$ref": "#/components/schemas/Flag"
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "HarvestStatus": {
+        "description": "Status information about a delivery",
+        "properties": {
+          "completed_timestamp": {
+            "example": "Wed, 01 Jan 2020 23:00:00 GMT",
+            "type": "string"
+          },
+          "deleted_so_far": {
+            "example": 3,
+            "type": "integer"
+          },
+          "failed_sets": {
+            "example": 0,
+            "type": "integer"
+          },
+          "failed_timestamp": {
+            "example": "Wed, 01 Jan 2020 23:00:00 GMT",
+            "type": "string"
+          },
+          "failures": {
+            "example": 0,
+            "type": "integer"
+          },
+          "harvest_id": {
+            "type": "string"
+          },
+          "harvest_retries": {
+            "example": "0",
+            "type": "string"
+          },
+          "indexed_so_far": {
+            "example": 20,
+            "type": "integer"
+          },
+          "prevented": {
+            "example": 40,
+            "type": "integer"
+          },
+          "rejected": {
+            "example": 5,
+            "type": "integer"
+          },
+          "start_timestamp": {
+            "example": "Wed, 01 Jan 2020 23:00:00 GMT",
+            "type": "string"
+          },
+          "successes": {
+            "example": 25,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "Publication": {
+        "description": "A representation of a publication with only necessary information",
+        "properties": {
+          "flags": {
+            "items": {
+              "$ref": "#/components/schemas/Flags"
+            },
+            "type": "array"
+          },
+          "mods_url": {
+            "example": "https://example.com",
+            "type": "string"
+          },
+          "output_type": {
+            "example": "https://id.kb.se/term/swepub/publication/book",
+            "type": "string"
+          },
+          "publication_type": {
+            "example": "https://id.kb.se/term/swepub/artistic-work",
+            "type": "string"
+          },
+          "publication_year": {
+            "example": "2019",
+            "type": "string"
+          },
+          "record_id": {
+            "example": "oai:example.com:123",
+            "type": "string"
+          },
+          "repository_url": {
+            "example": "https://example.com",
+            "type": "string"
+          },
+          "source": {
+            "example": "konstfack",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "contact": {
+      "name": "National Library of Sweden",
+      "url": "https://www.kb.se"
+    },
+    "description": "API for exploring data processing performed by Swepub. See https://www.kb.se/samverkan-och-utveckling/swepub/datamodell/uppmarkningsflaggor.html for more information.<br><br>Same version as for <a href=https://bibliometri.swepub.kb.se/>https://bibliometri.swepub.kb.se/</a>. Each API may have been changed with added functionality in regards to each new version of the Swepub system. The APIs are backwards compatible as long as the version number of Swepub does not begin with a new number (for the major version).",
+    "title": "Swepub Data Processing API",
+    "version": ""
+  },
+  "openapi": "3.0.3",
+  "paths": {
+    "/publications/{record_id}": {
+      "get": {
+        "description": "This returns the publication, without any deduplication.<br/>",
+        "parameters": [
+          {
+            "description": "Publication identifier, e.g. 'oai:DiVA.org:ths-1046'",
+            "in": "path",
+            "name": "record_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/ld+json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A Swepub JSON-LD record, see <a href=https://www.kb.se/samverkan-och-utveckling/swepub/datamodell/swepub-bibframe>https://www.kb.se/samverkan-och-utveckling/swepub/datamodell/swepub-bibframe</a> for more information.\n"
+          },
+          "404": {
+            "content": {},
+            "description": "Not Found"
+          }
+        },
+        "summary": "Get the JSON-LD representation of a publication"
+      }
+    },
+    "/publications/{record_id}/original": {
+      "get": {
+        "description": "This returns the original publication, without any data processing.<br/>",
+        "parameters": [
+          {
+            "description": "Publication identifier e.g. 'oai:DiVA.org:ths-1046'",
+            "in": "path",
+            "name": "record_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/xml": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A Swepub MODS record"
+          },
+          "404": {
+            "content": {},
+            "description": "Not Found"
+          }
+        },
+        "summary": "Get the original publication"
+      }
+    },
+    "/{harvest_id}/rejected": {
+      "get": {
+        "description": "This returns the reason for rejection as well.<br/>",
+        "parameters": [
+          {
+            "description": "Harvest ID, e.g. '1-1-1-1'",
+            "in": "path",
+            "name": "harvest_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Maximum number of results to return, e.g. '20'",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Result offset, e.g. '0'",
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "harvest_id": {
+                      "example": "1-1-1-1",
+                      "type": "string"
+                    },
+                    "rejected_publications": {
+                      "items": {
+                        "properties": {
+                          "error_code": {
+                            "example": "nameViolation",
+                            "type": "string"
+                          },
+                          "labelByLang": {
+                            "properties": {
+                              "eng": {
+                                "example": "Invalid contribution",
+                                "type": "string"
+                              },
+                              "swe": {
+                                "example": "Upphov felaktigt",
+                                "type": "string"
+                              }
+                            },
+                            "type": "object"
+                          }
+                        },
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "source_code": {
+                      "example": "kau",
+                      "type": "string"
+                    },
+                    "source_name": {
+                      "example": "Karlstads universitet",
+                      "type": "string"
+                    },
+                    "total": {
+                      "example": 5,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Rejected publications"
+          },
+          "400": {
+            "content": {},
+            "description": "Missing parameter(s)"
+          },
+          "404": {
+            "content": {},
+            "description": "Source or harvest ID not found"
+          }
+        },
+        "summary": "Get rejected publications for specified harvest ID"
+      }
+    },
+    "/{source}": {
+      "get": {
+        "description": "This returns a list of all types of flags for a specific source,<br/>optionally limited to a timespan.<br/>",
+        "parameters": [
+          {
+            "description": "Source name or code, e.g. 'Karlstads universitet'",
+            "in": "path",
+            "name": "source",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Start year, e.g. '2017'",
+            "in": "query",
+            "name": "from",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "End year, e.g. '2019'",
+            "in": "query",
+            "name": "to",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "audits": {
+                      "$ref": "#/components/schemas/FlagCount"
+                    },
+                    "enrichments": {
+                      "$ref": "#/components/schemas/FlagCount"
+                    },
+                    "from": {
+                      "example": 2017,
+                      "type": "integer"
+                    },
+                    "normalizations": {
+                      "$ref": "#/components/schemas/FlagCount"
+                    },
+                    "source": {
+                      "type": "string"
+                    },
+                    "to": {
+                      "example": 2019,
+                      "type": "integer"
+                    },
+                    "total": {
+                      "example": 5,
+                      "type": "integer"
+                    },
+                    "validations": {
+                      "$ref": "#/components/schemas/FlagCount"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A list of all flags for the specified source"
+          },
+          "400": {
+            "content": {},
+            "description": "Missing parameter(s)"
+          },
+          "404": {
+            "content": {},
+            "description": "Not Found"
+          }
+        },
+        "summary": "List flags for source"
+      }
+    },
+    "/{source}/export": {
+      "get": {
+        "description": "This returns a list of publications for the specified types of<br/>flags for a specific source, optionally limited to a timespan.<br/>",
+        "parameters": [
+          {
+            "description": "Source name or code, e.g. 'Karlstads universitet'",
+            "in": "path",
+            "name": "source",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Start year, e.g. '2017'",
+            "in": "query",
+            "name": "from",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "End year, e.g. '2019'",
+            "in": "query",
+            "name": "to",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Maximum number of results to return (max 10000), e.g. '20'",
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "default": 10000,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Result offset, e.g. '20'",
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "default": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "A comma separated list of validation flags, e.g. 'DOI_invalid,UKA_invalid'",
+            "in": "query",
+            "name": "validation_flags",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "A comma separated list of enrichment flags, e.g. 'DOI_unsuccessful,ORCID_enriched,auto_classify_enriched'",
+            "in": "query",
+            "name": "enrichment_flags",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "A comma separated list of normalization flags, e.g. 'DOI_normalized,ISBN_normalized'",
+            "in": "query",
+            "name": "normalization_flags",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "A comma separated list of audit flags, e.g. 'creator_count_check_invalid,ISSN_missing_check_valid'",
+            "in": "query",
+            "name": "audit_flags",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "from": {
+                      "example": 2018,
+                      "type": "integer"
+                    },
+                    "hits": {
+                      "items": {
+                        "$ref": "#/components/schemas/Publication"
+                      },
+                      "type": "array"
+                    },
+                    "query": {
+                      "description": "The query payload. See the query parameters for details.",
+                      "properties": {},
+                      "type": "object"
+                    },
+                    "query_handled_at": {
+                      "description": "The UTC date/time when the query was handled",
+                      "example": "2020-01-01T00:00:00.000Z",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "source": {
+                      "example": "Karlstads universitet",
+                      "type": "string"
+                    },
+                    "to": {
+                      "example": 2019,
+                      "type": "integer"
+                    },
+                    "total": {
+                      "example": 1,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "properties": {
+                    "from": {
+                      "example": 2018,
+                      "type": "integer"
+                    },
+                    "hits": {
+                      "items": {
+                        "$ref": "#/components/schemas/Publication"
+                      },
+                      "type": "array"
+                    },
+                    "query": {
+                      "description": "The query payload. See the query parameters for details.",
+                      "properties": {},
+                      "type": "object"
+                    },
+                    "query_handled_at": {
+                      "description": "The UTC date/time when the query was handled",
+                      "example": "2020-01-01T00:00:00.000Z",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "source": {
+                      "example": "Karlstads universitet",
+                      "type": "string"
+                    },
+                    "to": {
+                      "example": 2019,
+                      "type": "integer"
+                    },
+                    "total": {
+                      "example": 1,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "text/tab-separated-values": {
+                "schema": {
+                  "properties": {
+                    "from": {
+                      "example": 2018,
+                      "type": "integer"
+                    },
+                    "hits": {
+                      "items": {
+                        "$ref": "#/components/schemas/Publication"
+                      },
+                      "type": "array"
+                    },
+                    "query": {
+                      "description": "The query payload. See the query parameters for details.",
+                      "properties": {},
+                      "type": "object"
+                    },
+                    "query_handled_at": {
+                      "description": "The UTC date/time when the query was handled",
+                      "example": "2020-01-01T00:00:00.000Z",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "source": {
+                      "example": "Karlstads universitet",
+                      "type": "string"
+                    },
+                    "to": {
+                      "example": 2019,
+                      "type": "integer"
+                    },
+                    "total": {
+                      "example": 1,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A list of example posts for the specified source and flags",
+            "headers": {
+              "Link": {
+                "description": "Pagination links",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {},
+            "description": "Missing parameter(s)"
+          },
+          "404": {
+            "content": {},
+            "description": "Source not found"
+          }
+        },
+        "summary": "List up to 10000 publications with the specified flags"
+      }
+    },
+    "/{source}/status": {
+      "get": {
+        "description": "This returns information about the latest data delivery for the source.<br/>",
+        "parameters": [
+          {
+            "description": "Source name or code, e.g. 'Karlstads universitet'",
+            "in": "path",
+            "name": "source",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "completed_timestamp": {
+                      "example": "Wed, 01 Jan 2020 23:00:00 GMT",
+                      "type": "string"
+                    },
+                    "deleted_so_far": {
+                      "example": 3,
+                      "type": "integer"
+                    },
+                    "failed_sets": {
+                      "example": 0,
+                      "type": "integer"
+                    },
+                    "failed_timestamp": {
+                      "example": "Wed, 01 Jan 2020 23:00:00 GMT",
+                      "type": "string"
+                    },
+                    "failures": {
+                      "example": 0,
+                      "type": "integer"
+                    },
+                    "harvest_id": {
+                      "type": "string"
+                    },
+                    "harvest_retries": {
+                      "example": "0",
+                      "type": "string"
+                    },
+                    "indexed_so_far": {
+                      "example": 20,
+                      "type": "integer"
+                    },
+                    "prevented": {
+                      "example": 40,
+                      "type": "integer"
+                    },
+                    "rejected": {
+                      "example": 5,
+                      "type": "integer"
+                    },
+                    "source_code": {
+                      "example": "kau",
+                      "type": "string"
+                    },
+                    "source_name": {
+                      "example": "Karlstads universitet",
+                      "type": "string"
+                    },
+                    "start_timestamp": {
+                      "example": "Wed, 01 Jan 2020 23:00:00 GMT",
+                      "type": "string"
+                    },
+                    "successes": {
+                      "example": 25,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Delivery status"
+          },
+          "400": {
+            "content": {},
+            "description": "Missing parameter(s)"
+          },
+          "404": {
+            "content": {},
+            "description": "Source not found"
+          }
+        },
+        "summary": "Get current data delivery status for specified source"
+      }
+    },
+    "/{source}/status/history": {
+      "get": {
+        "description": "This returns information about data deliveries for the source within the default time interval harvests_from and harvests_to.<br/>",
+        "parameters": [
+          {
+            "description": "Source name or code, e.g. 'Karlstads universitet'",
+            "in": "path",
+            "name": "source",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "harvest_history": {
+                      "items": {
+                        "properties": {},
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "harvests_from": {
+                      "example": "Wed, 01 Jan 2020 23:00:00 GMT",
+                      "type": "string"
+                    },
+                    "harvests_to": {
+                      "example": "Wed, 01 Jan 2020 23:00:00 GMT",
+                      "type": "string"
+                    },
+                    "source_code": {
+                      "example": "kau",
+                      "type": "string"
+                    },
+                    "source_name": {
+                      "example": "Karlstads universitet",
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Delivery status history"
+          },
+          "400": {
+            "content": {},
+            "description": "Missing parameter(s)"
+          },
+          "404": {
+            "content": {},
+            "description": "Source not found"
+          }
+        },
+        "summary": "Get data delivery status history for specified source"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "/api/v1/process"
+    }
+  ]
+}

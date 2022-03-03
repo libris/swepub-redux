@@ -1,0 +1,545 @@
+{
+  "components": {
+    "schemas": {
+      "Publication": {
+        "description": "A representation of (a subset of the information in) a publication in Swepub.",
+        "properties": {
+          "DOI": {
+            "items": {
+              "description": "DOI identifier",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "ISBN": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "ISI": {
+            "type": "string"
+          },
+          "ISSN": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "PMID": {
+            "description": "Pubmed ID",
+            "type": "string"
+          },
+          "archiveURI": {
+            "example": "http://example.com",
+            "type": "string"
+          },
+          "contentMarking": {
+            "example": "vet",
+            "type": "string"
+          },
+          "creatorCount": {
+            "example": 2,
+            "type": "integer"
+          },
+          "creators": {
+            "items": {
+              "properties": {
+                "ORCID": {
+                  "type": "string"
+                },
+                "affiliation": {
+                  "example": "Institutionen för Konst",
+                  "type": "string"
+                },
+                "familyName": {
+                  "type": "string"
+                },
+                "freetext_affiliations": {
+                  "description": "A list representation of the affiliations tree, where each sub list corresponds to a branch of the tree.",
+                  "example": [
+                    [
+                      "Department",
+                      "University"
+                    ],
+                    [
+                      "Institute"
+                    ]
+                  ],
+                  "items": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "type": "array"
+                },
+                "givenName": {
+                  "type": "string"
+                },
+                "localId": {
+                  "type": "string"
+                },
+                "localIdBy": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "duplicateIds": {
+            "example": [
+              "oai:example.com:123",
+              "oai:example.com:456"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "electronicLocator": {
+            "example": "http://example.com/fulltext.pdf",
+            "type": "string"
+          },
+          "keywords": {
+            "example": [
+              "Other Social Sciences",
+              "Annan samhällsvetenskap"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "languages": {
+            "example": [
+              "swe"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "openAccess": {
+            "type": "boolean"
+          },
+          "outputTypes": {
+            "example": [
+              "https://id.kb.se/term/swepub/publication/book"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "publicationChannel": {
+            "type": "string"
+          },
+          "publicationCount": {
+            "type": "integer"
+          },
+          "publicationStatus": {
+            "type": "string"
+          },
+          "publicationType": {
+            "type": "string"
+          },
+          "publicationYear": {
+            "type": "integer"
+          },
+          "publisher": {
+            "type": "string"
+          },
+          "recordId": {
+            "example": "oai:example.com:123",
+            "type": "string"
+          },
+          "scopusId": {
+            "type": "string"
+          },
+          "seriesTitle": {
+            "type": "string"
+          },
+          "source": {
+            "example": [
+              "konstfack"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "subjects": {
+            "properties": {
+              "fiveDigitTopics": {
+                "items": {
+                  "example": "50102",
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "oneDigitTopics": {
+                "items": {
+                  "example": "5",
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "threeDigitTopics": {
+                "items": {
+                  "example": "501",
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "type": "object"
+          },
+          "summary": {
+            "description": "The publication's abstract",
+            "example": "A summary",
+            "type": "string"
+          },
+          "swedishList": {
+            "example": "https://id.kb.se/term/swepub/swedishlist/peer-reviewed",
+            "type": "string"
+          },
+          "title": {
+            "description": "A string with mainTitle and subTitle delimited by colon",
+            "example": "Title: subtitle",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "contact": {
+      "name": "National Library of Sweden",
+      "url": "https://www.kb.se"
+    },
+    "description": "API for bibliometrics in Swepub.<br><br>Same version as for <a href=https://bibliometri.swepub.kb.se/>https://bibliometri.swepub.kb.se/</a>. Each API may have been changed with added functionality in regards to each new version of the Swepub system. The APIs are backwards compatible as long as the version number of Swepub does not begin with a new number (for the major version).",
+    "title": "Swepub Bibliometrics API",
+    "version": ""
+  },
+  "openapi": "3.0.3",
+  "paths": {
+    "/": {
+      "post": {
+        "description": "Get deduplicated Swepub data",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "DOI": {
+                    "description": "DOI identifier of publication",
+                    "example": "https://doi.org/10.1080/03610926.2016.1275695",
+                    "type": "string"
+                  },
+                  "contentMarking": {
+                    "description": "Permitted values are 'ref', 'vet' or 'pop'",
+                    "example": [
+                      "ref",
+                      "vet"
+                    ],
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "creator": {
+                    "description": "A creator object containing one or more properties.",
+                    "properties": {
+                      "ORCID": {
+                        "description": "ORCID identifier of contributor person (eg author)",
+                        "example": "https://orcid.org/0000-0003-0294-6185",
+                        "type": "string"
+                      },
+                      "familyName": {
+                        "example": "Testson",
+                        "type": "string"
+                      },
+                      "givenName": {
+                        "example": "Test",
+                        "type": "string"
+                      },
+                      "localId": {
+                        "description": "Local system person ID code of contributor (eg author)",
+                        "example": "TT",
+                        "type": "string"
+                      },
+                      "localIdBy": {
+                        "description": "Code of university/org that 'localId' belongs to",
+                        "example": "kth",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "fields": {
+                    "description": "Fields to include in result json",
+                    "example": [
+                      "recordId",
+                      "DOI"
+                    ],
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "genreForm": {
+                    "description": "Output types",
+                    "example": [
+                      "publication.journal-article"
+                    ],
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "keywords": {
+                    "description": "Comma separated string of keywords",
+                    "example": "Matematik,Luther",
+                    "type": "string"
+                  },
+                  "limit": {
+                    "description": "Maximum number of results to return",
+                    "example": 20,
+                    "type": "integer"
+                  },
+                  "match-genreForm": {
+                    "description": "Broader match on output type, example 'publication' searches for all publications",
+                    "example": [
+                      "publication"
+                    ],
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "org": {
+                    "example": [
+                      "kth",
+                      "ths"
+                    ],
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "publicationStatus": {
+                    "description": "Permitted values are 'published', 'epub' or 'submitted'",
+                    "items": {
+                      "example": "published",
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "subject": {
+                    "description": "SSIF codes, 3 or 5 digits.",
+                    "example": [
+                      "101",
+                      "603",
+                      "30301"
+                    ],
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "swedishList": {
+                    "description": "Peer reviewed publications, true or false",
+                    "example": "false",
+                    "type": "boolean"
+                  },
+                  "title": {
+                    "description": "Title of publication",
+                    "example": "Supervised classifiers for high-dimensional higher-order data",
+                    "type": "string"
+                  },
+                  "years": {
+                    "properties": {
+                      "from": {
+                        "example": 2000,
+                        "type": "integer"
+                      },
+                      "to": {
+                        "example": 2020,
+                        "type": "integer"
+                      }
+                    },
+                    "type": "object"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
+          "description": "JSON parameters",
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "from": {
+                      "example": 2018,
+                      "type": "integer"
+                    },
+                    "hits": {
+                      "items": {
+                        "$ref": "#/components/schemas/Publication"
+                      },
+                      "type": "array"
+                    },
+                    "query": {
+                      "description": "The query payload. See the body parameter for details.",
+                      "properties": {},
+                      "type": "object"
+                    },
+                    "query_handled_at": {
+                      "description": "The UTC date/time when the query was handled",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "to": {
+                      "example": 2019,
+                      "type": "integer"
+                    },
+                    "total": {
+                      "example": 20,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "properties": {
+                    "from": {
+                      "example": 2018,
+                      "type": "integer"
+                    },
+                    "hits": {
+                      "items": {
+                        "$ref": "#/components/schemas/Publication"
+                      },
+                      "type": "array"
+                    },
+                    "query": {
+                      "description": "The query payload. See the body parameter for details.",
+                      "properties": {},
+                      "type": "object"
+                    },
+                    "query_handled_at": {
+                      "description": "The UTC date/time when the query was handled",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "to": {
+                      "example": 2019,
+                      "type": "integer"
+                    },
+                    "total": {
+                      "example": 20,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "text/tab-separated-values": {
+                "schema": {
+                  "properties": {
+                    "from": {
+                      "example": 2018,
+                      "type": "integer"
+                    },
+                    "hits": {
+                      "items": {
+                        "$ref": "#/components/schemas/Publication"
+                      },
+                      "type": "array"
+                    },
+                    "query": {
+                      "description": "The query payload. See the body parameter for details.",
+                      "properties": {},
+                      "type": "object"
+                    },
+                    "query_handled_at": {
+                      "description": "The UTC date/time when the query was handled",
+                      "format": "date-time",
+                      "type": "string"
+                    },
+                    "to": {
+                      "example": 2019,
+                      "type": "integer"
+                    },
+                    "total": {
+                      "example": 20,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A collection of Swepub record objects. See <a href=https://www.kb.se/swepub-ordlista/>https://www.kb.se/swepub-ordlista</a> and <a href=https://www.kb.se/samverkan-och-utveckling/swepub/datamodell/swepub-bibframe>https://www.kb.se/samverkan-och-utveckling/swepub/datamodell/swepub-bibframe</a> for more information regarding the fields.\n"
+          },
+          "405": {
+            "content": {},
+            "description": "Error, HTTP method must be POST"
+          },
+          "415": {
+            "content": {},
+            "description": "Error, content-type must be application/json"
+          }
+        },
+        "summary": "Bibliometrics endpoint"
+      }
+    },
+    "/publications/{record_id}": {
+      "get": {
+        "parameters": [
+          {
+            "description": "Publication identifier, e.g. 'oai:DiVA.org:ths-1046'",
+            "in": "path",
+            "name": "record_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/ld+json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A deduplicated Swepub JSON-LD record, see <a href=https://www.kb.se/samverkan-och-utveckling/swepub/datamodell/swepub-bibframe>https://www.kb.se/samverkan-och-utveckling/swepub/datamodell/swepub-bibframe</a> for more information.\n"
+          },
+          "404": {
+            "content": {},
+            "description": "Not Found"
+          }
+        },
+        "summary": "Get the deduplicated publication"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "/api/v1/bibliometrics"
+    }
+  ]
+}
