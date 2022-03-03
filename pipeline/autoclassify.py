@@ -268,7 +268,7 @@ def _find_and_add_subjects():
                         """, (jsontext, rowid) )
 
                         publication = Publication(json.loads(jsontext))
-                        code = "autoclassified"
+                        code = "auto_classify"
                         initial_value = old_publication.uka_swe_classification_list
                         value = publication.uka_swe_classification_list
                         result = "1"

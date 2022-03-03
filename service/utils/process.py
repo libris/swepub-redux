@@ -399,11 +399,9 @@ def get_offsets(limit, offset, total):
 
 
 def process_get_pagination_links(request, endpoint, limit, offset, total):
-    print(f"limit: {limit}, offset: {offset}, total: {total}")
     """Return prev/next links given a search request."""
     prev_link = next_link = None
     (prev_offset, next_offset) = get_offsets(limit, offset, total)
-    print(f"prev_offset: {prev_offset}, next_offset: {next_offset}")
     # NOTE: These headers are created by Traefik, so this creates a strong dependency.
     proto = request.headers.get("X-Forwarded-Proto", "")
     host = request.headers.get("X-Forwarded-Host", "")

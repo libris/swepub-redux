@@ -883,6 +883,8 @@ def process_get_rejected_publications(harvest_id):
 @app.route("/api/v1/process/<source>", methods=["GET"])
 @check_from_to
 def process_get_stats(source=None):
+    audit_labels_to_include = ['ISSN_missing_check', 'UKA_comprehensive_check', 'contributor_duplicate_check', 'creator_count_check']
+
     result = {
         "code": source,
         "source": INFO_API_SOURCE_ORG_MAPPING[source]["name"],
@@ -902,6 +904,11 @@ def process_get_stats(source=None):
 
     cur = get_db().cursor()
     cur.row_factory = dict_factory
+
+    result["total"] = cur.execute(
+        "SELECT SUM(total) AS total_docs FROM stats_converted WHERE source = ?", [source]
+    ).fetchone()["total_docs"]
+
     for row in cur.execute(
         f"""
         SELECT
@@ -918,6 +925,17 @@ def process_get_stats(source=None):
             """,
         values,
     ):
+        # Autoclassified is a bit of a special case. It's technically an auditor but should here
+        # be counted as an enricher. "valid" means "enriched"; we don't actually log "not enriched"
+        # for the autoclassifier, so we just subtract the number of enriched from the total.
+        if row["label"] in ["autoclassified", "auto_classify"]:
+            result["enrichments"]["auto_classify"] = {}
+            result["enrichments"]["auto_classify"]["enriched"] = row["valid"]
+            result["enrichments"]["auto_classify"]["unchanged"] = result["total"] - row["valid"]
+            continue
+        if row["label"] not in audit_labels_to_include:
+            continue
+
         result["audits"][row["label"]] = {}
         if row["valid"]:
             result["audits"][row["label"]]["valid"] = row["valid"]
@@ -971,10 +989,6 @@ def process_get_stats(source=None):
             result["validations"][row["field_name"]]["valid"] = row["v_valid"]
         if row["v_invalid"]:
             result["validations"][row["field_name"]]["invalid"] = row["v_invalid"]
-
-    result["total"] = cur.execute(
-        "SELECT SUM(total) AS total_docs FROM stats_converted WHERE source = ?", [source]
-    ).fetchone()["total_docs"]
 
     return result
 
