@@ -17,7 +17,7 @@ from util import chunker
 import re
 import time
 from concurrent.futures import ProcessPoolExecutor
-from multiprocessing import Process, Lock, Manager
+from multiprocessing import Lock, Manager
 import sys
 from datetime import datetime, timezone
 import uuid
@@ -33,7 +33,7 @@ from pathlib import Path
 from argparse import ArgumentParser
 import traceback
 
-DEFAULT_SWEPUB_ENV = getenv("SWEPUB_ENV", "DEV") # or QA, PROD
+DEFAULT_SWEPUB_ENV = getenv("SWEPUB_ENV", "DEV")  # or QA, PROD
 FILE_PATH = path.dirname(path.abspath(__file__))
 DEFAULT_SWEPUB_DB = path.join(FILE_PATH, "../swepub.sqlite3")
 
@@ -48,7 +48,12 @@ KNOWN_ISSN_FILE = path.join(FILE_PATH, "../resources/known_valid_issn.txt")
 KNOWN_DOI_FILE = path.join(FILE_PATH, "../resources/known_valid_doi.txt")
 
 SOURCES = load(open(path.join(FILE_PATH, '../resources/sources.json')))
-TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = ["cluster", "finalized", "search_single", "search_doi", "search_genre_form", "search_subject", "search_creator", "search_org", "search_fulltext", "stats_field_events", "stats_audit_events", "stats_converted", "stats_ssif_1"]
+TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = [
+    "cluster", "finalized",
+    "search_single", "search_doi", "search_genre_form",
+    "search_subject", "search_creator", "search_org", "search_fulltext",
+    "stats_field_events", "stats_audit_events", "stats_converted", "stats_ssif_1"
+]
 
 
 # Wrap the harvest function just to easily log errors from subprocesses
@@ -78,29 +83,33 @@ def harvest_wrapper(source):
 def harvest(source):
     log.info(f"[STARTED]\t{source['code']}")
     fromtime = None
+    # If we're doing an incremental update (default), first check if we've successfully harvested the source before.
+    # If we have, then we only need to fetch records created/updated/modified since that time.
+    # If we haven't, it's either because we've never tried harvesting that source before, or we tried but failed. In
+    # that case fromtime will be None, meaning we fetch everything.
     if incremental:
-        with get_connection() as connection:
-            cursor = connection.cursor()
-            cursor.execute("""
-            SELECT strftime('%Y-%m-%dT%H:%M:%SZ', last_successful_harvest) from last_harvest WHERE source = ?""",
-            (source["code"],))
-            rows = cursor.fetchall()
+        with get_connection() as con:
+            cur = con.cursor()
+            cur.execute(
+                "SELECT strftime('%Y-%m-%dT%H:%M:%SZ', last_successful_harvest) from last_harvest WHERE source = ?",
+                (source["code"],)
+            )
+            rows = cur.fetchall()
             if rows:
                 fromtime = rows[0][0]
 
     start_time = time.time()
     harvest_id = str(uuid.uuid4())
-    harvest_cache['meta'][harvest_id] = [0, 0]
+    harvest_cache['meta'][harvest_id] = [0, 0]  # for keeping track of records accepted / rejected
     harvest_succeeded = True
 
-    with get_connection() as connection:
-        cursor = connection.cursor()
+    with get_connection() as con:
+        cur = con.cursor()
         lock.acquire()
         try:
-            cursor.execute("""
-            INSERT INTO harvest_history(id, source, harvest_start) VALUES (?, ?, ?)
-            """, (harvest_id, source["code"], datetime.now(timezone.utc).isoformat()))
-            connection.commit()
+            cur.execute("INSERT INTO harvest_history(id, source, harvest_start) VALUES (?, ?, ?)",
+                        (harvest_id, source["code"], datetime.now(timezone.utc).isoformat()))
+            con.commit()
         finally:
             lock.release()
 
@@ -109,12 +118,11 @@ def harvest(source):
 
     for source_set in source["sets"]:
         record_iterator = RecordIterator(source["code"], source_set, fromtime, None)
+        # For each set we put records into batches and let a number of workers handle these batches.
         try:
             with ProcessPoolExecutor(max_workers=4, initializer=init, initargs=(lock, harvest_cache, added_converted_rowids, log, incremental,)) as executor:
-                #fromtime = "2020-05-05T00:00:00Z" # Only while debugging, use to force FROM date to get some incremental test data.
+                #fromtime = "2020-05-05T00:00:00Z"  # Only while debugging, use to force FROM date to get some incremental test data.
                 batch = []
-                record_count_since_report = 0
-
                 for record in record_iterator:
                     if record.is_successful():
                         batch.append(record)
@@ -125,67 +133,55 @@ def harvest(source):
                             executor.submit(func, batch)
                             batch = []
                         record_count += 1
-                        record_count_since_report += 1
-                        # if record_count_since_report == 200:
-                        #     record_count_since_report = 0
-                        #     diff = time.time() - start_time
-                        #     harvested_count.value += 200
-                        #     print(f"{harvested_count.value/diff} per sec, running average, {harvested_count.value} done in total.")
                 func = partial(threaded_handle_harvested, source["code"], source_set["subset"], harvest_id)
                 executor.submit(func, batch)
                 executor.shutdown(wait=True)
 
             # If we're doing incremental updating: Check if the source uses <deletedRecord>persistent</deletedRecord>.
             # If it does not, we need to "ListIdentifiers" all of their records to figure out if any were deleted.
-            if incremental:
-                if not _get_has_persistent_deletes(source_set):
-                    all_source_ids = _get_source_ids(source_set)
-                    obsolete_ids = []
-                    with get_connection() as connection:
-                        cursor = connection.cursor()
-                        for original_id_row in cursor.execute("""
-                        SELECT
-                            oai_id
-                        FROM
-                            original
-                        WHERE
-                            source = ?;
-                        """, (source["code"],)):
-                            existing_oai_id = original_id_row[0]
-                            if existing_oai_id not in all_source_ids:
-                                obsolete_ids.append(existing_oai_id)
-                        if obsolete_ids:
-                            lock.acquire()
-                            # We can't do `WHERE oai_id IN ({','.join('?'*len(obsolete_ids))})` because len(obsolete_ids) 
-                            # could be > SQLITE_MAX_VARIABLE_NUMBER ("defaults to 999 for SQLite versions prior to 3.32.0
-                            # (2020-05-22) or 32766 for SQLite versions after 3.32.0."). So, we do it by chunks.
-                            try:
-                                for group in chunker(obsolete_ids, 100):
-                                    cursor.execute(f"""
-                                    DELETE FROM
-                                        original
-                                    WHERE oai_id IN ({','.join('?'*len(group))});
-                                    """, group)
-                                log.info(f"Deleted {len(obsolete_ids)} obsolete records from {source['code']}, after checking their ID list.")
-                                connection.commit()
-                            finally:
-                                lock.release()
+            if incremental and not _get_has_persistent_deletes(source_set):
+                all_source_ids = _get_source_ids(source_set)
+                obsolete_ids = []
+                with get_connection() as con:
+                    cur = con.cursor()
+                    for original_id_row in cur.execute("SELECT oai_id FROM original WHERE source = ?", (source["code"],)):
+                        existing_oai_id = original_id_row[0]
+                        if existing_oai_id not in all_source_ids:
+                            obsolete_ids.append(existing_oai_id)
+                    if obsolete_ids:
+                        lock.acquire()
+                        # We can't do `WHERE oai_id IN ({','.join('?'*len(obsolete_ids))})` because len(obsolete_ids)
+                        # could be > SQLITE_MAX_VARIABLE_NUMBER ("defaults to 999 for SQLite versions prior to 3.32.0
+                        # (2020-05-22) or 32766 for SQLite versions after 3.32.0."). So, we do it by chunks.
+                        try:
+                            for group in chunker(obsolete_ids, 100):
+                                cur.execute(f"""
+                                DELETE FROM
+                                    original
+                                WHERE oai_id IN ({','.join('?'*len(group))});
+                                """, group)
+                            log.info(f"Deleted {len(obsolete_ids)} obsolete records from {source['code']}, after checking their ID list.")
+                            con.commit()
+                        finally:
+                            lock.release()
         except Exception as e:
             log.warning(f'[FAILED]\t{source["code"]}. Error: {e}')
             log.warning(traceback.format_exc())
+            harvest_cache["meta"]["sources_in_progress"].remove(source["code"])
+            harvest_cache["meta"]["sources_failed"].append(source["code"])
             harvest_succeeded = False
 
     num_accepted, num_rejected = harvest_cache['meta'][harvest_id]
-    with get_connection() as connection:
-        cursor = connection.cursor()
+    with get_connection() as con:
+        cur = con.cursor()
         lock.acquire()
         try:
             if harvest_succeeded:
-                cursor.execute("""
+                cur.execute("""
                 INSERT INTO last_harvest(source, last_successful_harvest) VALUES (?, ?)
                 ON CONFLICT(source) DO UPDATE SET last_successful_harvest = ?;""", (source["code"], harvest_start, harvest_start))
 
-            cursor.execute("""
+            cur.execute("""
             UPDATE
                 harvest_history
             SET
@@ -193,7 +189,7 @@ def harvest(source):
             WHERE
                 id = ?""",
             (datetime.now(timezone.utc).isoformat(), num_accepted, num_rejected, harvest_succeeded, harvest_id))
-            connection.commit()
+            con.commit()
         finally:
             lock.release()
 
@@ -362,7 +358,14 @@ def _get_harvest_cache_manager(manager):
     harvest_meta = manager.dict({})
     doab = manager.dict(_load_doab())
 
-    return manager.dict({'doi_new': doi_new, 'doi_static': doi_static, 'issn_new': issn_new, 'issn_static': issn_static, 'meta': harvest_meta, 'doab': doab})
+    return manager.dict({
+        'doi_new': doi_new,
+        'doi_static': doi_static,
+        'issn_new': issn_new,
+        'issn_static': issn_static,
+        'meta': harvest_meta,
+        'doab': doab
+    })
 
 
 def init(l, c, a, lg, inc):
@@ -382,14 +385,21 @@ def handle_args():
     parser = ArgumentParser()
 
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("-f", "--force-new", action="store_false", help="Forcibly creates a new database, removing the existing one if one exists as the given path")
-    group.add_argument("-u", "--update", action="store_true", help="Updates sources incrementally. Creates database and harvests from the beginning if the database doesn't already exist.")
-    group.add_argument("-p", "--purge", action="store_true", help="Delete records (from specified sources, if sources are specified, otherwise everything (but harvest history is kept)")
+    group.add_argument("-f", "--force-new", action="store_false",
+                       help="Forcibly creates a new database, removing the existing one if one exists as the given path")
+    group.add_argument("-u", "--update", action="store_true",
+                       help="Updates sources incrementally. Creates database and harvests from the beginning if the database doesn't already exist.")
+    group.add_argument("-p", "--purge", action="store_true",
+                       help="Delete records (from specified sources, if sources are specified, otherwise everything (but harvest history is kept)")
 
-    parser.add_argument("-d", "--database", default="swepub.sqlite3", help="Path to sqlite3 database (to be created or updated; overrides SWEPUB_DB)")
-    parser.add_argument("-e", "--env", default=None, help="One of DEV, QA, PROD (default DEV). Overrides SWEPUB_ENV.")
-    parser.add_argument("--skip-unpaywall", action="store_true", help="Skip Unpaywall check")
-    parser.add_argument("source", nargs="*", default="", help="Source(s) to process (if not specified, everything in sources.json will be processed, e.g. uniarts ths mdh")
+    parser.add_argument("-d", "--database", default="swepub.sqlite3",
+                        help="Path to sqlite3 database (to be created or updated; overrides SWEPUB_DB)")
+    parser.add_argument("-e", "--env", default=None,
+                        help="One of DEV, QA, PROD (default DEV). Overrides SWEPUB_ENV.")
+    parser.add_argument("--skip-unpaywall", action="store_true",
+                        help="Skip Unpaywall check")
+    parser.add_argument("source", nargs="*", default="",
+                        help="Source(s) to process (if not specified, everything in sources.json will be processed, e.g. uniarts ths mdh")
 
     return parser.parse_args()
 
@@ -410,6 +420,7 @@ if __name__ == "__main__":
     elif not getenv("SWEPUB_ENV", None):
         environ["SWEPUB_ENV"] = DEFAULT_SWEPUB_ENV
 
+    # The Unpaywall mirror is not accessible from the public Internet, so for local testing one might want to avoid it
     if args.skip_unpaywall:
         environ["SWEPUB_SKIP_UNPAYWALL"] = "1"
 
@@ -432,11 +443,12 @@ if __name__ == "__main__":
             sources_to_process.append(SOURCES[code])
     else:
         for source in SOURCES.values():
-            source["sets"][:] = [item for item in source["sets"] if getenv("SWEPUB_ENV")  in item.get("envs", []) or "envs" not in item]
+            source["sets"][:] = [item for item in source["sets"] if getenv("SWEPUB_ENV") in item.get("envs", []) or "envs" not in item]
             sources_to_process.append(source)
 
     harvest_cache = None
     t1 = None
+    # If we're purging we skip the harvesting and auto-classification phases but do the rest.
     if args.purge:
         log.info("Purging " + " ".join([source['code'] for source in sources_to_process]))
         with get_connection() as connection:
