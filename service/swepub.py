@@ -1146,7 +1146,7 @@ def api_docs():
     return send_from_directory(app.root_path, "apidocs/index.html")
 
 
-@app.route('/api-static/<path:filename>')
+@app.route('/apidocs/<path:filename>')
 def custom_static(filename):
     return send_from_directory(app.root_path + '/apidocs/', filename)
 

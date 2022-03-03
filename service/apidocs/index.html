@@ -4,9 +4,9 @@
   <head>
     <meta charset="UTF-8">
     <title>Swagger UI</title>
-    <link rel="stylesheet" type="text/css" href="/api-static/swagger-ui.css" />
-    <link rel="icon" type="image/png" href="/api-static/favicon-32x32.png" sizes="32x32" />
-    <link rel="icon" type="image/png" href="/api-static/favicon-16x16.png" sizes="16x16" />
+    <link rel="stylesheet" type="text/css" href="/apidocs/swagger-ui.css" />
+    <link rel="icon" type="image/png" href="/apidocs/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/apidocs/favicon-16x16.png" sizes="16x16" />
     <style>
       html
       {
@@ -33,8 +33,8 @@
   <body>
     <div id="swagger-ui"></div>
 
-    <script src="/api-static/swagger-ui-bundle.js" charset="UTF-8"> </script>
-    <script src="/api-static/swagger-ui-standalone-preset.js" charset="UTF-8"> </script>
+    <script src="/apidocs/swagger-ui-bundle.js" charset="UTF-8"> </script>
+    <script src="/apidocs/swagger-ui-standalone-preset.js" charset="UTF-8"> </script>
     <script>
     window.onload = function() {
       
@@ -52,11 +52,11 @@
         ],
         layout: "StandaloneLayout",
         urls: [
-        	{"name": "Bibliometrics API", "url": "/api-static/apispec_bibliometrics_1.json"},
-        	{"name": "Classify API", "url": "/api-static/apispec_classify_1.json"},
-        	{"name": "Process API", "url": "/api-static/apispec_process_1.json"},
-        	{"name": "Info API", "url": "/api-static//apispec_info_1.json"},
-        	{"name": "Data status API", "url": "/api-static/apispec_datastatus_1.json"}],
+          {"name": "Bibliometrics API", "url": "/apidocs/apispec_bibliometrics_1.json"},
+          {"name": "Classify API", "url": "/apidocs/apispec_classify_1.json"},
+          {"name": "Process API", "url": "/apidocs/apispec_process_1.json"},
+          {"name": "Info API", "url": "/apidocs/apispec_info_1.json"},
+          {"name": "Data status API", "url": "/apidocs/apispec_datastatus_1.json"}],
       })
 
       // End Swagger UI call region
