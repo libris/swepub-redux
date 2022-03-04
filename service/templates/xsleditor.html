@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+    <title>MODS to Bibframe tester</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <!-- Nav tabs -->
+          <ul class="nav nav-pills">
+            <li class="nav-item">
+              <a class="nav-link active" data-toggle="tab" href="#mods">MODS</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="tab" href="#xslt">XSLT</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="tab" href="#bibframe">Bibframe</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <!-- Tab panes -->
+          <div class="tab-content">
+            <div class="tab-pane active container" id="mods">
+              <h3>Enter MODS below</h3>
+              <p><textarea rows="50" cols="100" id="mods">
+
+<!-- MODS EXAMPLE START -->
+<record
+  xmlns="http://www.openarchives.org/OAI/2.0/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <header>
+    <identifier>
+oai:lup.lub.lu.se:e7489fa8-c5ef-4431-a719-8902fc61d7e3
+</identifier>
+    <datestamp>2018-07-05T11:12:54Z</datestamp>
+    <setSpec>LU_SWEPUB</setSpec>
+  </header>
+  <metadata>
+    <mods
+      xmlns="http://www.loc.gov/mods/v3"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.5" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd">
+      <recordInfo
+        xmlns:xlink="http://www.w3.org/1999/xlink">
+        <recordContentSource>lu</recordContentSource>
+        <recordCreationDate encoding="w3cdtf">2011-01-10T17:06:21+1:00</recordCreationDate>
+        <recordChangeDate encoding="w3cdtf">2018-05-29T12:27:50+2:00</recordChangeDate>
+      </recordInfo>
+      <identifier
+        xmlns:xlink="http://www.w3.org/1999/xlink" type="isbn">978-91-87976-33-9
+
+      </identifier>
+      <identifier
+        xmlns:xlink="http://www.w3.org/1999/xlink" type="uri">http://lup.lub.lu.se/record/1761390
+
+      </identifier>
+      <genre
+        xmlns:xlink="http://www.w3.org/1999/xlink" authority="svep" type="publicationType">sam
+
+      </genre>
+      <genre
+        xmlns:xlink="http://www.w3.org/1999/xlink" authority="kb.se" type="outputType">publication/edited-book
+
+      </genre>
+      <genre
+        xmlns:xlink="http://www.w3.org/1999/xlink" authority="svep" type="contentType">vet
+
+      </genre>
+      <titleInfo>
+        <title>
+Wår lärda Skalde-fru : Sophia Elisabet Brenner och hennes tid
+</title>
+      </titleInfo>
+      <note
+        xmlns:xlink="http://www.w3.org/1999/xlink" type="publicationStatus">Published
+
+      </note>
+      <note
+        xmlns:xlink="http://www.w3.org/1999/xlink" type="creatorCount">3
+
+      </note>
+      <name
+        xmlns:xlink="http://www.w3.org/1999/xlink" type="personal" authority="lu" xlink:href="klas-ajo">
+        <namePart type="given">Arne</namePart>
+        <namePart type="family">Jönsson</namePart>
+        <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="lu.se">Lunds universitet</affiliation>
+        <affiliation lang="eng" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="lu.se">Lund University</affiliation>
+        <affiliation lang="swe" authority="lu.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000032">Humanistiska och teologiska fakulteterna</affiliation>
+        <affiliation lang="eng" authority="lu.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000032">Joint Faculties of Humanities and Theology</affiliation>
+        <affiliation lang="swe" authority="v1000032" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000041">Institutioner</affiliation>
+        <affiliation lang="eng" authority="v1000032" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000041">Departments</affiliation>
+        <affiliation lang="swe" authority="v1000041" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000088">Språk- och litteraturcentrum</affiliation>
+        <affiliation lang="eng" authority="v1000041" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000088">Centre for Languages and Literature</affiliation>
+        <affiliation lang="swe" authority="v1000088" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000109">Sektion 3</affiliation>
+        <affiliation lang="eng" authority="v1000088" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000109">Section 3</affiliation>
+        <affiliation lang="swe" authority="v1000109" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000114">
+Avdelningen för nygrekiska, grekiska, latin och spanska
+</affiliation>
+        <affiliation lang="eng" authority="v1000109" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000114">
+Division of Greek Studies, Latin, Modern Greek, and Spanish Studies
+</affiliation>
+        <affiliation lang="swe" authority="v1000114" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000116">Latin</affiliation>
+        <affiliation lang="eng" authority="v1000114" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000116">Latin</affiliation>
+        <role>
+          <roleTerm type="code" authority="marcrelator">edt</roleTerm>
+        </role>
+      </name>
+      <name
+        xmlns:xlink="http://www.w3.org/1999/xlink" type="personal" authority="lu" xlink:href="klas-vol">
+        <namePart type="given">Valborg</namePart>
+        <namePart type="family">Lindgärde</namePart>
+        <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="lu.se">Lunds universitet</affiliation>
+        <affiliation lang="eng" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="lu.se">Lund University</affiliation>
+        <affiliation lang="swe" authority="lu.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000032">Humanistiska och teologiska fakulteterna</affiliation>
+        <affiliation lang="eng" authority="lu.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000032">Joint Faculties of Humanities and Theology</affiliation>
+        <affiliation lang="swe" authority="v1000032" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000041">Institutioner</affiliation>
+        <affiliation lang="eng" authority="v1000032" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000041">Departments</affiliation>
+        <affiliation lang="swe" authority="v1000041" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000088">Språk- och litteraturcentrum</affiliation>
+        <affiliation lang="eng" authority="v1000041" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000088">Centre for Languages and Literature</affiliation>
+        <affiliation lang="swe" authority="v1000088" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000109">Sektion 3</affiliation>
+        <affiliation lang="eng" authority="v1000088" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000109">Section 3</affiliation>
+        <affiliation lang="swe" authority="v1000109" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000114">
+Avdelningen för nygrekiska, grekiska, latin och spanska
+</affiliation>
+        <affiliation lang="eng" authority="v1000109" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000114">
+Division of Greek Studies, Latin, Modern Greek, and Spanish Studies
+</affiliation>
+        <affiliation lang="swe" authority="v1000114" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000116">Latin</affiliation>
+        <affiliation lang="eng" authority="v1000114" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000116">Latin</affiliation>
+        <role>
+          <roleTerm type="code" authority="marcrelator">edt</roleTerm>
+        </role>
+      </name>
+      <name
+        xmlns:xlink="http://www.w3.org/1999/xlink" type="personal" authority="lu" xlink:href="klas-ego">
+        <namePart type="given">Elisabet</namePart>
+        <namePart type="family">Göransson</namePart>
+        <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="lu.se">Lunds universitet</affiliation>
+        <affiliation lang="eng" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="lu.se">Lund University</affiliation>
+        <affiliation lang="swe" authority="lu.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000032">Humanistiska och teologiska fakulteterna</affiliation>
+        <affiliation lang="eng" authority="lu.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000032">Joint Faculties of Humanities and Theology</affiliation>
+        <affiliation lang="swe" authority="v1000032" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000041">Institutioner</affiliation>
+        <affiliation lang="eng" authority="v1000032" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000041">Departments</affiliation>
+        <affiliation lang="swe" authority="v1000041" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000088">Språk- och litteraturcentrum</affiliation>
+        <affiliation lang="eng" authority="v1000041" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000088">Centre for Languages and Literature</affiliation>
+        <affiliation lang="swe" authority="v1000088" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000109">Sektion 3</affiliation>
+        <affiliation lang="eng" authority="v1000088" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000109">Section 3</affiliation>
+        <affiliation lang="swe" authority="v1000109" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000114">
+Avdelningen för nygrekiska, grekiska, latin och spanska
+</affiliation>
+        <affiliation lang="eng" authority="v1000109" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000114">
+Division of Greek Studies, Latin, Modern Greek, and Spanish Studies
+</affiliation>
+        <affiliation lang="swe" authority="v1000114" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000116">Latin</affiliation>
+        <affiliation lang="eng" authority="v1000114" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000116">Latin</affiliation>
+        <role>
+          <roleTerm type="code" authority="marcrelator">edt</roleTerm>
+        </role>
+      </name>
+      <name
+        xmlns:xlink="http://www.w3.org/1999/xlink" type="corporate" lang="swe" authority="lu" xlink:href="v1000116">
+        <namePart>Lunds universitet</namePart>
+        <namePart>Latin</namePart>
+        <role>
+          <roleTerm type="code" authority="marcrelator">org</roleTerm>
+        </role>
+      </name>
+      <name
+        xmlns:xlink="http://www.w3.org/1999/xlink" type="corporate" lang="eng" authority="lu" xlink:href="v1000116">
+        <namePart>Lund University</namePart>
+        <namePart>Latin</namePart>
+        <role>
+          <roleTerm type="code" authority="marcrelator">org</roleTerm>
+        </role>
+      </name>
+      <language
+        xmlns:xlink="http://www.w3.org/1999/xlink">
+        <languageTerm authority="iso639-2b" type="code">swe</languageTerm>
+      </language>
+      <abstract lang="swe">
+Under 1680-talet trädde Sophia Elisabet Brenner fram som poet och blev snart känd och uppskattad för sina dikter vid olika tillfällen i livet. Tillfällesdiktningen var en flexibel genre som gav henne möjligheten att resonera om tidens aktuella frågor, till exempel kvinnans ställning i äktenskap och samhälle eller värderingen av det som var gammalt och fornt och det som var nytt. Hennes rykte spreds ut över Europa tack vare effektiv marknadsföring, goda kommunikationer och, naturligtvis, väl tillvaratagen begåvning. Språkkunnig och läshungrig motsvarade hon tidens lärdomsideal och blev den svenska stormaktens svar på de lärda kvinnor som andra länder stolt kunde visa upp. Hon dog 1730. Boken Wår Lärda Skalde-Fru. Sophia Elisabet Brenner och hennes tid syftar till att belysa olika sidor av hennes verksamma liv och av hennes diktning. Det låter oss möta den värld som var hennes i det tidigmoderna Sverige och reflektera över hennes position i den brytningstid vi anar att hon levde i. Forskare inom många olika discipliner medverkar såsom litteratur- och konsthistoriker, språkvetare och numismatiker, bokhistoriker, idéhistoriker och musikvetare. Ett rikt bildmaterial illustrerar såväl Sophia Elisabet Brenners liv och verksamhet som hennes tid. I boken om Wår Lärda Skalde-Fru. Sophia Elisabet Brenner och hennes tid ingår följande artiklar: Carina Burman, "Bilden av Brenner, Inledningsföredrag vid symposiet 'Sappho i Sverige' i Lund den 26–28 augusti 2009" Valborg Lindgärde, "Sophia Elisabet Weber, g. Brenner (1659–1730)" Jon Helgason, "Sophia Elisabet Brenner som Sappho" Erland Sellberg, "Kön, dygd och makt" Anna Perälä. "Att beskåda dikter. Sophia Elisabet Brenner i tryck" Valborg Lindgärde, "Poesi till salu. Urban Hiärnes reklamprospekt med några kommentarer" Stina Hansson. "Bröllopsdiktaren Brenner. Genreförnyare och tidig gravgrävare" Anders Cullhed, "Barock feminism. Fru Brenner och Sor Juana" Valborg Lindgärde, "Att ha sin fröjd hos Gud. Sophia Elisabet Brenner och fromhetens poesi" Kristiina Savin, "Skulle jag begråta dig? Kvinnliga strategier för sorg och tröst" Daniel Möller, "En död liten fågel. Sophia Elisabet Brenner som djurgravdiktare" Mats Malm, "Sophia Elisabet Brenner och det nordiska" Hans Helander, "Den lärda frun och de lärdes språk. Latindiktning i senkarolinsk tid" Verner Egerland, "Sophia Elisabet Brenner och petrarkismen" Arne Jönsson, "Mångspråkig poet i språkpatriotisk debatt" Walter Haas, "Du bist nicht fremde hier. The Language of Sophia Elisabet Brenner’s German Poems" Lars Wollin, "Nystavare med förbehåll. Sophia Elisabet Brenner i svensk språkhistoria" Torbjörn Sundquist, "En skatt av svenska mynt. Elias Brenners numismatiska mästerverk" Görel Cavalli-Björkman, "Miniatyrmålaren Elias Brenner" Karin Sidén, "Konstnärsparet Brenner och salongskulturen" Eva Helenius, "Johan Helmich Roman och svenska språket. Solosånger till originallyrik av svenska skalder under senbarocken" Marianne Alenius, "Sophia Elisabet Brenners modtagelse hos danskerne" Torbjörn Sundquist, "Konstnärsparets skådepenningar. Medaljer över Sophia Elisabet och Elias Brenner" Valborg Lindgärde, ”Äfven eftervärlden måste hos fru Brenner erkänna ...” Reviews: Svensson, Christina, i: Tidskrift för litteraturvetenskap, 2011: 1, pp. 98-104; Jonsson, Inge, i: Sjuttonhundratal, Nordic Yearbook for Eighteen-Century Studies, 2011, pp. 333-338; Kåreland, Lena, i: Svenska Dagbladet, 23 febr. 2011, Under strecket, p. 13; Isnardi, Gianna Chiesa, i: Studi Nordici, XVII, 2010, pp. 87-88; Stenborg, Elisabeth, i: Signum 4/2011, pp. 55-56; Enander, Christer, i: Helsingborgs Dagblad, 23 maj 2011; Silén, Daniela, i: Nya Argus, 104, 2011, pp. 153-155; Storskog, Camilla, i: Nordicum-Mediterraneum, Icelandic E-Journal for Nordic and Mideterranean Studies, vol 6, 2011, nr 1 Wedding, Gunilla, i: Skånska Dagbladet, 4 febr. 2011, pp. B6-B7; Persson, Tina, i: Smålandsposten, 9 aug. 2011, p. B9; Bergsten, Staffan, i: Västmanlands läns tidning, 8 febr. 2011, kultur & nöje, p. 8.
+</abstract>
+      <physicalDescription
+        xmlns:xlink="http://www.w3.org/1999/xlink">
+        <extent>536 s.</extent>
+      </physicalDescription>
+      <originInfo
+        xmlns:xlink="http://www.w3.org/1999/xlink">
+        <publisher>Skåneförlaget</publisher>
+        <dateIssued encoding="iso8601">2011</dateIssued>
+      </originInfo>
+      <subject
+        xmlns:xlink="http://www.w3.org/1999/xlink">
+        <topic>occasional poetry</topic>
+      </subject>
+      <subject
+        xmlns:xlink="http://www.w3.org/1999/xlink">
+        <topic>wedding poems</topic>
+      </subject>
+      <subject
+        xmlns:xlink="http://www.w3.org/1999/xlink">
+        <topic>numismatics</topic>
+      </subject>
+      <subject
+        xmlns:xlink="http://www.w3.org/1999/xlink">
+        <topic>Charles XII</topic>
+      </subject>
+      <subject
+        xmlns:xlink="http://www.w3.org/1999/xlink">
+        <topic>baroc literature</topic>
+      </subject>
+      <subject
+        xmlns:xlink="http://www.w3.org/1999/xlink">
+        <topic>woman poet</topic>
+      </subject>
+      <subject
+        xmlns:xlink="http://www.w3.org/1999/xlink">
+        <topic>aloe</topic>
+      </subject>
+      <subject
+        xmlns:xlink="http://www.w3.org/1999/xlink" lang="swe" authority="uka.se" xlink:href="602">
+        <topic>Humaniora och konst</topic>
+        <topic>Språk och litteratur</topic>
+      </subject>
+      <subject
+        xmlns:xlink="http://www.w3.org/1999/xlink" lang="eng" authority="uka.se" xlink:href="602">
+        <topic>Humanities</topic>
+        <topic>Languages and Literature</topic>
+      </subject>
+      <relatedItem
+        xmlns:xlink="http://www.w3.org/1999/xlink" type="series">
+        <titleInfo>
+          <title>Språk- och litteraturcentrum</title>
+        </titleInfo>
+      </relatedItem>
+    </mods>
+  </metadata>
+</record>
+<!-- MODS EXAMPLE END -->
+              </textarea></p>
+            </div>
+            <div class="tab-pane container" id="xslt">
+              <h3>Enter XSLT below</h3>
+              <p><textarea rows="50" cols="100" id="xslt">{{ default_xslt }}</textarea></p>
+            </div>
+            <div class="tab-pane container" id="bibframe">
+              <h3>Resulting Bibframe</h3>
+              <pre class="prettyprint" id="mods-result" style="max-height:500px;"></pre>
+              <h3>Errors</h3>
+              <pre class="prettyprint" id="mods-errors" style="max-height:500px;"></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script>
+      function removeU(text) {
+        var html = text.replace(/[\u00A0-\u2666]/g, function(c) {
+          return '&#'+c.charCodeAt(0)+';';
+        });
+        return html;
+      }
+      $("a[href$='bibframe']").click(function() {
+        $("#mods-result").text("");
+        $("#mods-errors").text("");
+        var data = new FormData();
+        data.append('xslt', $("textarea#xslt")[0].value);
+        data.append('mods', $("textarea#mods")[0].value);
+        $.ajax({
+          type: "POST",
+          url: "#",
+          data: data,
+          cache: false,
+          processData: false,
+          contentType: false,
+          success: function(data){
+            $("#mods-result").html(removeU(data.result));
+            $("#mods-errors").text(data.error);
+          },
+          error: function(data){
+            alert('Request failed');
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
+
+

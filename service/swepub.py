@@ -3,7 +3,7 @@ import json
 from functools import wraps
 from os import path, getenv
 
-from utils import bibliometrics
+from utils import bibliometrics, xsleditor
 from utils.common import *
 from utils.process import *
 from utils.process_csv import export as process_csv_export
@@ -23,11 +23,13 @@ from flask import (
     make_response,
     abort,
     send_from_directory,
+    render_template,
 )
 from pypika import Query, Tables, Parameter, Table, Criterion
 from pypika.terms import BasicCriterion
 from pypika import functions as fn
 from collections import Counter
+from tempfile import NamedTemporaryFile
 
 FILE_PATH = path.dirname(path.abspath(__file__))
 
@@ -63,6 +65,10 @@ INFO_API_SOURCE_ORG_MAPPING = json.load(
     open(path.join(FILE_PATH, "../resources/sources.json"))
 )
 CATEGORIES = json.load(open(path.join(FILE_PATH, "../resources/categories.json")))
+
+DEFAULT_XSLT = '\n'.join(
+    [x.strip('\n\r') for x in open(path.join(FILE_PATH, "../resources/mods_to_xjsonld.xsl")).readlines() if x.strip(' \t\n\r')]
+)
 
 # Note: static files should be served by Apache/nginx
 app = Flask(__name__, static_url_path="/app", static_folder="vue-client/dist")
@@ -1141,6 +1147,14 @@ def process_get_export(source=None):
     )
 
 
+# ███╗   ███╗██╗███████╗ ██████╗   
+# ████╗ ████║██║██╔════╝██╔════╝   
+# ██╔████╔██║██║███████╗██║        
+# ██║╚██╔╝██║██║╚════██║██║        
+# ██║ ╚═╝ ██║██║███████║╚██████╗██╗
+# ╚═╝     ╚═╝╚═╝╚══════╝ ╚═════╝╚═╝
+
+
 @app.route("/api/v1/apidocs", methods=["GET"])
 def api_docs():
     return send_from_directory(app.root_path, "apidocs/index.html")
@@ -1149,6 +1163,29 @@ def api_docs():
 @app.route('/apidocs/<path:filename>')
 def custom_static(filename):
     return send_from_directory(app.root_path + '/apidocs/', filename)
+
+
+@app.route('/xsleditor', methods=["GET", "POST"])
+def xsl_editor():
+    if request.method == "POST":
+        xslt = request.form.get('xslt', '')
+        mods = request.form.get('mods', '')
+
+        f = NamedTemporaryFile(mode='w')
+        f.write(xslt)
+        f.flush()
+        result = xsleditor.Parser(f).parse(mods)
+        f.close()
+
+        return jsonify({
+            'result': re.sub(r'(\\u[0-9A-Fa-f]{1,4})', xsleditor.unescapematch, json.dumps(result["publication"], indent=4)),
+            'error': re.sub(r'(\\u[0-9A-Fa-f]{1,4})', xsleditor.unescapematch, json.dumps(result["errors"], indent=4))
+        })
+    else:
+        return render_template(
+            'xsleditor.html',
+            default_xslt=DEFAULT_XSLT
+        )
 
 
 if __name__ == "__main__":
