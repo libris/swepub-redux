@@ -18,14 +18,14 @@ def validate_isi(field):
     if result == False:
         field.events.append(make_event(type="validation", code="unicode", result="invalid", initial_value=isi))
         field.validation_status = 'invalid'
-        return False
+        return False, "unicode"
     
     hit = isi_regex.fullmatch(isi)
     if hit is None:
         field.events.append(make_event(type="validation", code="format", result="invalid", initial_value=isi))
         field.validation_status = 'invalid'
-        return False
+        return False, "format"
     else:
         field.events.append(make_event(type="validation", code="format", result="valid", initial_value=isi))
         field.validation_status = 'valid'
-        return True
+        return True, "format"

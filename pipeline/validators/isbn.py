@@ -17,27 +17,29 @@ isbn10_regex = re.compile(
     '[0-9xX]')
 
 
-def _validate_format(isbn, path, field):
+def validate_format(field):
+    isbn, path = field.value, field.path
     hit13 = isbn13_regex.fullmatch(isbn)
     if hit13 and len(compact(isbn)) == 13:
-        return True
+        return True, "format"
     hit10 = isbn10_regex.fullmatch(isbn)
     if hit10 and len(compact(isbn)) == 10:
-        return True
+        return True, "format"
     field.events.append(make_event(type="validation", code="format", result="invalid", initial_value=isbn))
-    return False
+    return False, "format"
 
 
-def _validate_checksum(isbn, path, field):
+def validate_checksum(field):
+    isbn, path = field.value, field.path
     if is_valid(isbn):
         field.events.append(make_event(type="validation", code="checksum", result="valid", initial_value=field.value))
-        return True
+        return True, "checksum"
     field.events.append(make_event(type="validation", code="checksum", result="invalid", initial_value=isbn))
-    return False
+    return False, "checksum"
 
 
 def validate_isbn(field):
-    if _validate_format(field.value, field.path, field) and _validate_checksum(field.value, field.path, field):
+    if validate_format(field) and validate_checksum(field):
         field.validation_status = 'valid'
         if not field.is_enriched():
             field.enrichment_status = 'unchanged'

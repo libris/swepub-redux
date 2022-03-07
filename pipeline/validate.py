@@ -68,7 +68,7 @@ def should_be_rejected(raw_xml):
 
 
 class FieldMeta:
-    def __init__(self, path, id_type, value=None):
+    def __init__(self, path='', id_type='', value=None):
         self.id_type = id_type
         self.path = path
         self.initial_value = value
