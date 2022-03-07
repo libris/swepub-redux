@@ -1,13 +1,13 @@
-import sickle
-from sickle.oaiexceptions import (
+import requests
+import xml.etree.ElementTree as ET
+
+import pipeline.sickle as sickle
+from pipeline.sickle.oaiexceptions import (
     BadArgument, BadVerb, BadResumptionToken,
     CannotDisseminateFormat, IdDoesNotExist, NoSetHierarchy,
     NoMetadataFormat, NoRecordsMatch, OAIError
 )
-from modsstylesheet import ModsStylesheet
-
-import requests
-import xml.etree.ElementTree as ET
+from pipeline.modsstylesheet import ModsStylesheet
 
 OAIExceptions = (
     BadArgument, BadVerb, BadResumptionToken,

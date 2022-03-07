@@ -1,7 +1,9 @@
-import lxml
-import lxml.etree as et
 import sys
 from os import path
+
+import lxml
+import lxml.etree as et
+
 
 class ModsStylesheet:
     parsed_stylesheets = {}

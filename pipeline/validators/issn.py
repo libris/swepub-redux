@@ -1,8 +1,10 @@
 import re
+
 from stdnum.issn import is_valid
 from stdnum.issn import format as issn_format
-from validators.shared import remote_verification
-from util import make_event
+
+from pipeline.validators.shared import remote_verification
+from pipeline.util import make_event
 
 issn_regex = re.compile('[0-9]{4}-?[0-9]{3}[0-9xX]')
 

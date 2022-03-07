@@ -1,4 +1,4 @@
-from util import make_event
+from pipeline.util import make_event
 
 def validate_creator_count(field):
     if field.value.isnumeric() and int(field.value) > 0:

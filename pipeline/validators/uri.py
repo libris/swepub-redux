@@ -1,5 +1,5 @@
-from validators.shared import validate_base_unicode
-from util import make_event
+from pipeline.validators.shared import validate_base_unicode
+from pipeline.util import make_event
 
 
 def validate_uri(field):

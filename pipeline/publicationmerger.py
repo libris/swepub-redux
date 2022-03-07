@@ -1,6 +1,7 @@
 import copy
 from collections import OrderedDict
-from publication import Contribution, Publication
+
+from pipeline.publication import Contribution, Publication
 
 
 GENRE_FORMS_TO_MERGE = ['https://id.kb.se/term/swepub/ArtisticWork']

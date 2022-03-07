@@ -1,6 +1,9 @@
 import re
-from util import make_event
+
 from stdnum.isbn import is_valid, compact
+
+from pipeline.util import make_event
+
 
 # flake8: noqa W504
 isbn13_regex = re.compile(

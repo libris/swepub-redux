@@ -1,4 +1,4 @@
-from auditors import BaseAuditor
+from pipeline.auditors import BaseAuditor
 
 class ContributorAuditor(BaseAuditor):
     """An auditor class used to check for duplicate contributor persons."""

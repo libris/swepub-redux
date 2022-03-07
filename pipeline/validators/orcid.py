@@ -1,7 +1,9 @@
 import re
+
 from stdnum.iso7064.mod_11_2 import is_valid
-from validators.shared import validate_base_unicode
-from util import make_event
+
+from pipeline.validators.shared import validate_base_unicode
+from pipeline.util import make_event
 
     # flake8: noqa W504
 orcid_regex = re.compile(

@@ -1,8 +1,10 @@
-from urllib.parse import quote
 import unicodedata
 import sys
-from validators.shared import remote_verification
-from util import make_event
+
+from urllib.parse import quote
+
+from pipeline.validators.shared import remote_verification
+from pipeline.util import make_event
 
 # For more info about unicode categories see
 # https://www.fileformat.info/info/unicode/category/index.htm and

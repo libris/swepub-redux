@@ -1,4 +1,4 @@
-from auditors import BaseAuditor
+from pipeline.auditors import BaseAuditor
 
 class CreatorCountAuditor(BaseAuditor):
     """A class used to verify existance and value of CreatorCount."""

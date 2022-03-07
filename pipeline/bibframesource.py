@@ -1,9 +1,11 @@
 import re
 from enum import Enum
+from datetime import date, datetime
 
 from dateutil.parser import parse as dateutil_parse
+
 from jsonpath_rw_ext import parse
-from datetime import date, datetime
+
 
 CREATOR_FIELDS = ["familyName", "givenName", "localId", "localIdBy", "ORCID", "affiliation", "freetext_affiliations"]
 SUBJECT_FIELDS = ["oneDigitTopics", "threeDigitTopics", "fiveDigitTopics"]

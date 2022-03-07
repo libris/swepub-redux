@@ -1,7 +1,8 @@
 import requests
-from auditors import BaseAuditor
 from os import environ, path
 from json import load
+
+from pipeline.auditors import BaseAuditor
 
 #INFO_API = environ.get("SWEPUB_INFO_API")
 #SUBJECTS_ENDPOINT = environ.get("SWEPUB_INFO_API_SUBJECTS")

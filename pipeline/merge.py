@@ -1,9 +1,12 @@
-from storage import *
-from publicationmerger import PublicationMerger
-from publication import Publication
 from multiprocessing import Pool
 import time
+
 import orjson as json
+
+from pipeline.storage import *
+from pipeline.publicationmerger import PublicationMerger
+from pipeline.publication import Publication
+
 
 def merge():
     # Set up batching

@@ -1,4 +1,4 @@
-from auditors import BaseAuditor
+from pipeline.auditors import BaseAuditor
 
 class ISSNAuditor(BaseAuditor):
     """An auditor class used to check for missing or empty ISSN identifier (if publication is a published article)."""

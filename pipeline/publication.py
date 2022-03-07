@@ -1,9 +1,11 @@
+from pipeline.auditors.swedishlist import Level
+from pipeline.util import *
+
 import itertools
 import datetime
 from dateutil.parser import parse as parse_date
-from auditors.swedishlist import Level
-from util import *
 from jsonpath_rw_ext import parse
+
 
 
 RAW_ISSN_PATHS = (

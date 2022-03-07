@@ -1,4 +1,3 @@
-from storage import *
 from collections import Counter
 import re
 import time
@@ -7,9 +6,12 @@ from json import load
 from os import path
 from multiprocessing import Process
 from tempfile import TemporaryDirectory
-import orjson as json
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
+
+import orjson as json
+
+from pipeline.storage import *
 
 categories = load(open(path.join(path.dirname(path.abspath(__file__)), '../resources/categories.json')))
 

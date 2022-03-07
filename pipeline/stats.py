@@ -1,4 +1,4 @@
-from storage import *
+from pipeline.storage import *
 
 
 def generate_processing_stats():

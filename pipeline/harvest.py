@@ -1,19 +1,4 @@
 #!/usr/bin/env python3
-from autoclassify import auto_classify
-from merge import merge
-from convert import convert
-from deduplicate import deduplicate
-from storage import *
-from index import generate_search_tables
-from stats import generate_processing_stats
-from oai import *
-from validate import validate, should_be_rejected
-from audit import audit
-from legacy_sync import legacy_sync
-# To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..
-from swepublog import logger as log
-from util import chunker
-
 import re
 import time
 from concurrent.futures import ProcessPoolExecutor
@@ -23,7 +8,6 @@ from datetime import datetime, timezone
 import uuid
 from functools import partial
 import psutil
-import orjson as json
 from json import load
 from os import getenv, path, environ
 from contextlib import closing
@@ -32,6 +16,23 @@ import csv
 from pathlib import Path
 from argparse import ArgumentParser
 import traceback
+
+import orjson as json
+
+from pipeline.autoclassify import auto_classify
+from pipeline.merge import merge
+from pipeline.convert import convert
+from pipeline.deduplicate import deduplicate
+from pipeline.storage import *
+from pipeline.index import generate_search_tables
+from pipeline.stats import generate_processing_stats
+from pipeline.oai import *
+from pipeline.validate import validate, should_be_rejected
+from pipeline.audit import audit
+from pipeline.legacy_sync import legacy_sync
+# To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..
+from pipeline.swepublog import logger as log
+from pipeline.util import chunker
 
 DEFAULT_SWEPUB_ENV = getenv("SWEPUB_ENV", "DEV")  # or QA, PROD
 FILE_PATH = path.dirname(path.abspath(__file__))
@@ -61,9 +62,10 @@ def harvest_wrapper(source):
     harvest_cache["meta"]["sources_to_go"].remove(source["code"])
     harvest_cache["meta"]["sources_in_progress"].append(source["code"])
     try:
-        harvest(source)
-        harvest_cache["meta"]["sources_in_progress"].remove(source["code"])
-        harvest_cache["meta"]["sources_succeeded"].append(source["code"])
+        success = harvest(source)
+        if success:
+            harvest_cache["meta"]["sources_in_progress"].remove(source["code"])
+            harvest_cache["meta"]["sources_succeeded"].append(source["code"])
     except Exception as e:
         log.warning(f"Error harvesting {source['code']}: {e}")
         log.warning(traceback.format_exc())
@@ -200,6 +202,7 @@ def harvest(source):
         log.info(f'[FINISHED]\t{source["code"]} ({round(finish_time-start_time, 2)} seconds, {record_count} records, {record_per_s} records/s)')
     else:
         log.info(f'[ABORTED]\t{source["code"]} ({round(finish_time-start_time, 2)} seconds, {record_count} records, {record_per_s} records/s)')
+    return harvest_succeeded
 
 
 def threaded_handle_harvested(source, source_subset, harvest_id, batch):

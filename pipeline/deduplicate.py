@@ -1,8 +1,10 @@
-import orjson as json
 import time
 from multiprocessing import Pool
-from storage import *
-from util import *
+
+import orjson as json
+
+from pipeline.storage import *
+from pipeline.util import *
 
 """Max length in characters to compare text"""
 MAX_LENGTH_STRING_TO_COMPARE = 1000

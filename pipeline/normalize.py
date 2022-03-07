@@ -1,9 +1,10 @@
-from util import update_at_path, make_event
-from stdnum.issn import format as issn_format
 from html import unescape
 from html.parser import HTMLParser
 import re
 
+from stdnum.issn import format as issn_format
+
+from pipeline.util import update_at_path, make_event
 
 def normalize_issn(body, field):
     issn = field.value

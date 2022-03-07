@@ -1,27 +1,28 @@
 import lxml.etree as et
 from io import StringIO
-from enrichers.issn import recover_issn
 from jsonpath_rw_ext import parse
 import itertools
 import requests
 from os import path
-from normalize import *
 
-from validators.datetime import validate_date_time
-from validators.doi import validate_doi
-from validators.issn import validate_issn
-from validators.isbn import validate_isbn
-from validators.isi import validate_isi
-from validators.orcid import validate_orcid
-from validators.uka import validate_uka
-from validators.uri import validate_uri
-from validators.creator import validate_creator_count
+from pipeline.normalize import *
 
-from enrichers.isbn import recover_isbn
-from enrichers.isi import recover_isi
-from enrichers.orcid import recover_orcid
-from enrichers.doi import recover_doi
-from enrichers.unicode import recover_unicode
+from pipeline.validators.datetime import validate_date_time
+from pipeline.validators.doi import validate_doi
+from pipeline.validators.issn import validate_issn
+from pipeline.validators.isbn import validate_isbn
+from pipeline.validators.isi import validate_isi
+from pipeline.validators.orcid import validate_orcid
+from pipeline.validators.uka import validate_uka
+from pipeline.validators.uri import validate_uri
+from pipeline.validators.creator import validate_creator_count
+
+from pipeline.enrichers.issn import recover_issn
+from pipeline.enrichers.isbn import recover_isbn
+from pipeline.enrichers.isi import recover_isi
+from pipeline.enrichers.orcid import recover_orcid
+from pipeline.enrichers.doi import recover_doi
+from pipeline.enrichers.unicode import recover_unicode
 
 MINIMUM_LEVEL_FILTER = et.XSLT(et.parse(path.join(path.dirname(path.abspath(__file__)), '../resources/minimumlevelfilter.xsl')))
 

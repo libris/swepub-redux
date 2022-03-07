@@ -1,6 +1,7 @@
 import orjson as json
-from storage import *
-from bibframesource import BibframeSource
+
+from pipeline.storage import *
+from pipeline.bibframesource import BibframeSource
 
 OUTPUT_TYPE_PREFIX = 'https://id.kb.se/term/swepub/'
 

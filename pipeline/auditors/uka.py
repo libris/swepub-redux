@@ -1,5 +1,6 @@
 import re
-from auditors import BaseAuditor
+
+from pipeline.auditors import BaseAuditor
 
 class UKAAuditor(BaseAuditor):
     """A class used to warn for comprehensive classification, i.e only one 1 digit classification"""

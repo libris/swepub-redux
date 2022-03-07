@@ -1,6 +1,7 @@
-from util import update_at_path, make_event
 import unicodedata
 import sys
+
+from pipeline.util import update_at_path, make_event
 
 # See DOI validator in validator service for more info on these.
 INVALID_DOI_UNICODE_CATEGORIES = {'Cc', 'Cf', 'Zl', 'Zp', 'Zs'}

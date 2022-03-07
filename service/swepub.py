@@ -3,13 +3,6 @@ import json
 from functools import wraps
 from os import path, getenv
 
-from utils import bibliometrics, xsleditor
-from utils.common import *
-from utils.process import *
-from utils.process_csv import export as process_csv_export
-from utils.bibliometrics_csv import export as bibliometrics_csv_export
-from utils.classify import enrich_subject
-
 from datetime import datetime
 import sqlite3
 from flask import (
@@ -30,6 +23,13 @@ from pypika.terms import BasicCriterion
 from pypika import functions as fn
 from collections import Counter
 from tempfile import NamedTemporaryFile
+
+from service.utils import bibliometrics, xsleditor
+from service.utils.common import *
+from service.utils.process import *
+from service.utils.process_csv import export as process_csv_export
+from service.utils.bibliometrics_csv import export as bibliometrics_csv_export
+from service.utils.classify import enrich_subject
 
 FILE_PATH = path.dirname(path.abspath(__file__))
 

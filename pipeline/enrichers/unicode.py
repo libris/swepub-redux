@@ -1,4 +1,4 @@
-from util import update_at_path, make_event, unicode_translate
+from pipeline.util import update_at_path, make_event, unicode_translate
 
 def recover_unicode(body, field):
     translated = unicode_translate(field.value)

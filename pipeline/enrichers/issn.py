@@ -1,5 +1,5 @@
 import re
-from util import update_at_path, unicode_translate, make_event
+from pipeline.util import update_at_path, unicode_translate, make_event
 
 # flake8: noqa W504
 issn_regex = re.compile(

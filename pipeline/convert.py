@@ -1,7 +1,9 @@
-import lxml.etree as et
-from lxml.etree import parse, XSLT, fromstring, LxmlError, XMLSyntaxError
 from io import StringIO
 from os import path
+
+import lxml.etree as et
+from lxml.etree import parse, XSLT, fromstring, LxmlError, XMLSyntaxError
+
 
 class ModsParser(object):
 

@@ -1,12 +1,13 @@
 from functools import reduce
-from auditors.swedishlist import Level, SwedishListAuditor
-from auditors.creatorcount import CreatorCountAuditor
-from auditors.uka import UKAAuditor
-from auditors.contributor import ContributorAuditor
-from auditors.issn import ISSNAuditor
-from auditors.subjects import SubjectsAuditor
-from auditors.oa import OAAuditor
-from publication import Publication
+
+from pipeline.auditors.swedishlist import Level, SwedishListAuditor
+from pipeline.auditors.creatorcount import CreatorCountAuditor
+from pipeline.auditors.uka import UKAAuditor
+from pipeline.auditors.contributor import ContributorAuditor
+from pipeline.auditors.issn import ISSNAuditor
+from pipeline.auditors.subjects import SubjectsAuditor
+from pipeline.auditors.oa import OAAuditor
+from pipeline.publication import Publication
 
 AUDITORS = [
     SwedishListAuditor(),

@@ -1,15 +1,17 @@
-from storage import get_connection, dict_factory
-from legacy_publication import Publication
-from swepublog import logger as log
-
 import time
+
+from os import environ
+import json
+from datetime import datetime
+
 import mysql.connector
 from lxml import etree as ET
-from os import environ
 from mysql.connector import errorcode
-import json
 import orjson
-from datetime import datetime
+
+from .storage import get_connection, dict_factory
+from .legacy_publication import Publication
+from .swepublog import logger as log
 
 LEGACY_SEARCH_USER = environ.get("SWEPUB_LEGACY_SEARCH_USER")
 LEGACY_SEARCH_PASSWORD = environ.get("SWEPUB_LEGACY_SEARCH_PASSWORD")

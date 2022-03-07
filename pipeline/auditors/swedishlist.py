@@ -1,7 +1,9 @@
 import csv
-from auditors import BaseAuditor
 from enum import Enum
 from os import path
+
+from pipeline.auditors import BaseAuditor
+
 
 
 DEFAULT_FILE_PATH = path.join(path.dirname(path.abspath(__file__)), '../../resources/swedish_list.csv')

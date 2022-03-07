@@ -4,8 +4,8 @@ import re
 from contextlib import closing
 from os import getenv
 
-import swepublog
-from auditors import BaseAuditor
+import pipeline.swepublog
+from pipeline.auditors import BaseAuditor
 
 UNPAYWALL_URL = getenv("SWEPUB_UNPAYWALL_URL", "http://oamirror.libris.kb.se:8080/v2/")
 

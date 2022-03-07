@@ -1,7 +1,8 @@
 import sqlite3
 import orjson as json
 import os
-from bibframesource import BibframeSource
+
+from pipeline.bibframesource import BibframeSource
 
 
 def _set_pragmas(cursor):

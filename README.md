@@ -21,22 +21,22 @@ $ pip install -r requirements.txt
 To run the pipeline and harvest a few sources do:
 
 ```bash
-$ python3 pipeline/harvest.py --update --skip-unpaywall mdh miun mau
+$ python3 -m pipeline.harvest --update --skip-unpaywall mdh miun mau
 ```
 
-Expect this to take a few minutes. If you don't specify source(s) you instead get the full production data which takes a lot longer. Sources must exist in `pipeline/sources.json`. If the database doesn't exist, it will be created; if it already exists, sources will be incrementally updated (harvesting records added/updated/deleted since the previous execution of `harvest.py --update`).
+Expect this to take a few minutes. If you don't specify source(s) you instead get the full production data which takes a lot longer. Sources must exist in `pipeline/sources.json`. If the database doesn't exist, it will be created; if it already exists, sources will be incrementally updated (harvesting records added/updated/deleted since the previous execution of `pipeline.harvest --update`).
 
-To forcibly create a new database, run `python3 pipeline/harvest.py --force` (or `-f`).
+To forcibly create a new database, run `python3 -m pipeline.harvest --force` (or `-f`).
 
-Run `python3 pipeline/harvest.py` to see all options. 
+Run `python3 -m pipeline.harvest -h` to see all options. 
 
-There are no running "services". Each time the pipeline is executed, an sqlite3 database is either created or updated. You may even run more than one `harvest.py` (with a different database path) in parallel if you like.
+There are no running "services". Each time the pipeline is executed, an sqlite3 database is either created or updated. You may even run more than one harvester (with a different database path) in parallel if you like.
 
 You can `purge` (delete) one or more sources. In combination with a subsequent `update` command, this lets you completely remove a source and then harvest it fully, while keeping records from other sources in the database intact:
 
 ```bash
-$ python3 pipeline/harvest.py --purge uniarts
-$ python3 pipeline/harvest.py --update uniarts
+$ python3 -m pipeline.harvest --purge uniarts
+$ python3 -m pipeline.harvest --update uniarts
 ```
 
 (If you omit the source name, all sources' records will be purged and fully harvested.)
@@ -63,7 +63,8 @@ yarn --cwd service/vue-client/ build
 To start the Swepub service (which provides the API and serves the static frontend files, if they exist):
 
 ```bash
-python3 service/swepub.py
+# Make sure you're in the virtualenv created above
+python3 -m service.swepub
 ```
 
 Then visit http://localhost:5000. API docs are available on http://localhost:5000/api/v1/apidocs.
