@@ -9,7 +9,6 @@ import os
 import unittest
 
 from lxml import etree
-from nose.tools import raises
 import mock
 
 from .. app import Sickle
@@ -158,40 +157,40 @@ class TestCase(unittest.TestCase):
 
     # Test OAI-specific exceptions
 
-    @raises(BadArgument)
     def test_badArgument(self):
-        self.sickle.ListRecords(metadataPrefix='oai_dc',
-                                error='badArgument')
+        with self.assertRaises(BadArgument):
+            self.sickle.ListRecords(metadataPrefix='oai_dc',
+                                    error='badArgument')
 
-    @raises(CannotDisseminateFormat)
     def test_cannotDisseminateFormat(self):
-        self.sickle.ListRecords(
-            metadataPrefix='oai_dc', error='cannotDisseminateFormat')
+        with self.assertRaises(CannotDisseminateFormat):
+            self.sickle.ListRecords(
+                metadataPrefix='oai_dc', error='cannotDisseminateFormat')
 
-    @raises(IdDoesNotExist)
     def test_idDoesNotExist(self):
-        self.sickle.GetRecord(
-            metadataPrefix='oai_dc', error='idDoesNotExist')
+        with self.assertRaises(IdDoesNotExist):
+            self.sickle.GetRecord(
+                metadataPrefix='oai_dc', error='idDoesNotExist')
 
-    @raises(NoSetHierarchy)
     def test_noSetHierarchy(self):
-        self.sickle.ListSets(
-            metadataPrefix='oai_dc', error='noSetHierarchy')
+        with self.assertRaises(NoSetHierarchy):
+            self.sickle.ListSets(
+                metadataPrefix='oai_dc', error='noSetHierarchy')
 
-    @raises(BadResumptionToken)
     def test_badResumptionToken(self):
-        self.sickle.ListRecords(
-            metadataPrefix='oai_dc', error='badResumptionToken')
+        with self.assertRaises(BadResumptionToken):
+            self.sickle.ListRecords(
+                metadataPrefix='oai_dc', error='badResumptionToken')
 
-    @raises(NoRecordsMatch)
     def test_noRecordsMatch(self):
-        self.sickle.ListRecords(
-            metadataPrefix='oai_dc', error='noRecordsMatch')
+        with self.assertRaises(NoRecordsMatch):
+            self.sickle.ListRecords(
+                metadataPrefix='oai_dc', error='noRecordsMatch')
 
-    @raises(OAIError)
     def test_undefined_OAI_error_XML(self):
-        self.sickle.ListRecords(
-            metadataPrefix='oai_dc', error='undefinedError')
+        with self.assertRaises(OAIError):
+            self.sickle.ListRecords(
+                metadataPrefix='oai_dc', error='undefinedError')
 
     def test_OAIResponseIterator(self):
         sickle = Sickle('fake_url', iterator=OAIResponseIterator)

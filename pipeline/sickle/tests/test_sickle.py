@@ -9,7 +9,6 @@ import os
 import unittest
 
 from mock import patch, Mock
-from nose.tools import raises
 from requests import HTTPError
 
 from .. import Sickle
@@ -18,17 +17,17 @@ this_dir, this_filename = os.path.split(__file__)
 
 
 class TestCase(unittest.TestCase):
-    @raises(ValueError)
     def test_invalid_http_method(self):
-        Sickle("http://localhost", http_method="DELETE")
+        with self.assertRaises(ValueError):
+            Sickle("http://localhost", http_method="DELETE")
 
-    @raises(ValueError)
     def test_wrong_protocol_version(self):
-        Sickle("http://localhost", protocol_version="3.0")
+        with self.assertRaises(ValueError):
+            Sickle("http://localhost", protocol_version="3.0")
 
-    @raises(TypeError)
     def test_invalid_iterator(self):
-        Sickle("http://localhost", iterator=None)
+        with self.assertRaises(TypeError):
+            Sickle("http://localhost", iterator=None)
 
     def test_pass_request_args(self):
         mock_response = Mock(text=u'<xml/>', content='<xml/>', status_code=200)
@@ -73,4 +72,4 @@ class TestCase(unittest.TestCase):
         assert retries.total == 99
         assert retries.backoff_factor == 1.1234
         assert retries.status_forcelist == (418,)
-        assert retries.method_whitelist == frozenset(['POST', 'GET'])
+        assert retries.allowed_methods == frozenset(['POST', 'GET'])

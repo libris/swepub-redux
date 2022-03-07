@@ -115,7 +115,7 @@ class Sickle(object):
             total=max_retries,
             backoff_factor=retry_backoff_factor,
             status_forcelist=retry_status_codes or [429, 500, 502, 503, 504],
-            method_whitelist=frozenset(['GET', 'POST'])
+            allowed_methods=frozenset(['GET', 'POST'])
         ))
         self.session = requests.Session()
         self.session.mount('https://', retry_adapter)
