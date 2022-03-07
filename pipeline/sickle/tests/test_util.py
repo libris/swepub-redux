@@ -9,7 +9,7 @@ from unittest import TestCase
 
 from lxml import etree
 
-from sickle.utils import xml_to_dict
+from .. utils import xml_to_dict
 
 
 class TestUtils(TestCase):

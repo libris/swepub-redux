@@ -10,5 +10,5 @@
 
 __version__ = '0.7.0'
 
-from sickle.response import OAIResponse
+from .response import OAIResponse
 from .app import Sickle

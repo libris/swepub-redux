@@ -12,11 +12,11 @@ from lxml import etree
 from nose.tools import raises
 import mock
 
-from sickle import Sickle
-from sickle._compat import binary_type, string_types, text_type, to_unicode
-from sickle.response import OAIResponse
-from sickle.iterator import OAIResponseIterator
-from sickle.oaiexceptions import BadArgument, CannotDisseminateFormat, \
+from .. app import Sickle
+from .. _compat import binary_type, string_types, text_type, to_unicode
+from .. response import OAIResponse
+from .. iterator import OAIResponseIterator
+from .. oaiexceptions import BadArgument, CannotDisseminateFormat, \
     IdDoesNotExist, NoSetHierarchy, BadResumptionToken, NoRecordsMatch, \
     OAIError
 
@@ -77,7 +77,7 @@ class TestCase(unittest.TestCase):
 
     def __init__(self, methodName='runTest'):
         super(TestCase, self).__init__(methodName)
-        self.patch = mock.patch('sickle.app.Sickle.harvest', mock_harvest)
+        self.patch = mock.patch.object(Sickle, 'harvest', mock_harvest)
 
     def setUp(self):
         self.patch.start()

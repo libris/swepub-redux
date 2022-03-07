@@ -15,8 +15,8 @@ import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
-from sickle.iterator import BaseOAIIterator, OAIItemIterator
-from sickle.response import OAIResponse
+from .iterator import BaseOAIIterator, OAIItemIterator
+from .response import OAIResponse
 from .models import (Set, Record, Header, MetadataFormat,
                      Identify)
 

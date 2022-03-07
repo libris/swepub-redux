@@ -8,8 +8,8 @@
     :copyright: Copyright 2015 Mathias Loesch
 """
 
-from sickle import oaiexceptions
-from sickle.models import ResumptionToken
+from . import oaiexceptions
+from .models import ResumptionToken
 
 
 # Map OAI verbs to the XML elements

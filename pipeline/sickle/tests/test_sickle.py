@@ -12,7 +12,7 @@ from mock import patch, Mock
 from nose.tools import raises
 from requests import HTTPError
 
-from sickle import Sickle
+from .. import Sickle
 
 this_dir, this_filename = os.path.split(__file__)
 
