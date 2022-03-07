@@ -67,8 +67,9 @@ def harvest_wrapper(source):
     except Exception as e:
         log.warning(f"Error harvesting {source['code']}: {e}")
         log.warning(traceback.format_exc())
-        harvest_cache["meta"]["sources_in_progress"].remove(source["code"])
-        harvest_cache["meta"]["sources_failed"].append(source["code"])
+        if source["code"] in harvest_cache["meta"]["sources_in_progress"]:
+            harvest_cache["meta"]["sources_in_progress"].remove(source["code"])
+            harvest_cache["meta"]["sources_failed"].append(source["code"])
 
     if harvest_cache["meta"]["sources_succeeded"]:
         log.info(f'Sources finished: {harvest_cache["meta"]["sources_succeeded"]}')
