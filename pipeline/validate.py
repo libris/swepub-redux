@@ -192,6 +192,15 @@ def add_incorrectlyIdentifiedBy(body, field_events):
                     parent["incorrectlyIdentifiedBy"] += incorrectlyIdentifiedByEntity
 
 
+# The point of this is that invalid ORCIDs often contain other sorts of personal information
+# Which we _do not_ want to have on file, or in the worst case even publicly displayed.
+def censor_invalid_orcids(body, field_events):
+    for id_type in field_events.values():
+        for field in id_type.values():
+            if field.validation_status != 'valid' and field.id_type == "ORCID":
+                update_at_path(body, field.path, "[redacted]")
+
+
 def get_clean_events(field_events):
     events_only = {}
     for id_type, paths in field_events.items():
@@ -226,6 +235,7 @@ def validate(body, harvest_cache, session):
     validate_stuff(field_events, session, harvest_cache)
     normalize_stuff(body, field_events)
     add_incorrectlyIdentifiedBy(body, field_events)
+    censor_invalid_orcids(body, field_events)
 
     record_info = get_record_info(field_events)
     events_only = get_clean_events(field_events)
