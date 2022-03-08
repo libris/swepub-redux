@@ -32,17 +32,13 @@ def _validate_with_crossref(doi, session):
         url = f"https://api.crossref.org/works/{url_encoded_doi}/"
         return remote_verification(url, session)
 
+
 def _validate_with_shortdoi(doi, session):
         # Encode doi to ensure valid url, same is done in forward-proxy.
         url_encoded_doi = quote(doi, safe="/")
         url = f"http://shortdoi.org/{url_encoded_doi}?format=json"
         return remote_verification(url, session)
 
-def _validate_printable_chars_and_no_ws(doi):
-    """DOI can incorporate any printable characters from the legal graphic characters of Unicode
-    (https://www.doi.org/doi_handbook/2_Numbering.html)."""
-    # The translate function removes illegal chars.
-    return doi == doi.translate(TRANSLATE_DICT)
 
 def _strip_doi_http_prefix(doi):
     if doi.startswith(DOI_HTTPS_PREFIX):
@@ -50,6 +46,7 @@ def _strip_doi_http_prefix(doi):
     elif doi.startswith(DOI_HTTP_PREFIX):
         return doi[len(DOI_HTTP_PREFIX):]
     return doi
+
 
 def _doi_is_valid_format(doi):
     """ A DOI should have a prefix and suffix, separated by '/'.
@@ -73,6 +70,28 @@ def _doi_is_valid_format(doi):
         return False
 
     return True
+
+
+def validate_unicode(doi):
+    """DOI can incorporate any printable characters from the legal graphic characters of Unicode
+    (https://www.doi.org/doi_handbook/2_Numbering.html)."""
+    # The translate function removes illegal chars.
+    return doi == doi.translate(TRANSLATE_DICT), "unicode", None
+
+
+def validate_format(doi):
+    stripped_doi = _strip_doi_http_prefix(doi)
+    return _doi_is_valid_format(stripped_doi), "format", stripped_doi
+
+
+def validate_with_remote(doi, session, harvest_cache):
+    stripped_doi = _strip_doi_http_prefix(doi)
+    if harvest_cache['doi_static'].get(stripped_doi, 0) or harvest_cache['doi_new'].get(stripped_doi, 0):
+        return True, "remote.cache", stripped_doi
+    if not _validate_with_shortdoi(stripped_doi, session) and not _validate_with_crossref(stripped_doi, session):
+            return False, "remote.crossref", stripped_doi
+    harvest_cache['doi_new'][stripped_doi] = 1
+    return True, "remote", stripped_doi
 
 
 def _validate(field, session, harvest_cache):
@@ -106,11 +125,16 @@ def _validate(field, session, harvest_cache):
 
 
 def validate_doi(field, session, harvest_cache):
-    if _validate(field, session, harvest_cache):
+    success, code, new_value = validate_unicode(field.value) and validate_format(field.value) and validate_with_remote(field.value, session, harvest_cache)
+
+    if success:
+        field.events.append(make_event(type="validation", code=code, result="valid", value=(new_value or field.value)))
+        field.value = new_value or field.value
         field.validation_status = 'valid'
         if not field.is_enriched():
             field.enrichment_status = 'unchanged'
     else:
+        field.events.append(make_event(type="validation", code=code, result="invalid", value=(new_value or field.value)))
         field.validation_status = 'invalid'
         if field.is_enriched():
             field.enrichment_status = 'unsuccessful'

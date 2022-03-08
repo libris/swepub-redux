@@ -1,5 +1,5 @@
 from pipeline.validate import FieldMeta
-from pipeline.validators.issn import validate_issn, validate_format, validate_checksum
+from pipeline.validators.issn import validate_format, validate_checksum
 
 
 def test_issn_valid_format():
@@ -15,7 +15,7 @@ def test_issn_valid_format():
                        (True, "format")
                        ]
 
-    result = [validate_issn(FieldMeta(value=r)) for r in issn]
+    result = [validate_format(r) for r in issn]
 
     assert result == expected_result
 
@@ -41,7 +41,7 @@ def test_issn_invalid_format():
                        (False, 'format')
                        ]
 
-    result = [validate_format(FieldMeta(value=r)) for r in issn]
+    result = [validate_format(r) for r in issn]
 
     assert result == expected_result
 
@@ -57,7 +57,7 @@ def test_issn_valid_checksum():
                        (True, 'checksum'),
                        ]
 
-    result = [validate_checksum(FieldMeta(value=r)) for r in issn]
+    result = [validate_checksum(r) for r in issn]
 
     assert result == expected_result
 
@@ -73,6 +73,6 @@ def test_issn_invalid_checksum():
                        (False, 'checksum')
                        ]
 
-    result = [validate_checksum(FieldMeta(value=r)) for r in issn]
+    result = [validate_checksum(r) for r in issn]
 
     assert result == expected_result

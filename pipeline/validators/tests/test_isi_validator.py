@@ -1,5 +1,5 @@
 from pipeline.validate import FieldMeta
-from pipeline.validators.isi import validate_isi
+from pipeline.validators.isi import validate_format
 
 
 def test_valid_isi():
@@ -14,7 +14,7 @@ def test_valid_isi():
 
     expected_result = [(True, 'format')] * len(isi)
 
-    result = [validate_isi(FieldMeta(value=r)) for r in isi]
+    result = [validate_format(FieldMeta(value=r)) for r in isi]
     assert result == expected_result
 
 
@@ -29,5 +29,5 @@ def test_invalid_isi_format():
 
     expected_result = [(False, 'format')] * len(isi)
 
-    result = [validate_isi(FieldMeta(value=r)) for r in isi]
+    result = [validate_format(FieldMeta(value=r)) for r in isi]
     assert result == expected_result

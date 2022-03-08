@@ -14,7 +14,7 @@ def test_isbn_valid_format():
 
     expected_result = [(True, 'format')] * len(isbn)
 
-    result = [validate_format(FieldMeta(value=r)) for r in isbn]
+    result = [validate_format(r) for r in isbn]
     assert result == expected_result
 
 
@@ -38,7 +38,7 @@ def test_isbn_invalid_format():
                        (False, 'format'),
                        (False, 'format')]
 
-    result = [validate_format(FieldMeta(value=r)) for r in isbn]
+    result = [validate_format(r) for r in isbn]
     assert result == expected_result
 
 
@@ -53,7 +53,7 @@ def test_isbn_valid_checksum():
                        (True, 'checksum'),
                        ]
 
-    result = [validate_checksum(FieldMeta(value=r)) for r in isbn]
+    result = [validate_checksum(r) for r in isbn]
     assert result == expected_result
 
 
@@ -66,5 +66,5 @@ def test_isbn_invalid_checksum():
                        (False, 'checksum')
                        ]
 
-    result = [validate_checksum(FieldMeta(value=r)) for r in isbn]
+    result = [validate_checksum(r) for r in isbn]
     assert result == expected_result

@@ -18,7 +18,7 @@ def test_orcid_valid_format_validation():
                         (True, 'format'),
                         (True, 'format')]
 
-    result = [validate_format(FieldMeta(value=r)) for r in orcid]
+    result = [validate_format(r) for r in orcid]
 
     assert result == expected_results
 
@@ -32,7 +32,7 @@ def test_orcid_invalid_format_validation():
                         (False, 'format'),
                         (False, 'format')]
 
-    result = [validate_format(FieldMeta(value=r)) for r in orcid]
+    result = [validate_format(r) for r in orcid]
 
     assert result == expected_results
 
@@ -42,7 +42,7 @@ def test_orcid_valid_checksum_validation():
              '0000-0002-9079-593X',  # Steven hawkins' ORCID
              'https://orcid.org/0000-0002-2397-0769']  # ORCID with full URL
 
-    result = [validate_checksum(FieldMeta(value=r)) for r in orcid]
+    result = [validate_checksum(r) for r in orcid]
 
     assert result == [(True, 'checksum')] * len(orcid)
 
@@ -52,7 +52,7 @@ def test_orcid_invalid_checksum_validation():
 
     expected_results = [(False, 'checksum')]
 
-    result = [validate_checksum(FieldMeta(value=r)) for r in orcid]
+    result = [validate_checksum(r) for r in orcid]
 
     assert result == expected_results
 
@@ -64,7 +64,7 @@ def test_orcid_valid_span_validation():
     expected_results = [(True, 'span'),
                         (True, 'span')]
 
-    result = [validate_span(FieldMeta(value=r)) for r in orcid]
+    result = [validate_span(r) for r in orcid]
 
     assert result == expected_results
 
@@ -80,7 +80,7 @@ def test_orcid_invalid_span_validation():
                         (False, 'span'),
                         (False, 'span')]
 
-    result = [validate_span(FieldMeta(value=r)) for r in orcid]
+    result = [validate_span(r) for r in orcid]
 
     assert result == expected_results
 

@@ -20,54 +20,50 @@ def strip_url(orcid):
     return orcid
 
 
-def validate_unicode(field):
-    result = validate_base_unicode(field.value)
+def validate_unicode(orcid):
+    result = validate_base_unicode(orcid)
     if result:
         return True, "unicode"
     else:
-        field.events.append(make_event(type="validation", code="unicode", result="invalid", value=field.value))
         return False, "unicode"
 
 
-def validate_format(field):
-    hit = orcid_regex.fullmatch(field.value)
+def validate_format(orcid):
+    hit = orcid_regex.fullmatch(orcid)
     if hit:
         return True, "format"
     else:
-        field.events.append(make_event(type="validation", code="format", result="invalid", value=field.value))
         return False, "format"
 
 
-def validate_span(field):
+def validate_span(orcid):
     try:
-        orcnum = int(strip_url(field.value).replace('-', '')[:-1])
+        orcnum = int(strip_url(orcid).replace('-', '')[:-1])
         inspan = 15000000 <= orcnum <= 35000001
         if inspan:
             return True, "span"
         else:
-            field.events.append(make_event(type="validation", code="span", result="invalid", value=field.value))
             return False, "span"
     except ValueError:
-        field.events.append(make_event(type="validation", code="span", result="invalid", value=field.value))
         return False, "span"
 
 
-def validate_checksum(field):
-    if is_valid(strip_url(field.value).upper().replace('-', '')):
+def validate_checksum(orcid):
+    if is_valid(strip_url(orcid).upper().replace('-', '')):
         return True, "checksum"
     else:
-        field.events.append(make_event(type="validation", code="checksum", result="invalid", value=field.value))
         return False, "checksum"
 
 
 def validate_orcid(field):
-    success, code = validate_unicode(field) or validate_format(field) or validate_span(field) or validate_checksum(field)
+    success, code = validate_unicode(field.value) or validate_format(field.value) or validate_span(field.value) or validate_checksum(field.value)
 
     if success:
         field.validation_status = 'valid'
         if not field.is_enriched():
             field.enrichment_status = 'unchanged'
     else:
+        field.events.append(make_event(type="validation", code=code, result="invalid", value=field.value))
         field.validation_status = 'invalid'
         if field.is_enriched():
             field.enrichment_status = 'unsuccessful'

@@ -12,20 +12,21 @@ isi_regex = re.compile(
     '[0-9a-zA-Z]{12})'  # Allows 0-9 and A-Z for the following 12 characters
 )
 
+
+def _validate_base_unicode(field):
+    return validate_base_unicode(field.value), "unicode"
+
+
+def validate_format(field):
+    hit = isi_regex.fullmatch(field.value)
+    return hit is not None, "format"
+
+
 def validate_isi(field):
-    isi = field.value
-    result = validate_base_unicode(isi)
-    if result == False:
-        field.events.append(make_event(type="validation", code="unicode", result="invalid", initial_value=isi))
-        field.validation_status = 'invalid'
-        return False, "unicode"
-    
-    hit = isi_regex.fullmatch(isi)
-    if hit is None:
-        field.events.append(make_event(type="validation", code="format", result="invalid", initial_value=isi))
-        field.validation_status = 'invalid'
-        return False, "format"
-    else:
-        field.events.append(make_event(type="validation", code="format", result="valid", initial_value=isi))
+    success, code = _validate_base_unicode(field) or _validate_format(field)
+
+    if success:
         field.validation_status = 'valid'
-        return True, "format"
+    else:
+        field.events.append(make_event(type="validation", code=code, result="invalid", initial_value=field.value))
+        field.validation_status = 'invalid'
