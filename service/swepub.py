@@ -1053,11 +1053,11 @@ def process_get_export(source=None):
             converted.id == converted_audit_events.converted_id
         )
 
-    if g.from_date and g.to_date:
+    if g.from_yr and g.to_yr:
         q = q.where(
             (converted.date >= Parameter("?")) & (converted.date <= Parameter("?"))
         )
-        values.append([g.from_date, g.to_date])
+        values.append([g.from_yr, g.to_yr])
 
     # Specified flags should be OR'd together, so we build up a list of criteria and use
     # pypika's Criterion.any.
@@ -1131,9 +1131,9 @@ def process_get_export(source=None):
             total += 1
         if not export_as_csv:
             yield "],"
-            if g.from_date and g.to_date:
-                yield f'"from": {g.from_date},'
-                yield f'"to": {g.to_date},'
+            if g.from_yr and g.to_yr:
+                yield f'"from": {g.from_yr},'
+                yield f'"to": {g.to_yr},'
             yield (
                 f'"query": {json.dumps(request.args)},'
                 f'"query_handled_at": "{handled_at}",'
