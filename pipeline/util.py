@@ -15,6 +15,12 @@ def update_at_path(root, path, new_value):
     parent_object[key] = new_value
 
 
+def get_at_path(root, path):
+    if path == "":
+        return root
+    return parse(path).find(root)[0].value
+
+
 class UnicodeAsciiTranslator:
     def __init__(self):
         pass
