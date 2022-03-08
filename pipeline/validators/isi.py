@@ -23,10 +23,10 @@ def validate_format(field):
 
 
 def validate_isi(field):
-    success, code = _validate_base_unicode(field) or _validate_format(field)
-
-    if success:
-        field.validation_status = 'valid'
-    else:
-        field.events.append(make_event(type="validation", code=code, result="invalid", initial_value=field.value))
-        field.validation_status = 'invalid'
+    for validator in [_validate_base_unicode, validate_format]:
+        success, code = validator(field)
+        if not success:
+            field.events.append(make_event(type="validation", code=code, result="invalid", initial_value=field.value))
+            field.validation_status = 'invalid'
+            return
+    field.validation_status = 'valid'

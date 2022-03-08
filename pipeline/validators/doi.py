@@ -72,14 +72,14 @@ def _doi_is_valid_format(doi):
     return True
 
 
-def validate_unicode(doi):
+def validate_unicode(doi, session=None, harvest_cache=None):
     """DOI can incorporate any printable characters from the legal graphic characters of Unicode
     (https://www.doi.org/doi_handbook/2_Numbering.html)."""
     # The translate function removes illegal chars.
     return doi == doi.translate(TRANSLATE_DICT), "unicode", None
 
 
-def validate_format(doi):
+def validate_format(doi, session=None, harvest_cache=None):
     stripped_doi = _strip_doi_http_prefix(doi)
     return _doi_is_valid_format(stripped_doi), "format", stripped_doi
 
@@ -94,47 +94,16 @@ def validate_with_remote(doi, session, harvest_cache):
     return True, "remote", stripped_doi
 
 
-def _validate(field, session, harvest_cache):
-    doi = field.value
-
-    if not _validate_printable_chars_and_no_ws(doi):
-        field.events.append(make_event(type="validation", code="unicode", result="invalid", value=doi))
-        return False
-    
-    stripped_doi = _strip_doi_http_prefix(doi)
-    if not _doi_is_valid_format(stripped_doi):
-        field.events.append(make_event(type="validation", code="format", result="invalid", value=stripped_doi))
-        return False
-
-    if harvest_cache['doi_static'].get(stripped_doi, 0) or harvest_cache['doi_new'].get(stripped_doi, 0):
-        field.events.append(make_event(type="validation", code="remote.cache", result="valid", value=stripped_doi))
-        field.value = stripped_doi
-        return True
-
-    valid = _validate_with_shortdoi(stripped_doi, session)
-    if not valid:
-        valid = _validate_with_crossref(stripped_doi, session)
-        if not valid:
-            field.events.append(make_event(type="validation", code="remote.crossref", result="invalid", value=stripped_doi))
-            return False
-
-    field.events.append(make_event(type="validation", code="remote", result="valid", value=stripped_doi))
-    harvest_cache['doi_new'][stripped_doi] = 1
-    field.value = stripped_doi
-    return True
-
-
 def validate_doi(field, session, harvest_cache):
-    success, code, new_value = validate_unicode(field.value) and validate_format(field.value) and validate_with_remote(field.value, session, harvest_cache)
-
-    if success:
-        field.events.append(make_event(type="validation", code=code, result="valid", value=(new_value or field.value)))
-        field.value = new_value or field.value
-        field.validation_status = 'valid'
-        if not field.is_enriched():
-            field.enrichment_status = 'unchanged'
-    else:
-        field.events.append(make_event(type="validation", code=code, result="invalid", value=(new_value or field.value)))
-        field.validation_status = 'invalid'
-        if field.is_enriched():
-            field.enrichment_status = 'unsuccessful'
+    for validator in [validate_unicode, validate_format, validate_with_remote]:
+        success, code, new_value = validator(field.value, session, harvest_cache)
+        if not success:
+            field.events.append(make_event(type="validation", code=code, result="invalid", value=(new_value or field.value)))
+            field.validation_status = 'invalid'
+            if field.is_enriched():
+                field.enrichment_status = 'unsuccessful'
+    field.events.append(make_event(type="validation", code=code, result="valid", value=(new_value or field.value)))
+    field.value = new_value or field.value
+    field.validation_status = 'valid'
+    if not field.is_enriched():
+        field.enrichment_status = 'unchanged'

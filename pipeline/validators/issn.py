@@ -9,7 +9,7 @@ from pipeline.util import make_event
 issn_regex = re.compile('[0-9]{4}-?[0-9]{3}[0-9xX]')
 
 
-def validate_format(issn):
+def validate_format(issn, session=None, harvest_cache=None):
     if issn is not None and isinstance(issn, str):
         hit = issn_regex.fullmatch(issn)
         if hit is None:
@@ -17,7 +17,7 @@ def validate_format(issn):
         return True, "format"
 
 
-def validate_checksum(issn):
+def validate_checksum(issn, session=None, harvest_cache=None):
     return is_valid(issn), "checksum"
 
 
@@ -39,16 +39,15 @@ def validate_cache_or_remote(issn, session=None, harvest_cache=None):
 
 
 def validate_issn(field, session=None, harvest_cache=None):
-    success, code = validate_format(field.value) or validate_checksum(field.value) or validate_cache_or_remote(field.value, session, harvest_cache)
-
-    if success:
-        field.events.append(make_event(type="validation", code=code, result="valid", value=field.value))
-        field.validation_status = 'valid'
-        if not field.is_enriched():
-            field.enrichment_status = 'unchanged'
-    else:
-        field.events.append(make_event(type="validation", code=code, result="invalid", value=field.value))
-        field.validation_status = 'invalid'
-        if field.is_enriched():
-            field.enrichment_status = 'unsuccessful'
-    return success, code
+    for validator in [validate_format, validate_checksum, validate_cache_or_remote]:
+        success, code = validator(field.value, session, harvest_cache)
+        if not success:
+            field.events.append(make_event(type="validation", code=code, result="invalid", value=field.value))
+            field.validation_status = 'invalid'
+            if field.is_enriched():
+                field.enrichment_status = 'unsuccessful'
+            return
+    field.events.append(make_event(type="validation", code=code, result="valid", value=field.value))
+    field.validation_status = 'valid'
+    if not field.is_enriched():
+        field.enrichment_status = 'unchanged'

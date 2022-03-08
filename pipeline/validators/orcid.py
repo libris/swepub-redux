@@ -56,15 +56,14 @@ def validate_checksum(orcid):
 
 
 def validate_orcid(field):
-    success, code = validate_unicode(field.value) or validate_format(field.value) or validate_span(field.value) or validate_checksum(field.value)
-
-    if success:
-        field.validation_status = 'valid'
-        if not field.is_enriched():
-            field.enrichment_status = 'unchanged'
-    else:
-        field.events.append(make_event(type="validation", code=code, result="invalid", value=field.value))
-        field.validation_status = 'invalid'
-        if field.is_enriched():
-            field.enrichment_status = 'unsuccessful'
-    return success, code
+    for validator in [validate_unicode, validate_format, validate_span, validate_checksum]:
+        success, code = validator(field.value)
+        if not success:
+            field.events.append(make_event(type="validation", code=code, result="invalid", value=field.value))
+            field.validation_status = 'invalid'
+            if field.is_enriched():
+                field.enrichment_status = 'unsuccessful'
+            return
+    field.validation_status = 'valid'
+    if not field.is_enriched():
+        field.enrichment_status = 'unchanged'
