@@ -96,6 +96,7 @@ def normalize_doi(body, field):
         field.events.append(make_event(type="normalization", result="normalized", code="prefix.remove", value=new_value, initial_value=doi))
         field.normalization_status = 'normalized'
         field.value = new_value
+        enriched_value = new_value
 
     code = ''
     if new_value.startswith('http:'):
