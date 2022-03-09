@@ -41,9 +41,9 @@ def normalize_isi(body, field):
         field.value = new_value
 
 
-HTTP_PREFIX = 'http://orcid.org/'
-HTTPS_PREFIX = 'https://orcid.org/'
 def normalize_orcid(body, field):
+    HTTP_PREFIX = 'http://orcid.org/'
+    HTTPS_PREFIX = 'https://orcid.org/'
     orcid = field.value
     path = field.path
     # normalize_orcid_prefix
@@ -74,13 +74,13 @@ def normalize_orcid(body, field):
         update_at_path(body, path, enriched)
         field.events.append(make_event(type="normalization", result="normalized", code="format.delimiters", value=enriched, initial_value=initial))
         field.normalization_status = 'normalized'
-        field.value = enriched_value
+        field.value = enriched
 
 
-HTTPS_PREFIX = 'https://doi.org/'
-DOI_PREFIX = '10.'
-doi_prefix = re.compile(r'(https?://doi\.org/)?(10\..*)')
 def normalize_doi(body, field):
+    HTTPS_PREFIX = 'https://doi.org/'
+    DOI_PREFIX = '10.'
+    doi_prefix = re.compile(r'(https?://doi\.org/)?(10\..*)')
     doi = field.value
     path = field.path
     # normalize_doi_prefix
