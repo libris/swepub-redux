@@ -37,7 +37,7 @@ def recover_orcid(body, field):
     orcid_list = [h.group() for h in hit]
     if len(orcid_list) != 0:
         if orcid_list[0] != orcid:
-            field.events.append(make_event(type="enrichment", code="split", value=orcid_list[0], initial_value=orcid, result="enriched"))
+            field.events.append(make_event(type="enrichment", code="recovery", value=orcid_list[0], initial_value=orcid, result="enriched"))
             update_at_path(body, path, orcid_list[0])
             field.enrichment_status = 'enriched'
             field.value = orcid_list[0]

@@ -33,7 +33,7 @@ def recover_isbn(body, field):
         update_at_path(body, field.path, res[0])
         field.value = res[0]
         field.enrichment_status = "enriched"
-        field.events.append(make_event(type="enrichment", code="split", value=res[0], initial_value=isbn, result="enriched"))
+        field.events.append(make_event(type="enrichment", code="recovery", value=res[0], initial_value=isbn, result="enriched"))
 
     if field.enrichment_status != 'enriched':
         field.enrichment_status = 'unsuccessful'
