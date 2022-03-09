@@ -32,6 +32,7 @@ def normalize_isbn(body, field):
 
 def normalize_isi(body, field):
     isi = field.value
+    path = field.path
 
     new_value = isi.upper()
     if new_value != isi:
