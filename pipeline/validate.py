@@ -70,14 +70,14 @@ def should_be_rejected(raw_xml):
 
 
 class FieldMeta:
-    def __init__(self, path='', id_type='', value=None):
+    def __init__(self, path='', id_type='', value=None, validation_status="pending", normalization_status="unchanged", enrichment_status="pending"):
         self.id_type = id_type
         self.path = path
         self.initial_value = value
         self.value = value
-        self.validation_status = 'pending'  # 'valid', 'invalid', 'error', 'pending'
-        self.enrichment_status = 'pending'  # 'enriched', 'unchanged', 'unsuccessful', 'pending', 'error',
-        self.normalization_status = 'unchanged'  # 'unchanged', 'normalized'
+        self.validation_status = validation_status  # 'valid', 'invalid', 'error', 'pending'
+        self.enrichment_status = enrichment_status  # 'enriched', 'unchanged', 'unsuccessful', 'pending', 'error',
+        self.normalization_status = normalization_status  # 'unchanged', 'normalized'
         self.events = []
 
     def is_enriched(self):
