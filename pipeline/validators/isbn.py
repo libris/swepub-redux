@@ -37,12 +37,12 @@ def validate_isbn(field):
     for validator in [validate_format, validate_checksum]:
         success, code = validator(field.value)
         if not success:
-            field.events.append(make_event(type="validation", code=code, result="invalid", initial_value=field.value))
+            field.events.append(make_event(type="validation", code=code, result="invalid", value=field.value))
             field.validation_status = 'invalid'
             if field.is_enriched():
                 field.enrichment_status = 'unsuccessful'
             return
-    field.events.append(make_event(type="validation", code=code, result="valid", initial_value=field.value))
+    field.events.append(make_event(type="validation", code=code, result="valid", value=field.value))
     field.validation_status = 'valid'
     if not field.is_enriched():
         field.enrichment_status = 'unchanged'
