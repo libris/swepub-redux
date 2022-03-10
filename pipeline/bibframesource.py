@@ -531,13 +531,7 @@ class BibframeSource:
 
     @property
     def publisher(self):
-        # TODO: Remove (see https://jira.kb.se/browse/SWEPUB2-718)
-        # Old versions keep everything in `provisionActivity`
-        if "publication" not in self.bibframe_master and "provisionActivity" in self.bibframe_master:
-            publications = self.bibframe_master.get("provisionActivity", [])
-        else:
-            publications = self.bibframe_master.get("publication", [])
-        for publication in publications:
+        for publication in self.bibframe_master.get("publication", []):
             if publication.get("@type", "") == "Publication":
                 if publication.get("agent", {}).get("@type", "") == "Agent":
                     return publication.get("agent", {}).get("label")

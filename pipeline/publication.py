@@ -202,13 +202,7 @@ class Publication:
     @property
     def publication_information(self):
         """ Return first occurrence of PublicationInformation from publication field"""
-        # TODO: Remove check for provisionActivity (see https://jira.kb.se/browse/SWEPUB2-718)
-        if "publication" not in self.body and "provisionActivity" in self.body:
-            provision_activity_array = self.body.get('provisionActivity', [])
-            publication_array = [p for p in provision_activity_array if p.get('@type') == 'Publication']
-        else:
-            publication_array = self.body.get('publication', [])
-        for p in publication_array:
+        for p in self.body.get('publication', []):
             if isinstance(p, dict) and p.get('@type') == 'Publication':
                 return PublicationInformation(p)
         return None
@@ -217,10 +211,6 @@ class Publication:
     def publication_information(self, publication_information):
         """ Sets array for publication_information from array of PublicationInformation objects """
         self._body['publication'] = [publication_information.body]
-        # TODO: Remove check for provisionActivity (see https://jira.kb.se/browse/SWEPUB2-718)
-        provision_activity_array = self.body.get('provisionActivity', [])
-        provision_activity_array = [p for p in provision_activity_array if p.get('@type') != 'Publication']
-        self._body['provisionActivity'] = provision_activity_array
 
     @property
     def usage_and_access_policy(self):

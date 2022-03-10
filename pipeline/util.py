@@ -242,13 +242,7 @@ def get_summary(body):
 
 def get_publication_information(body):
     """ Return first occurrence of PublicationInformation from publication field"""
-    # TODO: Remove check for provisionActivity (see https://jira.kb.se/browse/SWEPUB2-718)
-    if "publication" not in body and "provisionActivity" in body:
-        provision_activity_array = body.get('provisionActivity', [])
-        publication_array = [p for p in provision_activity_array if p.get('@type') == 'Publication']
-    else:
-        publication_array = body.get('publication', [])
-    for p in publication_array:
+    for p in body.get('publication', []):
         if isinstance(p, dict) and p.get('@type') == 'Publication':
             return p
     return None
