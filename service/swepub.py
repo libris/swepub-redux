@@ -78,6 +78,8 @@ def get_db():
     db = getattr(g, "_database", None)
     if db is None:
         db = g._database = sqlite3.connect(f"{SWEPUB_DB_READONLY}")
+        if getenv("SWEPUB_LOG_LEVEL") == "DEBUG":
+            db.set_trace_callback(print)
         cursor = db.cursor()
         cursor.execute("PRAGMA cache_size=-64000")  # negative number = kibibytes
         cursor.execute("PRAGMA temp_store=MEMORY")
@@ -337,9 +339,7 @@ def bibliometrics_api():
                 "}"
             )
 
-    return app.response_class(
-        stream_with_context(get_results()), mimetype=export_mimetype
-    )
+    return app.response_class(stream_with_context(get_results()), mimetype=export_mimetype)
 
 
 @app.route("/api/v1/bibliometrics/publications/<record_id>", methods=["GET"])
@@ -1024,9 +1024,7 @@ def process_get_export(source=None):
     )
     values = []
     q = (
-        Query.select(converted.oai_id)
-        .distinct()
-        .select(converted.date, converted.data, converted.events)
+        Query
         .from_(converted)
         .where(converted.source == Parameter("?"))
         .where(converted.deleted == 0)
@@ -1080,9 +1078,21 @@ def process_get_export(source=None):
                         (converted_audit_events.code == Parameter("?"))
                         & (converted_audit_events.result == Parameter("?"))
                     )
-                    int_flag_value = 1 if flag_value == "valid" else 0
+                    int_flag_value = 0 if flag_value == "valid" else 1
                     values.append([flag_name, int_flag_value])
     q = q.where(Criterion.any(criteria))
+
+    q_total = (
+        q
+        .select(fn.Count(converted.oai_id).distinct().as_("total"))
+    )
+
+    q = (
+        q
+        .select(converted.oai_id)
+        .distinct()
+        .select(converted.date, converted.data, converted.events)
+    )
 
     if limit:
         q = q.limit(limit)
@@ -1092,6 +1102,7 @@ def process_get_export(source=None):
     handled_at = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     cur = get_db().cursor()
     cur.row_factory = dict_factory
+    total_docs = cur.execute(str(q_total), list(flatten(values))).fetchone()["total"]
 
     def get_results():
         # Exports can be large and we don't want to load everything into memory, so we stream
@@ -1101,14 +1112,13 @@ def process_get_export(source=None):
             yield f"# Swepub data processing export. Query handled at {handled_at}. Query parameters: {request.args.to_dict()}\n"
         else:
             yield f'{{"code": "{source}",' f'"hits": ['
-        total = 0
+        count = 0
         for row in cur.execute(str(q), list(flatten(values))):
             flask_url = url_for(
                 "process_get_original_publication", record_id=row["oai_id"]
             )
-            proto = request.headers.get("X-Forwarded-Proto")
-            host = request.headers.get("X-Forwarded-Host")
-            mods_url = f"{proto}://{host}{flask_url}"
+            base_url, _parts = get_base_url(request)
+            mods_url = f"{base_url}{flask_url}"
             export_result = build_export_result(
                 json.loads(row["data"]),
                 json.loads(row["events"]),
@@ -1123,12 +1133,12 @@ def process_get_export(source=None):
                     csv_flavor,
                     request.args.to_dict(),
                     handled_at,
-                    total,
+                    total_docs,
                 )
             else:
-                maybe_comma = "," if total > 0 else ""
+                maybe_comma = "," if count > 0 else ""
                 yield maybe_comma + json.dumps(export_result)
-            total += 1
+            count += 1
         if not export_as_csv:
             yield "],"
             if g.from_yr and g.to_yr:
@@ -1138,13 +1148,27 @@ def process_get_export(source=None):
                 f'"query": {json.dumps(request.args)},'
                 f'"query_handled_at": "{handled_at}",'
                 f'"source": "{INFO_API_SOURCE_ORG_MAPPING[source]["name"]}",'
-                f'"total": {total}'
+                f'"total": {total_docs}'
                 "}"
             )
 
-    return app.response_class(
+    resp = app.response_class(
         stream_with_context(get_results()), mimetype=export_mimetype
     )
+
+    (prev_page, next_page) = process_get_pagination_links(
+        request,
+        url_for("process_get_export", source=source),
+        limit,
+        offset,
+        total_docs,
+    )
+    if prev_page:
+        resp.headers.add("Link", f"<{prev_page}>", rel="prev")
+    if next_page:
+        resp.headers.add("Link", f"<{next_page}>", rel="next")
+
+    return resp
 
 
 # ███╗   ███╗██╗███████╗ ██████╗   

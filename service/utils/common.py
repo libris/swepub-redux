@@ -1,6 +1,6 @@
 from collections.abc import Iterable
 from enum import Enum
-
+from urllib.parse import urlparse
 
 # https://stackoverflow.com/a/3300514
 def dict_factory(cursor, row):
@@ -138,3 +138,21 @@ def export_options(request):
     else:
         export_mimetype = "application/json"
     return export_as_csv, export_mimetype, csv_flavor
+
+
+def get_base_url(request):
+    proto = request.headers.get("X-Forwarded-Proto")
+    host = request.headers.get("X-Forwarded-Host")
+    port = request.headers.get("X-Forwarded-Port")
+    path = request.path
+
+    if not proto and not host and not port:
+        parsed_from_request = urlparse(request.base_url)
+        proto = parsed_from_request.scheme
+        host = parsed_from_request.hostname
+        port = str(parsed_from_request.port)
+    netloc = f"{host}:{port}"
+
+    if (proto == "https" and port != "443") or (proto == "http" and port != 80):
+        return f"{proto}://{host}:{port}", (proto, host, port, path, netloc)
+    return f"{proto}://{host}", (proto, host, port, path, netloc)

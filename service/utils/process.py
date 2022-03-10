@@ -1,6 +1,8 @@
 import re
 from urllib.parse import urlunparse
 
+from service.utils.common import get_base_url
+
 DEFAULT_FIELDS = [
     "DOI",
     "ISBN",
@@ -402,10 +404,7 @@ def process_get_pagination_links(request, endpoint, limit, offset, total):
     """Return prev/next links given a search request."""
     prev_link = next_link = None
     (prev_offset, next_offset) = get_offsets(limit, offset, total)
-    # NOTE: These headers are created by Traefik, so this creates a strong dependency.
-    proto = request.headers.get("X-Forwarded-Proto", "")
-    host = request.headers.get("X-Forwarded-Host", "")
-    prefix = request.headers.get("X-Forwarded-Prefix", "")
+    _base_url, (proto, _host, _port, _path, netloc) = get_base_url(request)
     args = {}
     for key, values in request.args.lists():
         args[key] = values
@@ -413,18 +412,17 @@ def process_get_pagination_links(request, endpoint, limit, offset, total):
         return None, None
     if prev_offset is not None:
         prev_link = _get_pagination_link(
-            proto, host, prefix, endpoint, args, prev_offset
+            proto, netloc, endpoint, args, prev_offset
         )
     if next_offset is not None:
         next_link = _get_pagination_link(
-            proto, host, prefix, endpoint, args, next_offset
+            proto, netloc, endpoint, args, next_offset
         )
     return prev_link, next_link
 
 
-def _get_pagination_link(proto, host, prefix, endpoint, args, offset):
+def _get_pagination_link(proto, netloc, endpoint, args, offset):
     params = fragment = None
-    path = f"{prefix}{endpoint}"
     expanded_args = []
     if "offset" not in args:
         args["offset"] = offset
@@ -435,4 +433,4 @@ def _get_pagination_link(proto, host, prefix, endpoint, args, offset):
         for value in values:
             expanded_args.append(f"{key}={value}")
     query = "&".join(expanded_args)
-    return urlunparse((proto, host, path, params, query, fragment))
+    return urlunparse((proto, netloc, endpoint, params, query, fragment))
