@@ -250,24 +250,15 @@ def _find_and_add_subjects():
 
                         cursor.execute("""
                         SELECT
-                            data
+                            data, events
                         FROM
                             converted
                         WHERE
                             id = ? ;
                         """, (rowid,) )
-                        old_converted = cursor.fetchall()[0][0]
-                        old_publication = Publication(json.loads(old_converted))
-
-
-                        cursor.execute("""
-                        UPDATE
-                            converted
-                        SET
-                            data = ?
-                        WHERE
-                            id = ? ;
-                        """, (jsontext, rowid) )
+                        row = cursor.fetchone()
+                        old_publication = Publication(json.loads(row[0]))
+                        events = json.loads(row[1])
 
                         publication = Publication(json.loads(jsontext))
                         code = "auto_classify"
@@ -275,12 +266,30 @@ def _find_and_add_subjects():
                         value = publication.uka_swe_classification_list
                         result = "1"
 
+                        events["audit_events"]["AutoclassifierAuditor"] = [
+                            {
+                                "code": "auto_classify",
+                                "result": "enriched",
+                                "initial_value": initial_value,
+                                "value": value
+                            }
+                        ]
+
+                        cursor.execute("""
+                        UPDATE
+                            converted
+                        SET
+                            data = ?, events = ?
+                        WHERE
+                            id = ? ;
+                        """, (jsontext, json.dumps(events), rowid) )
+
                         cursor.execute("""
                         INSERT INTO converted_audit_events
-                            (converted_id, name, code, result, initial_value, value)
+                            (converted_id, name, code, result)
                         VALUES
-                            (?, ?, ?, ?, ?, ?);
-                        """, (rowid, "AutoclassifierAuditor", code, result, json.dumps(initial_value), json.dumps(value)) )
+                            (?, ?, ?, ?);
+                        """, (rowid, "AutoclassifierAuditor", code, result) )
                 connection.commit()
 
         # # Add "did nothing"-events (ffs..) for every publication that was not affected by autoclassification
@@ -357,7 +366,7 @@ def find_subjects_for(converted_rowid, converted, cursor):
             # This is a vital tweaking point. How many _rare_ words do two abstracts need to share
             # in order to be considered on the same subject? 2 seems a balanced choice. 1 "works" too,
             # but may be a bit too aggressive (providing a bit too many false positive matches).
-            if len(candidate_matched_words) < 2:
+            if len(candidate_matched_words) < 3:
                 continue
 
             #print(f"Matched {converted_rowid} with {candidate_rowid} based on shared rare words: {candidate_matched_words}")

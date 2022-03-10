@@ -21,7 +21,7 @@ DEFAULT_AUDITORS = [
     "ISSNAuditor",
     "CreatorCountAuditor",
     "UKAAuditor",
-    "AutoClassifier",
+    "AutoclassifierAuditor",
     # 'OAAuditor'
 ]
 
@@ -30,7 +30,7 @@ AUDIT_LABEL_MAP = {
     "ISSNAuditor": "ISSN_missing_check",
     "CreatorCountAuditor": "creator_count_check",
     "UKAAuditor": "UKA_comprehensive_check",
-    "AutoClassifier": "auto_classify",
+    "AutoclassifierAuditor": "auto_classify",
     "SwedishListAuditor": "swedish_list_check",
     # 'OAAuditor': 'oa_check'
 }
@@ -203,7 +203,7 @@ def _get_flags(events, selected_flags):
         flag = _get_audit_flags(auditor, checks, selected_flags)
         if flag:
             # TODO: Add OAAuditor
-            if auditor in ["AutoClassifier"]:
+            if auditor in ["AutoclassifierAuditor"]:
                 # auto_classify and oa_check go into enrichment flags
                 enrichment_flags.update(flag)
             else:
@@ -300,7 +300,7 @@ def _get_audit_flags(auditor, checks, selected_flags):
     selected_auditor_flags = selected_flags.get("audit").get(label, [])
     selected_auto_classify_flags = (
         selected_flags.get("enrichment").get(label, [])
-        if auditor == "AutoClassifier"
+        if auditor == "AutoclassifierAuditor"
         else []
     )
     # selected_oa_check_flags = selected_flags.get("enrichment").get(label, []) if auditor == 'OAAuditor' else []
@@ -322,7 +322,7 @@ def _get_audit_flags(auditor, checks, selected_flags):
         flag = {}
 
         # TODO: Add OAAuditor
-        if auditor in ["AutoClassifier"]:
+        if auditor in ["AutoclassifierAuditor"]:
             # AutoClassifier and OAAuditor are returned separately as they will be moved into enrichment category
             # if auditor == 'AutoClassifier':
             selected_flags = selected_auto_classify_flags

@@ -935,7 +935,7 @@ def process_get_stats(source=None):
         # Autoclassified is a bit of a special case. It's technically an auditor but should here
         # be counted as an enricher. "valid" means "enriched"; we don't actually log "not enriched"
         # for the autoclassifier, so we just subtract the number of enriched from the total.
-        if row["label"] in ["autoclassified", "auto_classify"]:
+        if row["label"] == "auto_classify":
             result["enrichments"]["auto_classify"] = {}
             result["enrichments"]["auto_classify"]["enriched"] = row["valid"]
             result["enrichments"]["auto_classify"]["unchanged"] = result["total"] - row["valid"]
@@ -1046,7 +1046,7 @@ def process_get_export(source=None):
         )
 
     # ...and likewise for converted_audit_events
-    if selected_flags["audit"] or not any(selected_flags.values()):
+    if selected_flags["audit"] or not any(selected_flags.values()) or "auto_classify" in selected_flags["enrichment"]:
         q = q.left_join(converted_audit_events).on(
             converted.id == converted_audit_events.converted_id
         )
@@ -1062,7 +1062,7 @@ def process_get_export(source=None):
     criteria = []
     for flag_type, flags in selected_flags.items():
         for flag_name, flag_values in flags.items():
-            if flag_type in ["validation", "enrichment", "normalization"]:
+            if flag_type in ["validation", "enrichment", "normalization"] and flag_name not in ["auto_classify"]:
                 for flag_value in flag_values:
                     criteria.append(
                         (converted_record_info.field_name == Parameter("?"))
@@ -1072,7 +1072,7 @@ def process_get_export(source=None):
                         )
                     )
                     values.append([flag_name, flag_value])
-            if flag_type == "audit":
+            if flag_type == "audit" or flag_name in ["auto_classify"]:
                 for flag_value in flag_values:
                     criteria.append(
                         (converted_audit_events.code == Parameter("?"))

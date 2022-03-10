@@ -88,8 +88,6 @@ def clean_and_init_storage():
         name TEXT,
         code TEXT,
         result TEXT,
-        initial_value TEXT,
-        value TEXT,
         FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
     );
     """)
@@ -507,20 +505,13 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
 
     for name, events in audit_events.items():
         for event in events:
-            if event.get("value"):
-                value = json.dumps(event.get("value"))
-            else:
-                value = None
-
             cursor.execute("""
-            INSERT INTO converted_audit_events(converted_id, code, initial_value, result, name, value) VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO converted_audit_events(converted_id, code, result, name) VALUES (?, ?, ?, ?)
             """, (
                 converted_rowid,
                 event.get("code", None),
-                event.get("initial_value", None),
                 event.get("result", None),
-                name,
-                value
+                name
             ))
 
     identifiers = []
