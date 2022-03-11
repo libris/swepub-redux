@@ -4,8 +4,6 @@ from datetime import date, datetime
 
 from dateutil.parser import parse as dateutil_parse
 
-from jsonpath_rw_ext import parse
-
 
 CREATOR_FIELDS = ["familyName", "givenName", "localId", "localIdBy", "ORCID", "affiliation", "freetext_affiliations"]
 SUBJECT_FIELDS = ["oneDigitTopics", "threeDigitTopics", "fiveDigitTopics"]
@@ -128,9 +126,6 @@ class BibframeSource:
     CRE_CREATOR = "http://id.loc.gov/vocabulary/relators/cre"
     EDT_CREATOR = "http://id.loc.gov/vocabulary/relators/edt"
     ALL_CREATOR_IDS = [AUT_CREATOR, CRE_CREATOR, EDT_CREATOR]
-
-    RAW_SUBJECT_PATH = 'instanceOf.subject[?(@.@type=="Topic")]'
-    SUBJECT_PATH = parse(RAW_SUBJECT_PATH)
 
     def __init__(self, bibframe_source=None, fields=None):
         if fields is None:
@@ -725,12 +720,6 @@ class BibframeSource:
                 #return Level.NONPEERREVIEWED
                 return 0
         return None
-
-    @property
-    def subjects(self):
-        """Return a list of all subjects."""
-        subjects = self.SUBJECT_PATH.find(self._bibframe_master)
-        return [subj.value for subj in subjects if subj.value]
 
     @property
     def subject_codes(self):
