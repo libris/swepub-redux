@@ -485,8 +485,8 @@
     "name": "Marie Cederschiöld högskola",
     "sets": [
       {
-        "url": "http://ths.diva-portal.org/dice/oai",
-        "subset": "SwePub-ths",
+        "url": "http://esh.diva-portal.org/dice/oai",
+        "subset": "SwePub-esh",
         "metadata_prefix": "swepub_mods"
       }
     ]
