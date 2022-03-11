@@ -4,78 +4,6 @@ from pipeline.util import *
 import itertools
 import datetime
 from dateutil.parser import parse as parse_date
-from jsonpath_rw_ext import parse
-
-
-
-RAW_ISSN_PATHS = (
-    'partOf.[*].identifiedBy[?(@.@type=="ISSN")].value',
-    'partOf.[*].indirectlyIdentifiedBy[?(@.@type=="ISSN")].value',
-    'partOf.[*].hasSeries.[*].identifiedBy[?(@.@type=="ISSN")].value',
-    'partOf.[*].hasSeries.[*].indirectlyIdentifiedBy[?(@.@type=="ISSN")].value',
-    'hasSeries.[*].identifiedBy[?(@.@type=="ISSN")].value',
-    'hasSeries.[*].indirectlyIdentifiedBy[?(@.@type=="ISSN")].value',
-    'identifiedBy[?(@.@type=="ISSN")].value',
-    'indirectlyIdentifiedBy[?(@.@type=="ISSN")].value',
-)
-ISSN_PATHS = [parse(p) for p in RAW_ISSN_PATHS]
-
-RAW_DATE_PATH = 'publication[?(@.@type=="Publication")].date'
-DATE_PATH = parse(RAW_DATE_PATH)
-
-RAW_TITLE_PATH = 'instanceOf.hasTitle[?(@.@type=="Title")].mainTitle'
-TITLE_PATH = parse(RAW_TITLE_PATH)
-
-RAW_SUBTITLE_PATH = 'instanceOf.hasTitle[?(@.@type=="Title")].subtitle'
-SUBTITLE_PATH = parse(RAW_SUBTITLE_PATH)
-
-RAW_LANGUAGE_PATH = 'instanceOf.language[?(@.@type=="Language")].code'
-LANGUAGE_PATH = parse(RAW_LANGUAGE_PATH)
-
-RAW_SUMMARY_PATH = 'instanceOf.summary[?(@.@type=="Summary")]'
-SUMMARY_PATH = parse(RAW_SUMMARY_PATH)
-
-RAW_SUMMARY_LANG_PATH = 'instanceOf.summary[?(@.@type=="Summary")].language.@id'
-SUMMARY_LANG_PATH = parse(RAW_SUMMARY_LANG_PATH)
-
-RAW_PUBLICATION_STATUS_PATH = 'instanceOf.hasNote[?(@.@type=="PublicationStatus")].@id'
-PUBLICATION_STATUS_PATH = parse(RAW_PUBLICATION_STATUS_PATH)
-
-RAW_SUBJECT_PATH = 'instanceOf.subject[?(@.@type=="Topic")]'
-SUBJECT_PATH = parse(RAW_SUBJECT_PATH)
-
-RAW_CREATORCOUNT_PATH = 'instanceOf.[*].hasNote[?(@.@type=="CreatorCount")].label'
-CREATORCOUNT_PATH = parse(RAW_CREATORCOUNT_PATH)
-
-RAW_GENREFORM_PATH = 'instanceOf.genreForm.[*].@id'
-GENREFORM_PATH = parse(RAW_GENREFORM_PATH)
-
-RAW_CONTRIB_PATH = 'instanceOf.contribution[?(@.@type=="Contribution")]'
-CONTRIB_PATH = parse(RAW_CONTRIB_PATH)
-
-RAW_ARTICLE_PATHS = (
-    'instanceOf.genreForm[?(@.@id=="https://id.kb.se/term/swepub/JournalArticle")]',
-    'instanceOf.genreForm[?(@.@id=="https://id.kb.se/term/swepub/journal-article")]',
-    'instanceOf.genreForm[?(@.@id=="https://id.kb.se/term/swepub/magazine-article")]',
-    'instanceOf.genreForm[?(@.@id=="https://id.kb.se/term/swepub/newspaper-article")]',
-    'instanceOf.genreForm[?(@.@id=="https://id.kb.se/term/swepub/journal-issue")]',
-)
-ARTICLE_PATHS = [parse(a) for a in RAW_ARTICLE_PATHS]
-
-RAW_UKA_PATH = 'instanceOf.subject[?(@.inScheme.code=="uka.se")].code'
-UKA_PATH = parse(RAW_UKA_PATH)
-
-RAW_ISBN_PATHS = [
-    'identifiedBy[?(@.@type=="ISBN")].value',
-    'partOf.[*].identifiedBy[?(@.@type=="ISBN")].value'
-]
-ISBN_PATHS = [parse(p) for p in RAW_ISBN_PATHS]
-
-RAW_DOI_PATH = 'identifiedBy[?(@.@type=="DOI")].value'
-DOI_PATH = parse(RAW_DOI_PATH)
-
-RAW_PARTOF_DOI_PATH = 'partOf.[*].identifiedBy[?(@.@type=="DOI")].value'
-PARTOF_DOI_PATH = parse(RAW_PARTOF_DOI_PATH)
 
 """Max length in characters to compare text"""
 MAX_LENGTH_STRING_TO_COMPARE = 1000
@@ -103,6 +31,15 @@ REPORT_OUTPUT_TYPES = [
 ]
 EDT_TYPES = EDT_PUB_TYPES + EDT_OUTPUT_TYPES
 REPORT_TYPES = REPORT_PUB_TYPES + REPORT_OUTPUT_TYPES
+
+# TODO: Is this list actually up to date?
+ARTICLE_TYPES = [
+    "https://id.kb.se/term/swepub/JournalArticle",
+    "https://id.kb.se/term/swepub/journal-article",
+    "https://id.kb.se/term/swepub/magazine-article",
+    "https://id.kb.se/term/swepub/newspaper-article",
+    "https://id.kb.se/term/swepub/journal-issue",
+]
 
 
 class Publication:
@@ -165,10 +102,7 @@ class Publication:
     @property
     def language(self):
         """Return the publication's language."""
-        language = LANGUAGE_PATH.find(self.body)
-        if len(language) == 1 and language[0].value:
-            return language[0].value
-        return None
+        return get_language(self.body)
 
     @property
     def summary(self):
@@ -181,23 +115,32 @@ class Publication:
     @property
     def year(self):
         """Return the publication year as a string or None if missing or invalid."""
-        dates = DATE_PATH.find(self.body)
-        # TODO add logging?
-        if len(dates) == 1 and dates[0].value:
+        pub_year = self.publication_date
+        if pub_year:
             try:
-                parsed_date = parse_date(dates[0].value)
+                parsed_date = parse_date(pub_year)
                 return '{}'.format(parsed_date.year)
             except ValueError:
                 return None
-        else:
-            return None
+        return None
 
     @property
     def issns(self):
         """Return a list of all ISSNs ordered by importance."""
-        issns = itertools.chain.from_iterable(
-            issn_path.find(self.body) for issn_path in ISSN_PATHS)
-        return [issn.value for issn in issns if issn.value]
+        issns = set()
+        for part_of in self.body.get("partOf", []) + self.body.get("hasSeries", []):
+            if isinstance(part_of, dict):
+                for el in part_of.get("identifiedBy", []) + part_of.get("indirectlyIdentifiedBy", []):
+                    if el.get("@type") == "ISSN":
+                        issns.add(el.get("value"))
+                for series in part_of.get("hasSeries", []):
+                    for el in series.get("identifiedBy", []) + series.get("indirectlyIdentifiedBy", []):
+                        if el.get("@type") == "ISSN":
+                            issns.add(el.get("value"))
+        for issn in self.body.get("identifiedBy", []) + self.body.get("indirectlyIdentifiedBy", []):
+            if isinstance(issn, dict) and issn.get("@type") == "ISSN":
+                issns.add(issn.get("value"))
+        return [issn for issn in issns if issn]
 
     @property
     def publication_information(self):
@@ -324,16 +267,16 @@ class Publication:
     @property
     def creator_count(self):
         """Return creator count or None if missing."""
-        creator_count = CREATORCOUNT_PATH.find(self.body)
-        if len(creator_count) != 1:
-            return None
-        count = creator_count[0].value
-        if not count:
-            return None
-        try:
-            return int(count)
-        except ValueError:
-            return None
+        for c_c in self.body.get('instanceOf', {}).get('hasNote', []):
+            if isinstance(c_c, dict) and c_c.get("@type") == "CreatorCount":
+                count = c_c.get("label")
+                if not count:
+                    return None
+                try:
+                    return int(count)
+                except ValueError:
+                    return None
+        return None
 
     @creator_count.setter
     def creator_count(self, new_creator_count):
@@ -360,9 +303,10 @@ class Publication:
     def _count_creators_report(self):
         edt_count = 0
         count = 0
-        for contribution in CONTRIB_PATH.find(self.body):
-            if contribution.value and 'role' in contribution.value:
-                for role in contribution.value['role']:
+
+        for contribution in self.body.get('instanceOf', {}).get('contribution', []):
+            if isinstance(contribution, dict) and contribution.get("@type") == "Contribution":
+                for role in contribution.get('role', []):
                     if role['@id'] in AUT_ROLES:
                         count += 1
                         # If we find an `AUT_ROLE`, we don't care about other roles
@@ -379,9 +323,9 @@ class Publication:
 
     def _simple_count_creators(self, roles):
         count = 0
-        for contribution in CONTRIB_PATH.find(self.body):
-            if contribution.value and 'role' in contribution.value:
-                for role in contribution.value['role']:
+        for contribution in self.body.get('instanceOf', {}).get('contribution', []):
+            if isinstance(contribution, dict) and contribution.get("@type") == "Contribution":
+                for role in contribution.get('role', []):
                     if role['@id'] in roles:
                         count += 1
                         # We only count max one role per contribution
@@ -391,10 +335,9 @@ class Publication:
     @property
     def has_editors(self):
         """Return True if publication is proceeding or collection."""
-        genreforms = GENREFORM_PATH.find(self.body)
         has_editors = False
-        for gf in genreforms:
-            if gf.value in EDT_TYPES:
+        for g_f in genre_form(self.body):
+            if g_f in EDT_TYPES:
                 has_editors = True
                 break
         return has_editors
@@ -402,10 +345,9 @@ class Publication:
     @property
     def is_report(self):
         """Return True if publication is report."""
-        genreforms = GENREFORM_PATH.find(self.body)
         is_report = False
-        for gf in genreforms:
-            if gf.value in REPORT_TYPES:
+        for g_f in genre_form(self.body):
+            if g_f in REPORT_TYPES:
                 is_report = True
                 break
         return is_report
@@ -459,8 +401,11 @@ class Publication:
 
     def ukas(self):
         """Return a unique list of all UKAs"""
-        ukas = UKA_PATH.find(self.body)
-        return list(set([uka.value for uka in ukas if uka.value]))
+        ukas = set()
+        for uka in self.body.get('instanceOf', {}).get('subject', []):
+            if isinstance(uka, dict) and uka.get("inScheme", {}).get("code", "") == "uka.se":
+                ukas.add(uka.get("code"))
+        return list([uka for uka in ukas if uka])
 
     @property
     def has_duplicate_contributor_persons(self):
@@ -514,19 +459,18 @@ class Publication:
 
     @property
     def is_article(self):
-        articles = itertools.chain.from_iterable(article_path.find(self.body) for article_path in ARTICLE_PATHS)
-        article_values = [article.value for article in articles if article.value]
-        return len(article_values) > 0
+        for article in self.body.get("instanceOf", {}).get("genreForm", []):
+            if isinstance(article, dict) and article.get("@id") in ARTICLE_TYPES:
+                return True
+        return False
 
     @property
     def notes(self):
         """ Return array of notes from instanceOf.[*].hasNote[?(@.@type=="Note")].label """
-        notes = []
-        notes_array = self.body.get('instanceOf', {}).get('hasNote', [])
-        for n in notes_array:
+        notes = set()
+        for n in self.body.get('instanceOf', {}).get('hasNote', []):
             if isinstance(n, dict) and n.get('@type') == 'Note':
-                notes.append(n.get('label'))
-
+                notes.add(n.get('label'))
         return [n for n in notes if n]
 
     def add_notes(self, new_notes):
@@ -592,21 +536,35 @@ class Publication:
     @property
     def identifiedby_isbns(self):
         """Return a list of all ISBN (including partOf)"""
-        isbns = itertools.chain.from_iterable(
-            isbn_path.find(self.body) for isbn_path in ISBN_PATHS)
-        return [isbn.value for isbn in isbns if isbn.value]
+        isbns = set()
+        for isbn in self.body.get("identifiedBy", []):
+            if isinstance(isbn, dict) and isbn.get("@type") == "ISBN":
+                isbns.add(isbn.get("value"))
+        for part_of in self.body.get("partOf", {}):
+            for isbn in part_of.get("identifiedBy", []):
+                if isinstance(isbn, dict) and isbn.get("@type") == "ISBN":
+                    isbns.add(isbn.get("value"))
+        return [isbn for isbn in isbns if isbn]
 
     @property
     def identifiedby_dois(self):
         """Returns a list of all DOI identifiedBy"""
-        identifiers = DOI_PATH.find(self.body)
-        return [identifier.value for identifier in identifiers if identifier.value]
+        dois = set()
+        for doi in self.body.get('identifiedBy', []):
+            if isinstance(doi, dict) and doi.get("@type") == "DOI":
+                dois.add(doi.get("value"))
+        return [doi for doi in dois if doi]
 
     @property
     def identifiedby_partof_dois(self):
         """Returns a list of all DOI partOf identifiedBy"""
-        identifiers = PARTOF_DOI_PATH.find(self.body)
-        return [identifier.value for identifier in identifiers if identifier.value]
+        dois = set()
+        for part_of in self.body.get('partOf', []):
+            if isinstance(part_of, dict) and "identifiedBy" in part_of:
+                for doi in part_of.get("identifiedBy", []):
+                    if doi.get("@type") == "DOI":
+                        dois.add(doi.get("value"))
+        return [doi for doi in dois if doi]
 
     @property
     def electroniclocator_uris(self):
@@ -721,10 +679,9 @@ class Publication:
         """ Return array of ElectronicLocator objects from electronicLocator field """
         electronic_locators = []
         electronic_locators_json_array = self.body.get('electronicLocator', [])
-        if electronic_locators_json_array is not None:
-            for e in electronic_locators_json_array:
-                if isinstance(e, dict):
-                    electronic_locators.append(ElectronicLocator(e))
+        for e in self.body.get('electronicLocator', []):
+            if isinstance(e, dict):
+                electronic_locators.append(ElectronicLocator(e))
         return electronic_locators
 
     @electronic_locators.setter
@@ -736,11 +693,9 @@ class Publication:
     def part_of(self):
         """ Return array of PartOf objetcs from partOf """
         part_of = []
-        part_of_json_array = self.body.get('partOf', [])
-        if part_of_json_array is not None:
-            for p in part_of_json_array:
-                if isinstance(p, dict):
-                    part_of.append(PartOf(p))
+        for p in self.body.get('partOf', []):
+            if isinstance(p, dict):
+                part_of.append(PartOf(p))
         return part_of
 
     @part_of.setter

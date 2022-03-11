@@ -254,3 +254,12 @@ def get_publication_date(body):
     if pub_info:
         return pub_info.get("date")
     return None
+
+
+def get_language(body):
+    """ Return value for instanceOf.summary[?(@.@type=="Summary")].label if exist, None otherwise """
+    language_array = body.get('instanceOf', {}).get('language', [])
+    for l in language_array:
+        if isinstance(l, dict) and l.get('@type') == 'Language':
+            return l.get('code')
+    return None

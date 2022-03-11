@@ -215,13 +215,17 @@ def threaded_handle_harvested(source, source_subset, harvest_id, batch):
             rejected, min_level_errors = should_be_rejected(xml)
             accepted = not rejected
 
-            if accepted:
-                num_accepted += 1
-                converted = convert(xml)
-                (field_events, record_info) = validate(converted, harvest_cache, session)
-                (audited, audit_events) = audit(converted, harvest_cache, session)
-            elif not record.deleted:
-                num_rejected += 1
+            try:
+                if accepted:
+                    num_accepted += 1
+                    converted = convert(xml)
+                    (field_events, record_info) = validate(converted, harvest_cache, session)
+                    (audited, audit_events) = audit(converted, harvest_cache, session)
+                elif not record.deleted:
+                    num_rejected += 1
+            except Exception as e:
+                log.warning(traceback.format_exc())
+                continue
 
             lock.acquire()
             try:
