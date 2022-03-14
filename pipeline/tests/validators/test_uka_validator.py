@@ -1,4 +1,4 @@
-from pipeline.validate import FieldMeta
+from pipeline.util import FieldMeta
 from pipeline.validators.uka import validate_uka
 
 def test_1_digits_uka():

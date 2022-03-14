@@ -1,4 +1,4 @@
-from pipeline.validate import FieldMeta
+from pipeline.util import FieldMeta
 from pipeline.enrichers.orcid import recover_orcid
 
 

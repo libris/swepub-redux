@@ -1,4 +1,4 @@
-from pipeline.validate import FieldMeta
+from pipeline.util import FieldMeta
 from pipeline.validators.orcid import strip_url, validate_format, validate_checksum, validate_span
 
 def test_orcid_valid_format_validation():

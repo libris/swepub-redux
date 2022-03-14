@@ -7,7 +7,7 @@ from os import path
 
 from pipeline.normalize import *
 
-from pipeline.util import get_at_path
+from pipeline.util import get_at_path, FieldMeta
 
 from pipeline.validators.datetime import validate_date_time
 from pipeline.validators.doi import validate_doi
@@ -69,21 +69,6 @@ def should_be_rejected(raw_xml):
     return bool(error_list), error_list
 
 
-class FieldMeta:
-    def __init__(self, path='', id_type='', value=None, validation_status="pending", normalization_status="unchanged", enrichment_status="pending"):
-        self.id_type = id_type
-        self.path = path
-        self.initial_value = value
-        self.value = value
-        self.validation_status = validation_status  # 'valid', 'invalid', 'error', 'pending'
-        self.enrichment_status = enrichment_status  # 'enriched', 'unchanged', 'unsuccessful', 'pending', 'error',
-        self.normalization_status = normalization_status  # 'unchanged', 'normalized'
-        self.events = []
-
-    def is_enriched(self):
-        return self.enrichment_status == 'enriched'
-
-
 def get_record_info(field_events):
     stats = {}
     # While a record can have multiple, say, ISBN fields with different validation/enrichment/normalization
@@ -140,23 +125,33 @@ def validate_stuff(field_events, session, harvest_cache):
 
 
 def enrich_stuff(body, field_events):
+    created_fields = {}
     for id_type in field_events.values():
         for field in id_type.values():
+            added_stuff = []
             if field.validation_status != 'valid':
                 if field.id_type == 'ISBN':
-                    recover_isbn(body, field)
+                    added_stuff = recover_isbn(body, field)
                 if field.id_type == 'ISI':
                     recover_isi(body, field)
                 if field.id_type == 'ORCID':
                     recover_orcid(body, field)
                 if field.id_type == 'ISSN':
-                    recover_issn(body, field)
+                    added_stuff = recover_issn(body, field)
                 if field.id_type == 'DOI':
                     recover_doi(body, field)
                 if field.id_type == 'publication_year':
                     recover_unicode(body, field)
                 if field.id_type == 'creator_count':
                     recover_unicode(body, field)
+
+                if added_stuff:
+                    if field.id_type not in created_fields:
+                        created_fields[field.id_type] = []
+                    created_fields[field.id_type].extend(added_stuff)
+    for id_type, fields in created_fields.items():
+        for field in fields:
+            field_events[id_type][field.path] = field
 
 
 def normalize_stuff(body, field_events):

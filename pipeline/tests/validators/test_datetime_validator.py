@@ -1,4 +1,4 @@
-from pipeline.validate import FieldMeta
+from pipeline.util import FieldMeta
 from pipeline.validators.datetime import validate_format
 
 def test_valid_datetime_format():

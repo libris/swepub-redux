@@ -1,4 +1,4 @@
-from pipeline.validate import FieldMeta
+from pipeline.util import FieldMeta
 from pipeline.enrichers.issn import recover_issn
 from pipeline.enrichers.isbn import recover_isbn
 

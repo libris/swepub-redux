@@ -1,4 +1,4 @@
-from pipeline.validate import FieldMeta
+from pipeline.util import FieldMeta
 from pipeline.validators.creator import validate_is_numeric
 
 def test_valid_creator_count_numeric():

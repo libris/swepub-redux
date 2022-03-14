@@ -1,5 +1,5 @@
 import re
-from pipeline.util import update_at_path, unicode_translate, make_event
+from pipeline.util import update_at_path, add_sibling_at_path, unicode_translate, make_event, FieldMeta
 
 # flake8: noqa W504
 issn_regex = re.compile(
@@ -18,6 +18,7 @@ issn_regex = re.compile(
 def recover_issn(body, field):
     issn = field.value
     path = field.path
+    created_fields = []
 
     translated = unicode_translate(issn)
     if translated != issn:
@@ -31,11 +32,20 @@ def recover_issn(body, field):
     answ = issn_regex.findall(issn)
     # Skip first element in part since it's empty or contains non wanted delimiter
     recovered = [''.join(part[1:]) for part in answ]
-    if len(recovered) > 0 and recovered[0] != issn:
-        field.events.append(make_event(type="enrichment", code="recovery", value=recovered[0], initial_value=issn, result="enriched"))
-        update_at_path(body, path, recovered[0])
-        field.enrichment_status = 'enriched'
-        field.value = recovered[0]
+
+    if len(recovered) > 0:
+        if recovered[0] != issn:
+            field.events.append(make_event(type="enrichment", code="recovery", value=recovered[0], initial_value=issn, result="enriched"))
+            update_at_path(body, path, recovered[0])
+            field.enrichment_status = 'enriched'
+            field.value = recovered[0]
+
+        if len(recovered) > 1:
+            for found_value in recovered[1:]:
+                field.events.append(make_event(type="enrichment", code="split", value=found_value, initial_value=issn, result="enriched"))
+                new_path = add_sibling_at_path(body, path, type="ISSN", value=found_value)
+                created_fields.append(FieldMeta(path=new_path, id_type=field.id_type, value=found_value))
 
     if field.enrichment_status != 'enriched':
         field.enrichment_status = 'unsuccessful'
+    return created_fields

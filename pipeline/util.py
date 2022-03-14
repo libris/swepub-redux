@@ -15,10 +15,34 @@ def update_at_path(root, path, new_value):
     parent_object[key] = new_value
 
 
+def add_sibling_at_path(root, path, type, value):
+    basepath, _, _ = path.rsplit('.', 2)
+    found = parse(basepath).find(root)
+    found[0].value.append({"@type": type, "value": value})
+    # Figure out and return the path for the new sibling (surely there is a better
+    # way to do this...)
+    return f"{basepath}.[{len(found[0].value) - 1}].value"
+
+
 def get_at_path(root, path):
     if path == "":
         return root
     return parse(path).find(root)[0].value
+
+
+class FieldMeta:
+    def __init__(self, path='', id_type='', value=None, validation_status="pending", normalization_status="unchanged", enrichment_status="pending"):
+        self.id_type = id_type
+        self.path = path
+        self.initial_value = value
+        self.value = value
+        self.validation_status = validation_status  # 'valid', 'invalid', 'error', 'pending'
+        self.enrichment_status = enrichment_status  # 'enriched', 'unchanged', 'unsuccessful', 'pending', 'error',
+        self.normalization_status = normalization_status  # 'unchanged', 'normalized'
+        self.events = []
+
+    def is_enriched(self):
+        return self.enrichment_status == 'enriched'
 
 
 class UnicodeAsciiTranslator:

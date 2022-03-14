@@ -454,7 +454,7 @@ if __name__ == "__main__":
     if args.source:
         for code in args.source:
             if code not in sources:
-                log.error(f"Source {code} does not exist in sources.json")
+                log.error(f"Source {code} does not exist in {environ['SWEPUB_SOURCE_FILE']}")
                 sys.exit(1)
             # Some sources should have different URIs/settings for different environments
             sources[code]["sets"][:] = [item for item in sources[code]["sets"] if getenv("SWEPUB_ENV") in item.get("envs", []) or "envs" not in item]

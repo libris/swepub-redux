@@ -1,7 +1,7 @@
 import unicodedata
 import sys
 
-from pipeline.validate import FieldMeta
+from pipeline.util import FieldMeta
 from pipeline.validators.doi import validate_unicode, validate_format
 
 

@@ -2,7 +2,7 @@ import re
 
 from stdnum.isbn import compact
 
-from pipeline.util import update_at_path, make_event
+from pipeline.util import update_at_path, add_sibling_at_path, make_event, FieldMeta
 
 # flake8: noqa W504
 isbn_regex = re.compile(
@@ -17,6 +17,8 @@ isbn_regex = re.compile(
 
 def recover_isbn(body, field):
     isbn = field.value
+    path = field.path
+    created_fields = []
 
     answ = isbn_regex.finditer(isbn)
     res = []
@@ -29,11 +31,20 @@ def recover_isbn(body, field):
         #field.enrichment_status = "unsuccessful"
         return
 
-    if res[0] != isbn:
-        update_at_path(body, field.path, res[0])
-        field.value = res[0]
-        field.enrichment_status = "enriched"
-        field.events.append(make_event(type="enrichment", code="recovery", value=res[0], initial_value=isbn, result="enriched"))
+    if len(res) > 0:
+        if res[0] != isbn:
+            update_at_path(body, path, res[0])
+            field.value = res[0]
+            field.enrichment_status = "enriched"
+            field.events.append(make_event(type="enrichment", code="recovery", value=res[0], initial_value=isbn, result="enriched"))
+
+        if len(res) > 1:
+            for found_value in res[1:]:
+                field.events.append(make_event(type="enrichment", code="split", value=found_value, initial_value=isbn, result="enriched"))
+                new_path = add_sibling_at_path(body, path, type="ISBN", value=found_value)
+                created_fields.append(FieldMeta(path=new_path, id_type=field.id_type, value=found_value))
 
     if field.enrichment_status != 'enriched':
         field.enrichment_status = 'unsuccessful'
+
+    return created_fields
