@@ -61,8 +61,13 @@ INFO_API_MAPPINGS = sort_mappings(
 INFO_API_OUTPUT_TYPES = json.load(
     open(path.join(FILE_PATH, "../resources/output_types.json"))
 )
+
+
+DEFAULT_SWEPUB_SOURCE_FILE = path.join(FILE_PATH, '../resources/sources.json')
+SWEPUB_SOURCE_FILE = getenv("SWEPUB_SOURCE_FILE", DEFAULT_SWEPUB_SOURCE_FILE)
+
 INFO_API_SOURCE_ORG_MAPPING = json.load(
-    open(path.join(FILE_PATH, "../resources/sources.json"))
+    open(SWEPUB_SOURCE_FILE)
 )
 CATEGORIES = json.load(open(path.join(FILE_PATH, "../resources/categories.json")))
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd" xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <responseDate>2018-04-23T11:02:49Z</responseDate>
+   <request verb="ListRecords" metadataPrefix="swepub_mods" set="SwePub-kth">http://kth.diva-portal.org/dice/oai</request>
+   <ListRecords>
+      <record xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+         <header status="deleted">
+            <identifier>oai:DiVA.org:kth-49381:mock</identifier>
+            <datestamp>2013-10-02T08:29:10Z</datestamp>
+         </header>
+      </record>
+   </ListRecords>
+</OAI-PMH>
+

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="static/style.xsl"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2019-11-13T13:51:23Z</responseDate>
+    <request verb="ListRecords" metadataPrefix="swepub" set="com_2043_4297">http://muep.mau.se/oai/request</request>
+    <ListRecords>
+        <record>
+            <header>
+                <identifier>oai:muep.mau.se:2043/22414</identifier>
+                <datestamp>2019-08-23T20:04:50Z</datestamp>
+                <setSpec>com_2043_1184</setSpec>
+                <setSpec>com_2043_6036</setSpec>
+                <setSpec>com_2043_4297</setSpec>
+                <setSpec>col_2043_3205</setSpec>
+            </header>
+            <metadata>
+                <mods:mods xmlns:mods="http://www.loc.gov/mods/v3" 
+                    xmlns:fn="http://www.w3.org/2005/xpath-functions" 
+                    xmlns:doc="http://www.lyncode.com/xoai" 
+                    xmlns="http://www.loc.gov/mods/v3" 
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd" version="3.5">
+                    <recordInfo>
+                        <recordContentSource>mah</recordContentSource>
+                    </recordInfo>
+                    <titleInfo>
+                        <title>Grounded Zoomorphism: An Evaluation Methodology for ACI Design</title>
+                    </titleInfo>
+                    <originInfo>
+                        <dateIssued>2014</dateIssued>
+                        <publisher>ACE</publisher>
+                    </originInfo>
+                    <genre type="outputType" authority="kb.se">conference/paper</genre>
+                    <genre type="contentType" authority="svep">ref</genre>
+                    <genre type="publicationType" authority="svep">kon</genre>
+                    <note type="creatorCount">2</note>
+                    <subject xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="23" authority="svep" lang="eng">
+                        <topic>INTERDISCIPLINARY RESEARCH AREAS</topic>
+                    </subject>
+                    <subject xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="23" authority="svep" lang="swe">
+                        <topic>TVÄRVETENSKAPLIGA FORSKNINGSOMRÅDEN</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Humanities/Social Sciences</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Animal Computer Interaction</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Experience</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Grounded Theory</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Method</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Play</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>User</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Zoomorphism</topic>
+                    </subject>
+                    <name authority="muep" type="personal">
+                        <namePart type="given">Michelle</namePart>
+                        <namePart type="family">Westerlaken</namePart>
+                        <role>
+                            <roleTerm authority="marcrelator" type="code">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name authority="muep" type="personal">
+                        <namePart type="given">Stefano</namePart>
+                        <namePart type="family">Gualeni</namePart>
+                        <role>
+                            <roleTerm authority="marcrelator" type="code">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name authority="mau.se" type="corporate">
+                        <namePart>Malmö University</namePart>
+                        <namePart>Faculty of Culture and Society</namePart>
+                        <role>
+                            <roleTerm authority="marcrelator" type="code">org</roleTerm>
+                        </role>
+                    </name>
+                    <name authority="mau.se" type="corporate">
+                        <namePart>Malmö University</namePart>
+                        <namePart>School of Arts and Communication (K3)</namePart>
+                        <role>
+                            <roleTerm authority="marcrelator" type="code">org</roleTerm>
+                        </role>
+                    </name>
+                    <name authority="mau.se" type="conference">
+                        <namePart>Advances in Computer Entertainment (November 11-14, 2014 : Funchal, Portugal)
+                        </namePart>
+                        <role>
+                            <roleTerm authority="marcrelator" type="code">org</roleTerm>
+                        </role>
+                    </name>
+                    <relatedItem type="host">
+                        <titleInfo>
+                            <title>Proceedings of the 2014 Workshops on Advances in Computer Entertainment Conference;</title>
+                        </titleInfo>
+                        <identifier type="isbn">978-1-4503-3314-6</identifier>
+                        <part />
+                    </relatedItem>
+                    <identifier type="uri">http://hdl.handle.net/2043/22414</identifier>
+                    <identifier type="hdl">2043/22414</identifier>
+                    <identifier type="doi">10.1145/2693787.2693796</identifier>
+                    <location>
+                        <url displayLabel="FULLTEXT" usage="primary" note="free">http://muep.mau.se/bitstream/2043/22414/2/ACE14_Westerlaken_Gualeni_Grounded_Zoomorphism_2.pdf</url>
+                    </location>
+                    <location>
+                        <url displayLabel="FULLTEXT">https://doi.org/10.1145/2693787.2693796</url>
+                    </location>
+                    <language>
+                        <languageTerm authority="iso639-3" type="code">eng</languageTerm>
+                    </language>
+                    <abstract lang="eng">This paper proposes and evaluates a novel method for the analysis and the refinement of products and designs that participate in playful, digitally-mediated human-animal interactions. The proposed method relies on a Grounded Theory approach and aims at guiding design and research in the field of Animal Computer Interaction in a way that is better focused on the experience and needs of the animals interacting with playful, digital artefacts. In order to validate the proposed techniques, we designed a video game (Felino) in which cats and humans play together on a single tablet. Felino was then tested together with cats (N=19). Guidelines for the refinement of the game itself emerged from the process, and are presented as exemplary outputs of the proposed method at the end of this study.</abstract>
+                </mods:mods>
+            </metadata>
+        </record>
+    </ListRecords>
+</OAI-PMH>

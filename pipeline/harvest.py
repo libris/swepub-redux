@@ -48,7 +48,7 @@ ID_CACHE_FILE = path.join(FILE_PATH, "../cache/id_cache.json")
 KNOWN_ISSN_FILE = path.join(FILE_PATH, "../resources/known_valid_issn.txt")
 KNOWN_DOI_FILE = path.join(FILE_PATH, "../resources/known_valid_doi.txt")
 
-SOURCES = load(open(path.join(FILE_PATH, '../resources/sources.json')))
+DEFAULT_SWEPUB_SOURCE_FILE = path.join(FILE_PATH, '../resources/sources.json')
 TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = [
     "cluster", "finalized",
     "search_single", "search_doi", "search_genre_form",
@@ -406,6 +406,8 @@ def handle_args():
                         help="One of DEV, QA, PROD (default DEV). Overrides SWEPUB_ENV.")
     parser.add_argument("--skip-unpaywall", action="store_true",
                         help="Skip Unpaywall check")
+    parser.add_argument("-s", "--source-file", default=None,
+                        help="Source file to use.")
     parser.add_argument("source", nargs="*", default="",
                         help="Source(s) to process (if not specified, everything in sources.json will be processed, e.g. uniarts ths mdh")
 
@@ -428,6 +430,14 @@ if __name__ == "__main__":
     elif not getenv("SWEPUB_ENV", None):
         environ["SWEPUB_ENV"] = DEFAULT_SWEPUB_ENV
 
+    if args.source_file:
+        environ["SWEPUB_SOURCE_FILE"] = args.source_file
+    elif not getenv("SWEPUB_SOURCE_FILE", None):
+        environ["SWEPUB_SOURCE_FILE"] = DEFAULT_SWEPUB_SOURCE_FILE
+
+    sources = load(open(environ["SWEPUB_SOURCE_FILE"]))
+
+
     # The Unpaywall mirror is not accessible from the public Internet, so for local testing one might want to avoid it
     if args.skip_unpaywall:
         environ["SWEPUB_SKIP_UNPAYWALL"] = "1"
@@ -443,14 +453,14 @@ if __name__ == "__main__":
     sources_to_process = []
     if args.source:
         for code in args.source:
-            if code not in SOURCES:
+            if code not in sources:
                 log.error(f"Source {code} does not exist in sources.json")
                 sys.exit(1)
             # Some sources should have different URIs/settings for different environments
-            SOURCES[code]["sets"][:] = [item for item in SOURCES[code]["sets"] if getenv("SWEPUB_ENV") in item.get("envs", []) or "envs" not in item]
-            sources_to_process.append(SOURCES[code])
+            sources[code]["sets"][:] = [item for item in sources[code]["sets"] if getenv("SWEPUB_ENV") in item.get("envs", []) or "envs" not in item]
+            sources_to_process.append(sources[code])
     else:
-        for source in SOURCES.values():
+        for source in sources.values():
             source["sets"][:] = [item for item in source["sets"] if getenv("SWEPUB_ENV") in item.get("envs", []) or "envs" not in item]
             sources_to_process.append(source)
 

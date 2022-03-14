@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd" xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <responseDate>2018-04-23T11:02:49Z</responseDate>
+   <request verb="ListRecords" metadataPrefix="mods" set="CHALMERS_SWEPUB">http://publications.lib.chalmers.se/cpl/oai-pmh/swepub/</request>
+   <ListRecords>
+      <record>
+         <header>
+            <identifier>oai:publications.lib.chalmers.se:92:bad.issn</identifier>
+            <datestamp>2014-09-02T15:21:25Z</datestamp>
+         </header>
+         <metadata>
+            <mods version="3.5" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd" xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink">
+               <recordInfo>
+                  <recordContentSource>cth</recordContentSource>
+               </recordInfo>
+               <titleInfo>
+                  <title>Satellite and ground based observations of massive star forming regions</title>
+               </titleInfo>
+               <genre authority="svep" type="publicationType">dok</genre>
+               <genre authority="svep" type="contentType">vet</genre>
+               <originInfo>
+                  <dateIssued>2003</dateIssued>
+                  <place>Göteborg</place>
+                  <publisher>Chalmers University of Technology</publisher>
+               </originInfo>
+               <subject lang="swe" authority="uka.se" xlink:href="10305">
+                  <topic>Astronomi, astrofysik och kosmologi</topic>
+               </subject>
+               <subject lang="eng" authority="uka.se" xlink:href="10305">
+                  <topic>Astronomy, Astrophysics and Cosmology</topic>
+               </subject>
+               <subject lang="swe" authority="uka.se" xlink:href="202">
+                  <topic>Elektroteknik och elektronik</topic>
+               </subject>
+               <subject lang="eng" authority="uka.se" xlink:href="202">
+                  <topic>Electrical Engineering, Electronic Engineering, Information Engineering</topic>
+               </subject>
+               <subject lang="swe" authority="svep" xlink:href="1505">
+                  <topic>Astronomi och astrofysik</topic>
+               </subject>
+               <subject lang="eng" authority="svep" xlink:href="1505">
+                  <topic>Astronomy and astrophysics</topic>
+               </subject>
+               <subject lang="swe" authority="svep" xlink:href="162">
+                  <topic>Elektroteknik, elektronik och fotonik</topic>
+               </subject>
+               <subject lang="eng" authority="svep" xlink:href="162">
+                  <topic>Electrical engineering, electronics and photonics</topic>
+               </subject>
+               <subject>
+                  <topic>ISM</topic>
+               </subject>
+               <subject>
+                  <topic>abundances - ISM</topic>
+               </subject>
+               <subject>
+                  <topic>clouds - ISM</topic>
+               </subject>
+               <subject>
+                  <topic>jets and outflows - ISM</topic>
+               </subject>
+               <subject>
+                  <topic>molecules - Radio lines</topic>
+               </subject>
+               <subject>
+                  <topic>ISM - Submillimeter</topic>
+               </subject>
+               <name type="personal" authority="chalmers.se" xlink:href="henolo">
+                  <namePart type="given">Henrik</namePart>
+                  <namePart type="family">Olofsson</namePart>
+                  <namePart type="date">1972</namePart>
+                  <role>
+                     <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                  </role>
+                  <description xsi:type="identifierDefinition" type="orcid">0000-0002-18250097</description>
+                  <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="chalmers.se">Chalmers tekniska högskola</affiliation>
+                  <affiliation lang="swe" authority="chalmers.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="chalmers.se/61">Institutionen för astronomi och astrofysik</affiliation>
+                  <affiliation lang="eng" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="chalmers.se">Chalmers University of Technology</affiliation>
+                  <affiliation lang="eng" authority="chalmers.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="chalmers.se/61">Department of Astronomy and Astrophysics</affiliation>
+               </name>
+               <note type="creatorCount">1</note>
+               <name type="corporate" lang="swe" authority="chalmers.se" xlink:href="61">
+                  <namePart>Chalmers tekniska högskola</namePart>
+                  <namePart>School of Physics and Engineering Physics</namePart>
+                  <namePart>Institutionen för astronomi och astrofysik</namePart>
+                  <role>
+                     <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                  </role>
+               </name>
+               <name type="corporate" lang="eng" authority="chalmers.se" xlink:href="61">
+                  <namePart>Chalmers University of Technology</namePart>
+                  <namePart>School of Physics and Engineering Physics</namePart>
+                  <namePart>Department of Astronomy and Astrophysics</namePart>
+                  <role>
+                     <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                  </role>
+               </name>
+               <identifier type="uri" note="chalmers.se">
+                            http://publications.lib.chalmers.se/publication/90-satellite-and-ground-based-observations-of-massive-star-forming-regions</identifier>
+               <identifier type="isi">000071067000025</identifier>
+               <identifier type="isbn">917291341x</identifier>
+               <identifier type="doi">10.5468/ogs.2016.59.1.1</identifier>
+               <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:kmh:diva-2417</identifier>
+               <language>
+                  <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+               </language>
+               <abstract><p>Results from submm/mm radio astronomical observations, using the astronomy/-aeronomy satellite Odin and the 20m telescope at the Onsala Space Observatory, are presented. Analysis of spectroscopic data of interstellar rotational emission lines from gaseous
+H&lt;font size="-1">&lt;sub>2&lt;/sub>&lt;/font>O residing in giant molecular clouds (GMCs), reveal important new clues about the chemistry and spatial distribution of water molecules in these regions, including estimates of the water abundance in molecular outflows associated with massive star formation. In an extensive study of the DR21 GMC, involving a multitude of molecular lines, it is argued that spatial variations in the emission from a multiply split rotational transition of the cyanogen radical (CN), reflect differences in the excitational context which governs the level populations in the rotational states. It is further argued that this reflects variations in the general physical conditions across the region. Together with observations of hydrogen cyanide (HCN) isotopologues, the CN mapping data are also interpreted to delineate regions of increased photochemical activity. Results from uniquely sensitive Odin searches in a number of different Milky Way molecular clouds, for the 2.5 mm line from the ground state transition of molecular oxygen, have been analysed and used to calculate new, lower upper limits to the interstellar molecular oxygen abundance (all
+O&lt;font size="-1">&lt;sub>2&lt;/sub>&lt;/font> observations yet have resulted in non-detections). A study based on observations of sulphur monoxide (SO) isotopologues indicates that the elemental oxygen isotopic ratio,
+&lt;font size="-1">&lt;sup>16&lt;/sup>&lt;/font>O/&lt;font size="-1">&lt;sup>18&lt;/sup>&lt;/font>O, is much lower than previously thought in the interior of massive star forming regions, probably as a result of
+&lt;font size="-1">&lt;sup>18&lt;/sup>&lt;/font>O-enriched ejected material from earlier generations of massive stars being returned to and mixed with the local ISM. This result may have implications for analyses relying on observations of other isotopically substituted oxygen bearing molecules, such as H&lt;font size="-1">&lt;sub>2&lt;/sub>&lt;sup>18&lt;/sup>&lt;/font>O and C&lt;font size="-1">&lt;sup>18&lt;/sup>&lt;/font>O (commonly used to estimate total gas column densities).</p></abstract>
+               <relatedItem type="host">
+                  <titleInfo>
+                     <title>Doktorsavhandlingar <em>vid</em> Chalmers tekniska h&ouml;gskola. Ny serie</title>
+                  </titleInfo>
+                  <identifier type="issn">5555-6663</identifier>
+               </relatedItem>
+            </mods>
+         </metadata>
+      </record>
+   </ListRecords>
+</OAI-PMH>
+

@@ -1,0 +1,635 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2021-11-13T18:36:55Z</responseDate>
+    <request verb="ListRecords" set="SwePub-ths" metadataPrefix="swepub_mods">http://ths.diva-portal.org/dice/oai
+    </request>
+    <ListRecords>
+        <record xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <header xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <identifier>oai:DiVA.org:kth-289495</identifier>
+                <datestamp>2021-04-08T12:58:00Z</datestamp>
+                <setSpec>kth</setSpec>
+                <setSpec>article</setSpec>
+                <setSpec>refereed</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.7"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                    <recordInfo>
+                        <recordContentSource>kth</recordContentSource>
+                        <recordCreationDate>2021-02-03</recordCreationDate>
+                    </recordInfo>
+                    <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:kth:diva-289495</identifier>
+                    <identifier type="doi">10.1073/pnas.2002710117</identifier>
+                    <identifier type="pmid">33257549</identifier>
+                    <identifier type="scopus">2-s2.0-85098468257</identifier>
+                    <titleInfo lang="eng">
+                        <title>An angular motion of a conserved four-helix bundle facilitates alternating access
+                            transport in the TtNapA and EcNhaA transporters
+                        </title>
+                    </titleInfo>
+                    <abstract lang="eng">&lt;p&gt;There is ongoing debate regarding the mechanism through which
+                        cation/proton antiporters (CPAs), like Thermus thermophilus NapA (TtNapA) and Escherichia coli
+                        NapA (EcNhaA), alternate between their outward- and inward-facing conformations in the membrane.
+                        CPAs comprise two domains, and it is unclear whether the transition is driven by their
+                        rocking-bundle or elevator motion with respect to each other. Here we address this question
+                        using metadynamics simulations of TtNapA, where we bias conformational sampling along two axes
+                        characterizing the two proposed mechanisms: angular and translational motions, respectively. By
+                        applying the bias potential for the two axes simultaneously, as well as to the angular, but not
+                        the translational, axis alone, we manage to reproduce each of the two known states of TtNapA
+                        when starting from the opposite state, in support of the rocking-bundle mechanism as the driver
+                        of conformational change. Next, starting from the inward-facing conformation of EcNhaA, we
+                        sample what could be its long-sought-after outward-facing conformation and verify it using
+                        cross-linking experiments.&lt;/p&gt;
+                    </abstract>
+                    <subject lang="eng" authority="uka.se" xlink:href="106">
+                        <topic>Natural Sciences</topic>
+                        <topic>Biological Sciences</topic>
+                    </subject>
+                    <subject lang="swe" authority="uka.se" xlink:href="106">
+                        <topic>Naturvetenskap</topic>
+                        <topic>Biologiska vetenskaper</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>cation/proton antiporters</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>rocking bundle mechanism</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>elevator mechanism</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>molecular dynamics</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>NhaA</topic>
+                    </subject>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                    </language>
+                    <genre authority="kb.se" type="outputType">publication/journal-article</genre>
+                    <genre authority="svep" type="contentType">ref</genre>
+                    <note type="publicationStatus">Published</note>
+                    <name type="personal">
+                        <namePart type="family">Masrati</namePart>
+                        <namePart type="given">Gal</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Tel Aviv Univ, George S Wise Fac Life Sci, Dept Biochem &amp; Mol Biol, IL-69978
+                            Ramat Aviv, Israel.
+                        </affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Mondal</namePart>
+                        <namePart type="given">Ramakanta</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Hebrew Univ Jerusalem, Alexander Silberman Inst Life Sci, Dept Biol Chem, IL-91904
+                            Jerusalem, Israel.
+                        </affiliation>
+                        <nameIdentifier type="orcid">0000-0002-0798-5995</nameIdentifier>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Rimon</namePart>
+                        <namePart type="given">Abraham</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Hebrew Univ Jerusalem, Alexander Silberman Inst Life Sci, Dept Biol Chem, IL-91904
+                            Jerusalem, Israel.
+                        </affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Kessel</namePart>
+                        <namePart type="given">Amit</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Tel Aviv Univ, George S Wise Fac Life Sci, Dept Biochem &amp; Mol Biol, IL-69978
+                            Ramat Aviv, Israel.
+                        </affiliation>
+                        <nameIdentifier type="orcid">0000-0003-0227-0226</nameIdentifier>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Padan</namePart>
+                        <namePart type="given">Etana</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Hebrew Univ Jerusalem, Alexander Silberman Inst Life Sci, Dept Biol Chem, IL-91904
+                            Jerusalem, Israel.
+                        </affiliation>
+                    </name>
+                    <name type="personal" authority="kth">
+                        <namePart type="family">Lindahl</namePart>
+                        <namePart type="given">Erik</namePart>
+                        <namePart type="date">1972-</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority"
+                                     valueURI="kth.se">KTH
+                        </affiliation>
+                        <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="kth.se"
+                                     valueURI="Biofysik">Biofysik
+                        </affiliation>
+                        <affiliation>Stockholm Univ, Sci Life Lab, S-17165 Solna, Sweden.;KTH Royal Inst Technol,
+                            S-17165 Solna, Sweden.
+                        </affiliation>
+                        <nameIdentifier type="kth">u1u9f2s7</nameIdentifier>
+                        <nameIdentifier type="orcid">0000-0002-2734-2794</nameIdentifier>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Ben-Tal</namePart>
+                        <namePart type="given">Nir</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Tel Aviv Univ, George S Wise Fac Life Sci, Dept Biochem &amp; Mol Biol, IL-69978
+                            Ramat Aviv, Israel.
+                        </affiliation>
+                    </name>
+                    <note type="creatorCount">7</note>
+                    <originInfo>
+                        <dateIssued>2020</dateIssued>
+                        <publisher>Proceedings of the National Academy of Sciences</publisher>
+                    </originInfo>
+                    <relatedItem type="host">
+                        <titleInfo>
+                            <title>Proceedings of the National Academy of Sciences of the United States of America
+                            </title>
+                        </titleInfo>
+                        <identifier type="issn" displayLabel="ISSN">0027-8424</identifier>
+                        <identifier type="issn" displayLabel="EISSN">1091-6490</identifier>
+                        <part>
+                            <detail type="volume">
+                                <number>117</number>
+                            </detail>
+                            <detail type="issue">
+                                <number>50</number>
+                            </detail>
+                            <extent>
+                                <start>31850</start>
+                                <end>31860</end>
+                            </extent>
+                        </part>
+                    </relatedItem>
+                    <location>
+                        <url>https://doi.org/10.1073/pnas.2002710117</url>
+                    </location>
+                    <accessCondition>gratis</accessCondition>
+                    <physicalDescription>
+                        <form authority="marcform">print</form>
+                    </physicalDescription>
+                    <typeOfResource>text</typeOfResource>
+                    <note>&lt;p&gt;QC 20210203&lt;/p&gt;</note>
+                </mods>
+            </metadata>
+        </record>
+        <record xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <header xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <identifier>oai:DiVA.org:kth-285297</identifier>
+                <datestamp>2020-12-18T11:10:00Z</datestamp>
+                <setSpec>kth</setSpec>
+                <setSpec>article</setSpec>
+                <setSpec>refereed</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.7"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                    <recordInfo>
+                        <recordContentSource>kth</recordContentSource>
+                        <recordCreationDate>2020-12-02</recordCreationDate>
+                    </recordInfo>
+                    <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:kth:diva-285297</identifier>
+                    <identifier type="doi">10.1016/j.triboint.2020.106589</identifier>
+                    <identifier type="scopus">2-s2.0-85089739985</identifier>
+                    <titleInfo lang="eng">
+                        <title>Effects of surface texture deterioration and wet surface conditions on asphalt runway
+                            skid resistance
+                        </title>
+                    </titleInfo>
+                    <abstract lang="eng">&lt;p&gt;The friction force for aircraft landing is mainly provided by the
+                        texture of runway surfaces. The mechanism underlying friction force generation is the energy
+                        dissipation of tire rubber materials during random excitation induced by asperities. However,
+                        the runway surface texture is deteriorated by cyclic loading and environmental effects during
+                        the service life of a runway, leading to loss of braking force and extension of landing
+                        distance. Additionally, when an aircraft lands on a wet runway at a high velocity, the
+                        hydrodynamic force causes the tires to detach from the runway surface, which is risky and may
+                        lead to the loss of aircraft control and runway excursion. Worn-out surfaces along with wet
+                        conditions increase the risk of poor control during aircraft landing. Accordingly, this study
+                        investigated three types of asphalt runways (SMA-13, AC-13, and OGFC-13). Surface texture
+                        deterioration was simulated using a surface texture wear algorithm. Kinematic friction models
+                        were established based on the viscoelastic property of rubber materials, power spectrum density,
+                        and statistics of surface textures. A finite element model was developed by considering a real
+                        rough runway surface and different water film depths (3, 7, and 10 mm). A comparison of
+                        hydroplaning speed was conducted between numerical simulation and former experiments. The
+                        effects of different factors, such as velocity, wear ratio, runway type, water film depth, and
+                        slip ratio, on the skid resistance of the runway were analyzed. © 2020&lt;/p&gt;
+                    </abstract>
+                    <subject lang="eng" authority="uka.se" xlink:href="20104">
+                        <topic>Engineering and Technology</topic>
+                        <topic>Civil Engineering</topic>
+                        <topic>Infrastructure Engineering</topic>
+                    </subject>
+                    <subject lang="swe" authority="uka.se" xlink:href="20104">
+                        <topic>Teknik och teknologier</topic>
+                        <topic>Samhällsbyggnadsteknik</topic>
+                        <topic>Infrastrukturteknik</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Finite element analysis</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Friction deterioration</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Hydroplaning</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Pavement reconstruction</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Pavement surface texture</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Aircraft</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Aircraft control</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Aircraft landing</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Asphalt</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Deterioration</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Energy dissipation</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Friction</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Rubber</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Textures</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Wear of materials</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Friction models</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Hydrodynamic forces</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Power spectrum density</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Random excitations</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Runway excursions</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Surface textures</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Tire rubber materials</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Viscoelastic properties</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Skid resistance</topic>
+                    </subject>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                    </language>
+                    <genre authority="kb.se" type="outputType">publication/journal-article</genre>
+                    <genre authority="svep" type="contentType">ref</genre>
+                    <genre authority="svep" type="publicationType">art</genre>
+                    <note type="publicationStatus">Published</note>
+                    <name type="personal">
+                        <namePart type="family">Zhu</namePart>
+                        <namePart type="given">Xinggyi</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Key Laboratory of Road and Traffic Engineering of Ministry of Education, Tongji
+                            University, Shanghai, 200092, PR China
+                        </affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Yang</namePart>
+                        <namePart type="given">Yang</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Key Laboratory of Road and Traffic Engineering of Ministry of Education, Tongji
+                            University, Shanghai, 200092, PR China
+                        </affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Zhao</namePart>
+                        <namePart type="given">Hongduo</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Key Laboratory of Road and Traffic Engineering of Ministry of Education, Tongji
+                            University, Shanghai, 200092, PR China
+                        </affiliation>
+                    </name>
+                    <name type="personal" authority="kth">
+                        <namePart type="family">Elaguine</namePart>
+                        <namePart type="given">Denis</namePart>
+                        <namePart type="termsOfAddress">Docent</namePart>
+                        <namePart type="date">1979-</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority"
+                                     valueURI="kth.se">KTH
+                        </affiliation>
+                        <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="kth.se"
+                                     valueURI="Byggnadsmaterial">Byggnadsmaterial
+                        </affiliation>
+                        <nameIdentifier type="kth">u1mpz2x5</nameIdentifier>
+                        <nameIdentifier type="orcid">0000-0002-0596-228X</nameIdentifier>
+                    </name>
+                    <name type="personal" authority="kth">
+                        <namePart type="family">Chen</namePart>
+                        <namePart type="given">Feng</namePart>
+                        <namePart type="date">1987-</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority"
+                                     valueURI="kth.se">KTH
+                        </affiliation>
+                        <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="kth.se"
+                                     valueURI="Bro- och stålbyggnad">Bro- och stålbyggnad
+                        </affiliation>
+                        <nameIdentifier type="kth">u1ng1bl4</nameIdentifier>
+                        <nameIdentifier type="orcid">0000-0001-9504-2008</nameIdentifier>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Gilabert</namePart>
+                        <namePart type="given">Francisco A.</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Ghent University, Mechanics of Materials and Structures, Tech Lane Ghent Science
+                            Park, Campus A, Technologiepark-Zwijnaarde 46, Zwijnaarde, 9052, Ghent, Belgium
+                        </affiliation>
+                    </name>
+                    <name type="personal" authority="kth">
+                        <namePart type="family">Guarin</namePart>
+                        <namePart type="given">Alvaro</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority"
+                                     valueURI="kth.se">KTH
+                        </affiliation>
+                        <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="kth.se"
+                                     valueURI="Byggnadsmaterial">Byggnadsmaterial
+                        </affiliation>
+                        <nameIdentifier type="kth">u1gg0b4n</nameIdentifier>
+                    </name>
+                    <note type="creatorCount">7</note>
+                    <originInfo>
+                        <dateIssued>2021</dateIssued>
+                        <publisher>Elsevier Ltd</publisher>
+                    </originInfo>
+                    <relatedItem type="host">
+                        <titleInfo>
+                            <title>Tribology International</title>
+                        </titleInfo>
+                        <identifier type="issn" displayLabel="ISSN">0301-679X</identifier>
+                        <identifier type="issn" displayLabel="EISSN">1879-2464</identifier>
+                        <part>
+                            <detail type="volume">
+                                <number>153</number>
+                            </detail>
+                            <detail type="artNo">
+                                <number>106589</number>
+                            </detail>
+                        </part>
+                    </relatedItem>
+                    <physicalDescription>
+                        <form authority="marcform">print</form>
+                    </physicalDescription>
+                    <typeOfResource>text</typeOfResource>
+                    <note>&lt;p&gt;QC 20201202&lt;/p&gt;</note>
+                </mods>
+            </metadata>
+        </record>
+        <record xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <header xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <identifier>oai:DiVA.org:kth-286668</identifier>
+                <datestamp>2021-04-09T10:03:00Z</datestamp>
+                <setSpec>kth</setSpec>
+                <setSpec>article</setSpec>
+                <setSpec>refereed</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.7"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                    <recordInfo>
+                        <recordContentSource>kth</recordContentSource>
+                        <recordCreationDate>2020-12-01</recordCreationDate>
+                    </recordInfo>
+                    <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:kth:diva-286668</identifier>
+                    <identifier type="doi">10.1140/epjc/s10052-020-8227-9</identifier>
+                    <identifier type="scopus">2-s2.0-85092465175</identifier>
+                    <titleInfo lang="eng">
+                        <title>Higgs boson production cross-section measurements and their EFT interpretation in the 4l
+                            decay channel at root s=13 TeV with the ATLAS detector
+                        </title>
+                    </titleInfo>
+                    <abstract lang="eng">&lt;p&gt;Higgs boson properties are studied in the fourlepton decay channel
+                        (where lepton = e, mu) using 139 fb(-1) of proton-proton collision data recorded at v s =13 TeV
+                        by the ATLAS experiment at the Large Hadron Collider. The inclusive cross-section times
+                        branching ratio for H -&amp;gt; ZZ * decay is measured to be 1.34 +/- 0.12 pb for a Higgs boson
+                        with absolute rapidity below 2.5, in good agreement with the Standard Model prediction of 1.33
+                        +/- 0.08 pb. Crosssections times branching ratio are measured for the main Higgs boson
+                        production modes in several exclusive phasespace regions. The measurements are interpreted in
+                        terms of coupling modifiers and of the tensor structure of Higgs boson interactions using an
+                        effective field theory approach. Exclusion limits are set on the CP-even and CP-odd `beyond the
+                        Standard Model' couplings of the Higgs boson to vector bosons, gluons and top quarks.&lt;/p&gt;
+                    </abstract>
+                    <subject lang="eng" authority="uka.se" xlink:href="10301">
+                        <topic>Natural Sciences</topic>
+                        <topic>Physical Sciences</topic>
+                        <topic>Subatomic Physics</topic>
+                    </subject>
+                    <subject lang="swe" authority="uka.se" xlink:href="10301">
+                        <topic>Naturvetenskap</topic>
+                        <topic>Fysik</topic>
+                        <topic>Subatomär fysik</topic>
+                    </subject>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                    </language>
+                    <genre authority="kb.se" type="outputType">publication/journal-article</genre>
+                    <genre authority="svep" type="contentType">ref</genre>
+                    <note type="publicationStatus">Published</note>
+                    <name type="personal">
+                        <namePart type="family">Aaboud</namePart>
+                        <namePart type="given">M.</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Univ Mohamed Premier, Fac Sci, Oujda, Morocco.;LPTPM, Oujda, Morocco.</affiliation>
+                    </name>
+                    <name type="personal" authority="kth">
+                        <namePart type="family">Kastanas</namePart>
+                        <namePart type="given">Konstatinos A.</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority"
+                                     valueURI="kth.se">KTH
+                        </affiliation>
+                        <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="kth.se"
+                                     valueURI="Partikel- och astropartikelfysik">Partikel- och astropartikelfysik
+                        </affiliation>
+                        <nameIdentifier type="kth">u1bopeh8</nameIdentifier>
+                        <nameIdentifier type="orcid">0000-0001-6945-1916</nameIdentifier>
+                    </name>
+                    <name type="personal" authority="kth">
+                        <namePart type="family">Lund-Jensen</namePart>
+                        <namePart type="given">Bengt</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority"
+                                     valueURI="kth.se">KTH
+                        </affiliation>
+                        <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="kth.se"
+                                     valueURI="Partikel- och astropartikelfysik">Partikel- och astropartikelfysik
+                        </affiliation>
+                        <nameIdentifier type="kth">u13bp6vd</nameIdentifier>
+                        <nameIdentifier type="orcid">0000-0003-3867-0336</nameIdentifier>
+                    </name>
+                    <name type="personal" authority="kth">
+                        <namePart type="family">Ohm</namePart>
+                        <namePart type="given">Christian</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority"
+                                     valueURI="kth.se">KTH
+                        </affiliation>
+                        <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="kth.se"
+                                     valueURI="Partikel- och astropartikelfysik">Partikel- och astropartikelfysik
+                        </affiliation>
+                        <nameIdentifier type="kth">u128x0hb</nameIdentifier>
+                        <nameIdentifier type="orcid">0000-0002-8015-7512</nameIdentifier>
+                    </name>
+                    <name type="personal" authority="kth">
+                        <namePart type="family">Ripellino</namePart>
+                        <namePart type="given">Giulia</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority"
+                                     valueURI="kth.se">KTH
+                        </affiliation>
+                        <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="kth.se"
+                                     valueURI="Partikel- och astropartikelfysik">Partikel- och astropartikelfysik
+                        </affiliation>
+                        <nameIdentifier type="kth">u13f31yo</nameIdentifier>
+                        <nameIdentifier type="orcid">0000-0002-5935-7464</nameIdentifier>
+                    </name>
+                    <name type="personal" authority="kth">
+                        <namePart type="family">Sidebo</namePart>
+                        <namePart type="given">P. Edvin</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority"
+                                     valueURI="kth.se">KTH
+                        </affiliation>
+                        <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="kth.se"
+                                     valueURI="Partikel- och astropartikelfysik">Partikel- och astropartikelfysik
+                        </affiliation>
+                        <nameIdentifier type="kth">u1bwjttr</nameIdentifier>
+                        <nameIdentifier type="orcid">0000-0002-0299-8236</nameIdentifier>
+                    </name>
+                    <name type="personal" authority="kth">
+                        <namePart type="family">Strandberg</namePart>
+                        <namePart type="given">Jonas</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority"
+                                     valueURI="kth.se">KTH
+                        </affiliation>
+                        <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="kth.se"
+                                     valueURI="Partikel- och astropartikelfysik">Partikel- och astropartikelfysik
+                        </affiliation>
+                        <nameIdentifier type="kth">u1midk9y</nameIdentifier>
+                        <nameIdentifier type="orcid">0000-0002-8913-0981</nameIdentifier>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Zwalinski</namePart>
+                        <namePart type="given">L.</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>CERN, Geneva, Switzerland.</affiliation>
+                    </name>
+                    <note type="creatorCount">2926</note>
+                    <originInfo>
+                        <dateIssued>2020</dateIssued>
+                        <publisher>Springer</publisher>
+                    </originInfo>
+                    <relatedItem type="host">
+                        <titleInfo>
+                            <title>European Physical Journal C</title>
+                        </titleInfo>
+                        <identifier type="issn" displayLabel="ISSN">1434-6044</identifier>
+                        <identifier type="issn" displayLabel="EISSN">1434-6052</identifier>
+                        <part>
+                            <detail type="volume">
+                                <number>80</number>
+                            </detail>
+                            <detail type="issue">
+                                <number>10</number>
+                            </detail>
+                            <detail type="artNo">
+                                <number>957</number>
+                            </detail>
+                        </part>
+                    </relatedItem>
+                    <location>
+                        <url>https://doi.org/10.1140/epjc/s10052-020-8227-9</url>
+                    </location>
+                    <accessCondition>gratis</accessCondition>
+                    <physicalDescription>
+                        <form authority="marcform">print</form>
+                    </physicalDescription>
+                    <typeOfResource>text</typeOfResource>
+                    <note>&lt;p&gt;Correction in: 10.1140/epjc/s10052-020-8227-9&lt;/p&gt;&lt;p&gt;QC
+                        20201201&lt;/p&gt;
+                    </note>
+                </mods>
+            </metadata>
+        </record>
+    </ListRecords>
+</OAI-PMH>

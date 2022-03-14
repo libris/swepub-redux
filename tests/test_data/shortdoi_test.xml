@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2019-01-14T12:25:11Z</responseDate>
+    <request verb="ListRecords" metadataPrefix="swepub_mods" set="SwePub-hv">http://hkr.diva-portal.org/dice/oai</request>
+    <ListRecords>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:hkr-17611</identifier>
+                <datestamp>2018-03-22T07:45:00Z</datestamp>
+                <setSpec>hkr</setSpec>
+                <setSpec>article</setSpec>
+                <setSpec>refereed</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+                    <genre authority="diva" type="contentTypeCode">refereed</genre>
+                    <genre authority="svep" type="contentType">ref</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Refereed</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Refereegranskat</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Fagfellevurdert</genre>
+                    <genre authority="diva" type="publicationTypeCode">article</genre>
+                    <genre authority="svep" type="publicationType">art</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Article in journal</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Artikel i tidskrift</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Artikkel i tidsskrift</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">article</genre>
+                    <name type="personal" authority="hkr" xlink:href="anp">
+                        <namePart type="family">Andersson</namePart>
+                        <namePart type="given">Pia</namePart>
+                        <namePart type="date">1955-</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Högskolan Kristianstad, Avdelningen för Oral hälsa och folkhälsovetenskap</affiliation>
+                        <affiliation>Högskolan Kristianstad, Forskningsmiljön Oral Hälsa - Allmänhälsa - Livskvalitet (OHAL)</affiliation>
+                        <affiliation>Högskolan Kristianstad, Forskningsplattformen för Hälsa i samverkan</affiliation>
+                        <description>orcid.org=0000-0003-0269-730X</description>
+                    </name>
+                    <name type="personal" authority="hkr" xlink:href="res">
+                        <namePart type="family">Renvert</namePart>
+                        <namePart type="given">Stefan</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Högskolan Kristianstad, Avdelningen för Oral hälsa och folkhälsovetenskap</affiliation>
+                        <affiliation>Högskolan Kristianstad, Forskningsmiljön Oral Hälsa - Allmänhälsa - Livskvalitet (OHAL)</affiliation>
+                        <affiliation>Blekinge Institute of Thechology &amp; Trinity College, Dublin</affiliation>
+                        <description>orcid.org=0000-0003-0992-2362</description>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Sjögren</namePart>
+                        <namePart type="given">P</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Oral Care</affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Zimmerman</namePart>
+                        <namePart type="given">M</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Karolinska Institutet</affiliation>
+                    </name>
+                    <name type="corporate" authority="hkr" xlink:href="873902">
+                        <namePart>Högskolan Kristianstad</namePart>
+                        <namePart>Sektionen för hälsa och samhälle</namePart>
+                        <namePart>Avdelningen för Oral hälsa och folkhälsovetenskap</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <name type="corporate" authority="hkr" xlink:href="12169">
+                        <namePart>Högskolan Kristianstad</namePart>
+                        <namePart>Fakulteten för hälsovetenskap</namePart>
+                        <namePart>Forskningsmiljön Oral Hälsa - Allmänhälsa - Livskvalitet (OHAL)</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <name type="corporate" authority="hkr" xlink:href="12163">
+                        <namePart>Högskolan Kristianstad</namePart>
+                        <namePart>Forskningsplattformen för Hälsa i samverkan</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <titleInfo lang="eng">
+                        <title>Dental status in nursing home residents with domiciliary dental care in Sweden</title>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                    </language>
+                    <originInfo>
+                        <dateIssued>2017</dateIssued>
+                        <dateOther type="availableFrom">2017-11-20T13:40:00</dateOther>
+                    </originInfo>
+                    <physicalDescription>
+                        <form authority="marcform">print</form>
+                    </physicalDescription>
+                    <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:hkr:diva-17611</identifier>
+                    <identifier type="doi">10.1922/CDH_4100Andersson05</identifier>
+                    <identifier type="pmid">29136361</identifier>
+                    <identifier type="isi">000426806600004</identifier>
+                    <typeOfResource>text</typeOfResource>
+                    <subject lang="eng">
+                        <topic>Sweden</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>dental status</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>domiciliary care</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>elderly</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>geriatric dentistry</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>nursing homes</topic>
+                    </subject>
+                    <subject lang="eng" authority="hsv" xlink:href="30216">
+                        <topic>Medical and Health Sciences</topic>
+                        <topic>Clinical Medicine</topic>
+                        <topic>Dentistry</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="30216">
+                        <topic>Medicin och hälsovetenskap</topic>
+                        <topic>Klinisk medicin</topic>
+                        <topic>Odontologi</topic>
+                    </subject>
+                    <abstract lang="eng">&lt;p&gt;&lt;strong&gt;OBJECTIVE:&lt;/strong&gt; To describe the dental health status of elderly people in nursing homes receiving domiciliary dental care.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;DESIGN:&lt;/strong&gt; Case note review.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;CLINICAL SETTING:&lt;/strong&gt; Nursing homes in 8 Swedish counties.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;PARTICIPANTS:&lt;/strong&gt; Care dependent elderly people (≥65 years).&lt;/p&gt;&lt;p&gt;&lt;strong&gt;METHODS:&lt;/strong&gt; Clinical data, including the number of remaining natural teeth, missing and decayed teeth (manifest dental caries) and root remnants, recorded by dentists according to standard practices. Medical and dental risk assessments were performed.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;RESULTS:&lt;/strong&gt; Data were available for 20,664 patients. Most were women (69.1%), with a mean age of 87.1 years (SD 7.42, range 65-109). The mean age for men was 83.5 years (SD 8.12, range 65-105). Two or more medical conditions were present in most of the population. A total of 16,210 individuals had existing teeth of whom 10,974 (67.7%) had manifest caries. The mean number of teeth with caries was 5.0 (SD 5.93) corresponding to 22.8% of existing teeth. One in four individuals were considered to have a very high risk in at least one professional dental risk assessment category.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;CONCLUSIONS:&lt;/strong&gt; Care dependent elderly in nursing homes have very poor oral health. There is a need to focus on the oral health-related quality of life for this group of frail elderly during their final period of life.&lt;/p&gt;</abstract>
+                    <relatedItem type="host">
+                        <titleInfo>
+                            <title>Community Dental Health</title>
+                        </titleInfo>
+                        <identifier type="issn">0265-539X</identifier>
+                        <part>
+                            <detail type="volume">
+                                <number>34</number>
+                            </detail>
+                            <detail type="issue">
+                                <number>4</number>
+                            </detail>
+                            <extent>
+                                <start>203</start>
+                                <end>207</end>
+                            </extent>
+                        </part>
+                    </relatedItem>
+                    <note type="publicationStatus" lang="eng">Published</note>
+                    <recordInfo>
+                        <recordOrigin>lvc</recordOrigin>
+                        <recordContentSource>hkr</recordContentSource>
+                        <recordCreationDate>2017-11-20</recordCreationDate>
+                        <recordChangeDate>2018-03-22</recordChangeDate>
+                        <recordIdentifier>diva2:1158455</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+    </ListRecords>
+</OAI-PMH>

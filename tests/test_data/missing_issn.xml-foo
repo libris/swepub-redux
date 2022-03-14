@@ -1,0 +1,168 @@
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2019-09-03T11:01:02Z</responseDate>
+    <request verb="GetRecord" identifier="oai:DiVA.org:ri-6512" metadataPrefix="swepub_mods">
+        http://ri.diva-portal.org/dice/oai
+    </request>
+    <GetRecord>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:ri-6514</identifier>
+                <datestamp>2016-09-08T08:29:00Z</datestamp>
+                <setSpec>ri</setSpec>
+                <setSpec>article</setSpec>
+                <setSpec>refereed</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+                    <genre authority="diva" type="contentTypeCode">refereed</genre>
+                    <genre authority="svep" type="contentType">ref</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Refereed</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Refereegranskat</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Fagfellevurdert</genre>
+                    <genre authority="diva" type="publicationTypeCode">article</genre>
+                    <genre authority="svep" type="publicationType">art</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Article in journal</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Artikel i tidskrift</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Artikkel i tidsskrift</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">article</genre>
+                      <name type="personal" authority="ltu" xlink:href="emigus">
+                        <namePart type="family">Gustafsson</namePart>
+                        <namePart type="given">Emil</namePart>
+                        <role>
+                          <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>
+                Lule&#xE5; tekniska universitet, Material- och solidmekanik
+                </affiliation>
+                        <description>ZZZFOO</description>
+                        <description>diva-portal.org=authority-person:31046</description>
+                      </name>
+                    <name type="personal">
+                        <namePart type="family">Wännström</namePart>
+                        <namePart type="given">Sune</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>SP Energi och Bioekonomi</affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Albers</namePart>
+                        <namePart type="given">Eva</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Koppram</namePart>
+                        <namePart type="given">Rakesh</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Nielsen</namePart>
+                        <namePart type="given">Fredrik</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Lambert</namePart>
+                        <namePart type="given">Annika</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Welin</namePart>
+                        <namePart type="given">Lars</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Ideon</affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Zacchi</namePart>
+                        <namePart type="given">Guido</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Olsson</namePart>
+                        <namePart type="given">Lisbeth</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="corporate" authority="ri" xlink:href="874697">
+                        <namePart>SP Energi och Bioekonomi</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <titleInfo lang="eng">
+                        <title>
+                            Simultaneous saccharification and cofermentationfor bioethanol production using corncobs at
+                            lab, PDU and demo scales foozzz
+                        </title>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                    </language>
+                    <originInfo>
+                        <dateIssued>2013</dateIssued>
+                        <dateOther type="availableFrom">2016-09-08T10:49:22</dateOther>
+                    </originInfo>
+                    <physicalDescription>
+                        <form authority="marcform">print</form>
+                    </physicalDescription>
+                    <identifier type="uri">
+                        http://urn.kb.se/resolve?urn=urn:nbn:se:ri:diva-6512
+                    </identifier>
+                    <identifier type="isbn">
+                        Sveriges släktforskarförbund
+                    </identifier>
+                    <identifier type="isbn">
+                        9900
+                    </identifier>
+                    <identifier type="isi">ISI: 000071067000025</identifier>
+                    <identifier type="local">16095</identifier>
+                    <identifier type="doi">0.1080/03468759408579279</identifier>
+                    <typeOfResource>text</typeOfResource>
+                    <subject lang="eng" authority="hsv" xlink:href="1">
+                        <topic>Natural Sciences</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="1">
+                        <topic>Naturvetenskap</topic>
+                    </subject>
+                    <name type="conference">
+                        <namePart/>
+                    </name>
+                    <relatedItem type="host">
+                        <titleInfo>
+                            <title>Biotechnology for Biofuels</title>
+                        </titleInfo>
+                        <part>
+                            <detail type="volume">
+                                <number>6</number>
+                            </detail>
+                            <detail type="issue">
+                                <number>2</number>
+                            </detail>
+                        </part>
+                    </relatedItem>
+                    <recordInfo>
+                        <recordOrigin>marso310</recordOrigin>
+                        <recordContentSource>ri</recordContentSource>
+                        <recordCreationDate>foobar</recordCreationDate>
+                        <recordIdentifier>diva2:964350</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+    </GetRecord>
+</OAI-PMH>

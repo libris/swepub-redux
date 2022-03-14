@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2019-02-26T13:46:14Z</responseDate>
+    <request verb="GetRecord" identifier="oai:DiVA.org:kth-204091" metadataPrefix="swepub_mods">http://kth.diva-portal.org/dice/oai/</request>
+    <GetRecord>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:kth-204091</identifier>
+                <datestamp>2018-10-22T06:10:00Z</datestamp>
+                <setSpec>kth</setSpec>
+                <setSpec>article</setSpec>
+                <setSpec>refereed</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+                    <genre authority="diva" type="contentTypeCode">refereed</genre>
+                    <genre authority="svep" type="contentType">ref</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Refereed</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Refereegranskat</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Fagfellevurdert</genre>
+                    <genre authority="diva" type="publicationTypeCode">article</genre>
+                    <genre authority="svep" type="publicationType">art</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Article in journal</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Artikel i tidskrift</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Artikkel i tidsskrift</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">article</genre>
+                    <name type="personal">
+                        <namePart type="family">Chen</namePart>
+                        <namePart type="given">Cheng</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Zhang</namePart>
+                        <namePart type="given">Wei</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal" authority="kth" xlink:href="u17nnud5">
+                        <namePart type="family">Cong</namePart>
+                        <namePart type="given">Jiayan</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>KTH, Tillämpad fysikalisk kemi</affiliation>
+                        <description>orcid.org=0000-0001-8084-1181</description>
+                        <description>diva-portal.org=authority-person:31609</description>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Cheng</namePart>
+                        <namePart type="given">Ming</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Zhang</namePart>
+                        <namePart type="given">Biaobiao</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Chen</namePart>
+                        <namePart type="given">Hong</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal" authority="kth" xlink:href="u1zkvq1z">
+                        <namePart type="family">Liu</namePart>
+                        <namePart type="given">Peng</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>KTH, Tillämpad fysikalisk kemi</affiliation>
+                        <description>orcid.org=0000-0001-5069-3245</description>
+                        <description>diva-portal.org=authority-person:31998</description>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Li</namePart>
+                        <namePart type="given">Ruifeng</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal" authority="kth" xlink:href="u1rz93c9">
+                        <namePart type="family">Safdari</namePart>
+                        <namePart type="given">Majid</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>KTH, Tillämpad fysikalisk kemi</affiliation>
+                        <description>orcid.org=0000-0002-0387-2993</description>
+                    </name>
+                    <name type="personal" authority="kth" xlink:href="u1jrdr1m">
+                        <namePart type="family">Kloo</namePart>
+                        <namePart type="given">Lars</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>KTH, Tillämpad fysikalisk kemi</affiliation>
+                        <description>diva-portal.org=authority-person:33216</description>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Sun</namePart>
+                        <namePart type="given">Licheng</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="corporate" authority="kth" xlink:href="11002">
+                        <namePart>KTH</namePart>
+                        <namePart>Skolan för kemivetenskap (CHE)</namePart>
+                        <namePart>Kemi</namePart>
+                        <namePart>Tillämpad fysikalisk kemi</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <titleInfo lang="eng">
+                        <title>Cu(II) Complexes as p-Type Dopants in Efficient Perovskite Solar Cells</title>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                    </language>
+                    <originInfo>
+                        <publisher>American Chemical Society (ACS)</publisher>
+                        <dateIssued>2017</dateIssued>
+                        <dateOther type="availableFrom">2017-03-29T09:43:00</dateOther>
+                    </originInfo>
+                    <physicalDescription>
+                        <form authority="marcform">print</form>
+                    </physicalDescription>
+                    <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:kth:diva-204091</identifier>
+                    <identifier type="doi">10.1021/acsenergylett.6b00691</identifier>
+                    <identifier type="isi">000394080000031</identifier>
+                    <identifier type="scopus">2-s2.0-85034060563</identifier>
+                    <typeOfResource>text</typeOfResource>
+                    <subject lang="eng" authority="hsv" xlink:href="104">
+                        <topic>Natural Sciences</topic>
+                        <topic>Chemical Sciences</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="104">
+                        <topic>Naturvetenskap</topic>
+                        <topic>Kemi</topic>
+                    </subject>
+                    <abstract lang="eng">&lt;p&gt;In this work, two Cu(II) complex compounds are designed and synthesized for applications as p-type dopants in solid-state perovskite solar cells (PSCs). Through the characterization of the optical and electrochemical properties, the complex Cu(bpcm)(2) is shown to be eligible for oxidization of the commonly used hole-transport material (HTM) SpiroOMeTAD. The reason is the electron-withdrawing effect of the chloride groups on the ligands. When the complex was applied as p-type dopant in PSCs containing Spiro-OMeTAD as HTM, an efficiency as high as 18.5% was achieved. This is the first time a Cu(II) pyridine complex has been used as p-type dopant in PSCs.&lt;/p&gt;</abstract>
+                    <note>&lt;p&gt;qc 20170329&lt;/p&gt;</note>
+                    <relatedItem type="host">
+                        <part>
+                            <detail type="volume">
+                                <number>2</number>
+                            </detail>
+                            <detail type="issue">
+                                <number>2</number>
+                            </detail>
+                            <extent>
+                                <start>497</start>
+                                <end>503</end>
+                            </extent>
+                        </part>
+                    </relatedItem>
+                    <relatedItem type="host">
+                        <titleInfo>
+                            <title>ACS ENERGY LETTERS</title>
+                        </titleInfo>
+                        <identifier type="issn">2380-8195</identifier>
+                        <part>
+                            <detail type="volume">
+                                <number>2</number>
+                            </detail>
+                            <detail type="issue">
+                                <number>2</number>
+                            </detail>
+                            <extent>
+                                <start>497</start>
+                                <end>503</end>
+                            </extent>
+                        </part>
+                    </relatedItem>
+                    <note type="publicationStatus" lang="eng">Published</note>
+                    <recordInfo>
+                        <recordOrigin>u1coq1jm</recordOrigin>
+                        <recordContentSource>kth</recordContentSource>
+                        <recordCreationDate>2017-03-29</recordCreationDate>
+                        <recordChangeDate>2018-10-22</recordChangeDate>
+                        <recordIdentifier>diva2:1085431</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+    </GetRecord>
+</OAI-PMH>

@@ -1,0 +1,155 @@
+<OAI-PMH xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd" xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <responseDate>2020-02-03T13:14:14Z</responseDate>
+    <request verb="ListRecords" identifier="oai:DiVA.org:uniarts-217" metadataPrefix="swepub_mods">
+        http://www.diva-portal.org/dice/oai
+    </request>
+    <record>
+      <header>
+        <identifier>oai:DiVA.org:uniarts-217</identifier>
+        <datestamp>2017-04-04T09:54:00Z</datestamp>
+        <setSpec>uniarts</setSpec>
+        <setSpec>monographDoctoralThesis</setSpec>
+        <setSpec>science</setSpec>
+      </header>
+      <metadata>
+        <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+          <genre authority="diva" type="contentTypeCode">science</genre>
+          <genre authority="svep" type="contentType">vet</genre>
+          <genre authority="diva" type="contentType" lang="eng">Other academic</genre>
+          <genre authority="diva" type="contentType" lang="swe">&#xD6;vrigt vetenskapligt</genre>
+          <genre authority="diva" type="contentType" lang="nor">Annet vitenskapelig</genre>
+          <genre authority="diva" type="publicationTypeCode">monographDoctoralThesis</genre>
+          <genre authority="svep" type="publicationType">dok</genre>
+          <genre authority="diva" type="publicationType" lang="eng">Doctoral thesis, monograph</genre>
+          <genre authority="diva" type="publicationType" lang="swe">Doktorsavhandling, monografi</genre>
+          <genre authority="diva" type="publicationType" lang="nor">Doktoravhandling, monografi</genre>
+          <genre authority="kev" type="publicationType" lang="eng">dissertation</genre>
+          <genre authority="svep" type="publicationType">kfa</genre>
+          <name type="personal">
+            <namePart type="family">Maria</namePart>
+            <namePart type="given">Johansson</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+            <affiliation>
+    Stockholms konstn&#xE4;rliga h&#xF6;gskola, Institutionen f&#xF6;r sk&#xE5;despeleri
+    </affiliation>
+            <affiliation>
+    Senter for praktisk kunnskap, Universitetet i Nordland, Bod&#xF8; i Norge, Stockholms dramatiska h&#xF6;gskola
+    </affiliation>
+          </name>
+          <name type="personal">
+            <namePart type="family">Josefson</namePart>
+            <namePart type="given">Ingela</namePart>
+            <namePart type="termsOfAddress">Professor</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">ths</roleTerm>
+            </role>
+            <affiliation>Stockholms konstn&#xE4;rliga h&#xF6;gskola</affiliation>
+            <affiliation>Stockholms dramatiska h&#xF6;gskola</affiliation>
+          </name>
+          <name type="personal">
+            <namePart type="family">Mazzarella</namePart>
+            <namePart type="given">Merete</namePart>
+            <namePart type="termsOfAddress">Professor emeritus</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">opn</roleTerm>
+            </role>
+            <affiliation>Uppsala universitet</affiliation>
+          </name>
+          <name type="personal">
+            <namePart type="family">Nordenstam</namePart>
+            <namePart type="given">Tore</namePart>
+            <namePart type="termsOfAddress">Professor emeritus</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">opn</roleTerm>
+            </role>
+            <affiliation>Universitetet i Bergen, Norge</affiliation>
+          </name>
+          <name type="corporate" authority="uniarts" xlink:href="874256">
+            <namePart>Stockholms konstn&#xE4;rliga h&#xF6;gskola</namePart>
+            <namePart>Institutionen f&#xF6;r sk&#xE5;despeleri</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+            </role>
+          </name>
+          <titleInfo lang="swe">
+            <title>Sk&#xE5;despelarens praktiska kunskap</title>
+          </titleInfo>
+          <language>
+            <languageTerm type="code" authority="iso639-2b">swe</languageTerm>
+          </language>
+          <originInfo>
+            <place>
+              <placeTerm>Stockholm</placeTerm>
+            </place>
+            <publisher>Premiss f&#xF6;rlag</publisher>
+            <dateIssued>2012</dateIssued>
+            <dateOther type="defence">2012-06-01T12:00:00</dateOther>
+            <dateOther type="availableFrom">2017-04-04T11:54:55</dateOther>
+          </originInfo>
+          <physicalDescription>
+            <form authority="marcform">print</form>
+            <extent>291</extent>
+          </physicalDescription>
+          <identifier type="isbn" displayLabel="print">978-91-86743-22-2</identifier>
+          <identifier type="uri">
+    http://urn.kb.se/resolve?urn=urn:nbn:se:uniarts:diva-217
+    </identifier>
+          <identifier type="libris">13622006</identifier>
+          <typeOfResource>text</typeOfResource>
+          <subject lang="swe">
+            <topic>Sk&#xE5;despeleri</topic>
+          </subject>
+          <subject lang="swe">
+            <topic>Praktisk kunskap</topic>
+          </subject>
+          <subject lang="swe">
+            <topic>Kroppsligt minne</topic>
+          </subject>
+          <subject lang="eng" authority="hsv" xlink:href="60404">
+            <topic>Humanities and the Arts</topic>
+            <topic>Arts</topic>
+            <topic>Performing Arts</topic>
+          </subject>
+          <subject lang="swe" authority="hsv" xlink:href="60404">
+            <topic>Humaniora och konst</topic>
+            <topic>Konst</topic>
+            <topic>Scenkonst</topic>
+          </subject>
+          <subject lang="swe" authority="uniarts" xlink:href="25501">
+            <topic>
+    Performativa och mediala praktiker, med inriktning mot film och media/koreografi/opera/scen
+    </topic>
+            <genre>Research subject</genre>
+          </subject>
+          <subject lang="eng" authority="uniarts" xlink:href="25501">
+            <topic>
+    Performative and mediated practices, with specializations in choreography/film and media/opera /performing arts
+    </topic>
+            <genre>Research subject</genre>
+          </subject>
+          <abstract lang="eng">
+            <p>The aim of this dissertation is to articulate the actors&#x2019; practical knowledge. I have shared some of the questions that have arisen through my active years as a professional actor with a group of actors with different backgrounds and levels of experience. The actors are sceptical towards fixed theories and methods imposed on them from outside. In order to show the complexity of a character, the actor needs concrete workable images. As one such image, this dissertation uses Aristotle&#x2019;s term &#x201C;Lesbian rule&#x201D;, a mason&#x2019;s ruler made of lead so that it is adjustable when measuring an uneven surface.This dissertation has four main sections, entitled: Intuition, Courage, Anecdotes, and the Creative process. Intuitionworks on an individual level and is only one of the parameters used when creating and performing a role. This dissertation uses &#x201C;what-is-currently-going-on&#x201D; as a key term, as well as Swedish philosopher Hans Larsson&#x2019;s use of intuition as an agile attentiveness.Acting implies exposure both of your physical and emotional self. At almost all stages in the actor&#x2019;s work process s/he is also exposed to judgment from others. During rehearsal the actor has to ask him-or herself if the choices made for the representation of the character are possible to reproduce over and over again. High ambitions have to be balanced against a personal wellbeing. These perspectives are central in the discussion on courage.For the actor an anecdoteabout acting is a way of practising and showing your skills as an actor. As theactor is constantly facing new work situations, the anecdote can also tell who you are in a context of your own choice. The concept of the anecdote is used to exemplify the actor&#x2019;s situated knowledge. During the creative processthe actor works with openness and introversion at the same time. Being an artist in a collective requires trust and an ability to wait for the hermeneutical process to make a whole of the individual parts. It is vital for the actor to realize that nothingis final. Every performance has to be performed as if for the first time.The main thesis of this dissertation is that the actors&#x2019; knowledge is embodied and based on situation.</p>
+            <p/>
+          </abstract>
+          <abstract lang="swe">
+            <p>Kort sammanfattning</p>
+            <p>Syftet med avhandlingen &#xE4;r att synligg&#xF6;ra sk&#xE5;despelarens praktiska kunskap. Jag har utg&#xE5;tt fr&#xE5;n n&#xE5;gra av de fr&#xE5;gor som har varit centrala f&#xF6;r mig under mina &#xE5;r som professionell sk&#xE5;despelare och sedan problematiserat dessa med en grupp erfarna sk&#xE5;despelare. Sk&#xE5;despelare &#xE4;r skeptiska till fixerade, utifr&#xE5;n kommande teorier. Sk&#xE5;despelaren &#xE4;r i behov av konkreta, arbetbara bilder f&#xF6;r arbetet med rollfiguren. Som en av dessa arbetbara bilder anv&#xE4;nder jag mig i avhandlingen av Aristoteles term denlesbiska linjalen, ett b&#xF6;jbart m&#xE4;tverktyg av bly f&#xF6;r att m&#xE4;ta oj&#xE4;mna, kurviga ytor. Avhandlingen best&#xE5;r av fyra huvudomr&#xE5;den: intuition, mod, anekdoter ochskapandet.Intuitionenarbetar p&#xE5; en individuell niv&#xE5; och &#xE4;r enav de parametrar som anv&#xE4;nds i skapandet och framf&#xF6;randet av en rollkarakt&#xE4;r. I avhandlingen anv&#xE4;nder jag &#x201D;vad-som-f&#xF6;r-n&#xE4;rvarande-f&#xF6;rsigg&#xE5;r&#x201D; som ett nyckelbegrepp, tillsammans med den svenske filosofen Hans Larssons formulering av intuition som en l&#xE4;tthetatt f&#xF6;rflytta uppm&#xE4;rksamheten.Sk&#xE5;despelarens arbete inneb&#xE4;r att exponera sig b&#xE5;de psykiskt och fysiskt. Sk&#xE5;despelaren &#xE4;r utsatt f&#xF6;r bed&#xF6;mning utifr&#xE5;n i alla moment i arbetsprocessen. Under repetitionerna m&#xE5;ste sk&#xE5;despelaren fr&#xE5;ga sig sj&#xE4;lv om valen han/hon g&#xF6;r f&#xF6;r rollfigurens handlingar &#xE4;r m&#xF6;jliga att g&#xF6;ra om och om igen. H&#xF6;g ambition m&#xE5;ste viktas mot personligt v&#xE4;lbefinnande. De h&#xE4;r perspektiven &#xE4;r centrala i diskussionen om mod.F&#xF6;r sk&#xE5;despelaren &#xE4;r anekdoterett s&#xE4;tt att visa sin yrkeskunskap. Sk&#xE5;despelaren byter st&#xE4;ndigt sammanhang och via en anekdot kan hon/han ber&#xE4;tta om sig sj&#xE4;lv. Begreppet anekdot anv&#xE4;nds i avhandlingen f&#xF6;r att exemplifiera sk&#xE5;despelarens situationella kunskap.I det kreativa skapandetarbetar sk&#xE5;despelaren p&#xE5; samma g&#xE5;ng med &#xF6;ppenhet och med slutenhet. Att arbeta i ett kollektiv f&#xF6;ruts&#xE4;tter tillit och f&#xF6;rm&#xE5;ga att v&#xE4;nta in den hermeneutiska processen. Det ing&#xE5;r i sk&#xE5;despelarens arbete att vara medveten om att det &#xE4;r en process utan slut. Varje f&#xF6;rest&#xE4;llning m&#xE5;ste spelas som om den aldrig spelats f&#xF6;rut.Huvudtesen i avhandlingen &#xE4;r att sk&#xE5;despelarens kunskap &#xE4;r kroppslig och situationsbunden.</p>
+          </abstract>
+          <note type="thesis">Diss. , 2012</note>
+          <language objectPart="defence">
+            <languageTerm type="code" authority="iso639-2b">swe</languageTerm>
+          </language>
+          <note type="venue">Bod&#xF8;</note>
+          <recordInfo>
+            <recordOrigin>olof.halldin</recordOrigin>
+            <recordContentSource>uniarts</recordContentSource>
+            <recordCreationDate>2017-04-04</recordCreationDate>
+            <recordChangeDate>2017-04-04</recordChangeDate>
+            <recordIdentifier>diva2:1086808</recordIdentifier>
+          </recordInfo>
+        </mods>
+      </metadata>
+    </record>
+</OAI-PMH>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+<responseDate>2018-04-23T11:01:49.348Z</responseDate>
+<request verb="ListRecords" set="SwePub-kth" metadataPrefix="swepub_mods">http://kth.diva-portal.org/dice/oai</request>
+	<ListRecords>
+		<record>
+			<header>
+				<identifier>oai:DiVA.org:kth-49381:mock</identifier>
+				<datestamp>2017-12-08T14:28:00Z</datestamp>
+			</header>
+			<metadata>
+				<mods
+					xmlns="http://www.loc.gov/mods/v3"
+					xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+					xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+					<genre authority="diva" type="contentTypeCode">refereed</genre>
+					<genre authority="svep" type="contentType">ref</genre>
+					<genre authority="diva" type="contentType" lang="eng">Refereed</genre>
+					<genre authority="diva" type="contentType" lang="swe">Refereegranskat</genre>
+					<genre authority="diva" type="contentType" lang="nor">Fagfellevurdert</genre>
+					<genre authority="diva" type="publicationTypeCode">article</genre>
+					<genre authority="svep" type="publicationType">art</genre>
+					<genre authority="diva" type="publicationType" lang="eng">Article in journal</genre>
+					<genre authority="diva" type="publicationType" lang="swe">Artikel i tidskrift</genre>
+					<genre authority="diva" type="publicationType" lang="nor">Artikkel i tidsskrift</genre>
+					<genre authority="kev" type="publicationType" lang="eng">article</genre>
+					<name type="personal" authority="kth" xlink:href="u1fuxiia">
+						<namePart type="family">Östlund</namePart>
+						<namePart type="given">Sören</namePart>
+						<namePart type="date">1961-</namePart>
+						<role>
+							<roleTerm type="code" authority="marcrelator">aut</roleTerm>
+						</role>
+						<affiliation>KTH, Hållfasthetslära</affiliation>
+						<description>orcid.org=0000-0001-8699-7910</description>
+						<description>diva-portal.org=authority-person:31159</description>
+					</name>
+					<name type="corporate" authority="kth" xlink:href="6200">
+						<namePart>KTH</namePart>
+						<namePart>Tidigare Institutioner (före 2005)</namePart>
+						<namePart>Hållfasthetslära</namePart>
+						<role>
+							<roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+						</role>
+					</name>
+					<language>
+						<languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+					</language>
+					<originInfo>
+						<publisher>Springer</publisher>
+						<dateIssued>1990</dateIssued>
+						<dateOther type="availableFrom">2011-11-25T21:08:24</dateOther>
+					</originInfo>
+					<physicalDescription>
+						<form authority="marcform">print</form>
+					</physicalDescription>
+					<identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:kth:diva-49381</identifier>
+					<identifier type="doi">10.1007/BF00036169</identifier>
+					<identifier type="isi">A1990DY89000003</identifier>
+					<typeOfResource>text</typeOfResource>
+					<subject lang="eng" authority="hsv" xlink:href="20301">
+						<topic>Engineering and Technology</topic>
+						<topic>Mechanical Engineering</topic>
+						<topic>Applied Mechanics</topic>
+					</subject>
+					<subject lang="swe" authority="hsv" xlink:href="20301">
+						<topic>Teknik och teknologier</topic>
+						<topic>Maskinteknik</topic>
+						<topic>Teknisk mekanik</topic>
+					</subject>
+					<abstract lang="eng">&lt;p&gt;Dynamic steady-state small-scale yielding crack propagation in an elastic-viscoplastic structure is studied by a convective formulation of the finite element method. The loading condition is mode I plane strain.The plastic strain-rates are characterized by a power-law overstress model based on a general theory by Perzyna. For values of the stress exponent less than 3, the elastic strain-rates are more singular than the plastic strain-rates and consequently the near tip fields will exhibit an asymptotic elastic behaviour. The size of the zone where this elastic singularity dominates is typically of the order 10&lt;sup&gt;–3&lt;/sup&gt;–10&lt;sup&gt;–5&lt;/sup&gt; of the size of the active plastic zone. These relatively small dimensions severely complicate the finite element modeling. Although the energy flow is calculated with a path-independent integral of &lt;em&gt;J&lt;/em&gt;-integral type, its value will be dependent on the size of the near-tip elements unless extremely small finite elements are used. This is an important difference compared with many other situations, for example the elastic case and a stationary crack in a power-law hardening material, where the use of a path-independent integral improves the numerical accuracy even if the crack tip region is modeled with a rather coarse mesh. This size effect is discussed in detail. An application of the results with numerical data for a realistic situation shows that the crack tip energy flow might be vanishingly small compared to the energy dissipation in the plastic region. This indicates that the energy flow to the crack tip is perhaps not an appropriate parameter for the description of small-scale yielding crack growth in the present type of material model.The paper also contains an investigation of the introduction of a variable order singular element at the element positions adjacent to the crack tip. It is shown that this type of element does not improve the numerical behaviour in the present formulation.&lt;/p&gt;</abstract>
+					<note>QC 20111129</note>
+					<relatedItem type="host">
+						<titleInfo>
+							<title>International Journal of Fracture</title>
+						</titleInfo>
+						<identifier type="issn">0376-9429</identifier>
+						<identifier type="eissn">1573-2673</identifier>
+						<identifier type="isbn" displayLabel="print">9781407315720</identifier>
+						<part>
+							<detail type="volume">
+								<number>44</number>
+							</detail>
+							<detail type="issue">
+								<number>4</number>
+							</detail>
+							<extent>
+								<start>283</start>
+								<end>299</end>
+							</extent>
+						</part>
+					</relatedItem>
+					<note type="publicationStatus" lang="eng">Published</note>
+					<recordInfo>
+						<recordOrigin>u1fuxiia</recordOrigin>
+						<recordContentSource>kth</recordContentSource>
+						<recordCreationDate>2011-11-25</recordCreationDate>
+						<recordChangeDate>2017-12-08</recordChangeDate>
+						<recordIdentifier>diva2:459554</recordIdentifier>
+					</recordInfo>
+				</mods>
+			</metadata>
+		</record>
+	</ListRecords>
+</OAI-PMH>

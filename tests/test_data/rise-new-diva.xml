@@ -1,0 +1,243 @@
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2020-02-07T08:19:05Z</responseDate>
+    <request verb="ListRecords" identifier="oai:DiVA.org:ri-39788" metadataPrefix="swepub_mods">
+        http://www.diva-portal.org/dice/oai
+    </request>
+    <record>
+        <header>
+            <identifier>oai:DiVA.org:ri-39788</identifier>
+            <datestamp>2019-08-19T09:44:00Z</datestamp>
+            <setSpec>ri</setSpec>
+            <setSpec>article</setSpec>
+            <setSpec>refereed</setSpec>
+        </header>
+        <metadata>
+            <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2"
+                  xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+                <genre authority="diva" type="contentTypeCode">refereed</genre>
+                <genre authority="svep" type="contentType">ref</genre>
+                <genre authority="diva" type="contentType" lang="eng">Refereed</genre>
+                <genre authority="diva" type="contentType" lang="swe">Refereegranskat</genre>
+                <genre authority="diva" type="contentType" lang="nor">Fagfellevurdert</genre>
+                <genre authority="diva" type="publicationTypeCode">article</genre>
+                <genre authority="svep" type="publicationType">art</genre>
+                <genre authority="diva" type="publicationType" lang="eng">Article in journal</genre>
+                <genre authority="diva" type="publicationType" lang="swe">Artikel i tidskrift</genre>
+                <genre authority="diva" type="publicationType" lang="nor">Artikkel i tidsskrift</genre>
+                <genre authority="kev" type="publicationType" lang="eng">article</genre>
+                <name type="personal">
+                    <namePart type="family">Macura</namePart>
+                    <namePart type="given">Biljana</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                    </role>
+                    <affiliation>Stockholm Environment Institute, Sweden</affiliation>
+                </name>
+                <name type="personal">
+                    <namePart type="family">Johannesdottir</namePart>
+                    <namePart type="given">Solveig</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                    </role>
+                    <affiliation>
+                        RISE - Research Institutes of Sweden, Energi och cirkulär ekonomi
+                    </affiliation>
+                </name>
+                <name type="personal">
+                    <namePart type="family">Piniewski</namePart>
+                    <namePart type="given">Mikolaj</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                    </role>
+                    <affiliation>Warsaw University of Life Sciences, Poland</affiliation>
+                </name>
+                <name type="personal">
+                    <namePart type="family">Haddaway</namePart>
+                    <namePart type="given">Neal</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                    </role>
+                    <affiliation>
+                        Stockholm Environment Institute, Sweden; University of Johannesburg, South Africa
+                    </affiliation>
+                </name>
+                <name type="personal" authority="ri" xlink:href="elisabeth.kvarnstrom@ri.se">
+                    <namePart type="family">Kvarnström</namePart>
+                    <namePart type="given">Elisabeth</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                    </role>
+                    <affiliation>
+                        RISE - Research Institutes of Sweden, Energi och cirkulär ekonomi
+                    </affiliation>
+                    <description>orcid.org=0000-0002-3966-0511</description>
+                    <description>diva-portal.org=authority-person:60372</description>
+                </name>
+                <name type="corporate" authority="ri" xlink:href="877024">
+                    <namePart>RISE - Research Institutes of Sweden</namePart>
+                    <namePart>Samhällsbyggnad</namePart>
+                    <namePart>Energi och cirkulär ekonomi</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                    </role>
+                </name>
+                <titleInfo lang="eng">
+                    <title>
+                        Effectiveness of ecotechnologies for recovery of nitrogen and phosphorus from anaerobic
+                        digestate and effectiveness of the recovery products as fertilisers
+                    </title>
+                    <subTitle>A systematic review protocol</subTitle>
+                </titleInfo>
+                <language>
+                    <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                </language>
+                <originInfo>
+                    <publisher>BioMed Central Ltd.</publisher>
+                    <dateIssued>2019</dateIssued>
+                    <dateOther type="availableFrom">2019-08-19T11:44:57</dateOther>
+                </originInfo>
+                <physicalDescription>
+                    <form authority="marcform">print</form>
+                </physicalDescription>
+                <identifier type="uri">
+                    http://urn.kb.se/resolve?urn=urn:nbn:se:ri:diva-39788
+                </identifier>
+                <identifier type="doi">10.1186/s13750-019-0173-3</identifier>
+                <identifier type="scopus">2-s2.0-85070189379</identifier>
+                <identifier type="articleId">29</identifier>
+                <location>
+                    <url displayLabel="Fulltext" note="free">https://doi.org/10.1186/s13750-019-0173-3</url>
+                </location>
+                <typeOfResource>text</typeOfResource>
+                <subject lang="eng">
+                    <topic>Ammonium sulphate</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>Baltic Sea</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>Circular economy</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>Fertilisers</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>Manure</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>Nutrient recycle</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>Nutrient reuse</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>Soil enhancers</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>Struvite</topic>
+                </subject>
+                <subject lang="eng" authority="hsv" xlink:href="1">
+                    <topic>Natural Sciences</topic>
+                </subject>
+                <subject lang="swe" authority="hsv" xlink:href="1">
+                    <topic>Naturvetenskap</topic>
+                </subject>
+                <abstract lang="eng">
+                    <p>Background: The regular addition of plant-available nutrients such as nitrogen and phosphorus,
+                        either as manufactured fertilisers or animal manure, to agricultural soils is needed for global
+                        food security. Increased recycling of nutrients back to agriculture from organic waste streams
+                        is necessary for increased rural-urban sustainability. Anaerobic digestion of sewage sludge and
+                        agricultural wastes is widely applied to stabilize the substrate and also capture its energetic
+                        value via biogas production. The liquid phase of anaerobic digestate is a concentrated source of
+                        nutrients to which nutrient recovery technologies can be applied. Two such promising
+                        technologies that could increase nutrient recycling from e.g. wastewater and thereby contribute
+                        to environmental amelioration are struvite precipitation and ammonia stripping. By combining
+                        anaerobic digestion and nutrient recovery technologies on the digestate, a treatment process
+                        that provides both renewable energy and plant nutrients is achieved. This review will examine
+                        the effectiveness of ecotechnologies for the recovery and reuse of nitrogen and phosphorus from
+                        anaerobic digestate with the aim of reducing the impact of waste on the environment. Methods: We
+                        will search for both academic and grey literature published after 2013. English language
+                        searches will be performed in 4 bibliographic databases, and Google Scholar, while searches in
+                        41 specialist websites will be performed in English, Finnish, Polish and Swedish. Eligibility
+                        screening will be conducted at two levels: title and abstract and full text. Included eligible
+                        studies will be subject to a critical appraisal that will assess external and internal study
+                        validity. We will extract information on study characteristics, intervention, comparators,
+                        effect modifiers, and measured outcomes. Data synthesis will involve narrative synthesis of each
+                        included study of sufficient validity. Quantitative synthesis (i.e. meta-analysis) may be
+                        possible in cases where a sufficient number of studies report similar types of outcomes. © 2019
+                        The Author(s).
+                    </p>
+                </abstract>
+                <note>
+                    <p>Funding details: Suomen Ympäristökeskus; Funding details: Svenskt Vatten, SWWA; Funding details:
+                        European Environment Agency, EEA; Funding details: Aalto-Yliopisto; Funding details:
+                        Naturvårdsverket; Funding details: Stichting Toegepast Onderzoek Waterbeheer, STOWA; Funding
+                        details: U.S. Environmental Protection Agency, EPA; Funding details: Umweltbundesamt, UBA;
+                        Funding details: Havs- och Vattenmyndigheten, HaV; Funding details:
+                        http://mak.bn.org.pl/cgi-bin/makwww.exe?BM=7; Funding details: https://sgw0.bg.sggw.pl; Funding
+                        details: 185; Funding details: VINNOVA; Funding text 1: Foundation for Applied Water Research
+                        (STOWA) (http://www.stowa.nl) Ekologgruppen i Landskrona AB (http://www.ekologgruppen.com/)
+                        Danish Centre for Environment and Energy (DCE) (http://dce.au.dk) European Environment Agency
+                        (EEA) (https://www.eea.europa.eu/) Finnish Environment Institute (SYKE) (http://www.syke.fi)
+                        Federal Environment Agency (UmweltBundesAmt, Germany) (https://www.umweltbundesamt.de) Leibniz
+                        Institute of Freshwater Ecology and Inland Fisheries (IGB) (http://www.igb-berlin.de) EAWAG
+                        Aquatic Research (https://www.eawag.ch/en/) Netherlands National Institute for Public Health and
+                        the Environment (RIVM) (https://www.rivm.nl/en) United States Environmental Protection Agency
+                        (US EPA) (https://www.epa.gov/) European sustainable phosphorus platform
+                        (https://phosphorusplatform.eu/) Organic Farm Knowledge platform
+                        (https://organic-farmknowledge.org/search-toolbox) Sustainable Sanitation Alliance
+                        (www.susana.org) Swedish Environmental Protection Agency (SEPA) (http://www.naturvardsverket.se)
+                        Swedish Board of Agriculture (http://www.jordbruksverket.se) The Swedish Agency for Marine and
+                        Water Management (https://www.havochvatten.se) Swedish directory of Master thesis (DiVA)
+                        (http://www.diva-portal.org) The Swedish Water &amp; Wastewater Association (SWWA)
+                        (http://www.svensktvatten.se) Federation of Swedish Farmers (http://www.lrf.se) The Swedish
+                        Environmental Institute (http://www.IVL.se) Agro base (http://agro.icm.edu.pl/agro) Tech Base
+                        (http://baztech.icm.edu.pl) Catalogue of the WULS diploma and doctoral dissertations
+                        (https://sgw0.bg.sggw.pl) Archive of Diploma Theses of the University of Agriculture Hugo
+                        Kołłątaj, Krakow (https://apd.ur.krakow.pl/catalogue) Archive of Diploma Papers of the
+                        University of Technology and Life Sciences in Bydgoszcz (https://apd.utp.edu.pl/catalogue)
+                        Central Catalog of Polish Journals (http://mak.bn.org.pl/cgi-bin/makwww.exe?BM=7) NUKat
+                        (http://katalog.nukat.edu.pl) Portal of Scientific Journals (http://www.ejournals.eu) Journal
+                        repository of the Nicolaus Copernicus University (http://wydawnictwoumk.pl/czasopisma)
+                        Repository of the Open Science Center (http://depot.ceon.pl) SYMPOnet
+                        (https://gate.bg.pw.edu.pl/) Melinda (https://melinda.kansalliskirjasto.fi) ARTO
+                        (https://arto.linneanet.fi/vwebv/searchBasic?sk=fi_FI) HELDA Institutional repository
+                        (https://helda.helsinki.fi) DORIA Institutional repository (https://www.doria.fi) JUKURI
+                        (http://jukuri.luke.fi) TAMPUB (http://tampub.uta.fi) THESEUS (http://www.theseus.fi) University
+                        of Lapland (http://lauda.ulapland.fi) Aalto University (https://aaltodoc.aalto.fi) SYKE library
+                        collection (http://kirjasto.ymparisto.fi/syke/fi/search_yha.htm); Funding text 2: This review
+                        will be conducted as part of BONUS RETURN project. BONUS RETURN project is supported by BONUS
+                        (Art 185), funded jointly by the EU and Swedish Foundation for Strategic Environmental Research
+                        FORMAS, Sweden’s innovation agency VINNOVA, Academy of Finland and National Centre for Research
+                        and Development in Poland.
+                    </p>
+                </note>
+                <relatedItem type="host">
+                    <titleInfo>
+                        <title>Environmental Evidence</title>
+                    </titleInfo>
+                    <identifier type="issn">2047-2382</identifier>
+                    <identifier type="eissn">2047-2382</identifier>
+                    <part>
+                        <detail type="volume">
+                            <number>8</number>
+                        </detail>
+                        <detail type="issue">
+                            <number>1</number>
+                        </detail>
+                    </part>
+                </relatedItem>
+                <note type="publicationStatus" lang="eng">Published</note>
+                <recordInfo>
+                    <recordOrigin>evaek@ri.se</recordOrigin>
+                    <recordContentSource>ri</recordContentSource>
+                    <recordCreationDate>2019-08-19</recordCreationDate>
+                    <recordChangeDate>2019-08-19</recordChangeDate>
+                    <recordIdentifier>diva2:1343745</recordIdentifier>
+                </recordInfo>
+            </mods>
+        </metadata>
+    </record>
+</OAI-PMH>

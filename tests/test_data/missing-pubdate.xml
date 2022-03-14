@@ -1,0 +1,177 @@
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2021-03-25T12:53:20Z</responseDate>
+    <request verb="ListRecords" metadataPrefix="swepub_mods">
+        http://www.diva-portal.org/dice/oai
+    </request>
+    <ListRecords>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:kau-79202</identifier>
+                <datestamp>2020-10-08T12:43:00Z</datestamp>
+                <setSpec>kau</setSpec>
+                <setSpec>article</setSpec>
+                <setSpec>refereed</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.7"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                    <recordInfo>
+                        <recordContentSource>kau</recordContentSource>
+                        <recordCreationDate>2020-08-05</recordCreationDate>
+                    </recordInfo>
+                    <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:kau:diva-79202</identifier>
+                    <identifier type="doi">10.1108/JOSM-11-2019-0332</identifier>
+                    <identifier type="scopus">2-s2.0-85083824354</identifier>
+                    <titleInfo lang="eng">
+                        <title>Leveraging service design for healthcare transformation</title>
+                        <subTitle>toward people-centered, integrated, and technology-enabled healthcare systems
+                        </subTitle>
+                    </titleInfo>
+                    <abstract lang="eng">&lt;p&gt;Purpose This paper explores how service design can contribute to the
+                        evolution of health service systems, moving them toward people-centered, integrated and
+                        technology-enabled care; the paper develops a research agenda to leverage service design
+                        research for healthcare transformation. Design/methodology/approach This conceptual study starts
+                        by analyzing healthcare challenges in terms of demographic trends and economic constraints,
+                        along with the problems of lack of people-centricity, dispersion of care and slowness in
+                        incorporating emerging technologies. Then, it examines the theoretical underpinnings of service
+                        design to develop a framework for exploring how a human-centered, transformative and service
+                        systems approach can contribute to addressing healthcare challenges, with illustrative cases of
+                        service design research in healthcare being given. Findings The proposed framework explores how
+                        a human-centered service design approach can leverage the potential of technology and advance
+                        healthcare systems toward people-centered care; how a transformative service design approach can
+                        go beyond explanatory research of healthcare phenomena to develop innovative solutions for
+                        healthcare change and wellbeing; and how a service systems perspective can address the
+                        complexity of healthcare systems, hence moving toward integrated care. Originality/value This
+                        paper systematizes and develops a framework for how service design can contribute to healthcare
+                        transformation. It identifies key healthcare application areas for future service design
+                        research and pathways for advancing service design in healthcare by using new interdisciplinary
+                        bridges, methodological developments and theoretical foundations.&lt;/p&gt;
+                    </abstract>
+                    <subject lang="eng" authority="uka.se" xlink:href="502">
+                        <topic>Social Sciences</topic>
+                        <topic>Economics and Business</topic>
+                    </subject>
+                    <subject lang="swe" authority="uka.se" xlink:href="502">
+                        <topic>Samhällsvetenskap</topic>
+                        <topic>Ekonomi och näringsliv</topic>
+                    </subject>
+                    <subject lang="eng" authority="uka.se" xlink:href="20699">
+                        <topic>Engineering and Technology</topic>
+                        <topic>Medical Engineering</topic>
+                        <topic>Other Medical Engineering</topic>
+                    </subject>
+                    <subject lang="swe" authority="uka.se" xlink:href="20699">
+                        <topic>Teknik och teknologier</topic>
+                        <topic>Medicinteknik</topic>
+                        <topic>Annan medicinteknik</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Service design</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Service system transformation</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Healthcare service</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>People-centered care</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Integrated care</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Technology-enabled services</topic>
+                    </subject>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                    </language>
+                    <genre authority="kb.se" type="outputType">publication/journal-article</genre>
+                    <genre authority="svep" type="contentType">ref</genre>
+                    <note type="publicationStatus">Epub ahead of print/Online first</note>
+                    <name type="personal">
+                        <namePart type="family">Patricio</namePart>
+                        <namePart type="given">Lia</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>University Porto, PRT</affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Patricio</namePart>
+                        <namePart type="given">Lia</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>University Porto, PRT</affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Sangiorgi</namePart>
+                        <namePart type="given">Daniela</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>The Polytechnic University of Milan, ITA</affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Mahr</namePart>
+                        <namePart type="given">Dominik</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Maastricht University, NLD;Hanken School of Economics, FIN</affiliation>
+                    </name>
+                    <name type="personal" authority="kau">
+                        <namePart type="family">Caic</namePart>
+                        <namePart type="given">Martina</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority"
+                                     valueURI="kau.se">Karlstads universitet
+                        </affiliation>
+                        <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="kau.se"
+                                     valueURI="Centrum för tjänsteforskning (from 2013)">Centrum för tjänsteforskning
+                            (from 2013)
+                        </affiliation>
+                        <affiliation>Aalto University, FIN, CERS, Helsinki, FIN</affiliation>
+                        <nameIdentifier type="kau">martcaic</nameIdentifier>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Kalantari</namePart>
+                        <namePart type="given">Saleh</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Cornell University, USA.</affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Sundar</namePart>
+                        <namePart type="given">Sue</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>University Utah, USA</affiliation>
+                    </name>
+                    <note type="creatorCount">6</note>
+                    <originInfo>
+                        <publisher>Emerald Group Publishing Limited</publisher>
+                    </originInfo>
+                    <relatedItem type="host">
+                        <titleInfo>
+                            <title>Journal of Service Management</title>
+                        </titleInfo>
+                        <identifier type="issn" displayLabel="ISSN">1757-5818</identifier>
+                        <identifier type="issn" displayLabel="EISSN">1757-5826</identifier>
+                    </relatedItem>
+                    <physicalDescription>
+                        <form authority="marcform">print</form>
+                    </physicalDescription>
+                    <typeOfResource>text</typeOfResource>
+                </mods>
+            </metadata>
+        </record>
+    </ListRecords>
+</OAI-PMH>

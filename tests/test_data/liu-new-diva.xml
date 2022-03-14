@@ -1,0 +1,183 @@
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2020-02-07T11:32:38Z</responseDate>
+    <request verb="ListRecords" identifier="oai:DiVA.org:liu-161552" metadataPrefix="swepub_mods">
+        http://www.diva-portal.org/dice/oai
+    </request>
+    <record>
+        <header>
+            <identifier>oai:DiVA.org:liu-161552</identifier>
+            <datestamp>2019-11-05T13:22:00Z</datestamp>
+            <setSpec>liu</setSpec>
+            <setSpec>conferencePaper</setSpec>
+            <setSpec>refereed</setSpec>
+        </header>
+        <metadata>
+            <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2"
+                  xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+                <genre authority="diva" type="contentTypeCode">refereed</genre>
+                <genre authority="svep" type="contentType">ref</genre>
+                <genre authority="diva" type="contentType" lang="eng">Refereed</genre>
+                <genre authority="diva" type="contentType" lang="swe">Refereegranskat</genre>
+                <genre authority="diva" type="contentType" lang="nor">Fagfellevurdert</genre>
+                <genre authority="diva" type="publicationTypeCode">conferencePaper</genre>
+                <genre authority="svep" type="publicationType">kon</genre>
+                <genre authority="diva" type="publicationType" lang="eng">Conference paper</genre>
+                <genre authority="diva" type="publicationType" lang="swe">Konferensbidrag</genre>
+                <genre authority="diva" type="publicationType" lang="nor">Konferansepaper</genre>
+                <genre authority="kev" type="publicationType" lang="eng">proceeding</genre>
+                <genre authority="diva" type="publicationSubTypeCode">abstracts</genre>
+                <name type="personal">
+                    <namePart type="family">Östlund</namePart>
+                    <namePart type="given">Gunnel</namePart>
+                    <namePart type="date">1956-</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                    </role>
+                    <affiliation>Mälardalens högskola, Hälsa och välfärd, Sverige</affiliation>
+                    <description>orcid.org=0000-0002-3068-5384</description>
+                </name>
+                <name type="personal" authority="liu" xlink:href="matth80">
+                    <namePart type="family">Björk</namePart>
+                    <namePart type="given">Mathilda</namePart>
+                    <namePart type="date">1977-</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                    </role>
+                    <affiliation>Östergötlands Läns Landsting, Rehabenheten</affiliation>
+                    <description>orcid.org=0000-0002-1607-187X</description>
+                    <description>diva-portal.org=authority-person:24220</description>
+                </name>
+                <name type="personal" authority="liu" xlink:href="n/a">
+                    <namePart type="family">Valtersson</namePart>
+                    <namePart type="given">Eva</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                    </role>
+                    <affiliation>Östergötlands Läns Landsting, Rehabgruppen NSC</affiliation>
+                </name>
+                <name type="personal" authority="liu" xlink:href="annsv50">
+                    <namePart type="family">Sverker</namePart>
+                    <namePart type="given">Annette</namePart>
+                    <namePart type="date">1958-</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                    </role>
+                    <affiliation>Linköpings universitet, Socialt arbete</affiliation>
+                    <affiliation>Linköpings universitet, Filosofiska fakulteten</affiliation>
+                    <affiliation>
+                        Linköpings universitet, Avdelningen för samhällsmedicin
+                    </affiliation>
+                    <affiliation>Östergötlands Läns Landsting, Rehabgruppen NSC</affiliation>
+                    <affiliation>Linköpings universitet, Hälsouniversitetet</affiliation>
+                    <description>diva-portal.org=authority-person:27062</description>
+                </name>
+                <name type="corporate" authority="liu" xlink:href="10350">
+                    <namePart>Östergötlands Läns Landsting</namePart>
+                    <namePart>Hjärt- och Medicincentrum</namePart>
+                    <namePart>Rehabenheten</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                    </role>
+                </name>
+                <name type="corporate" authority="liu" xlink:href="8059">
+                    <namePart>Östergötlands Läns Landsting</namePart>
+                    <namePart>Närsjukvården i centrala Östergötland</namePart>
+                    <namePart>Rehabgruppen NSC</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                    </role>
+                </name>
+                <name type="corporate" authority="liu" xlink:href="9150">
+                    <namePart>Linköpings universitet</namePart>
+                    <namePart>Institutionen för samhälls- och välfärdsstudier</namePart>
+                    <namePart>Socialt arbete</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                    </role>
+                </name>
+                <name type="corporate" authority="liu" xlink:href="1750">
+                    <namePart>Linköpings universitet</namePart>
+                    <namePart>Filosofiska fakulteten</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                    </role>
+                </name>
+                <name type="corporate" authority="liu" xlink:href="13361">
+                    <namePart>Linköpings universitet</namePart>
+                    <namePart>Institutionen för medicin och hälsa</namePart>
+                    <namePart>Avdelningen för samhällsmedicin</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                    </role>
+                </name>
+                <name type="corporate" authority="liu" xlink:href="1800">
+                    <namePart>Linköpings universitet</namePart>
+                    <namePart>Hälsouniversitetet</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                    </role>
+                </name>
+                <titleInfo lang="eng">
+                    <title>
+                        Intimate relationships as perceived by patients with early rheumatoid arthritis:
+                    </title>
+                    <subTitle>
+                        A qualitative interview study (The Swedish TIRA study)
+                    </subTitle>
+                </titleInfo>
+                <language>
+                    <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                </language>
+                <originInfo>
+                    <publisher>BMJ Publishing Group Ltd</publisher>
+                    <dateIssued>2014</dateIssued>
+                    <dateOther type="availableFrom">2016-09-29T11:13:00</dateOther>
+                </originInfo>
+                <physicalDescription>
+                    <form authority="marcform">print</form>
+                </physicalDescription>
+                <identifier type="uri">
+                    http://urn.kb.se/resolve?urn=urn:nbn:se:liu:diva-161552
+                </identifier>
+                <identifier type="isi">000346919806500</identifier>
+                <identifier type="articleId">AB1157-HPR</identifier>
+                <typeOfResource>text</typeOfResource>
+                <relatedItem type="series">
+                    <titleInfo>
+                        <title>ANNALS OF THE RHEUMATIC DISEASES</title>
+                    </titleInfo>
+                    <identifier type="issn">0003-4967</identifier>
+                    <identifier type="eissn">1468-2060</identifier>
+                </relatedItem>
+                <subject lang="eng" authority="hsv" xlink:href="30399">
+                    <topic>Medical and Health Sciences</topic>
+                    <topic>Health Sciences</topic>
+                    <topic>Other Health Sciences</topic>
+                </subject>
+                <subject lang="swe" authority="hsv" xlink:href="30399">
+                    <topic>Medicin och hälsovetenskap</topic>
+                    <topic>Hälsovetenskaper</topic>
+                    <topic>Annan hälsovetenskap</topic>
+                </subject>
+                <relatedItem type="host">
+                    <titleInfo>
+                        <title/>
+                    </titleInfo>
+                </relatedItem>
+                <name type="conference">
+                    <namePart>
+                        15th Annual European Congress of Rheumatology (EULAR), Paris, FRANCE, JUN 11-14, 201
+                    </namePart>
+                </name>
+                <recordInfo>
+                    <recordOrigin>ellko58</recordOrigin>
+                    <recordContentSource>liu</recordContentSource>
+                    <recordCreationDate>2019-11-05</recordCreationDate>
+                    <recordIdentifier>diva2:1367988</recordIdentifier>
+                </recordInfo>
+            </mods>
+        </metadata>
+    </record>
+</OAI-PMH>

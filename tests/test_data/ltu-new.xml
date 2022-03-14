@@ -1,0 +1,121 @@
+<OAI-PMH xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd" xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <responseDate>2020-02-03T13:14:14Z</responseDate>
+    <request verb="ListRecords" identifier="oai:DiVA.org:kkh-193" metadataPrefix="swepub_mods">
+        http://www.diva-portal.org/dice/oai
+    </request>
+    <record>
+      <header>
+        <identifier>oai:DiVA.org:ltu-17805</identifier>
+        <datestamp>2017-11-24T12:19:00Z</datestamp>
+        <setSpec>ltu</setSpec>
+        <setSpec>comprehensiveLicentiateThesis</setSpec>
+        <setSpec>science</setSpec>
+      </header>
+      <metadata>
+        <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+          <genre authority="diva" type="contentTypeCode">science</genre>
+          <genre authority="svep" type="contentType">vet</genre>
+          <genre authority="diva" type="contentType" lang="eng">Other academic</genre>
+          <genre authority="diva" type="contentType" lang="swe">&#xD6;vrigt vetenskapligt</genre>
+          <genre authority="diva" type="contentType" lang="nor">Annet vitenskapelig</genre>
+          <genre authority="diva" type="publicationTypeCode">comprehensiveLicentiateThesis</genre>
+          <genre authority="svep" type="publicationType">lic</genre>
+          <genre authority="diva" type="publicationType" lang="eng">Licentiate thesis, comprehensive summary</genre>
+          <genre authority="diva" type="publicationType" lang="swe">Licentiatavhandling, sammanl&#xE4;ggning</genre>
+          <genre authority="diva" type="publicationType" lang="nor">Licentiatavhandling, med artikler</genre>
+          <genre authority="kev" type="publicationType" lang="eng">dissertation</genre>
+          <name type="personal" authority="ltu" xlink:href="emigus">
+            <namePart type="family">Gustafsson</namePart>
+            <namePart type="given">Emil</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+            <affiliation>
+    Lule&#xE5; tekniska universitet, Material- och solidmekanik
+    </affiliation>
+            <description>orcid.org=0000-0001-7535-5250</description>
+            <description>diva-portal.org=authority-person:31046</description>
+          </name>
+          <name type="corporate" authority="ltu" xlink:href="875052">
+            <namePart>Lule&#xE5; tekniska universitet</namePart>
+            <namePart>Institutionen f&#xF6;r teknikvetenskap och matematik</namePart>
+            <namePart>Material- och solidmekanik</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+            </role>
+          </name>
+          <titleInfo lang="eng">
+            <title>Experiments on sheet metal shearing</title>
+          </titleInfo>
+          <language>
+            <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+          </language>
+          <originInfo>
+            <place>
+              <placeTerm>Lule&#xE5;</placeTerm>
+            </place>
+            <publisher>Lule&#xE5; tekniska universitet</publisher>
+            <dateIssued>2013</dateIssued>
+            <dateOther type="availableFrom">2016-09-29T15:54:00</dateOther>
+          </originInfo>
+          <physicalDescription>
+            <form authority="marcform">electronic</form>
+          </physicalDescription>
+          <identifier type="isbn" displayLabel="print">978-91-7439-622-5</identifier>
+          <identifier type="isbn" displayLabel="electronic">978-91-7439-623-2</identifier>
+          <identifier type="uri">
+    http://urn.kb.se/resolve?urn=urn:nbn:se:ltu:diva-17805
+    </identifier>
+          <identifier type="local">54d1c713-062d-485b-968a-323ff512dc1e</identifier>
+          <typeOfResource>text</typeOfResource>
+          <relatedItem type="series">
+            <titleInfo>
+              <title>Licentiate thesis / Lule&#xE5; University of Technology</title>
+            </titleInfo>
+            <identifier type="issn">1402-1757</identifier>
+            <identifier type="local">14101</identifier>
+          </relatedItem>
+          <subject lang="eng" authority="hsv" xlink:href="20301">
+            <topic>Engineering and Technology</topic>
+            <topic>Mechanical Engineering</topic>
+            <topic>Applied Mechanics</topic>
+          </subject>
+          <subject lang="swe" authority="hsv" xlink:href="20301">
+            <topic>Teknik och teknologier</topic>
+            <topic>Maskinteknik</topic>
+            <topic>Teknisk mekanik</topic>
+          </subject>
+          <subject lang="swe" authority="ltu" xlink:href="25824">
+            <topic>H&#xE5;llfasthetsl&#xE4;ra</topic>
+            <genre>Research subject</genre>
+          </subject>
+          <subject lang="eng" authority="ltu" xlink:href="25824">
+            <topic>Solid Mechanics</topic>
+            <genre>Research subject</genre>
+          </subject>
+          <abstract lang="eng">
+            <p>Within the sheet metal industry, different shear cutting technologies are commonly used in several processing steps, e.g. in cut to length lines, slitting lines, end cropping etc. Shearing has speed and cost advantages over competing cutting methods like laser and plasma cutting, but involves large forces on the equipment and large strains in the sheet material.Numerical models to predict forces and sheared edge geometry for different sheet metal grades and different shear parameter set-ups are desirable. For new sheet metal grades, numerical shear models are efficient for finding appropriate shear parameters without the need for time consuming and expensive live tests in the production. In order to allow for validation of numerical models, accurate experimental data is wanted.Many industrial equipments for shearing give some measure of applied force, but due to machinery friction losses, measured forces are always higher than the forces acting on the sheet. Shearing also generates a force that attempts to separate the two shear tools with changed shear conditions through increased clearance between the shear tools as result. Clearance is also the most common shear parameter to adjust, depending on material grade and sheet thickness, in order to moderate the required force and to control the final sheared edge geometry.Sheared edges have four characteristic zones, rollover, shear, fracture and burr zones. Burrs and rough fracture zones complicate the following processing through inadequate tolerances that may imply additional machining and sharp edges that may damage equipment or even cause injuries. Well defined shears and accurate measurements are important for the understanding of shear parameters. In this work, an experimental procedure with high measurability and consistent and predictable output, is designed, built and evaluated. Important shear parameters and demands on the experimental set-up are identified in a perturbation analysis performed with use of finite element method.Considering the perturbation analyses results, experimental set-up requirements are formulated. Based on magnitude of the force changes obtained as result of perturbed input parameters in the analyses, force measurements with one percent accuracy are considered necessary. Since a clearance change of one percentage point results in approximately one percent change in forces, the target experimental clearance stability is an order of magnitude lower, i.e. the clearance should remain within 0.1% or 5&#x3BC;m at the sheet thicknesses sheared.With respect to high clearance stability and accurate force measurements, a symmetric experiment with two simultaneous shears and internal balancing of forces attempting to separate the shear tools, is constructed. Besides a stable clearance, the experiment features high accuracy force measurements without external friction losses through 20 strain gauges mounted on the set-up.Since clearance and clamping of the sheet are identified as important to the shear results, these parameters are selected for further experimental studies through shearing of three material grades with various strength. Judging by the result, shear tool penetration before fracture decreases with increased material strength. When one side of the sheet is left unclamped and free to move, the required shear force decreases but instead the force attempting to separate the two shear tools increase. Further, the maximum shear force increases and the rollover decreases with decreased clearance. In general terms, results from the study are promising for use in validation of numerical shear models.</p>
+          </abstract>
+          <note>
+            <p>Godk&#xE4;nd; 2013; 20130430 (emigus); Tillk&#xE4;nnagivande licentiatseminarium 2013-05-16 Nedanst&#xE5;ende person kommer att h&#xE5;lla licentiatseminarium f&#xF6;r avl&#xE4;ggande av teknologie licentiatexamen. Namn: Emil Gustafsson &#xC4;mne: H&#xE5;llfasthetsl&#xE4;ra/Solid Mechanics Uppsats: Experiments on Sheet Metal Shearing Examinator: Professor Mats Oldenburg, Institutionen f&#xF6;r teknikvetenskap och matematik, Lule&#xE5; tekniska universitet Diskutant: Doktor Magnus Eriksson, SINTEF Materials and Chemistry, Structural Mechanics, Trondheim, Norge Tid: Torsdag den 30 maj 2013 kl 10.00 Plats: E246, Lule&#xE5; tekniska universitet</p>
+          </note>
+          <note type="thesis">Lic.-avh. (sammanfattning), 2013</note>
+          <name type="conference">
+            <namePart/>
+          </name>
+          <location>
+            <url displayLabel="fulltext" note="free" access="raw object">
+    http://ltu.diva-portal.org/smash/get/diva2:990811/FULLTEXT01.pdf
+    </url>
+          </location>
+          <recordInfo>
+            <recordOrigin>marso310</recordOrigin>
+            <recordContentSource>ltu</recordContentSource>
+            <recordCreationDate>2016-09-29</recordCreationDate>
+            <recordChangeDate>2017-11-24</recordChangeDate>
+            <recordIdentifier>diva2:990811</recordIdentifier>
+          </recordInfo>
+        </mods>
+      </metadata>
+    </record>
+</OAI-PMH>

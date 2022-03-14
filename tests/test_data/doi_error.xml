@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd" xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <responseDate>2019-01-09T07:35:05Z</responseDate>
+    <request verb="ListRecords" metadataPrefix="mods" set="CHALMERS_SWEPUB" >http://publications.lib.chalmers.se/cpl/oai-pmh/swepub/</request>
+    <ListRecords>
+        <record>
+            <header>
+                <identifier>oai:publications.lib.chalmers.se:227494</identifier>
+                <datestamp>2016-03-30</datestamp>
+            </header>
+            <metadata>
+                <mods version="3.5" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd" xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <recordInfo>
+                        <recordContentSource>cth</recordContentSource>
+                    </recordInfo>
+                    <titleInfo>
+                        <title>Catalase improves saccharification of lignocellulose by reducing lytic polysaccharide monooxygenase-associated enzyme inactivation</title>
+                    </titleInfo>
+                    <genre authority="svep" type="publicationType">art</genre>
+                    <genre authority="svep" type="contentType">ref</genre>
+                    <originInfo>
+                        <dateIssued>2016</dateIssued>
+                    </originInfo>
+                    <subject lang="swe" authority="uka.se" xlink:href="104">
+                        <topic>Kemi</topic>
+                    </subject>
+                    <subject lang="eng" authority="uka.se" xlink:href="104">
+                        <topic>Chemical Sciences</topic>
+                    </subject>
+                    <subject lang="swe" authority="uka.se" xlink:href="106">
+                        <topic>Biologiska vetenskaper</topic>
+                    </subject>
+                    <subject lang="eng" authority="uka.se" xlink:href="106">
+                        <topic>Biological Sciences</topic>
+                    </subject>
+                    <subject lang="swe" authority="uka.se" xlink:href="204">
+                        <topic>Kemiteknik</topic>
+                    </subject>
+                    <subject lang="eng" authority="uka.se" xlink:href="204">
+                        <topic>Chemical Engineering</topic>
+                    </subject>
+                    <subject>
+                        <topic>Catalase</topic>
+                    </subject>
+                    <subject>
+                        <topic>Cellulase</topic>
+                    </subject>
+                    <subject>
+                        <topic>Fenton chemistry</topic>
+                    </subject>
+                    <subject>
+                        <topic>Kinetic modelling</topic>
+                    </subject>
+                    <subject>
+                        <topic>Lytic polysaccharide monooxygenase</topic>
+                    </subject>
+                    <subject>
+                        <topic>Pretreated wheat straw</topic>
+                    </subject>
+                    <subject>
+                        <topic>Reactive oxygen species</topic>
+                    </subject>
+                    <name type="personal" authority="chalmers.se" xlink:href="skatja">
+                        <namePart type="given">Katja Salomon</namePart>
+                        <namePart type="family">Johansen</namePart>
+                        <namePart type="date">1969</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <description xsi:type="identifierDefinition" type="orcid">0000-0002-7587-5990</description>
+                        <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="chalmers.se">Chalmers tekniska högskola</affiliation>
+                        <affiliation lang="swe" authority="chalmers.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="chalmers.se/1900">Institutionen för biologi och bioteknik, Industriell bioteknik</affiliation>
+                        <affiliation lang="eng" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="chalmers.se">Chalmers University of Technology</affiliation>
+                        <affiliation lang="eng" authority="chalmers.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="chalmers.se/1900">Department of Biology and Biological Engineering, Industrial Biotechnology</affiliation>
+                    </name>
+                    <name type="personal" authority="chalmers.se" xlink:href="259231">
+                        <namePart type="given">Brian R.</namePart>
+                        <namePart type="family">Scott</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal" authority="chalmers.se" xlink:href="259232">
+                        <namePart type="given">Hong Zhi</namePart>
+                        <namePart type="family">Huang</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal" authority="chalmers.se" xlink:href="259233">
+                        <namePart type="given">Jesper</namePart>
+                        <namePart type="family">Frickman</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal" authority="chalmers.se" xlink:href="259234">
+                        <namePart type="given">Rune</namePart>
+                        <namePart type="family">Halvorsen</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <note type="creatorCount">5</note>
+                    <name type="corporate" lang="swe" authority="chalmers.se" xlink:href="1900">
+                        <namePart>Chalmers tekniska högskola</namePart>
+                        <namePart>Institutionen för biologi och bioteknik, Industriell bioteknik</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <name type="corporate" lang="eng" authority="chalmers.se" xlink:href="1900">
+                        <namePart>Chalmers University of Technology</namePart>
+                        <namePart>Department of Biology and Biological Engineering, Industrial Biotechnology</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <relatedItem type="host">
+                        <titleInfo>
+                            <title>Biotechnology Letters</title>
+                        </titleInfo>
+                        <identifier type="issn">0141-5492</identifier>
+                        <part>
+                            <detail type="volume">
+                                <number>38</number>
+                            </detail>
+                            <detail type="issue">
+                                <number>3</number>
+                            </detail>
+                            <extent>
+                                <start>425</start>
+                                <end>434</end>
+                            </extent>
+                        </part>
+                    </relatedItem>
+                    <identifier type="uri" note="chalmers.se">
+                                        http://publications.lib.chalmers.se/publication/227494-catalase-improves-saccharification-of-lignocellulose-by-reducing-lytic-polysaccharide-monooxygenase</identifier>
+                    <identifier type="doi">10.​1007/​s10529-015-1989-8</identifier>
+                    <identifier type="isi">000371242700008</identifier>
+                    <location>
+                        <url>http://link.springer.com/article/10.1007%2Fs10529-015-1989-8</url>
+                    </location>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                    </language>
+                    <abstract>Objectives
+
+Efficient enzymatic saccharification of plant cell wall material is key to industrial processing of agricultural and forestry waste such as straw and wood chips into fuels and chemicals.
+
+
+Results
+
+Saccharification assays were performed on steam-pretreated wheat straw under ambient and O2-deprived environments and in the absence and presence of a lytic polysaccharide monooxygenase (LPMO) and catalase. A kinetic model was used to calculate catalytic rate and first-order inactivation rate constants of the cellulases from reaction progress curves. The addition of a LPMO significantly (P < 0.01, Student’s T test) enhanced the rate of glucose release from 2.8 to 6.9 h−1 under ambient O2 conditions. However, this also significantly (P < 0.01, Student’s T test) increased the rate of inactivation of the enzyme mixture, thereby reducing the performance half-life from 65 to 35 h. Decreasing O2 levels or, strikingly, the addition of catalase significantly reduced (P < 0.01, Student’s T test) enzyme inactivation and, as a consequence, higher efficiency of the cellulolytic enzyme cocktail was achieved.
+
+
+Conclusion
+
+Oxidative inactivation of commercial cellulase mixtures is a significant factor influencing the overall saccharification efficiency and the addition of catalase can be used to protect these mixtures from inactivation.
+
+                    </abstract>
+                </mods>
+            </metadata>
+        </record>
+    </ListRecords>
+</OAI-PMH>

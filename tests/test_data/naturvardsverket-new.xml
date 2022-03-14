@@ -1,0 +1,306 @@
+<OAI-PMH xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd" xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <responseDate>2020-02-03T13:14:14Z</responseDate>
+    <request verb="ListRecords" identifier="oai:DiVA.org:naturvardsverket-8323" metadataPrefix="swepub_mods">
+        http://www.diva-portal.org/dice/oai
+    </request>
+    <record>
+      <header>
+        <identifier>oai:DiVA.org:naturvardsverket-8323</identifier>
+        <datestamp>2020-02-05T10:12:00Z</datestamp>
+        <setSpec>naturvardsverket</setSpec>
+        <setSpec>report</setSpec>
+        <setSpec>science</setSpec>
+      </header>
+      <metadata>
+        <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" version="3.7" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+          <genre authority="diva" type="contentTypeCode">science</genre>
+          <genre authority="svep" type="contentType">vet</genre>
+          <genre authority="diva" type="contentType" lang="eng">Other academic</genre>
+          <genre authority="diva" type="contentType" lang="swe">&#xD6;vrigt vetenskapligt</genre>
+          <genre authority="diva" type="contentType" lang="nor">Annet vitenskapelig</genre>
+          <genre authority="diva" type="publicationTypeCode">report</genre>
+          <genre authority="svep" type="publicationType">rap</genre>
+          <genre authority="diva" type="publicationType" lang="eng">Report</genre>
+          <genre authority="diva" type="publicationType" lang="swe">Rapport</genre>
+          <genre authority="diva" type="publicationType" lang="nor">Rapport</genre>
+          <genre authority="kev" type="publicationType" lang="eng">book</genre>
+          <name type="personal">
+            <namePart type="family">Flink</namePart>
+            <namePart type="given">Henrik</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+            <affiliation>Naturv&#xE5;rdsverket</affiliation>
+            <affiliation>Utf&#xF6;rare milj&#xF6;&#xF6;vervakning, L&#xE4;nsstyrelsen Stockholm</affiliation>
+            <affiliation>
+    Utf&#xF6;rare milj&#xF6;&#xF6;vervakning, Sveriges lantbruksuniversitet, vatten och milj&#xF6;
+    </affiliation>
+          </name>
+          <name type="personal">
+            <namePart type="family">Yngwe</namePart>
+            <namePart type="given">Rickard</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+            <affiliation>Naturv&#xE5;rdsverket</affiliation>
+            <affiliation>Utf&#xF6;rare milj&#xF6;&#xF6;vervakning, L&#xE4;nsstyrelsen Stockholm</affiliation>
+            <affiliation>
+    Utf&#xF6;rare milj&#xF6;&#xF6;vervakning, Sveriges lantbruksuniversitet, vatten och milj&#xF6;
+    </affiliation>
+          </name>
+          <name type="personal">
+            <namePart type="family">Blass</namePart>
+            <namePart type="given">Martina</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+            <affiliation>Naturv&#xE5;rdsverket</affiliation>
+            <affiliation>Utf&#xF6;rare milj&#xF6;&#xF6;vervakning, L&#xE4;nsstyrelsen Stockholm</affiliation>
+            <affiliation>
+    Utf&#xF6;rare milj&#xF6;&#xF6;vervakning, Sveriges lantbruksuniversitet, vatten och milj&#xF6;
+    </affiliation>
+          </name>
+          <name type="personal">
+            <namePart type="family">Karlsson</namePart>
+            <namePart type="given">Erik</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+            <affiliation>Naturv&#xE5;rdsverket</affiliation>
+            <affiliation>Utf&#xF6;rare milj&#xF6;&#xF6;vervakning, L&#xE4;nsstyrelsen Stockholm</affiliation>
+            <affiliation>
+    Utf&#xF6;rare milj&#xF6;&#xF6;vervakning, Sveriges lantbruksuniversitet, vatten och milj&#xF6;
+    </affiliation>
+          </name>
+          <name type="corporate" authority="naturvardsverket" xlink:href="12752">
+            <namePart>Naturv&#xE5;rdsverket</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+            </role>
+          </name>
+          <name type="corporate" authority="naturvardsverket" xlink:href="14229">
+            <namePart>Utf&#xF6;rare milj&#xF6;&#xF6;vervakning</namePart>
+            <namePart>L&#xE4;nsstyrelser, lst</namePart>
+            <namePart>L&#xE4;nsstyrelsen Stockholm</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+            </role>
+          </name>
+          <name type="corporate" authority="naturvardsverket" xlink:href="14251">
+            <namePart>Utf&#xF6;rare milj&#xF6;&#xF6;vervakning</namePart>
+            <namePart>Universitet</namePart>
+            <namePart>Sveriges lantbruksuniversitet, SLU</namePart>
+            <namePart>Sveriges lantbruksuniversitet, vatten och milj&#xF6;</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+            </role>
+          </name>
+          <titleInfo lang="swe">
+            <title>
+    Faktablad &#x2013; Resultat fr&#xE5;n &#xF6;vervakningen av kustfisk 2019:3
+    </title>
+            <subTitle>Lagn&#xF6; (Egentliga &#xD6;stersj&#xF6;n) 2002&#x2013;2018</subTitle>
+          </titleInfo>
+          <language>
+            <languageTerm type="code" authority="iso639-2b">swe</languageTerm>
+          </language>
+          <originInfo>
+            <dateIssued>2019</dateIssued>
+            <dateOther type="availableFrom">2020-01-31T13:48:00</dateOther>
+          </originInfo>
+          <note type="publicationChannel"/>
+          <physicalDescription>
+            <form authority="marcform">electronic</form>
+            <extent>19</extent>
+          </physicalDescription>
+          <identifier type="uri">
+    http://urn.kb.se/resolve?urn=urn:nbn:se:naturvardsverket:diva-8323
+    </identifier>
+          <typeOfResource>text</typeOfResource>
+          <subject lang="eng" authority="hsv" xlink:href="10502">
+            <topic>Natural Sciences</topic>
+            <topic>Earth and Related Environmental Sciences</topic>
+            <topic>Environmental Sciences</topic>
+          </subject>
+          <subject lang="swe" authority="hsv" xlink:href="10502">
+            <topic>Naturvetenskap</topic>
+            <topic>Geovetenskap och milj&#xF6;vetenskap</topic>
+            <topic>Milj&#xF6;vetenskap</topic>
+          </subject>
+          <subject lang="swe" authority="naturvardsverket" xlink:href="19453">
+            <topic>Regional milj&#xF6;&#xF6;vervakning</topic>
+            <genre>Research subject</genre>
+          </subject>
+          <subject lang="eng" authority="naturvardsverket" xlink:href="19453">
+            <topic>Regional</topic>
+            <genre>Research subject</genre>
+          </subject>
+          <subject lang="swe" authority="naturvardsverket" xlink:href="18402">
+            <topic>Kust och hav</topic>
+            <genre>Research subject</genre>
+          </subject>
+          <subject lang="eng" authority="naturvardsverket" xlink:href="18402">
+            <topic>Coast and sea</topic>
+            <genre>Research subject</genre>
+          </subject>
+          <subject lang="swe" authority="naturvardsverket" xlink:href="20016">
+            <topic>Integrerad kustfisk&#xF6;vervakning</topic>
+            <genre>Research subject</genre>
+          </subject>
+          <subject lang="eng" authority="naturvardsverket" xlink:href="20016">
+            <topic>Integrerad kustfisk&#xF6;vervakning</topic>
+            <genre>Research subject</genre>
+          </subject>
+          <subject lang="swe" authority="naturvardsverket" xlink:href="18711">
+            <topic>Hav i balans samt levande kust och sk&#xE4;rg&#xE5;rd</topic>
+            <genre>Research subject</genre>
+          </subject>
+          <subject lang="eng" authority="naturvardsverket" xlink:href="18711">
+            <topic>
+    A Balanced Marine Environ&#xAD;ment, Flourishing Coastal Areas and Archipelagos
+    </topic>
+            <genre>Research subject</genre>
+          </subject>
+          <abstract lang="swe">
+            <ul>
+              <li>Sedan provfiskets start, med undantag f&#xF6;r 2015&#x2013;2017 d&#xE5; m&#xF6;rt dominerade, har f&#xE5;ngsten i Lagn&#xF6; dominerats av abborre, f&#xF6;ljt av m&#xF6;rt, str&#xF6;mming, nors och g&#xE4;rs.</li>
+              <li>Under 2018 &#xE5;rs provfiske utgjorde abborre hela 61 procent av f&#xE5;ngsten och den stora f&#xE5;ngsten br&#xF6;t en tidigare ned&#xE5;tg&#xE5;ende trend f&#xF6;r arten. &#xF0B7;</li>
+              <li>Str&#xF6;mming, nors, l&#xF6;ja och t&#xE5;nglake har &#xF6;kat i f&#xE5;ngsten medan g&#xE4;dda och g&#xF6;s har minskat. &#xF0B7;</li>
+              <li>Antalet f&#xE5;ngade arter per &#xE5;r har minskat &#xF6;ver tid. Exempel p&#xE5; arter som tidigare f&#xE5;ngats men som inte f&#xF6;rekommit under senare &#xE5;r &#xE4;r g&#xE4;dda, id, braxen och g&#xF6;s. D&#xE4;remot har den totala m&#xE4;ngden fisk som f&#xE5;ngats &#xF6;kat &#xF6;ver tid. &#xF0B7;</li>
+              <li>F&#xE5;ngsten av stora individer har minskat sedan provfiskets start, b&#xE5;de f&#xF6;r alla arter generellt (&gt; 30 centimeter) och f&#xF6;r abborre (&gt; 25 centimeter) specifikt. M&#xF6;jliga f&#xF6;rklaringar kan vara ett &#xF6;kat fisketryck eller en &#xF6;kad naturlig d&#xF6;dlighet fr&#xE5;n till exempel s&#xE4;l och skarv. &#xF0B7;</li>
+              <li>Den trofiska medelniv&#xE5;n har minskat &#xF6;ver tid och &#xE4;r i Lagn&#xF6; starkt kopplat till f&#xE5;ngsten av abborre, den dominerande arten av rovfisk, samt m&#xF6;rt. &#xF0B7;</li>
+              <li>Abborrens tillv&#xE4;xt har inte f&#xF6;r&#xE4;ndrats &#xF6;ver tid. Det antyder att den minskade f&#xF6;rekomsten av stor abborre i f&#xE5;ngsten inte kan f&#xF6;rklaras av en l&#xE5;ngsammare tillv&#xE4;xthastighet. </li>
+            </ul>
+          </abstract>
+          <location>
+            <url displayLabel="fulltext" note="free" access="raw object">
+    http://naturvardsverket.diva-portal.org/smash/get/diva2:1390302/FULLTEXT01.pdf
+    </url>
+          </location>
+          <recordInfo>
+            <recordOrigin>LST_AB</recordOrigin>
+            <recordContentSource>naturvardsverket</recordContentSource>
+            <recordCreationDate>2020-01-31</recordCreationDate>
+            <recordChangeDate>2020-02-05</recordChangeDate>
+            <recordIdentifier>diva2:1390302</recordIdentifier>
+          </recordInfo>
+        </mods>
+      </metadata>
+    </record>
+    <record>
+        <header>
+            <identifier>oai:DiVA.org:naturvardsverket-8362</identifier>
+            <datestamp>2020-02-27T09:52:00Z</datestamp>
+            <setSpec>naturvardsverket</setSpec>
+            <setSpec>report</setSpec>
+            <setSpec>science</setSpec>
+        </header>
+        <metadata>
+        <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" version="3.7" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                <genre authority="diva" type="contentTypeCode">science</genre>
+                <genre authority="svep" type="contentType">vet</genre>
+                <genre authority="diva" type="contentType" lang="eng">Other academic</genre>
+                <genre authority="diva" type="contentType" lang="swe">Övrigt vetenskapligt</genre>
+                <genre authority="diva" type="contentType" lang="nor">Annet vitenskapelig</genre>
+                <genre authority="diva" type="publicationTypeCode">report</genre>
+                <genre authority="svep" type="publicationType">rap</genre>
+                <genre authority="diva" type="publicationType" lang="eng">Report</genre>
+                <genre authority="diva" type="publicationType" lang="swe">Rapport</genre>
+                <genre authority="diva" type="publicationType" lang="nor">Rapport</genre>
+                <genre authority="kev" type="publicationType" lang="eng">book</genre>
+                <name type="corporate" authority="naturvardsverket" xlink:href="12752">
+                    <namePart>Naturvårdsverket</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                    </role>
+                    <description>Responsible Organisation</description>
+                </name>
+                <titleInfo lang="swe">
+                    <title>Nagoyaprotokollet och EU ABS-förordningen</title>
+                </titleInfo>
+                <language>
+                    <languageTerm type="code" authority="iso639-2b">swe</languageTerm>
+                </language>
+                <originInfo>
+                    <place>
+                        <placeTerm>Stockholm</placeTerm>
+                    </place>
+                    <publisher>Naturvårdsverket</publisher>
+                    <dateIssued>2017</dateIssued>
+                    <dateOther type="availableFrom">2020-02-27T10:52:12</dateOther>
+                </originInfo>
+                <note type="publicationChannel"/>
+                <physicalDescription>
+                    <form authority="marcform">electronic</form>
+                    <extent>16</extent>
+                </physicalDescription>
+                <identifier type="isbn" displayLabel="print">978-91-620-8792-0</identifier>
+                <identifier type="uri">
+                    http://urn.kb.se/resolve?urn=urn:nbn:se:naturvardsverket:diva-8362
+                </identifier>
+                <typeOfResource>text</typeOfResource>
+                <subject lang="swe">
+                    <topic>Internationellt avtal</topic>
+                </subject>
+                <subject lang="swe">
+                    <topic>genetiska resurser</topic>
+                </subject>
+                <subject lang="swe">
+                    <topic>traditionella kunskaper</topic>
+                </subject>
+                <subject lang="swe">
+                    <topic>forskning</topic>
+                </subject>
+                <subject lang="swe">
+                    <topic>produktutveckling</topic>
+                </subject>
+                <subject lang="swe">
+                    <topic>juridiskt bindande</topic>
+                </subject>
+                <subject lang="swe">
+                    <topic>rättvis fördelning</topic>
+                </subject>
+                <subject lang="swe">
+                    <topic>rättssäkerhet</topic>
+                </subject>
+                <subject lang="swe">
+                    <topic>växtförädling</topic>
+                </subject>
+                <subject lang="swe">
+                    <topic>bioteknik</topic>
+                </subject>
+                <subject lang="swe">
+                    <topic>ABS</topic>
+                </subject>
+                <subject lang="swe">
+                    <topic>CBD</topic>
+                </subject>
+                <subject lang="eng" authority="hsv" xlink:href="10502">
+                    <topic>Natural Sciences</topic>
+                    <topic>Earth and Related Environmental Sciences</topic>
+                    <topic>Environmental Sciences</topic>
+                </subject>
+                <subject lang="swe" authority="hsv" xlink:href="10502">
+                    <topic>Naturvetenskap</topic>
+                    <topic>Geovetenskap och miljövetenskap</topic>
+                    <topic>Miljövetenskap</topic>
+                </subject>
+                <abstract lang="swe">
+                    <p><strong>Nagoyaprotokollet </strong>är ett internationellt avtal om genetiska resurser och tillhörandetraditionella kunskaper. Protokollet reglerar hur den genetiska resursen inhämtas, hur den används inom forskning och produktutveckling samt hur vinster från användningen fördelas.</p><p>Nagoyaprotokollet, som är juridiskt bindande och trädde i kraft den 12 oktober 2014, ger en rättslig ram för ”rättvis fördelning av nyttan som uppstår vid utnyttjande av genetiska resurser”. Syftet är att skapa en större rättssäkerhet för både det land som tillhandahåller resurserna och användare av dessa.</p><p>Biologisk mångfald är en global tillgång med ett enormt värde för nuvarande och kommande generationer. Att bevara och forska på biologisk mångfald är viktigt, inte bara av miljömässiga skäl. Användandet av genetiska resurser har ett betydande ekonomiskt och socialt värde som grund för utvecklingen av produkter och tillämpningar inom hälsa, jordbruk, växtförädling och bioteknik.</p><p>ABS (Access and Benefit-Sharing) är en princip som förankrats i både Konventionen om biologisk mångfald (CBD) och Nagoyaprotokollet. Den syftar till att skapa incitament för skydd och hållbart nyttjande av den biologiska mångfalden. I det här sammanhanget innebär ABS en rimlig och rättvis fördelning av den nytta som uppstår vid användningen av genetiska resurser och traditionella kunskaper.</p>
+                </abstract>
+                <location>
+                    <url displayLabel="fulltext" note="free" access="raw object">
+                        http://naturvardsverket.diva-portal.org/smash/get/diva2:1397067/FULLTEXT01.pdf
+                    </url>
+                </location>
+                <recordInfo>
+                    <recordOrigin>anette.enback@naturvardsverket.se</recordOrigin>
+                    <recordContentSource>naturvardsverket</recordContentSource>
+                    <recordCreationDate>2020-02-27</recordCreationDate>
+                    <recordChangeDate>2020-02-27</recordChangeDate>
+                    <recordIdentifier>diva2:1397067</recordIdentifier>
+                </recordInfo>
+            </mods>
+        </metadata>
+    </record>
+</OAI-PMH>

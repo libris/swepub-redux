@@ -1,0 +1,155 @@
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2020-02-10T13:42:17Z</responseDate>
+    <request verb="ListRecords" identifier="oai:muep.mau.se:2043/20021" metadataPrefix="swepub">
+        http://muep.mau.se/oai/request
+    </request>
+    <record>
+        <header>
+            <identifier>oai:muep.mau.se:2043/20021</identifier>
+            <datestamp>2019-08-16T12:11:00Z</datestamp>
+            <setSpec>com_2043_4297</setSpec>
+        </header>
+        <metadata>
+            <mods:mods xmlns="http://www.loc.gov/mods/v3" xmlns:doc="http://www.lyncode.com/xoai"
+                       xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:mods="http://www.loc.gov/mods/v3"
+                       xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd"
+                       version="3.5">
+                <recordInfo>
+                    <recordContentSource>mah</recordContentSource>
+                </recordInfo>
+                <titleInfo>
+                    <title>Socialtjänsten och de papperslösa</title>
+                </titleInfo>
+                <originInfo>
+                    <dateIssued>2013</dateIssued>
+                    <publisher>Santérus Academic Press</publisher>
+                </originInfo>
+                <genre type="outputType" authority="kb.se">publication/book-chapter</genre>
+                <genre type="contentType" authority="svep">vet</genre>
+                <genre type="publicationType" authority="svep">kap</genre>
+                <note type="creatorCount">1</note>
+                <subject xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="12" authority="svep" lang="eng">
+                    <topic>LAW/JURISPRUDENCE</topic>
+                </subject>
+                <subject xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="12" authority="svep" lang="swe">
+                    <topic>RÄTTSVETENSKAP/JURIDIK</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>Humanities/Social Sciences</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>Papperslös</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>akut nöd(situation)</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>vistelsebegreppet</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>starkast anknytning</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>socialtjänst</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>uppehållsrätt</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>rätt till bistånd</topic>
+                </subject>
+                <name authority="muep" type="personal">
+                    <namePart type="given">Annika</namePart>
+                    <namePart type="family">Staaf</namePart>
+                    <role>
+                        <roleTerm authority="marcrelator" type="code">aut</roleTerm>
+                    </role>
+                    <affiliation valueURI="mau.se" xsi:type="stringPlusLanguagePlusAuthority" authority="kb.se"
+                                 lang="swe">Malmö universitet
+                    </affiliation>
+                    <affiliation valueURI="mau.se" xsi:type="stringPlusLanguagePlusAuthority" authority="kb.se"
+                                 lang="eng">Malmö University
+                    </affiliation>
+                    <affiliation valueURI="mau.se" authority="mau.se" xsi:type="stringPlusLanguagePlusAuthority"
+                                 lang="eng">Faculty of Health and Society
+                    </affiliation>
+                </name>
+                <name authority="muep" type="personal">
+                    <namePart type="given">Lotte</namePart>
+                    <namePart type="family">Vahlne Westerhäll</namePart>
+                    <role>
+                        <roleTerm authority="marcrelator" type="code">edt</roleTerm>
+                    </role>
+                </name>
+                <name authority="mau.se" type="corporate">
+                    <namePart>Malmö University</namePart>
+                    <namePart>Faculty of Health and Society</namePart>
+                    <role>
+                        <roleTerm authority="marcrelator" type="code">org</roleTerm>
+                    </role>
+                </name>
+                <name authority="mau.se" type="corporate">
+                    <namePart>Malmö University</namePart>
+                    <namePart>Health and Welfare Studies (HV)</namePart>
+                    <role>
+                        <roleTerm authority="marcrelator" type="code">org</roleTerm>
+                    </role>
+                </name>
+                <relatedItem type="host">
+                    <titleInfo>
+                        <title>Nordisk Socialrättslig Tidskrift</title>
+                    </titleInfo>
+                    <identifier type="issn">2000-6500</identifier>
+                    <identifier type="isbn">9789173350365</identifier>
+                    <part>
+                        <detail type="issue">
+                            <number>7-8</number>
+                        </detail>
+                    </part>
+                </relatedItem>
+                <relatedItem type="series">
+                    <titleInfo>
+                        <title>Santérus Academic Press;</title>
+                    </titleInfo>
+                    <identifier type="issn">2000-6500</identifier>
+                    <identifier type="isbn">9789173350365</identifier>
+                    <part>
+                        <detail type="issue">
+                            <number>7-8</number>
+                        </detail>
+                    </part>
+                </relatedItem>
+                <identifier type="uri">http://hdl.handle.net/2043/20021</identifier>
+                <identifier type="hdl">2043/20021</identifier>
+                <language>
+                    <languageTerm authority="iso639-3" type="code">swe</languageTerm>
+                </language>
+                <abstract lang="eng">This article outlines public Social Services’ encounters with irregular migrants
+                    in Sweden from the perspectives of institutional and front-line staff (or streetlevel
+                    bureaucrats). Staff and executive considerations are influenced by a de
+                    jure exclusion of irregular migrants, a part of the control of migration. Staff
+                    faces contradictory demands concerning international and national regulations,
+                    which leads to legal ambiguities open to discretionary powers and sometimes
+                    even arbitrariness. The aim is to explore the handling of such cases, experiences
+                    and considerations focusing cited values when enacting discretion and to
+                    discuss implications of the unclear legal situation.
+                    The material derives from two web-based questionnaires (national and
+                    local) and interviews with front-line staff handling cases concerning irregular
+                    migrants. A tentative analysis confirms that the public Social Services
+                    encounter irregular migrants and that handling differs greatly. It proposes
+                    that different approaches, a lack of guidelines and the contradictory legal
+                    framework endanger the rule of law. Differing and ambivalent fundamental
+                    values appear to be involved when enacting discretion: some related to social
+                    work and others to controlled migration. The controlled migration values cited
+                    by some respondents consisted of more and better border- control and better
+                    cooperation with the Immigration Services. The invoked social work values
+                    imply a conception of a right to social services and the control of migration as
+                    independent processes and jurisdiction related to human rights, essentially the
+                    crc, applicable beyond the nationally framed legal status and not subordinated
+                    to policies of migration.
+                </abstract>
+            </mods:mods>
+        </metadata>
+    </record>
+</OAI-PMH>

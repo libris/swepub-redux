@@ -1,0 +1,142 @@
+<OAI-PMH xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd" xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<responseDate>2018-04-23T11:02:49Z</responseDate>
+	<request verb="ListRecords" metadataPrefix="swepub_mods" set="LU_SWEPUB">http://lup.lub.lu.se/oai</request>
+	<record
+		xmlns="http://www.openarchives.org/OAI/2.0/"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<header>
+			<identifier>oai:lup.lub.lu.se:3070384e-0534-4580-aa7f-0da5c79f6594</identifier>
+			<datestamp>2019-02-28T12:12:55Z</datestamp>
+			<setSpec>contributiontojournal:article</setSpec>
+			<setSpec>LU_SWEPUB</setSpec>
+			<setSpec>lu</setSpec>
+		</header>
+		<metadata>
+			<mods
+				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xmlns="http://www.loc.gov/mods/v3"
+				xmlns:xlink="http://www.w3.org/1999/xlink" version="3.5" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd">
+				<recordInfo>
+					<recordContentSource>lu</recordContentSource>
+					<recordCreationDate encoding="w3cdtf">2017-02-04T11:41:42+01:00</recordCreationDate>
+					<recordChangeDate encoding="w3cdtf">2019-02-20T10:21:59+01:00</recordChangeDate>
+				</recordInfo>
+				<identifier type="uri">http://lup.lub.lu.se/record/3070384e-0534-4580-aa7f-0da5c79f6594</identifier>
+				<identifier type="scopus">0033180952</identifier>
+				<identifier type="doi">10.1002/(SICI)1097-0134(19990801)36:2&lt;157::AID-PROT3&gt;3.0.CO;2-Y</identifier>
+				<identifier type="articleId">UNSP 461</identifier>
+				<genre authority="svep" type="publicationType">art</genre>
+				<genre authority="kb.se" type="outputType">publication/journal-article</genre>
+				<genre authority="svep" type="contentType">ref</genre>
+				<titleInfo>
+					<title>Protein strain in blue copper proteins studied by free energy perturbations</title>
+				</titleInfo>
+				<note type="publicationStatus">Published</note>
+				<note type="creatorCount">2</note>
+				<name type="personal">
+					<namePart type="given">Jan O A</namePart>
+					<namePart type="family">De Kerpel</namePart>
+					<affiliation>Catholic University of Leuven</affiliation>
+					<role>
+						<roleTerm type="code" authority="marcrelator">aut</roleTerm>
+					</role>
+				</name>
+				<name type="personal" authority="lu">
+					<nameIdentifier type="lu">teok-ury</nameIdentifier>
+					<namePart type="given">Ulf</namePart>
+					<namePart type="family">Ryde</namePart>
+					<affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="lu.se">Lunds universitet</affiliation>
+					<affiliation lang="eng" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="lu.se">Lund University</affiliation>
+					<affiliation lang="swe" authority="lu.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000600">Naturvetenskapliga fakulteten</affiliation>
+					<affiliation lang="eng" authority="lu.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000600">Faculty of Science</affiliation>
+					<affiliation lang="swe" authority="v1000600" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000647">Kemiska institutionen</affiliation>
+					<affiliation lang="eng" authority="v1000600" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000647">Department of Chemistry</affiliation>
+					<affiliation lang="swe" authority="v1000647" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000656">Enheten för fysikalisk och teoretisk kemi</affiliation>
+					<affiliation lang="eng" authority="v1000647" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000656">Physical and theoretical chemistry</affiliation>
+					<affiliation lang="swe" authority="v1000656" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000659">Teoretisk kemi</affiliation>
+					<affiliation lang="eng" authority="v1000656" xsi:type="stringPlusLanguagePlusAuthority" valueURI="v1000659">Theoretical Chemistry</affiliation>
+					<role>
+						<roleTerm type="code" authority="marcrelator">aut</roleTerm>
+					</role>
+				</name>
+				<name type="corporate" lang="swe" authority="lu">
+					<nameIdentifier type="lu">v1000659</nameIdentifier>
+					<namePart>Lunds universitet</namePart>
+					<namePart>Teoretisk kemi</namePart>
+					<role>
+						<roleTerm type="code" authority="marcrelator">org</roleTerm>
+					</role>
+				</name>
+				<name type="corporate" lang="eng" authority="lu">
+					<nameIdentifier type="lu">v1000659</nameIdentifier>
+					<namePart>Lund University</namePart>
+					<namePart>Theoretical Chemistry</namePart>
+					<role>
+						<roleTerm type="code" authority="marcrelator">org</roleTerm>
+					</role>
+				</name>
+				<language>
+					<languageTerm authority="iso639-2b" type="code">eng</languageTerm>
+				</language>
+				<abstract lang="eng">Free energy perturbations have been performed on two blue copper proteins, plastocyanin and nitrite reductase. By changing the copper coordination geometry, force constants, and charges, we have estimated the maximum energy with which the proteins may distort the copper coordination sphere. By comparing this energy with the quantum chemical energy cost for the same perturbation on the isolated copper complex, various hypotheses about protein strain have been tested. The calculations show that the protein can only modify the copper-methionine bond length by a modest amount of energy -- &lt;5 kJ/mol--and they lend no support to the suggestion that the quite appreciable difference in the copper coordination geometry encountered in the two proteins is a result of the proteins enforcing different Cu- methionine bond lengths. On the contrary, this bond is very flexible, and neither the geometry nor the electronic structure change appreciably when the bond length is changed. Moreover, the proteins are rather indifferent to the length of this bond. Instead, the Cu(II) coordination geometries in the two proteins represent two distinct minima on the potential surface of the copper ligand sphere, characterized by different electronic structures, a tetragonal, mainly or-bonded, structure in nitrite reductase and a trigonal, π-bonded, structure in plastocyanin. In vacuum, the structures have almost the same energy, and they are stabilized in the proteins by a combination of geometric and electrostatic interactions. Plastocyanin favors the bond lengths and electrostatics of the trigonal structure, whereas in nitrite reductase, the angles are the main discriminating factor.</abstract>
+				<physicalDescription>
+					<extent>18 s.</extent>
+				</physicalDescription>
+				<originInfo>
+					<publisher>John Wiley &amp; Sons</publisher>
+					<dateIssued encoding="iso8601">1999-08-01</dateIssued>
+				</originInfo>
+				<subject>
+					<topic>Entatic state theory</topic>
+				</subject>
+				<subject>
+					<topic>Induced-rack theory</topic>
+				</subject>
+				<subject>
+					<topic>Molecular dynamics</topic>
+				</subject>
+				<subject>
+					<topic>Nitrite reductase</topic>
+				</subject>
+				<subject>
+					<topic>Plastocyanin</topic>
+				</subject>
+				<subject>
+					<topic>Mixed
+&lt;blink>text&lt;/blink></topic>
+				</subject>
+				<subject lang="swe" authority="uka.se" xlink:href="10407">
+					<topic>Naturvetenskap</topic>
+					<topic>Kemi</topic>
+					<topic>Teoretisk kemi</topic>
+				</subject>
+				<subject lang="eng" authority="uka.se" xlink:href="10407">
+					<topic>Natural Sciences</topic>
+					<topic>Chemical Sciences</topic>
+					<topic>Theoretical Chemistry</topic>
+				</subject>
+				<location>
+					<url displayLabel="FULLTEXT">http://dx.doi.org/10.1002/(SICI)1097-0134(19990801)36:2&lt;157::AID-PROT3&gt;3.0.CO;2-Y</url>
+				</location>
+				<relatedItem type="host">
+					<titleInfo>
+						<title>Proteins: Structure, Function and Genetics</title>
+					</titleInfo>
+					<identifier type="issn">0887-3585</identifier>
+					<part>
+						<detail type="volume">
+							<number>36</number>
+						</detail>
+						<detail type="issue">
+							<number>2</number>
+						</detail>
+						<extent>
+							<start>157</start>
+							<end>174</end>
+						</extent>
+					</part>
+				</relatedItem>
+			</mods>
+		</metadata>
+	</record>
+</OAI-PMH>

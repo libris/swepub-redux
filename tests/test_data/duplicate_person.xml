@@ -1,0 +1,462 @@
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2019-09-03T11:01:02Z</responseDate>
+    <request verb="GetRecord" identifier="oai:DiVA.org:ri-6512" metadataPrefix="swepub_mods">
+        http://ri.diva-portal.org/dice/oai
+    </request>
+    <ListRecords>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:ri-6512</identifier>
+                <datestamp>2016-09-08T08:49:00Z</datestamp>
+                <setSpec>ri</setSpec>
+                <setSpec>article</setSpec>
+                <setSpec>refereed</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+                    <genre authority="diva" type="contentTypeCode">refereed</genre>
+                    <genre authority="svep" type="contentType">ref</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Refereed</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Refereegranskat</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Fagfellevurdert</genre>
+                    <genre authority="diva" type="publicationTypeCode">article</genre>
+                    <genre authority="svep" type="publicationType">art</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Article in journal</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Artikel i tidskrift</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Artikkel i tidsskrift</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">article</genre>
+                    <name type="personal">
+                        <namePart type="family">Wännström</namePart>
+                        <namePart type="given">Sune</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>SP Energi och Bioekonomi</affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Albers</namePart>
+                        <namePart type="given">Eva</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Koppram</namePart>
+                        <namePart type="given">Rakesh</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Nielsen</namePart>
+                        <namePart type="given">Fredrik</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Albers</namePart>
+                        <namePart type="given">Eva</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Ideon</affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Lambert</namePart>
+                        <namePart type="given">Annika</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Welin</namePart>
+                        <namePart type="given">Lars</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Ideon</affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Zacchi</namePart>
+                        <namePart type="given">Guido</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Olsson</namePart>
+                        <namePart type="given">Lisbeth</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="corporate" authority="ri" xlink:href="874697">
+                        <namePart>SP Energi och Bioekonomi</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <titleInfo lang="eng">
+                        <title>
+                            Simultaneous saccharification and cofermentationfor bioethanol production using corncobs at
+                            lab, PDU and demo scales
+                        </title>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                    </language>
+                    <originInfo>
+                        <dateIssued>2013</dateIssued>
+                        <dateOther type="availableFrom">2016-09-08T10:49:22</dateOther>
+                    </originInfo>
+                    <physicalDescription>
+                        <form authority="marcform">print</form>
+                    </physicalDescription>
+                    <identifier type="uri">
+                        http://urn.kb.se/resolve?urn=urn:nbn:se:ri:diva-6512
+                    </identifier>
+                    <identifier type="local">16095</identifier>
+                    <typeOfResource>text</typeOfResource>
+                    <subject lang="eng" authority="hsv" xlink:href="1">
+                        <topic>Natural Sciences</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="1">
+                        <topic>Naturvetenskap</topic>
+                    </subject>
+                    <name type="conference">
+                        <namePart/>
+                    </name>
+                    <relatedItem type="host">
+                        <titleInfo>
+                            <title>Biotechnology for Biofuels</title>
+                        </titleInfo>
+                        <part>
+                            <detail type="volume">
+                                <number>6</number>
+                            </detail>
+                            <detail type="issue">
+                                <number>2</number>
+                            </detail>
+                        </part>
+                    </relatedItem>
+                    <recordInfo>
+                        <recordOrigin>marso310</recordOrigin>
+                        <recordContentSource>ri</recordContentSource>
+                        <recordCreationDate>2016-09-08</recordCreationDate>
+                        <recordIdentifier>diva2:964350</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:ltu-80607</identifier>
+                <datestamp>2020-09-29T13:52:00Z</datestamp>
+                <setSpec>ltu</setSpec>
+                <setSpec>report</setSpec>
+                <setSpec>science</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" version="3.7"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                    <genre authority="diva" type="contentTypeCode">science</genre>
+                    <genre authority="svep" type="contentType">vet</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Other academic</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Övrigt vetenskapligt</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Annet vitenskapelig</genre>
+                    <genre authority="diva" type="publicationTypeCode">report</genre>
+                    <genre authority="svep" type="publicationType">rap</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Report</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Rapport</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Rapport</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">book</genre>
+                    <name type="personal">
+                        <namePart type="family">Belgrano</namePart>
+                        <namePart type="given">Andrea</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Devine</namePart>
+                        <namePart type="given">Jennifer</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Diekmann</namePart>
+                        <namePart type="given">Rabea</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Falkenhaug</namePart>
+                        <namePart type="given">Tone</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Fraga</namePart>
+                        <namePart type="given">Ana</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Krogh Hallin</namePart>
+                        <namePart type="given">Julie</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Hansen</namePart>
+                        <namePart type="given">Cecilie</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Judd</namePart>
+                        <namePart type="given">Adrian</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Kempf</namePart>
+                        <namePart type="given">Jed</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Kenny</namePart>
+                        <namePart type="given">Andrew</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Kvamme</namePart>
+                        <namePart type="given">Cecilie</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Lynam</namePart>
+                        <namePart type="given">Christopher</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Martinez</namePart>
+                        <namePart type="given">Inigo</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Nash</namePart>
+                        <namePart type="given">Richard</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Olsen</namePart>
+                        <namePart type="given">Erik</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Payne</namePart>
+                        <namePart type="given">Mark</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Piet</namePart>
+                        <namePart type="given">Gerjan</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Skern-Mauritzen</namePart>
+                        <namePart type="given">Mette</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Skjæraasen</namePart>
+                        <namePart type="given">Jon Egil</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Skogen</namePart>
+                        <namePart type="given">Moten</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Solvang</namePart>
+                        <namePart type="given">Hiroko</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal" authority="ltu" xlink:href="jessta">
+                        <namePart type="family">Stage</namePart>
+                        <namePart type="given">Jesper</namePart>
+                        <namePart type="date">1972-</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Luleå tekniska universitet, Samhällsvetenskap</affiliation>
+                        <description>orcid.org=0000-0001-7206-6568</description>
+                        <description>diva-portal.org=authority-person:2745</description>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Stelzenmüller</namePart>
+                        <namePart type="given">Vanessa</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Sundblad</namePart>
+                        <namePart type="given">Eva-Lotta</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Tomczak</namePart>
+                        <namePart type="given">Maciej</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Wennhage</namePart>
+                        <namePart type="given">Håkan</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Wood</namePart>
+                        <namePart type="given">Daniel</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Kenny</namePart>
+                        <namePart type="given">Andrew</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">edt</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Olsen</namePart>
+                        <namePart type="given">Erik</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">edt</roleTerm>
+                        </role>
+                    </name>
+                    <name type="corporate" authority="ltu" xlink:href="875018">
+                        <namePart>Luleå tekniska universitet</namePart>
+                        <namePart>Institutionen för ekonomi, teknik och samhälle</namePart>
+                        <namePart>Samhällsvetenskap</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <titleInfo lang="eng">
+                        <title>
+                            Working Group on Integrated Assessment of the North Sea (WGINOSE)
+                        </title>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                    </language>
+                    <originInfo>
+                        <publisher>
+                            International Council for the Exploration of the Sea
+                        </publisher>
+                        <dateIssued>2020</dateIssued>
+                        <dateOther type="availableFrom">2020-08-30T18:19:00</dateOther>
+                    </originInfo>
+                    <note type="publicationChannel"/>
+                    <physicalDescription>
+                        <form authority="marcform">electronic</form>
+                        <extent>78</extent>
+                    </physicalDescription>
+                    <identifier type="uri">
+                        http://urn.kb.se/resolve?urn=urn:nbn:se:ltu:diva-80607
+                    </identifier>
+                    <identifier type="doi">10.17895/ices.pub.7430</identifier>
+                    <location>
+                        <url displayLabel="Fulltext" note="free">https://doi.org/10.17895/ices.pub.7430</url>
+                    </location>
+                    <typeOfResource>text</typeOfResource>
+                    <relatedItem type="series">
+                        <titleInfo>
+                            <title>ICES Scientific Reports</title>
+                        </titleInfo>
+                        <identifier type="issn">2618-1371</identifier>
+                        <identifier type="issue number">2(68)</identifier>
+                    </relatedItem>
+                    <subject lang="eng" authority="hsv" xlink:href="50201">
+                        <topic>Social Sciences</topic>
+                        <topic>Economics and Business</topic>
+                        <topic>Economics</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="50201">
+                        <topic>Samhällsvetenskap</topic>
+                        <topic>Ekonomi och näringsliv</topic>
+                        <topic>Nationalekonomi</topic>
+                    </subject>
+                    <subject lang="eng" authority="ltu" xlink:href="25856">
+                        <topic>Economics</topic>
+                        <genre>Research subject</genre>
+                    </subject>
+                    <subject lang="swe" authority="ltu" xlink:href="25856">
+                        <topic>Nationalekonomi</topic>
+                        <genre>Research subject</genre>
+                    </subject>
+                    <location>
+                        <url displayLabel="fulltext" note="free" access="raw object">
+                            http://ltu.diva-portal.org/smash/get/diva2:1462474/FULLTEXT01.pdf
+                        </url>
+                    </location>
+                    <recordInfo>
+                        <recordOrigin>jessta</recordOrigin>
+                        <recordContentSource>ltu</recordContentSource>
+                        <recordCreationDate>2020-08-30</recordCreationDate>
+                        <recordChangeDate>2020-09-29</recordChangeDate>
+                        <recordIdentifier>diva2:1462474</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+    </ListRecords>
+</OAI-PMH>

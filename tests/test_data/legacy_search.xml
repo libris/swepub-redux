@@ -1,0 +1,1114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2019-01-11T12:30:56Z</responseDate>
+    <request verb="ListRecords" set="SwePub-hj" metadataPrefix="swepub_mods">http://hj.diva-portal.org/dice/oai</request>
+    <ListRecords>
+        <record xmlns="http://www.openarchives.org/OAI/2.0/">
+          <header xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <identifier>oai:DiVA.org:ths-467</identifier>
+            <datestamp>2019-10-23T10:59:00Z</datestamp>
+            <setSpec>ths</setSpec>
+            <setSpec>article</setSpec>
+            <setSpec>refereed</setSpec>
+          </header>
+          <metadata>
+            <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.7" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+              <recordInfo>
+                <recordContentSource>ths</recordContentSource>
+                <recordCreationDate>2019-10-23</recordCreationDate>
+              </recordInfo>
+              <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:ths:diva-467</identifier>
+              <titleInfo lang="swe">
+                <title>Vad &#xE4;r sanning?</title>
+              </titleInfo>
+              <subject lang="eng" authority="uka.se" xlink:href="603">
+                <topic>Humanities and the Arts</topic>
+                <topic>Philosophy, Ethics and Religion</topic>
+              </subject>
+              <subject lang="swe" authority="uka.se" xlink:href="603">
+                <topic>Humaniora och konst</topic>
+                <topic>Filosofi, etik och religion</topic>
+              </subject>
+              <subject lang="eng">
+                <topic>Byrskog</topic>
+              </subject>
+              <subject lang="eng">
+                <topic>Samuel</topic>
+              </subject>
+              <subject lang="eng">
+                <topic>1957-</topic>
+              </subject>
+              <subject lang="eng">
+                <topic>Jesus Christ</topic>
+              </subject>
+              <subject lang="eng">
+                <topic>Bible. New Testament -- Study and teaching  -- Methodology</topic>
+              </subject>
+              <subject lang="eng">
+                <topic>Bible -- Criticism</topic>
+              </subject>
+              <subject lang="eng">
+                <topic>interpretation</topic>
+              </subject>
+              <subject lang="eng">
+                <topic>Christian</topic>
+              </subject>
+              <subject lang="eng">
+                <topic>Truth -- Religious aspects -- Christianity</topic>
+              </subject>
+              <subject lang="eng">
+                <topic>Bible and tradition</topic>
+              </subject>
+              <subject lang="eng">
+                <topic>History -- Religious aspects -- Christianity</topic>
+              </subject>
+              <language>
+                <languageTerm type="code" authority="iso639-2b">swe</languageTerm>
+              </language>
+              <genre authority="kb.se" type="outputType">publication/journal-article</genre>
+              <genre authority="svep" type="contentType">ref</genre>
+              <note type="publicationStatus">Published</note>
+              <name type="personal" authority="ths">
+                <namePart type="family">Carlsson</namePart>
+                <namePart type="given">Petra</namePart>
+                <namePart type="termsOfAddress">Docent</namePart>
+                <namePart type="date">1974-</namePart>
+                <role>
+                  <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                </role>
+                <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="ths.se">Teologiska h&#xF6;gskolan Stockholm</affiliation>
+                <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="ths.se" valueURI="Avdelningen f&#xF6;r teologi">Avdelningen f&#xF6;r teologi</affiliation>
+                <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="ths.se">Teologiska h&#xF6;gskolan Stockholm</affiliation>
+                <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="ths.se" valueURI="Teologiska h&#xF6;gskolan Stockholm">Teologiska h&#xF6;gskolan Stockholm</affiliation>
+                <nameIdentifier type="ths">petra.carlsson</nameIdentifier>
+                <nameIdentifier type="orcid">0000-0002-2994-6073</nameIdentifier>
+              </name>
+              <note type="creatorCount">1</note>
+              <originInfo>
+                <dateIssued>2016</dateIssued>
+              </originInfo>
+              <relatedItem type="host">
+                <titleInfo>
+                  <title>Svensk teologisk kvartalskrift</title>
+                </titleInfo>
+                <identifier type="issn" displayLabel="ISSN">0039-6761</identifier>
+                <part>
+                  <detail type="volume">
+                    <number>92</number>
+                  </detail>
+                  <detail type="issue">
+                    <number>3-4</number>
+                  </detail>
+                  <extent>
+                    <start>171</start>
+                    <end>172</end>
+                  </extent>
+                </part>
+              </relatedItem>
+              <location>
+                <url>https://journals.lub.lu.se/STK/issue/view/2534</url>
+              </location>
+              <accessCondition>gratis</accessCondition>
+              <physicalDescription>
+                <form authority="marcform">print</form>
+              </physicalDescription>
+              <typeOfResource>text</typeOfResource>
+              <note>&lt;p&gt;Reply: Metoder och m&#xF6;jligheter i nytestamentlig exegetik: Om n&#xE5;gra hermeneutiska aspekter av ny bibelforskning. Svensk teologisk kvartalskrift. Byrskog, Samuel. 92: 2 ( 2016), 65-75. 0039-6761 Rejoinder: Texten som v&#xE4;v och vittnesb&#xF6;rd. Svensk teologisk kvartalskrift. Byrskog, Samuel. 92: 4 ( 2016), 174-177. 0039-6761&lt;/p&gt;</note>
+            </mods>
+          </metadata>
+        </record>
+
+        <record xmlns="http://www.openarchives.org/OAI/2.0/">
+          <header xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <identifier>oai:DiVA.org:ths-342</identifier>
+            <datestamp>2019-10-09T11:53:00Z</datestamp>
+            <setSpec>ths</setSpec>
+            <setSpec>monographDoctoralThesis</setSpec>
+            <setSpec>science</setSpec>
+          </header>
+          <metadata>
+            <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.7" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+              <recordInfo>
+                <recordContentSource>ths</recordContentSource>
+                <recordCreationDate>2019-09-20</recordCreationDate>
+              </recordInfo>
+              <identifier type="isbn" displayLabel="print">9122014772</identifier>
+              <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:ths:diva-342</identifier>
+              <titleInfo lang="eng">
+                <title>Symbols of law</title>
+                <subTitle>a contextual analysis of legal symbolic acts in the Old Testament</subTitle>
+              </titleInfo>
+              <subject lang="eng" authority="uka.se" xlink:href="60303">
+                <topic>Humanities and the Arts</topic>
+                <topic>Philosophy, Ethics and Religion</topic>
+                <topic>Religious Studies</topic>
+              </subject>
+              <subject lang="swe" authority="uka.se" xlink:href="60303">
+                <topic>Humaniora och konst</topic>
+                <topic>Filosofi, etik och religion</topic>
+                <topic>Religionsvetenskap</topic>
+              </subject>
+              <subject lang="swe">
+                <topic>Sedvaner&#xE4;tt Judisk r&#xE4;tt Symboler Gester &#x2013; juridik och lagstiftning</topic>
+              </subject>
+              <language>
+                <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+              </language>
+              <genre authority="kb.se" type="outputType">publication/doctoral-thesis</genre>
+              <genre authority="svep" type="contentType">vet</genre>
+              <note type="publicationStatus">Published</note>
+              <name type="personal" authority="ths">
+                <namePart type="family">Viberg</namePart>
+                <namePart type="given">&#xC5;ke</namePart>
+                <namePart type="termsOfAddress">Docent</namePart>
+                <namePart type="date">1958-</namePart>
+                <role>
+                  <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                </role>
+                <affiliation>Lunds universitet, Teologiska institutionen</affiliation>
+                <nameIdentifier type="ths">ake.viberg</nameIdentifier>
+                <nameIdentifier type="orcid">0000-0002-5541-4046</nameIdentifier>
+              </name>
+              <note type="creatorCount">1</note>
+              <originInfo>
+                <dateIssued>1992</dateIssued>
+                <publisher>Almqvist &amp; Wiksell International</publisher>
+                <place>
+                  <placeTerm>Stockholm</placeTerm>
+                </place>
+              </originInfo>
+              <relatedItem type="series">
+                <titleInfo>
+                  <title>Coniectanea biblica. Old Testament series</title>
+                  <partNumber>34</partNumber>
+                </titleInfo>
+                <identifier type="issn" displayLabel="ISSN">0069-8954</identifier>
+              </relatedItem>
+              <physicalDescription>
+                <form authority="marcform">print</form>
+                <extent>206s.</extent>
+              </physicalDescription>
+              <typeOfResource>text</typeOfResource>
+            </mods>
+          </metadata>
+        </record>
+
+        <record xmlns="http://www.openarchives.org/OAI/2.0/">
+          <header xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <identifier>oai:DiVA.org:ths-24</identifier>
+            <datestamp>2019-10-09T11:56:00Z</datestamp>
+            <setSpec>ths</setSpec>
+            <setSpec>book</setSpec>
+            <setSpec>refereed</setSpec>
+          </header>
+          <metadata>
+            <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.7" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+              <recordInfo>
+                <recordContentSource>ths</recordContentSource>
+                <recordCreationDate>2017-12-17</recordCreationDate>
+              </recordInfo>
+              <identifier type="isbn" displayLabel="print">978-1-907534-29-4</identifier>
+              <identifier type="isbn" displayLabel="print">1-907534-29-6</identifier>
+              <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:ths:diva-24</identifier>
+              <titleInfo lang="eng">
+                <title>&lt;em&gt;Emotions in Biblical Law&lt;/em&gt;</title>
+                <subTitle>&lt;em&gt;A Cognitive Science Approach&lt;/em&gt;</subTitle>
+              </titleInfo>
+              <abstract lang="eng">&lt;p&gt;This study pioneers the use of insights from cognitive sciences, such as evolutionary biology, neuroscience, and developmental psychology, as heuristic tools for interpreting ancient texts. The approach could be described as &#x2018;psycho-biological&#x2019;. The focus is on emotions in the various Pentateuchal legal collections. Kazen discusses the role of disgust, empathy, fear, and a sense of justice, for particular moral and ritual issues: purity and holiness; humanitarian concern for vulnerable categories; ethnocentrism and xenophobia; divine punishment and demonic threat; revenge, compensation, and ransom (&lt;em&gt;kofer&lt;/em&gt;), together with removal (&lt;em&gt;kipper&lt;/em&gt;)&lt;em&gt; &lt;/em&gt;rites.&lt;/p&gt;&lt;p&gt; The book consists of two main parts, framed by an introductory chapter and a concluding discussion. In the first part, Kazen explores cognitive foundations, including biological and neuroscientific underpinnings for basic affects, and the role of culture in shaping both conventional morality and ritual behaviour. Four particular emotions are then outlined. In the second part, these insights from cognitive science are applied in analyses of particular texts. After an overview of the Pentateuchal legal collections, each of the four emotions is dealt with in a separate chapter. Kazen continuously relates a cognitive science approach to more traditional source and redaction critical analysis, regarding them as complementary.&lt;/p&gt;&lt;p&gt; As a result, the Pentateuchal legal collections are seen as emotional texts, expressing strong affects &#xAD;&#x2013;  which influences our understanding of the character of Israelite &#x2018;law&#x2019;. Kazen suggests that interaction and conflict between various emotions can explain discrepancies and tensions between humanitarian concerns and ethnocentrism, and between empathy and justice. He also demonstrates that viewing emotions as common denominators contains a potential for solving some difficult and long-standing conundrums. He argues that a focus on the human embodied experience rather than on theological convictions and theoretical ideas may avoid some interpretative dead ends and open up new avenues for understanding ancient texts.&lt;/p&gt;</abstract>
+              <subject lang="eng" authority="uka.se" xlink:href="60303">
+                <topic>Humanities and the Arts</topic>
+                <topic>Philosophy, Ethics and Religion</topic>
+                <topic>Religious Studies</topic>
+              </subject>
+              <subject lang="swe" authority="uka.se" xlink:href="60303">
+                <topic>Humaniora och konst</topic>
+                <topic>Filosofi, etik och religion</topic>
+                <topic>Religionsvetenskap</topic>
+              </subject>
+              <subject lang="swe" authority="ths" xlink:href="28174">
+                <topic>Bibelvetenskap, Gt</topic>
+                <genre>Research subject</genre>
+              </subject>
+              <subject lang="eng" authority="ths" xlink:href="28174">
+                <topic>Biblical Studies, Old testament</topic>
+                <genre>Research subject</genre>
+              </subject>
+              <language>
+                <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+              </language>
+              <genre authority="kb.se" type="outputType">publication/book</genre>
+              <genre authority="svep" type="contentType">ref</genre>
+              <note type="publicationStatus">Published</note>
+              <name type="personal" authority="ths">
+                <namePart type="family">Kazen</namePart>
+                <namePart type="given">Thomas</namePart>
+                <namePart type="termsOfAddress">Professor</namePart>
+                <namePart type="date">1960-</namePart>
+                <role>
+                  <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                </role>
+                <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="ths.se">Teologiska h&#xF6;gskolan Stockholm</affiliation>
+                <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="ths.se" valueURI="Avdelningen f&#xF6;r teologi">Avdelningen f&#xF6;r teologi</affiliation>
+                <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="ths.se">Teologiska h&#xF6;gskolan Stockholm</affiliation>
+                <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="ths.se" valueURI="Teologiska h&#xF6;gskolan Stockholm">Teologiska h&#xF6;gskolan Stockholm</affiliation>
+                <nameIdentifier type="ths">thomas.kazen</nameIdentifier>
+                <nameIdentifier type="orcid">0000-0002-4683-3302</nameIdentifier>
+              </name>
+              <note type="creatorCount">1</note>
+              <originInfo>
+                <dateIssued>2011</dateIssued>
+                <publisher>Sheffield Phoenix Press</publisher>
+                <place>
+                  <placeTerm>Sheffield</placeTerm>
+                </place>
+              </originInfo>
+              <relatedItem type="series">
+                <titleInfo>
+                  <title>Studia Theologica Holmiensia</title>
+                  <partNumber>19</partNumber>
+                </titleInfo>
+                <identifier type="issn" displayLabel="ISSN">1401-1557</identifier>
+              </relatedItem>
+              <relatedItem type="series">
+                <titleInfo>
+                  <title>Hebrew Bible Monographs</title>
+                  <partNumber>36</partNumber>
+                </titleInfo>
+                <identifier type="issn" displayLabel="ISSN">1747-9614</identifier>
+              </relatedItem>
+              <physicalDescription>
+                <form authority="marcform">print</form>
+                <extent>211s.</extent>
+              </physicalDescription>
+              <typeOfResource>text</typeOfResource>
+            </mods>
+          </metadata>
+        </record>
+
+        <record xmlns="http://www.openarchives.org/OAI/2.0/">
+            <header xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <identifier>oai:DiVA.org:ths-364</identifier>
+                <datestamp>2019-10-09T11:34:00Z</datestamp>
+                <setSpec>ths</setSpec>
+                <setSpec>bookReview</setSpec>
+                <setSpec>science</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.7" xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                    <recordInfo>
+                        <recordContentSource>ths</recordContentSource>
+                        <recordCreationDate>2019-09-20</recordCreationDate>
+                    </recordInfo>
+                    <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:ths:diva-364</identifier>
+                    <titleInfo lang="eng">
+                        <title>Recension av Eric D Barreto m.fl. (red) &lt;em&gt;Reading Acts in the Discourses of Masculinity and Politics  &lt;/em&gt;(Library of New Testament Studies 559), Bloomsbury:T&amp;amp;T CLark, 2017</title>
+                    </titleInfo>
+                    <subject lang="eng" xlink:href="6" authority="uka.se">
+                        <topic>Humanities and the Arts</topic>
+                    </subject>
+                    <subject lang="swe" xlink:href="6" authority="uka.se">
+                        <topic>Humaniora och konst</topic>
+                    </subject>
+                    <subject lang="swe">
+                        <topic>Apostlagärningarna</topic>
+                    </subject>
+                    <subject lang="swe">
+                        <topic>maskulinitetsforskning: genusforskning inom bibelvetenskap; postkoloniala perspektiv i bibelvetenskap</topic>
+                    </subject>
+                    <subject lang="swe" xlink:href="28175" authority="ths">
+                        <topic>Bibelvetenskap, Nt</topic>
+                        <genre>Research subject</genre>
+                    </subject>
+                    <subject lang="eng" xlink:href="28175" authority="ths">
+                        <topic>Biblical Studies, New testament</topic>
+                        <genre>Research subject</genre>
+                    </subject>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                    </language>
+                    <genre type="outputType" authority="kb.se">publication/book-review</genre>
+                    <genre type="contentType" authority="svep">vet</genre>
+                    <note type="publicationStatus">Published</note>
+                    <name type="personal" authority="ths">
+                        <namePart type="family">Stenström</namePart>
+                        <namePart type="given">Hanna</namePart>
+                        <namePart type="termsOfAddress">Lektor</namePart>
+                        <namePart type="date">1963-</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation authority="kb.se" lang="swe" xsi:type="stringPlusLanguagePlusAuthority" valueURI="ths.se">Teologiska högskolan Stockholm</affiliation>
+                        <affiliation authority="ths.se" lang="swe" xsi:type="stringPlusLanguagePlusAuthority" valueURI="Teologiska högskolan Stockholm">Teologiska högskolan Stockholm</affiliation>
+                        <nameIdentifier type="ths">hanna.stenstrom</nameIdentifier>
+                    </name>
+                    <note type="creatorCount">1</note>
+                    <originInfo>
+                        <dateIssued>2018</dateIssued>
+                    </originInfo>
+                    <relatedItem type="host">
+                        <titleInfo>
+                            <title>The Catholic Biblical Quarterly</title>
+                        </titleInfo>
+                        <identifier type="issn" displayLabel="ISSN">0008-7912</identifier>
+                        <identifier type="issn" displayLabel="EISSN">2163-2529</identifier>
+                        <part>
+                            <detail type="volume">
+                                <number>80</number>
+                            </detail>
+                            <detail type="issue">
+                                <number>3</number>
+                            </detail>
+                            <extent>
+                                <start>558</start>
+                                <end>560</end>
+                            </extent>
+                        </part>
+                    </relatedItem>
+                    <physicalDescription>
+                        <form authority="marcform">print</form>
+                    </physicalDescription>
+                    <typeOfResource>text</typeOfResource>
+                </mods>
+            </metadata>
+        </record>
+
+        <!-- Duplicates -->
+        <record xmlns="http://www.openarchives.org/OAI/2.0/">
+           <header xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+              <identifier>oai:DiVA.org:ths-649</identifier>
+              <datestamp>2019-10-30T13:48:00Z</datestamp>
+              <setSpec>ths</setSpec>
+              <setSpec>collection</setSpec>
+              <setSpec>science</setSpec>
+           </header>
+           <metadata>
+              <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.7" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                 <recordInfo>
+                    <recordContentSource>ths</recordContentSource>
+                    <recordCreationDate>2019-10-30</recordCreationDate>
+                 </recordInfo>
+                 <identifier type="isbn" displayLabel="print">978-91-526-3185-0</identifier>
+                 <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:ths:diva-649</identifier>
+                 <titleInfo lang="swe">
+                    <title>Guds närmaste stad?</title>
+                    <subTitle>En studie om religionernas betydelse i ett svenskt samhälle i början av 2000-talet</subTitle>
+                 </titleInfo>
+                 <subject lang="eng" authority="uka.se" xlink:href="60303">
+                    <topic>Humanities and the Arts</topic>
+                    <topic>Philosophy, Ethics and Religion</topic>
+                    <topic>Religious Studies</topic>
+                 </subject>
+                 <subject lang="swe" authority="uka.se" xlink:href="60303">
+                    <topic>Humaniora och konst</topic>
+                    <topic>Filosofi, etik och religion</topic>
+                    <topic>Religionsvetenskap</topic>
+                 </subject>
+                 <subject lang="eng" authority="svep" xlink:href="110104">
+                    <topic>HUMANITIES and RELIGION</topic>
+                    <topic>Religion/Theology</topic>
+                    <topic>Missionary studies</topic>
+                 </subject>
+                 <subject lang="swe" authority="svep" xlink:href="110104">
+                    <topic>HUMANIORA och RELIGIONSVETENSKAP</topic>
+                    <topic>Religionsvetenskap/Teologi</topic>
+                    <topic>Missionsvetenskap</topic>
+                 </subject>
+                 <subject lang="eng" authority="ths" xlink:href="2397">
+                    <topic>Studies of Missions</topic>
+                    <genre>Research subject</genre>
+                 </subject>
+                 <subject lang="swe" authority="ths" xlink:href="2397">
+                    <topic>Missionsvetenskap</topic>
+                    <genre>Research subject</genre>
+                 </subject>
+                 <language>
+                    <languageTerm type="code" authority="iso639-2b">swe</languageTerm>
+                 </language>
+                 <genre authority="kb.se" type="outputType">publication/edited-book</genre>
+                 <genre authority="svep" type="contentType">vet</genre>
+                 <note type="publicationStatus">Published</note>
+                 <name type="personal">
+                    <namePart type="family">Ahlstrand</namePart>
+                    <namePart type="given">Kajsa</namePart>
+                    <namePart type="date">1959-</namePart>
+                    <role>
+                       <roleTerm type="code" authority="marcrelator">edt</roleTerm>
+                    </role>
+                    <affiliation>Uppsala universitet, Missionsvetenskap</affiliation>
+                 </name>
+                 <name type="personal" authority="ths">
+                    <namePart type="family">Gunner</namePart>
+                    <namePart type="given">Göran</namePart>
+                    <namePart type="termsOfAddress">Docent</namePart>
+                    <namePart type="date">1950-</namePart>
+                    <role>
+                       <roleTerm type="code" authority="marcrelator">edt</roleTerm>
+                    </role>
+                    <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="ths.se">Teologiska högskolan Stockholm</affiliation>
+                    <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="ths.se" valueURI="Avdelningen för mänskliga rättigheter">Avdelningen för mänskliga rättigheter</affiliation>
+                    <affiliation>Uppsala universitet, Missionsvetenskap</affiliation>
+                    <nameIdentifier type="ths">goran.gunner</nameIdentifier>
+                    <nameIdentifier type="orcid">0000-0002-1264-9953</nameIdentifier>
+                 </name>
+                 <note type="creatorCount">2</note>
+                 <originInfo>
+                    <dateIssued>2008</dateIssued>
+                    <publisher>Verbum</publisher>
+                    <place>
+                       <placeTerm>Stockholm</placeTerm>
+                    </place>
+                 </originInfo>
+                 <relatedItem type="series">
+                    <titleInfo>
+                       <title>Forskning för kyrkan</title>
+                       <partNumber>6</partNumber>
+                    </titleInfo>
+                    <identifier type="issn" displayLabel="ISSN">1652-8581</identifier>
+                 </relatedItem>
+                 <physicalDescription>
+                    <form authority="marcform">print</form>
+                    <extent>344s.</extent>
+                 </physicalDescription>
+                 <typeOfResource>text</typeOfResource>
+              </mods>
+           </metadata>
+        </record>
+        <record xmlns="http://www.openarchives.org/OAI/2.0/">
+           <header xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+              <identifier>oai:DiVA.org:uu-153468</identifier>
+              <datestamp>2012-11-15T10:29:00Z</datestamp>
+              <setSpec>uu</setSpec>
+              <setSpec>collection</setSpec>
+              <setSpec>science</setSpec>
+           </header>
+           <metadata>
+              <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.7" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                 <recordInfo>
+                    <recordContentSource>uu</recordContentSource>
+                    <recordCreationDate>2011-05-13</recordCreationDate>
+                 </recordInfo>
+                 <identifier type="isbn" displayLabel="print">978-91-526-3185-0</identifier>
+                 <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:uu:diva-153468</identifier>
+                 <titleInfo lang="swe">
+                    <title>Guds närmaste stad?</title>
+                    <subTitle>En studie om religionernas betydelse i ett svenskt samhälle i början av 2000-talet</subTitle>
+                 </titleInfo>
+                 <subject lang="eng" authority="uka.se" xlink:href="60303">
+                    <topic>Humanities</topic>
+                    <topic>Philosophy, Ethics and Religion</topic>
+                    <topic>Religious Studies</topic>
+                 </subject>
+                 <subject lang="swe" authority="uka.se" xlink:href="60303">
+                    <topic>Humaniora</topic>
+                    <topic>Filosofi, etik och religion</topic>
+                    <topic>Religionsvetenskap</topic>
+                 </subject>
+                 <subject lang="eng" authority="svep" xlink:href="110104">
+                    <topic>HUMANITIES and RELIGION</topic>
+                    <topic>Religion/Theology</topic>
+                    <topic>Missionary studies</topic>
+                 </subject>
+                 <subject lang="swe" authority="svep" xlink:href="110104">
+                    <topic>HUMANIORA och RELIGIONSVETENSKAP</topic>
+                    <topic>Religionsvetenskap/Teologi</topic>
+                    <topic>Missionsvetenskap</topic>
+                 </subject>
+                 <subject lang="eng" authority="uu" xlink:href="2397">
+                    <topic>Studies of Missions</topic>
+                    <genre>Research subject</genre>
+                 </subject>
+                 <subject lang="swe" authority="uu" xlink:href="2397">
+                    <topic>Missionsvetenskap</topic>
+                    <genre>Research subject</genre>
+                 </subject>
+                 <language>
+                    <languageTerm type="code" authority="iso639-2b">swe</languageTerm>
+                 </language>
+                 <genre authority="kb.se" type="outputType">publication/edited-book</genre>
+                 <genre authority="svep" type="contentType">vet</genre>
+                 <note type="publicationStatus">Published</note>
+                 <name type="personal" authority="uu">
+                    <namePart type="family">Ahlstrand</namePart>
+                    <namePart type="given">Kajsa</namePart>
+                    <namePart type="date">1959-</namePart>
+                    <role>
+                       <roleTerm type="code" authority="marcrelator">edt</roleTerm>
+                    </role>
+                    <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="uu.se">Uppsala universitet</affiliation>
+                    <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="uu.se" valueURI="Missionsvetenskap">Missionsvetenskap</affiliation>
+                    <nameIdentifier type="uu">kajah129</nameIdentifier>
+                 </name>
+                 <name type="personal">
+                    <namePart type="family">Gunner</namePart>
+                    <namePart type="given">Göran</namePart>
+                    <role>
+                       <roleTerm type="code" authority="marcrelator">edt</roleTerm>
+                    </role>
+                    <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="uu.se">Uppsala universitet</affiliation>
+                    <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="uu.se" valueURI="Missionsvetenskap">Missionsvetenskap</affiliation>
+                 </name>
+                 <note type="creatorCount">2</note>
+                 <originInfo>
+                    <dateIssued>2008</dateIssued>
+                    <publisher>Verbum</publisher>
+                    <place>
+                       <placeTerm>Stockholm</placeTerm>
+                    </place>
+                 </originInfo>
+                 <relatedItem type="series">
+                    <titleInfo>
+                       <title>Forskning för kyrkan</title>
+                       <partNumber>6</partNumber>
+                    </titleInfo>
+                    <identifier type="issn" displayLabel="ISSN">1652-8581</identifier>
+                 </relatedItem>
+                 <physicalDescription>
+                    <form authority="marcform">print</form>
+                    <extent>344s.</extent>
+                 </physicalDescription>
+                 <typeOfResource>text</typeOfResource>
+              </mods>
+           </metadata>
+        </record>
+
+        <!-- Marc field 773, start and end date -->
+        <record xmlns="http://www.openarchives.org/OAI/2.0/">
+            <header xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <identifier>oai:DiVA.org:nationalmuseum-193</identifier>
+                <datestamp>2015-12-02T13:48:00Z</datestamp>
+                <setSpec>nationalmuseum</setSpec>
+                <setSpec>article</setSpec>
+                <setSpec>science</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.7" xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                    <recordInfo>
+                        <recordContentSource>nationalmuseum</recordContentSource>
+                        <recordCreationDate>2015-11-30</recordCreationDate>
+                    </recordInfo>
+                    <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:nationalmuseum:diva-193</identifier>
+                    <titleInfo lang="eng">
+                        <title>Highlights</title>
+                        <subTitle>famous and forgotten art treasures from the Nationalmuseum</subTitle>
+                    </titleInfo>
+                    <subject lang="eng" xlink:href="60407" authority="uka.se">
+                        <topic>Humanities</topic>
+                        <topic>Arts</topic>
+                        <topic>Art History</topic>
+                    </subject>
+                    <subject lang="swe" xlink:href="60407" authority="uka.se">
+                        <topic>Humaniora</topic>
+                        <topic>Konst</topic>
+                        <topic>Konstvetenskap</topic>
+                    </subject>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                    </language>
+                    <genre type="outputType" authority="kb.se">publication/editorial-letter</genre>
+                    <genre type="contentType" authority="svep">vet</genre>
+                    <note type="publicationStatus">Published</note>
+                    <name type="personal">
+                        <namePart type="family">Ahlund</namePart>
+                        <namePart type="given">Mikael</namePart>
+                        <namePart type="date">1959-</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation authority="kb.se" lang="swe" xsi:type="stringPlusLanguagePlusAuthority" valueURI="nationalmuseum.se">Nationalmuseum</affiliation>
+                    </name>
+                    <note type="creatorCount">1</note>
+                    <originInfo>
+                        <dateIssued>2015</dateIssued>
+                        <publisher>Nationalmuseum</publisher>
+                        <place>
+                            <placeTerm>Stockholm</placeTerm>
+                        </place>
+                    </originInfo>
+                    <relatedItem type="host">
+                        <titleInfo>
+                            <title>Art bulletin of Nationalmuseum Stockholm</title>
+                        </titleInfo>
+                        <identifier type="issn" displayLabel="ISSN">2001-9238</identifier>
+                        <part>
+                            <detail type="volume">
+                                <number>21</number>
+                            </detail>
+                            <detail type="issue">
+                                <number>2014</number>
+                            </detail>
+                            <extent>
+                                <start>127</start>
+                                <end>130</end>
+                            </extent>
+                        </part>
+                    </relatedItem>
+                    <location>
+                        <url>http://nationalmuseum.diva-portal.org/smash/get/diva2:875112/FULLTEXT01.pdf</url>
+                    </location>
+                    <accessCondition>gratis</accessCondition>
+                    <location>
+                        <url>http://nationalmuseum.diva-portal.org/smash/get/diva2:875112/PREVIEW01.jpg</url>
+                    </location>
+                    <accessCondition>gratis</accessCondition>
+                    <physicalDescription>
+                        <form authority="marcform">electronic</form>
+                    </physicalDescription>
+                    <typeOfResource>text</typeOfResource>
+                </mods>
+            </metadata>
+        </record>
+        <!-- Only first author is to added to marc field 100 according to SWEPUB2-846 -->
+        <record xmlns="http://www.openarchives.org/OAI/2.0/">
+           <header xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+              <identifier>oai:DiVA.org:ths-551</identifier>
+              <datestamp>2019-10-24T08:56:00Z</datestamp>
+              <setSpec>ths</setSpec>
+              <setSpec>book</setSpec>
+              <setSpec>science</setSpec>
+           </header>
+           <metadata>
+              <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.7" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                 <recordInfo>
+                    <recordContentSource>ths</recordContentSource>
+                    <recordCreationDate>2019-10-24</recordCreationDate>
+                 </recordInfo>
+                 <identifier type="isbn" displayLabel="print">9789152635469</identifier>
+                 <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:ths:diva-551</identifier>
+                 <titleInfo lang="eng">
+                    <title>Försoning behövs</title>
+                 </titleInfo>
+                 <subject lang="eng" authority="uka.se" xlink:href="603">
+                    <topic>Humanities and the Arts</topic>
+                    <topic>Philosophy, Ethics and Religion</topic>
+                 </subject>
+                 <subject lang="swe" authority="uka.se" xlink:href="603">
+                    <topic>Humaniora och konst</topic>
+                    <topic>Filosofi, etik och religion</topic>
+                 </subject>
+                 <subject lang="swe">
+                    <topic>Kristendom Försoning – religiösa aspekter</topic>
+                 </subject>
+                 <language>
+                    <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                 </language>
+                 <genre authority="kb.se" type="outputType">publication/book</genre>
+                 <genre authority="svep" type="contentType">vet</genre>
+                 <note type="publicationStatus">Published</note>
+                 <name type="personal" authority="ths">
+                    <namePart type="family">Camnerin</namePart>
+                    <namePart type="given">Sofia</namePart>
+                    <namePart type="termsOfAddress">Högskolelektor</namePart>
+                    <namePart type="date">1971-</namePart>
+                    <role>
+                       <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                    </role>
+                    <affiliation>Equmeniakyrkan</affiliation>
+                    <nameIdentifier type="ths">sofia.camnerin</nameIdentifier>
+                    <nameIdentifier type="orcid">0000-0002-9896-8081</nameIdentifier>
+                 </name>
+                 <name type="personal">
+                    <namePart type="family">Fritzson</namePart>
+                    <namePart type="given">Arne</namePart>
+                    <role>
+                       <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                    </role>
+                 </name>
+                 <note type="creatorCount">2</note>
+                 <originInfo>
+                    <dateIssued>2012</dateIssued>
+                    <publisher>Verbum</publisher>
+                    <place>
+                       <placeTerm>Stockholm</placeTerm>
+                    </place>
+                 </originInfo>
+                 <physicalDescription>
+                    <form authority="marcform">print</form>
+                    <extent>195s.</extent>
+                 </physicalDescription>
+                 <typeOfResource>text</typeOfResource>
+              </mods>
+           </metadata>
+        </record>
+
+        <!-- Make doi as link according in marc field 856 SWEPUB2-847 -->
+        <record xmlns="http://www.openarchives.org/OAI/2.0/">
+           <header xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+              <identifier>oai:DiVA.org:ths-684</identifier>
+              <datestamp>2020-01-16T13:59:00Z</datestamp>
+              <setSpec>ths</setSpec>
+              <setSpec>review</setSpec>
+              <setSpec>refereed</setSpec>
+           </header>
+           <metadata>
+              <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.7" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                 <recordInfo>
+                    <recordContentSource>ths</recordContentSource>
+                    <recordCreationDate>2019-12-09</recordCreationDate>
+                 </recordInfo>
+                 <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:ths:diva-684</identifier>
+                 <identifier type="doi">10.1093/OBO/9780199840731-017</identifier>
+                 <titleInfo lang="eng">
+                    <title>Purity and Impurity in Ancient Israel and Early Judaism</title>
+                 </titleInfo>
+                 <subject lang="eng" authority="uka.se" xlink:href="6">
+                    <topic>Humanities and the Arts</topic>
+                 </subject>
+                 <subject lang="swe" authority="uka.se" xlink:href="6">
+                    <topic>Humaniora och konst</topic>
+                 </subject>
+                 <subject lang="eng" authority="ths" xlink:href="28450">
+                    <topic>History of Religions</topic>
+                    <genre>Research subject</genre>
+                 </subject>
+                 <subject lang="swe" authority="ths" xlink:href="28450">
+                    <topic>Religionshistoria</topic>
+                    <genre>Research subject</genre>
+                 </subject>
+                 <language>
+                    <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                 </language>
+                 <genre authority="kb.se" type="outputType">publication/review-article</genre>
+                 <genre authority="svep" type="contentType">ref</genre>
+                 <note type="publicationStatus">Published</note>
+                 <name type="personal" authority="ths">
+                    <namePart type="family">Kazen</namePart>
+                    <namePart type="given">Thomas</namePart>
+                    <namePart type="termsOfAddress">Professor</namePart>
+                    <namePart type="date">1960-</namePart>
+                    <role>
+                       <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                    </role>
+                    <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="ths.se">Teologiska högskolan Stockholm</affiliation>
+                    <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="ths.se" valueURI="Teologiska högskolan Stockholm">Teologiska högskolan Stockholm</affiliation>
+                    <nameIdentifier type="ths">thomas.kazen</nameIdentifier>
+                    <nameIdentifier type="orcid">0000-0002-4683-3302</nameIdentifier>
+                 </name>
+                 <note type="creatorCount">1</note>
+                 <originInfo>
+                    <dateIssued>2019</dateIssued>
+                    <publisher>Oxford University Press</publisher>
+                    <place>
+                       <placeTerm>London</placeTerm>
+                    </place>
+                 </originInfo>
+                 <relatedItem type="host">
+                    <titleInfo>
+                       <title>Oxford Bibliographies online</title>
+                    </titleInfo>
+                 </relatedItem>
+                 <physicalDescription>
+                    <form authority="marcform">print</form>
+                 </physicalDescription>
+                 <typeOfResource>text</typeOfResource>
+              </mods>
+           </metadata>
+        </record>
+
+        <!-- Handling partoOf with genreform and contribution according to SWEPUB2-871, effects marc field 773 -->
+        <record xmlns="http://www.openarchives.org/OAI/2.0/">
+           <header xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+              <identifier>oai:DiVA.org:hh-41721</identifier>
+              <datestamp>2020-03-25T07:03:00Z</datestamp>
+              <setSpec>hh</setSpec>
+              <setSpec>article</setSpec>
+              <setSpec>refereed</setSpec>
+           </header>
+           <metadata>
+              <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.7" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                 <recordInfo>
+                    <recordContentSource>hh</recordContentSource>
+                    <recordCreationDate>2020-02-28</recordCreationDate>
+                 </recordInfo>
+                 <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:hh:diva-41721</identifier>
+                 <identifier type="doi">10.1016/j.scitotenv.2020.137002</identifier>
+                 <identifier type="pmid">32036131</identifier>
+                 <identifier type="scopus">2-s2.0-85078896215</identifier>
+                 <titleInfo lang="eng">
+                    <title>Mature wetland ecosystems remove nitrogen equally well regardless of initial planting</title>
+                 </titleInfo>
+                 <abstract lang="eng">&lt;p&gt;Restored and constructed semi-natural wetlands are increasingly used in the agricultural landscape to intercept nutrients from surface waters. Vegetated surface-flow wetlands remove more nitrogen (N) than those without vegetation. However, changes in N removal over time as differently vegetated wetlands progress from early successional stages to mature systems are less investigated. We monitored three different types of initial planting over the course of 12 years, with the aim to examine how planting of newly constructed wetlands affects long-term N removal. All our data were collected in an experimental wetland facility in south-western Sweden. The facility consists of 18 identical small (ca. 25 m&lt;sup&gt;2&lt;/sup&gt;) surface-flow wetlands, simulating semi-natural wetlands in an agricultural landscape. Initially, the 18 wetlands were randomly divided into three treatments (vegetation types) with six replicates each and planted with (1) emergent vegetation, (2) submerged vegetation and (3) no vegetation for free development. Vegetation succession afterwards progressed uninhibited in all wetlands. Emergent vegetation wetlands initially removed more N than both submerged vegetation and free development wetlands. We found that N removal in submerged vegetation and free development wetlands increased with ecosystem age, whereas N removal in emergent vegetation wetlands did not. N removal in all three vegetation types converged when the wetlands reached a more mature state, around 8 years after wetland construction. However, although all wetlands contained emergent vegetation in year 8, the proportion of emergent vegetation cover and vegetation composition still differed substantially between wetland types. Our study indicates that it is not the cover of emergent vegetation per se which promotes higher N removal in more mature wetlands, but the maturation process itself; mature wetlands despite differing emergent vegetation coverage achieved equally high N removal. In conclusion, once wetlands reach maturity, beneficial effects of initial planting on N removal disappear. © 2020 The Authors. Published by Elsevier B.V.&lt;/p&gt;</abstract>
+                 <subject lang="eng" authority="uka.se" xlink:href="10611">
+                    <topic>Natural Sciences</topic>
+                    <topic>Biological Sciences</topic>
+                    <topic>Ecology</topic>
+                 </subject>
+                 <subject lang="swe" authority="uka.se" xlink:href="10611">
+                    <topic>Naturvetenskap</topic>
+                    <topic>Biologiska vetenskaper</topic>
+                    <topic>Ekologi</topic>
+                 </subject>
+                 <subject lang="eng">
+                    <topic>Created wetland</topic>
+                 </subject>
+                 <subject lang="eng">
+                    <topic>Nitrogen removal</topic>
+                 </subject>
+                 <subject lang="eng">
+                    <topic>Nutrient retention</topic>
+                 </subject>
+                 <subject lang="eng">
+                    <topic>Phragmites australis</topic>
+                 </subject>
+                 <subject lang="eng">
+                    <topic>Long-term study</topic>
+                 </subject>
+                 <subject lang="eng">
+                    <topic>Denitrification</topic>
+                 </subject>
+                 <language>
+                    <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                 </language>
+                 <genre authority="kb.se" type="outputType">publication/journal-article</genre>
+                 <genre authority="svep" type="contentType">ref</genre>
+                 <note type="publicationStatus">Published</note>
+                 <name type="personal" authority="hh">
+                    <namePart type="family">Nilsson</namePart>
+                    <namePart type="given">Josefin E.</namePart>
+                    <namePart type="date">1994-</namePart>
+                    <role>
+                       <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                    </role>
+                    <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="hh.se">Högskolan i Halmstad</affiliation>
+                    <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="hh.se" valueURI="Rydberglaboratoriet för tillämpad naturvetenskap (RLAS)">Rydberglaboratoriet för tillämpad naturvetenskap (RLAS)</affiliation>
+                    <nameIdentifier type="hh">joseni</nameIdentifier>
+                    <nameIdentifier type="orcid">0000-0001-7049-7444</nameIdentifier>
+                 </name>
+                 <name type="personal" authority="hh">
+                    <namePart type="family">Liess</namePart>
+                    <namePart type="given">Antonia</namePart>
+                    <namePart type="date">1975-</namePart>
+                    <role>
+                       <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                    </role>
+                    <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="hh.se">Högskolan i Halmstad</affiliation>
+                    <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="hh.se" valueURI="Rydberglaboratoriet för tillämpad naturvetenskap (RLAS)">Rydberglaboratoriet för tillämpad naturvetenskap (RLAS)</affiliation>
+                    <nameIdentifier type="hh">antlie</nameIdentifier>
+                    <nameIdentifier type="orcid">0000-0003-1556-3861</nameIdentifier>
+                 </name>
+                 <name type="personal" authority="hh">
+                    <namePart type="family">Ehde</namePart>
+                    <namePart type="given">Per Magnus</namePart>
+                    <namePart type="date">1956-</namePart>
+                    <role>
+                       <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                    </role>
+                    <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="hh.se">Högskolan i Halmstad</affiliation>
+                    <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="hh.se" valueURI="Rydberglaboratoriet för tillämpad naturvetenskap (RLAS)">Rydberglaboratoriet för tillämpad naturvetenskap (RLAS)</affiliation>
+                    <nameIdentifier type="hh">pema</nameIdentifier>
+                    <nameIdentifier type="orcid">0000-0003-4297-8683</nameIdentifier>
+                 </name>
+                 <name type="personal" authority="hh">
+                    <namePart type="family">Weisner</namePart>
+                    <namePart type="given">Stefan E.B.</namePart>
+                    <namePart type="date">1954-</namePart>
+                    <role>
+                       <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                    </role>
+                    <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="hh.se">Högskolan i Halmstad</affiliation>
+                    <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="hh.se" valueURI="Rydberglaboratoriet för tillämpad naturvetenskap (RLAS)">Rydberglaboratoriet för tillämpad naturvetenskap (RLAS)</affiliation>
+                    <nameIdentifier type="hh">stewe</nameIdentifier>
+                    <nameIdentifier type="orcid">0000-0002-5181-0391</nameIdentifier>
+                 </name>
+                 <note type="creatorCount">4</note>
+                 <relatedItem type="host">
+                    <genre>grantAgreement</genre>
+                    <name type="corporate">
+                       <namePart>Forskningsrådet Formas</namePart>
+                       <role>
+                          <roleTerm type="code" authority="marcrelator">fnd</roleTerm>
+                       </role>
+                    </name>
+                 </relatedItem>
+                 <relatedItem type="host">
+                    <genre>grantAgreement</genre>
+                    <name type="corporate">
+                       <namePart>Mistra - Stiftelsen för miljöstrategisk forskning</namePart>
+                       <role>
+                          <roleTerm type="code" authority="marcrelator">fnd</roleTerm>
+                       </role>
+                    </name>
+                 </relatedItem>
+                 <originInfo>
+                    <dateIssued>2020</dateIssued>
+                    <publisher>Elsevier</publisher>
+                    <place>
+                       <placeTerm>Amsterdam</placeTerm>
+                    </place>
+                 </originInfo>
+                 <relatedItem type="host">
+                    <titleInfo>
+                       <title>Science of the Total Environment</title>
+                    </titleInfo>
+                    <identifier type="issn" displayLabel="ISSN">0048-9697</identifier>
+                    <identifier type="issn" displayLabel="EISSN">1879-1026</identifier>
+                    <part>
+                       <detail type="volume">
+                          <number>716</number>
+                       </detail>
+                       <detail type="artNo">
+                          <number>137002</number>
+                       </detail>
+                    </part>
+                 </relatedItem>
+                 <location>
+                    <url>https://doi.org/10.1016/j.scitotenv.2020.137002</url>
+                 </location>
+                 <accessCondition>gratis</accessCondition>
+                 <physicalDescription>
+                    <form authority="marcform">print</form>
+                 </physicalDescription>
+                 <typeOfResource>text</typeOfResource>
+                 <note>&lt;p&gt;Other funding: Halmstad University&lt;/p&gt;</note>
+              </mods>
+           </metadata>
+        </record>
+
+        <!-- A post containing special chars in abstract, for example Delta and mathematical T, where
+         some are outside utf8mb3 but in utf8mb4. Utf8mb4 is used for the table and those chars should
+          be insertable. -->
+        <record xmlns="http://www.openarchives.org/OAI/2.0/">
+           <header xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+              <identifier>oai:DiVA.org:liu-152888</identifier>
+              <datestamp>2019-01-10T12:18:00Z</datestamp>
+              <setSpec>liu</setSpec>
+              <setSpec>comprehensiveDoctoralThesis</setSpec>
+              <setSpec>science</setSpec>
+           </header>
+           <metadata>
+              <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.7" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                 <recordInfo>
+                    <recordContentSource>liu</recordContentSource>
+                    <recordCreationDate>2018-11-27</recordCreationDate>
+                 </recordInfo>
+                 <identifier type="isbn" displayLabel="print">9789176851562</identifier>
+                 <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:liu:diva-152888</identifier>
+                 <identifier type="doi">10.3384/diss.diva-152888</identifier>
+                 <titleInfo lang="eng">
+                    <title>Conducting Polymer Electrodes for Thermogalvanic Cells</title>
+                 </titleInfo>
+                  <abstract lang="eng">&lt;p&gt;Fossil fuels are still the dominant (ca. 80%) energy source in our society. A significant fraction is used to generate electricity with a heat engine possessing an efficiency of approximately 35%. Therefore, about 65% of fossil fuel energy is wasted in heat. Other primary heat sources include solar and geothermal energies that can heat up solid and fluids up to 150°C. The growing demand and severe environmental impact of energy systems provide an impetus for effective management and harvesting solutions dealing with waste heat. A promising way to use waste heat is to directly convert thermal energy into electrical energy by thermoelectric generators (TEGs). Solid state TEGs are electronic devices that generate electrical power due to the thermo-diffusion of electronic charge carriers in the semiconductor upon application of the thermal field. However, there is another type of thermoelectric device that has been much less investigated; this is the thermogalvanic cell (TGCs). The TGC is an electrochemical device that consists of the electrolyte solution including a reversible redox couple sandwiched between two electrodes. In our study, we focus on iron-based organometallic molecules in aqueous electrolyte. A temperature difference (Δ&#x1d447;) between the electrodes promotes a difference in the electrode potentials [Δ&#x1d438;(&#x1d447;)]. Since the electrolyte contains a redox couple acting like electronic shuttle between the two electrodes, power can be generated when the two electrodes are submitted to a temperature difference. The focus of this thesis is (i) to investigate the possibility to use conducting polymer electrodes for thermogalvanic cells as an alternative to platinum and carbon-based electrodes, (ii) to investigate the role of viscosity of the electrolyte in order to consider polymer electrolytes, (iii) to understand the mechanisms limiting the electrical power output in TGCs; and (iv) to understand the fundamentals of the electron transfer taking place at the interface between the polymer electrode and the redox molecule in the electrolyte. These findings provide an essential toolbox for further improvement in conducting polymer thermogalvanic cells and various other emerging electrochemical technologies such as fuel cells, redox flow battery, dye-sensitized solar cells and industrial electrochemical synthesis.&lt;/p&gt;</abstract>
+                 <subject lang="eng" authority="uka.se" xlink:href="20304">
+                    <topic>Engineering and Technology</topic>
+                    <topic>Mechanical Engineering</topic>
+                    <topic>Energy Engineering</topic>
+                 </subject>
+                 <subject lang="swe" authority="uka.se" xlink:href="20304">
+                    <topic>Teknik och teknologier</topic>
+                    <topic>Maskinteknik</topic>
+                    <topic>Energiteknik</topic>
+                 </subject>
+                 <subject lang="eng" authority="uka.se" xlink:href="20702">
+                    <topic>Engineering and Technology</topic>
+                    <topic>Environmental Engineering</topic>
+                    <topic>Energy Systems</topic>
+                 </subject>
+                 <subject lang="swe" authority="uka.se" xlink:href="20702">
+                    <topic>Teknik och teknologier</topic>
+                    <topic>Naturresursteknik</topic>
+                    <topic>Energisystem</topic>
+                 </subject>
+                 <subject lang="eng" authority="uka.se" xlink:href="20799">
+                    <topic>Engineering and Technology</topic>
+                    <topic>Environmental Engineering</topic>
+                    <topic>Other Environmental Engineering</topic>
+                 </subject>
+                 <subject lang="swe" authority="uka.se" xlink:href="20799">
+                    <topic>Teknik och teknologier</topic>
+                    <topic>Naturresursteknik</topic>
+                    <topic>Annan naturresursteknik</topic>
+                 </subject>
+                 <subject lang="eng" authority="uka.se" xlink:href="10403">
+                    <topic>Natural Sciences</topic>
+                    <topic>Chemical Sciences</topic>
+                    <topic>Materials Chemistry</topic>
+                 </subject>
+                 <subject lang="swe" authority="uka.se" xlink:href="10403">
+                    <topic>Naturvetenskap</topic>
+                    <topic>Kemi</topic>
+                    <topic>Materialkemi</topic>
+                 </subject>
+                 <language>
+                    <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                 </language>
+                 <genre authority="kb.se" type="outputType">publication/doctoral-thesis</genre>
+                 <genre authority="svep" type="contentType">vet</genre>
+                 <note type="publicationStatus">Published</note>
+                 <name type="personal" authority="liu">
+                    <namePart type="family">Wijeratne</namePart>
+                    <namePart type="given">Kosala</namePart>
+                    <namePart type="date">1983-</namePart>
+                    <role>
+                       <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                    </role>
+                    <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="liu.se">Linköpings universitet</affiliation>
+                    <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="liu.se" valueURI="Fysik och elektroteknik">Fysik och elektroteknik</affiliation>
+                    <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="liu.se">Linköpings universitet</affiliation>
+                    <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="liu.se" valueURI="Tekniska fakulteten">Tekniska fakulteten</affiliation>
+                    <nameIdentifier type="liu">kosmu13</nameIdentifier>
+                 </name>
+                 <name type="personal" authority="liu">
+                    <namePart type="family">Crispin</namePart>
+                    <namePart type="given">Xavier</namePart>
+                    <namePart type="termsOfAddress">Professor</namePart>
+                    <namePart type="date">1972-</namePart>
+                    <role>
+                       <roleTerm type="code" authority="marcrelator">ths</roleTerm>
+                    </role>
+                    <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="liu.se">Linköpings universitet</affiliation>
+                    <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="liu.se" valueURI="Fysik och elektroteknik">Fysik och elektroteknik</affiliation>
+                    <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="liu.se">Linköpings universitet</affiliation>
+                    <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="liu.se" valueURI="Tekniska fakulteten">Tekniska fakulteten</affiliation>
+                    <nameIdentifier type="liu">xavcr43</nameIdentifier>
+                    <nameIdentifier type="orcid">0000-0001-8845-6296</nameIdentifier>
+                 </name>
+                 <name type="personal">
+                    <namePart type="family">Nakamae</namePart>
+                    <namePart type="given">Sawako</namePart>
+                    <namePart type="termsOfAddress">Dr.</namePart>
+                    <role>
+                       <roleTerm type="code" authority="marcrelator">opn</roleTerm>
+                    </role>
+                    <affiliation>Commissariat à l'Energie Atomique (CEA), France</affiliation>
+                 </name>
+                 <note type="creatorCount">1</note>
+                 <originInfo>
+                    <dateIssued>2018</dateIssued>
+                    <publisher>Linköping University Electronic Press</publisher>
+                    <place>
+                       <placeTerm>Linköping</placeTerm>
+                    </place>
+                 </originInfo>
+                 <relatedItem type="series">
+                    <titleInfo>
+                       <title>Linköping Studies in Science and Technology. Dissertations</title>
+                       <partNumber>1971</partNumber>
+                    </titleInfo>
+                    <identifier type="issn" displayLabel="ISSN">0345-7524</identifier>
+                 </relatedItem>
+                 <location>
+                    <url>https://doi.org/10.3384/diss.diva-152888</url>
+                 </location>
+                 <accessCondition>gratis</accessCondition>
+                 <location>
+                    <url usage="primary">http://liu.diva-portal.org/smash/get/diva2:1266042/FULLTEXT01.pdf</url>
+                 </location>
+                 <accessCondition>gratis</accessCondition>
+                 <location>
+                    <url>http://liu.diva-portal.org/smash/get/diva2:1266042/COVER01.pdf</url>
+                 </location>
+                 <accessCondition>gratis</accessCondition>
+                 <location>
+                    <url>http://liu.diva-portal.org/smash/get/diva2:1266042/PREVIEW01.png</url>
+                 </location>
+                 <accessCondition>gratis</accessCondition>
+                 <physicalDescription>
+                    <form authority="marcform">electronic</form>
+                    <extent>93s.</extent>
+                 </physicalDescription>
+                 <typeOfResource>text</typeOfResource>
+              </mods>
+           </metadata>
+        </record>
+
+    </ListRecords>
+</OAI-PMH>

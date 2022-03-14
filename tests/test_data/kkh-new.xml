@@ -1,0 +1,98 @@
+<OAI-PMH xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd" xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <responseDate>2020-02-03T13:14:14Z</responseDate>
+    <request verb="ListRecords" identifier="oai:DiVA.org:kkh-193" metadataPrefix="swepub_mods">
+        http://www.diva-portal.org/dice/oai
+    </request>
+    <record>
+      <header>
+        <identifier>oai:DiVA.org:kkh-193</identifier>
+        <datestamp>2017-05-23T08:36:00Z</datestamp>
+        <setSpec>kkh</setSpec>
+        <setSpec>book</setSpec>
+        <setSpec>popular</setSpec>
+      </header>
+      <metadata>
+        <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+          <genre authority="diva" type="contentTypeCode">other</genre>
+          <genre authority="svep" type="contentType">pop</genre>
+          <genre authority="diva" type="contentType" lang="eng">Other (popular science, discussion, etc.)</genre>
+          <genre authority="diva" type="contentType" lang="swe">&#xD6;vrig (popul&#xE4;rvetenskap, debatt, mm)</genre>
+          <genre authority="diva" type="contentType" lang="nor">Annet (popul&#xE6;rvitenskap, debatt, mm)</genre>
+          <genre authority="diva" type="publicationTypeCode">book</genre>
+          <genre authority="svep" type="publicationType">bok</genre>
+          <genre authority="diva" type="publicationType" lang="eng">Book</genre>
+          <genre authority="diva" type="publicationType" lang="swe">Bok</genre>
+          <genre authority="diva" type="publicationType" lang="nor">Bok</genre>
+          <genre authority="kev" type="publicationType" lang="eng">book</genre>
+          <genre authority="svep" type="publicationType">kfa</genre>
+          <name type="personal">
+            <namePart type="family">Adamson Semple</namePart>
+            <namePart type="given">Gillies</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+            <affiliation>Kungl. Konsth&#xF6;gskolan</affiliation>
+            <description>orcid.org=0000-0001-7776-5501</description>
+          </name>
+          <name type="corporate" authority="kkh" xlink:href="873250">
+            <namePart>Kungl. Konsth&#xF6;gskolan</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+            </role>
+          </name>
+          <titleInfo lang="eng">
+            <title><em>archipelago archipelago !</em>: [<em>auras, ghosts, mirrors and islands</em>]
+    </title>
+          </titleInfo>
+          <language>
+            <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+          </language>
+          <originInfo>
+            <publisher>Kungl. Konst&#xF6;gskolan</publisher>
+            <dateIssued>2017</dateIssued>
+            <dateOther type="availableFrom">2017-05-11T07:11:00</dateOther>
+          </originInfo>
+          <physicalDescription>
+            <form authority="marcform">print</form>
+          </physicalDescription>
+          <identifier type="isbn" displayLabel="electronic">978-91-88705-03-7</identifier>
+          <identifier type="uri">
+    http://urn.kb.se/resolve?urn=urn:nbn:se:kkh:diva-193
+    </identifier>
+          <typeOfResource>text</typeOfResource>
+          <subject lang="eng" authority="hsv" xlink:href="6">
+            <topic>Humanities and the Arts</topic>
+          </subject>
+          <subject lang="swe" authority="hsv" xlink:href="6">
+            <topic>Humaniora och konst</topic>
+          </subject>
+          <subject lang="eng" authority="svep" xlink:href="11">
+            <topic>HUMANITIES and RELIGION</topic>
+          </subject>
+          <subject lang="swe" authority="svep" xlink:href="11">
+            <topic>HUMANIORA och RELIGIONSVETENSKAP</topic>
+          </subject>
+          <subject lang="eng" authority="kkh" xlink:href="24900">
+            <topic>Fine Art</topic>
+            <genre>Research subject</genre>
+          </subject>
+          <subject lang="swe" authority="kkh" xlink:href="24900">
+            <topic>Fri Konst</topic>
+            <genre>Research subject</genre>
+          </subject>
+          <location>
+            <url displayLabel="attachment" note="free" access="raw object">
+    http://kkh.diva-portal.org/smash/get/diva2:1094760/ATTACHMENT01.pdf
+    </url>
+          </location>
+          <recordInfo>
+            <recordOrigin>e17semgi</recordOrigin>
+            <recordContentSource>kkh</recordContentSource>
+            <recordCreationDate>2017-05-11</recordCreationDate>
+            <recordChangeDate>2017-05-23</recordChangeDate>
+            <recordIdentifier>diva2:1094760</recordIdentifier>
+          </recordInfo>
+        </mods>
+      </metadata>
+    </record>
+</OAI-PMH>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2019-01-11T12:30:56Z</responseDate>
+    <request verb="ListRecords" set="SwePub-hj" metadataPrefix="swepub_mods">http://hj.diva-portal.org/dice/oai</request>
+    <ListRecords>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:hj-10975</identifier>
+                <datestamp>2016-02-11T14:39:00Z</datestamp>
+                <setSpec>hj</setSpec>
+                <setSpec>collection</setSpec>
+                <setSpec>refereed</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+                    <genre authority="diva" type="contentTypeCode">refereed</genre>
+                    <genre authority="svep" type="contentType">ref</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Refereed</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Refereegranskat</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Fagfellevurdert</genre>
+                    <genre authority="diva" type="publicationTypeCode">collection</genre>
+                    <genre authority="svep" type="publicationType">sam</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Collection (editor)</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Samlingsverk (redaktörskap)</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Collection/Antologi</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">book</genre>
+                    <name type="personal" authority="hj" xlink:href="stea">
+                        <namePart type="family">Stephan</namePart>
+                        <namePart type="given">Andreas</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">edt</roleTerm>
+                        </role>
+                        <affiliation>Högskolan i Jönköping, IHH, Nationalekonomi</affiliation>
+                        <description>diva-portal.org=authority-person:34014</description>
+                    </name>
+                    <name type="corporate" authority="hj" xlink:href="130">
+                        <namePart>Högskolan i Jönköping</namePart>
+                        <namePart>Internationella Handelshögskolan</namePart>
+                        <namePart>IHH, Nationalekonomi</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <titleInfo lang="eng">
+                        <title>Special issue: Locational conditions and firm performance</title>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                    </language>
+                    <originInfo>
+                        <place>
+                            <placeTerm>Berlin</placeTerm>
+                        </place>
+                        <publisher>Springer</publisher>
+                        <dateIssued>2011</dateIssued>
+                        <dateOther type="availableFrom">2009-12-04T16:06:00</dateOther>
+                    </originInfo>
+                    <physicalDescription>
+                        <form authority="marcform">print</form>
+                        <extent>487-732</extent>
+                    </physicalDescription>
+                    <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:hj:diva-10975</identifier>
+                    <typeOfResource>text</typeOfResource>
+                    <relatedItem type="series">
+                        <titleInfo>
+                            <title>The Annals of Regional Science</title>
+                        </titleInfo>
+                        <identifier type="issn"/>
+                        <identifier type="issue number">46(3)</identifier>
+                    </relatedItem>
+                    <subject lang="eng" authority="hsv" xlink:href="50201">
+                        <topic>Social Sciences</topic>
+                        <topic>Economics and Business</topic>
+                        <topic>Economics</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="50201">
+                        <topic>Samhällsvetenskap</topic>
+                        <topic>Ekonomi och näringsliv</topic>
+                        <topic>Nationalekonomi</topic>
+                    </subject>
+                    <subject lang="eng" authority="svep" xlink:href="1323">
+                        <topic>SOCIAL SCIENCES</topic>
+                        <topic>Business and economics</topic>
+                        <topic>Economics</topic>
+                    </subject>
+                    <subject lang="swe" authority="svep" xlink:href="1323">
+                        <topic>SAMHÄLLSVETENSKAP</topic>
+                        <topic>Ekonomi</topic>
+                        <topic>Nationalekonomi</topic>
+                    </subject>
+                    <recordInfo>
+                        <recordOrigin>STEA</recordOrigin>
+                        <recordContentSource>hj</recordContentSource>
+                        <recordCreationDate>2009-12-04</recordCreationDate>
+                        <recordChangeDate>2016-02-11</recordChangeDate>
+                        <recordIdentifier>diva2:279678</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+    </ListRecords>
+</OAI-PMH>

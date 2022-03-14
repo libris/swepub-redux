@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2021-11-13T20:30:55Z</responseDate>
+    <request verb="ListIdentifiers" set="SwePub-ths" metadataPrefix="swepub_mods">http://ths.diva-portal.org/dice/oai
+    </request>
+    <ListIdentifiers>
+        <header xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <identifier>oai:DiVA.org:kth-286668</identifier>
+            <datestamp>2021-04-09T10:03:00Z</datestamp>
+            <setSpec>kth</setSpec>
+            <setSpec>article</setSpec>
+            <setSpec>refereed</setSpec>
+        </header>
+        <header xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <identifier>oai:DiVA.org:kth-285297</identifier>
+            <datestamp>2020-12-18T11:10:00Z</datestamp>
+            <setSpec>kth</setSpec>
+            <setSpec>article</setSpec>
+            <setSpec>refereed</setSpec>
+        </header>
+        <header xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <identifier>oai:DiVA.org:kth-289495</identifier>
+            <datestamp>2021-04-08T12:58:00Z</datestamp>
+            <setSpec>kth</setSpec>
+            <setSpec>article</setSpec>
+            <setSpec>refereed</setSpec>
+        </header>
+    </ListIdentifiers>
+</OAI-PMH>

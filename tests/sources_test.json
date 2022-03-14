@@ -1,0 +1,475 @@
+{
+  "chalmers": {
+    "code": "chalmers",
+    "name": "TEST - chalmers",
+    "sets": [
+      {
+        "url": "http://localhost:8549/chalmers",
+        "subset": "CHALMERS_SWEPUB",
+        "metadata_prefix": "mods"
+      }
+    ]
+  },
+  "diva_kth": {
+    "code": "diva_kth",
+    "name": "TEST - diva_kth",
+    "sets": [
+      {
+        "url": "http://localhost:8549/diva_kth",
+        "subset": "SwePub-kth",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "dedup": {
+    "code": "dedup",
+    "name": "TEST - dedup",
+    "sets": [
+      {
+        "url": "http://localhost:8549/dedup",
+        "subset": "SwePub-DEDUPS",
+        "metadata_prefix": "swepub_dedups"
+      }
+    ]
+  },
+  "dedup_merge": {
+    "code": "dedup_merge",
+    "name": "TEST - dedup_merge",
+    "sets": [
+      {
+        "url": "http://localhost:8549/dedup_merge",
+        "subset": "SwePub-DEDUPSMERGE",
+        "metadata_prefix": "swepub_dedups_merge"
+      }
+    ]
+  },
+  "dedup_malmo": {
+    "code": "malmo",
+    "name": "TEST - malmo",
+    "sets": [
+      {
+        "url": "http://localhost:8549/malmo",
+        "subset": "com_2043_4297",
+        "metadata_prefix": "swepub"
+      }
+    ]
+  },
+  "mau": {
+    "code": "mau",
+    "name": "TEST - mau",
+    "sets": [
+      {
+        "url": "http://localhost:8549/mau",
+        "subset": "com_2043_4297",
+        "metadata_prefix": "swepub"
+      }
+    ]
+  },
+  "lund": {
+    "code": "lund",
+    "name": "TEST - lund",
+    "sets": [
+      {
+        "url": "http://localhost:8549/lund",
+        "subset": "LU_SWEPUB",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "validatable": {
+    "code": "validatable",
+    "name": "TEST - validatable",
+    "sets": [
+      {
+        "url": "http://localhost:8549/validatable",
+        "subset": "CHALMERS_SWEPUB",
+        "metadata_prefix": "mods"
+      }
+    ]
+  },
+  "shortdoi_test": {
+    "code": "shortdoi_test",
+    "name": "TEST - shortdoi_test",
+    "sets": [
+      {
+        "url": "http://localhost:8549/shortdoi_test",
+        "subset": "SwePub-hv",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "doi_error": {
+    "code": "doi_error",
+    "name": "TEST - doi_error",
+    "sets": [
+      {
+        "url": "http://localhost:8549/doi_error",
+        "subset": "set",
+        "metadata_prefix": "prefix"
+      }
+    ]
+  },
+  "double_issn": {
+    "code": "double_issn",
+    "name": "TEST - double_issn",
+    "sets": [
+      {
+        "url": "http://localhost:8549/double_issn",
+        "subset": "SwePub-hj",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "invalid_issn": {
+    "code": "invalid_issn",
+    "name": "TEST - invalid_issn",
+    "sets": [
+      {
+        "url": "http://localhost:8549/invalid_issn",
+        "subset": "CHALMERS_SWEPUB",
+        "metadata_prefix": "mods"
+      }
+    ]
+  },
+  "empty_issn": {
+    "code": "empty_issn",
+    "name": "TEST - empty_issn",
+    "sets": [
+      {
+        "url": "http://localhost:8549/empty_issn",
+        "subset": "SwePub-hj",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "delete_kth_post": {
+    "code": "delete_kth_post",
+    "name": "TEST - delete_kth_post",
+    "sets": [
+      {
+        "url": "http://localhost:8549/delete_kth_post",
+        "subset": "SwePub-kth",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "incomplete_minimum_level_diva": {
+    "code": "incomplete_minimum_level_diva",
+    "name": "TEST - incomplete_minimum_level_diva",
+    "sets": [
+      {
+        "url": "http://localhost:8549/incomplete_minimum_level_diva",
+        "subset": "SwePub-du",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "incomplete_minimum_level": {
+    "code": "incomplete_minimum_level",
+    "name": "TEST - incomplete_minimum_level",
+    "sets": [
+      {
+        "url": "http://localhost:8549/incomplete_minimum_level",
+        "subset": "com_2043_4297",
+        "metadata_prefix": "swepub"
+      }
+    ]
+  },
+  "duplicate_person": {
+    "code": "duplicate_person",
+    "name": "TEST - duplicate_person",
+    "sets": [
+      {
+        "url": "http://localhost:8549/duplicate_person",
+        "subset": "SwePub-ri",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "missing_issn": {
+    "code": "missing_issn",
+    "name": "TEST - missing_issn",
+    "sets": [
+      {
+        "url": "http://localhost:8549/missing_issn",
+        "subset": "SwePub-ri",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "dedup_org_1": {
+    "code": "dedup_org_1",
+    "name": "TEST - dedup_org_1",
+    "sets": [
+      {
+        "url": "http://localhost:8549/dedup_org_1",
+        "subset": "SwePub-kth",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "dedup_org_2": {
+    "code": "dedup_org_2",
+    "name": "TEST - dedup_org_2",
+    "sets": [
+      {
+        "url": "http://localhost:8549/dedup_org_2",
+        "subset": "SwePub-mdh",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "konstfack-new-diva": {
+    "code": "konstfack-new-diva",
+    "name": "TEST - konstfack-new-diva",
+    "sets": [
+      {
+        "url": "http://localhost:8549/konstfack-new-diva",
+        "subset": "konstfack",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "kth-new-diva": {
+    "code": "kth-new-diva",
+    "name": "TEST - kth-new-diva",
+    "sets": [
+      {
+        "url": "http://localhost:8549/kth-new-diva",
+        "subset": "SwePub-kth",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "rise-new-diva": {
+    "code": "rise-new-diva",
+    "name": "TEST - rise-new-diva",
+    "sets": [
+      {
+        "url": "http://localhost:8549/rise-new-diva",
+        "subset": "SwePub-ri",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "liu-new-diva": {
+    "code": "liu-new-diva",
+    "name": "TEST - liu-new-diva",
+    "sets": [
+      {
+        "url": "http://localhost:8549/liu-new-diva",
+        "subset": "SwePub-liu",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "mau-new": {
+    "code": "mau-new",
+    "name": "TEST - mau-new",
+    "sets": [
+      {
+        "url": "http://localhost:8549/mau-new",
+        "subset": "com_2043_4297",
+        "metadata_prefix": "swepub"
+      }
+    ]
+  },
+  "kkh-new": {
+    "code": "kkh-new",
+    "name": "TEST - kkh-new",
+    "sets": [
+      {
+        "url": "http://localhost:8549/kkh-new",
+        "subset": "SwePub-kkh",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "ltu-new": {
+    "code": "ltu-new",
+    "name": "TEST - ltu-new",
+    "sets": [
+      {
+        "url": "http://localhost:8549/ltu-new",
+        "subset": "SwePub-ltu",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "nationalmuseum-new": {
+    "code": "nationalmuseum-new",
+    "name": "TEST - nationalmuseum-new",
+    "sets": [
+      {
+        "url": "http://localhost:8549/nationalmuseum-new",
+        "subset": "SwePub-nationalmuseum",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "naturvardsverket-new": {
+    "code": "naturvardsverket-new",
+    "name": "TEST - naturvardsverket-new",
+    "sets": [
+      {
+        "url": "http://localhost:8549/naturvardsverket-new",
+        "subset": "SwePub-naturvardsverket",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "gih-new": {
+    "code": "gih-new",
+    "name": "TEST - gih-new",
+    "sets": [
+      {
+        "url": "http://localhost:8549/gih-new",
+        "subset": "SwePub-gih",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "uniarts-new": {
+    "code": "uniarts-new",
+    "name": "TEST - uniarts-new",
+    "sets": [
+      {
+        "url": "http://localhost:8549/uniarts-new",
+        "subset": "SwePub-uniarts",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "ths-new": {
+    "code": "ths-new",
+    "name": "TEST - ths-new",
+    "sets": [
+      {
+        "url": "http://localhost:8549/ths-new",
+        "subset": "SwePub-ths",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "minimum-level-diva": {
+    "code": "minimum-level-diva",
+    "name": "TEST - minimum-level-diva",
+    "sets": [
+      {
+        "url": "http://localhost:8549/minimum-level-diva",
+        "subset": "SwePub-umu",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "legacy_search": {
+    "code": "legacy_search",
+    "name": "TEST - legacy_search",
+    "sets": [
+      {
+        "url": "http://localhost:8549/legacy_search",
+        "subset": "SwePub-ths",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "rejected-uu": {
+    "code": "rejected-uu",
+    "name": "TEST - rejected-uu",
+    "sets": [
+      {
+        "url": "http://localhost:8549/rejected-uu",
+        "subset": "SwePub-uu",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "deduplicate-bug": {
+    "code": "deduplicate-bug",
+    "name": "TEST - deduplicate-bug",
+    "sets": [
+      {
+        "url": "http://localhost:8549/deduplicate-bug",
+        "subset": "SwePub-ri",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "missing-pubdate": {
+    "code": "missing-pubdate",
+    "name": "TEST - missing-pubdate",
+    "sets": [
+      {
+        "url": "http://localhost:8549/missing-pubdate",
+        "subset": "SwePub-kau",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "lnu": {
+    "code": "lnu",
+    "name": "TEST - lnu",
+    "sets": [
+      {
+        "url": "http://localhost:8549/lnu",
+        "subset": "",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "gih": {
+    "code": "gih",
+    "name": "TEST - gih",
+    "sets": [
+      {
+        "url": "http://localhost:8549/gih",
+        "subset": "",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "rejected_kth": {
+    "code": "rejected_kth",
+    "name": "TEST - rejected_kth",
+    "sets": [
+      {
+        "url": "http://localhost:8549/rejected_kth",
+        "subset": "SwePub-kth",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "doi_validation_enrichment": {
+    "code": "doi_validation_enrichment",
+    "name": "TEST - doi_validation_enrichment",
+    "sets": [
+      {
+        "url": "http://localhost:8549/doi_validation_enrichment",
+        "subset": "SwePub-hv",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "obsolete-test-listidentifiers": {
+    "code": "obsolete-test",
+    "name": "TEST - obsolete-test",
+    "sets": [
+      {
+        "url": "http://localhost:8549/obsolete-test-listidentifiers",
+        "subset": "SwePub-kth",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "obsolete-test-listrecords": {
+    "code": "obsolete-test",
+    "name": "TEST - obsolete-test",
+    "sets": [
+      {
+        "url": "http://localhost:8549/obsolete-test-listrecords",
+        "subset": "SwePub-kth",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  }
+}

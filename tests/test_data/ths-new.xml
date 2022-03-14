@@ -1,0 +1,100 @@
+<OAI-PMH xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd" xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <responseDate>2020-02-03T13:14:14Z</responseDate>
+    <request verb="ListRecords" identifier="oai:DiVA.org:ths-358" metadataPrefix="swepub_mods">
+        http://www.diva-portal.org/dice/oai
+    </request>
+    <record>
+      <header>
+        <identifier>oai:DiVA.org:ths-358</identifier>
+        <datestamp>2019-10-09T11:37:00Z</datestamp>
+        <setSpec>ths</setSpec>
+        <setSpec>other</setSpec>
+        <setSpec>popular</setSpec>
+      </header>
+      <metadata>
+        <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+          <genre authority="diva" type="contentTypeCode">other</genre>
+          <genre authority="svep" type="contentType">pop</genre>
+          <genre authority="diva" type="contentType" lang="eng">Other (popular science, discussion, etc.)</genre>
+          <genre authority="diva" type="contentType" lang="swe">&#xD6;vrig (popul&#xE4;rvetenskap, debatt, mm)</genre>
+          <genre authority="diva" type="contentType" lang="nor">Annet (popul&#xE6;rvitenskap, debatt, mm)</genre>
+          <genre authority="diva" type="publicationTypeCode">other</genre>
+          <genre authority="svep" type="publicationType">ovr</genre>
+          <genre authority="diva" type="publicationType" lang="eng">Other</genre>
+          <genre authority="diva" type="publicationType" lang="swe">&#xD6;vrigt</genre>
+          <genre authority="diva" type="publicationType" lang="nor">Annet</genre>
+          <genre authority="kev" type="publicationType" lang="eng"/>
+          <name type="personal" authority="ths" xlink:href="hanna.stenstrom">
+            <namePart type="family">Stenstr&#xF6;m</namePart>
+            <namePart type="given">Hanna</namePart>
+            <namePart type="termsOfAddress">Lektor</namePart>
+            <namePart type="date">1963-</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+            <affiliation>
+    Enskilda H&#xF6;gskolan Stockholm, Teologiska h&#xF6;gskolan Stockholm
+    </affiliation>
+            <description>diva-portal.org=authority-person:11357</description>
+          </name>
+          <name type="corporate" authority="ths" xlink:href="880352">
+            <namePart>Enskilda H&#xF6;gskolan Stockholm</namePart>
+            <namePart>Teologiska h&#xF6;gskolan Stockholm</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+            </role>
+          </name>
+          <titleInfo lang="swe">
+            <title>Elsa Victoria Cedergren</title>
+          </titleInfo>
+          <language>
+            <languageTerm type="code" authority="iso639-2b">swe</languageTerm>
+          </language>
+          <originInfo>
+            <place>
+              <placeTerm>G&#xF6;teborg</placeTerm>
+            </place>
+            <publisher>Internetlexikon skapat vid G&#xF6;teborgs universitet</publisher>
+            <dateIssued>2018</dateIssued>
+            <dateOther type="availableFrom">2019-09-20T20:38:00</dateOther>
+          </originInfo>
+          <physicalDescription>
+            <form authority="marcform">print</form>
+          </physicalDescription>
+          <identifier type="uri">
+    http://urn.kb.se/resolve?urn=urn:nbn:se:ths:diva-358
+    </identifier>
+          <location>
+            <url displayLabel="Artikeln i fulltext" note="free">https://skbl.se/sv/artikel/ElsaCedergren</url>
+          </location>
+          <typeOfResource>text</typeOfResource>
+          <subject lang="swe">
+            <topic>
+    Svensk kyrkohistoria 1900-talet;kvinnor i kyrkohistorien;ekumenik
+    </topic>
+          </subject>
+          <subject lang="eng" authority="hsv" xlink:href="6">
+            <topic>Humanities and the Arts</topic>
+          </subject>
+          <subject lang="swe" authority="hsv" xlink:href="6">
+            <topic>Humaniora och konst</topic>
+          </subject>
+          <subject lang="eng" authority="ths" xlink:href="28176">
+            <topic>Church History</topic>
+            <genre>Research subject</genre>
+          </subject>
+          <subject lang="swe" authority="ths" xlink:href="28176">
+            <topic>Kyrkohistoria</topic>
+            <genre>Research subject</genre>
+          </subject>
+          <recordInfo>
+            <recordOrigin>hanna.stenstrom</recordOrigin>
+            <recordContentSource>ths</recordContentSource>
+            <recordCreationDate>2019-09-20</recordCreationDate>
+            <recordChangeDate>2019-10-09</recordChangeDate>
+            <recordIdentifier>diva2:1353208</recordIdentifier>
+          </recordInfo>
+        </mods>
+      </metadata>
+    </record>
+</OAI-PMH>

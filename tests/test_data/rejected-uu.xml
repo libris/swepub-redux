@@ -1,0 +1,200 @@
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2020-10-21T06:08:31Z</responseDate>
+    <request verb="GetRecord" identifier="oai:DiVA.org:uu-381723" metadataPrefix="swepub_mods">
+        http://uu.diva-portal.org/dice/oai
+    </request>
+    <GetRecord>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:uu-381723</identifier>
+                <datestamp>2020-10-16T14:30:00Z</datestamp>
+                <setSpec>uu</setSpec>
+                <setSpec>article</setSpec>
+                <setSpec>science</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" version="3.7"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                    <genre authority="diva" type="contentTypeCode">science</genre>
+                    <genre authority="svep" type="contentType">vet</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Other academic</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Övrigt vetenskapligt</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Annet vitenskapelig</genre>
+                    <genre authority="diva" type="publicationTypeCode">article</genre>
+                    <genre authority="svep" type="publicationType">art</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Article in journal</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Artikel i tidskrift</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Artikkel i tidsskrift</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">article</genre>
+                    <name type="personal" authority="uu" xlink:href="amiba787">
+                        <namePart type="family">Banerjee</namePart>
+                        <namePart type="given">Amitava</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Uppsala universitet, Materialteori</affiliation>
+                        <affiliation>
+                            Applied Materials Physics, Department of Materials and Engineering, Royal Institute of
+                            Technology (KTH), Stockholm, Sweden
+                        </affiliation>
+                        <description>orcid.org=0000-0002-3548-133x</description>
+                        <description>diva-portal.org=authority-person:21662</description>
+                    </name>
+                    <name type="personal" authority="uu" xlink:href="sudch599">
+                        <namePart type="family">Chakraborty</namePart>
+                        <namePart type="given">Sudip</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Uppsala universitet, Materialteori</affiliation>
+                        <affiliation>
+                            Discipline of Physics, Indian Institute of Technology (IIT) Indore, Indore, Madhya Pradesh,
+                            India
+                        </affiliation>
+                        <description>orcid.org=0000-0002-6765-2084</description>
+                        <description>diva-portal.org=authority-person:19040</description>
+                    </name>
+                    <name type="personal" authority="uu" xlink:href="rajeeva">
+                        <namePart type="family">Ahuja</namePart>
+                        <namePart type="given">Rajeev</namePart>
+                        <namePart type="date">1965-</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Uppsala universitet, Materialteori</affiliation>
+                        <affiliation>
+                            Discipline of Physics, Indian Institute of Technology (IIT) Indore, Indore, Madhya Pradesh,
+                            India
+                        </affiliation>
+                        <description>orcid.org=0000-0003-1231-9994</description>
+                        <description>diva-portal.org=authority-person:12119</description>
+                    </name>
+                    <name type="corporate" authority="uu" xlink:href="5368">
+                        <namePart>Uppsala universitet</namePart>
+                        <namePart>Teknisk-naturvetenskapliga vetenskapsområdet</namePart>
+                        <namePart>Fysiska sektionen</namePart>
+                        <namePart>Institutionen för fysik och astronomi</namePart>
+                        <namePart>Materialteori</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <titleInfo lang="eng">
+                        <title>
+                            Reaction Coordinate Mapping of Hydrogen Evolution Mechanism on Mg<sub>3</sub>N<sub>2</sub>Monolayer
+                        </title>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                    </language>
+                    <originInfo>
+                        <publisher>Elsevier BV</publisher>
+                        <dateIssued>2020</dateIssued>
+                        <dateOther type="availableFrom">2019-04-12T14:50:00</dateOther>
+                    </originInfo>
+                    <note type="publicationChannel"/>
+                    <physicalDescription>
+                        <form authority="marcform">print</form>
+                    </physicalDescription>
+                    <identifier type="uri">
+                        http://urn.kb.se/resolve?urn=urn:nbn:se:uu:diva-381723
+                    </identifier>
+                    <identifier type="doi">10.1016/j.ijhydene.2020.06.158</identifier>
+                    <identifier type="isi">000564759800002</identifier>
+                    <typeOfResource>text</typeOfResource>
+                    <subject lang="eng">
+                        <topic>Reaction coordinate</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Hydrogen evolution reaction (HER)</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Mg3N2 monolayer</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Charge transfer mechanism</topic>
+                    </subject>
+                    <subject lang="eng">
+                        <topic>Work function</topic>
+                    </subject>
+                    <subject lang="eng" authority="hsv" xlink:href="10407">
+                        <topic>Natural Sciences</topic>
+                        <topic>Chemical Sciences</topic>
+                        <topic>Theoretical Chemistry</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="10407">
+                        <topic>Naturvetenskap</topic>
+                        <topic>Kemi</topic>
+                        <topic>Teoretisk kemi</topic>
+                    </subject>
+                    <subject lang="eng" authority="uu" xlink:href="6896">
+                        <topic>
+                            Physics with spec. in Atomic, Molecular and Condensed Matter Physics
+                        </topic>
+                        <genre>Research subject</genre>
+                    </subject>
+                    <subject lang="swe" authority="uu" xlink:href="6896">
+                        <topic>
+                            Fysik med inriktning mot atom- molekyl- och kondenserande materiens fysik
+                        </topic>
+                        <genre>Research subject</genre>
+                    </subject>
+                    <abstract lang="eng">
+                        <p>In this work, we have envisaged the hydrogen evolution reaction (HER) mechanism on Mg3N2
+                            monolayer based on electronic structure calculations within the framework of density
+                            functional theory (DFT) formalism. The semiconducting nature of Mg3N2 monolayer motivates us
+                            to investigate the HER mechanism on this sheet. We have constructed the reaction coordinate
+                            associated with HER mechanism after determining the hydrogen adsorption energy on Mg3N2
+                            monolayer, while investigating all possible adsorption sites. After obtaining the adsorption
+                            energy, we subsequently obtain the adsorption free energy while adding zero point energy
+                            difference (Delta ZPE) and entropic contribution (T Delta S). We have not only confined our
+                            investigations to a single hydrogen, but have thoroughly observed the adsorption phenomena
+                            for increasing number of hydrogen atoms on the surface. We have determined the projected
+                            density of states (DOS) in order to find the elemental contribution in the valence band and
+                            conduction band regime for all the considered cases. We have also compared the work function
+                            value among all the cases, which quantifies the amount of energy required for taking an
+                            electron out of the surface. The charge transfer mechanism is also being investigated in
+                            order to correlate with the HER mechanism with amount of charge transfer. This is the first
+                            attempt on this material to the best of our knowledge, where theoretical investigation has
+                            been done to mapping the reaction coordinate of HER mechanism with the associated charge
+                            transfer process and the work function values, not only for single hydrogen adsorption, but
+                            also for increasing number of adsorbed hydrogen.
+                        </p>
+                    </abstract>
+                    <note>
+                        <p>Part of John Wärå´s doctoral thesis "Water Splitting Mechanism on 2D Catalytic Materials: DFT
+                            based Theoretical Investigations", 2019.
+                        </p>
+                    </note>
+                    <relatedItem type="host">
+                        <part>
+                            <detail type="volume">
+                                <number>45</number>
+                            </detail>
+                            <detail type="issue">
+                                <number>43</number>
+                            </detail>
+                            <extent>
+                                <start>22848</start>
+                                <end>22854</end>
+                            </extent>
+                        </part>
+                    </relatedItem>
+                    <note type="publicationStatus" lang="eng">Published</note>
+                    <note type="funder">Carl Tryggers stiftelse för vetenskaplig forskning</note>
+                    <note type="funder">Vetenskapsrådet</note>
+                    <note type="funder">StandUp</note>
+                    <recordInfo>
+                        <recordOrigin>johwa483</recordOrigin>
+                        <recordContentSource>uu</recordContentSource>
+                        <recordCreationDate>2019-04-12</recordCreationDate>
+                        <recordChangeDate>2020-10-16</recordChangeDate>
+                        <recordIdentifier>diva2:1304592</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+    </GetRecord>
+</OAI-PMH>

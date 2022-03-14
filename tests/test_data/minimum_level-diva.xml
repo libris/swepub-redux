@@ -1,0 +1,481 @@
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2020-03-09T12:32:37Z</responseDate>
+    <request verb="ListRecords" identifier="oai:DiVA.org:uu-391127" metadataPrefix="swepub_mods">
+        http://uu.diva-portal.org/dice/oai
+    </request>
+    <ListRecords>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:umu-109753</identifier>
+                <datestamp>2018-06-07T14:42:00Z</datestamp>
+                <setSpec>umu</setSpec>
+                <setSpec>manuscript</setSpec>
+                <setSpec>science</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+                    <genre authority="diva" type="contentTypeCode">science</genre>
+                    <genre authority="svep" type="contentType">vet</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Other academic</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Övrigt vetenskapligt</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Annet vitenskapelig</genre>
+                    <genre authority="diva" type="publicationTypeCode">manuscript</genre>
+                    <genre authority="svep" type="publicationType">ovr</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Manuscript (preprint)</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Manuskript (preprint)</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Manuskript (preprint)</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">preprint</genre>
+                    <name type="personal" authority="umu" xlink:href="maestn78">
+                        <namePart type="family">Sturesson</namePart>
+                        <namePart type="given">Marine</namePart>
+                        <namePart type="date">1959-</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Umeå universitet, Arbetsterapi</affiliation>
+                        <description>diva-portal.org=authority-person:65030</description>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Hörnqvist Bylund</namePart>
+                        <namePart type="given">Sonya</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Edlund</namePart>
+                        <namePart type="given">Curt</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Hansen Falkdal</namePart>
+                        <namePart type="given">Annie</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Umeå universitet, Arbetsterapi</affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Bernspång</namePart>
+                        <namePart type="given">Birgitta</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Umeå universitet, Arbetsterapi</affiliation>
+                    </name>
+                    <name type="corporate" authority="umu" xlink:href="772">
+                        <namePart>Umeå universitet</namePart>
+                        <namePart>Medicinska fakulteten</namePart>
+                        <namePart>
+                            Institutionen för samhällsmedicin och rehabilitering
+                        </namePart>
+                        <namePart>Arbetsterapi</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <titleInfo lang="eng">
+                        <title>
+                            Collaboration in work ability assessment for sick-listed persons in primary health care
+                        </title>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                    </language>
+                    <originInfo>
+                        <dateOther type="availableFrom">2015-10-05T14:20:39</dateOther>
+                    </originInfo>
+                    <physicalDescription>
+                        <form authority="marcform">print</form>
+                    </physicalDescription>
+                    <identifier type="uri">
+                        http://urn.kb.se/resolve?urn=urn:nbn:se:umu:diva-109753
+                    </identifier>
+                    <typeOfResource>text</typeOfResource>
+                    <subject lang="eng" authority="hsv" xlink:href="30306">
+                        <topic>Medical and Health Sciences</topic>
+                        <topic>Health Sciences</topic>
+                        <topic>Occupational Therapy</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="30306">
+                        <topic>Medicin och hälsovetenskap</topic>
+                        <topic>Hälsovetenskaper</topic>
+                        <topic>Arbetsterapi</topic>
+                    </subject>
+                    <recordInfo>
+                        <recordOrigin>maestn78</recordOrigin>
+                        <recordContentSource>umu</recordContentSource>
+                        <recordCreationDate>2015-10-05</recordCreationDate>
+                        <recordChangeDate>2018-06-07</recordChangeDate>
+                        <recordIdentifier>diva2:858959</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:umu-106809</identifier>
+                <datestamp>2018-06-07T15:48:00Z</datestamp>
+                <setSpec>umu</setSpec>
+                <setSpec>report</setSpec>
+                <setSpec>science</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+                    <genre authority="diva" type="contentTypeCode">science</genre>
+                    <genre authority="svep" type="contentType">vet</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Other academic</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Övrigt vetenskapligt</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Annet vitenskapelig</genre>
+                    <genre authority="diva" type="publicationTypeCode">report</genre>
+                    <genre authority="svep" type="publicationType">rap</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Report</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Rapport</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Rapport</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">book</genre>
+                    <name type="personal" authority="umu" xlink:href="megh0001">
+                        <namePart type="family">Ghazinour</namePart>
+                        <namePart type="given">Mehdi</namePart>
+                        <namePart type="date">1967-</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Umeå universitet, Institutionen för socialt arbete</affiliation>
+                        <description>orcid.org=0000-0003-1230-6720</description>
+                        <description>diva-portal.org=authority-person:63569</description>
+                    </name>
+                    <name type="personal" authority="umu" xlink:href="joshan90">
+                        <namePart type="family">Hansson</namePart>
+                        <namePart type="given">Jonas</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>
+                            Umeå universitet, Institutionen för folkhälsa och klinisk medicin
+                        </affiliation>
+                        <description>diva-portal.org=authority-person:63650</description>
+                    </name>
+                    <name type="personal" authority="umu" xlink:href="lala0001">
+                        <namePart type="family">Lauritz</namePart>
+                        <namePart type="given">Lars Erik</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>
+                            Umeå universitet, Enheten för polisutbildning vid Umeå universitet
+                        </affiliation>
+                        <description>diva-portal.org=authority-person:63651</description>
+                    </name>
+                    <name type="personal" authority="umu" xlink:href="mopa0006">
+                        <namePart type="family">Padyab</namePart>
+                        <namePart type="given">Mojgan</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Umeå universitet, Institutionen för socialt arbete</affiliation>
+                        <description>diva-portal.org=authority-person:62436</description>
+                    </name>
+                    <name type="personal" authority="umu" xlink:href="joajan97">
+                        <namePart type="family">Sundqvist</namePart>
+                        <namePart type="given">Johanna</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Umeå universitet, Epidemiologi och global hälsa</affiliation>
+                        <description>diva-portal.org=authority-person:65103</description>
+                    </name>
+                    <name type="personal" authority="umu" xlink:href="maek0002">
+                        <namePart type="family">Eklund Wimelius</namePart>
+                        <namePart type="given">Malin</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Umeå universitet, Statsvetenskapliga institutionen</affiliation>
+                        <description>diva-portal.org=authority-person:64307</description>
+                    </name>
+                    <name type="personal" authority="umu" xlink:href="keog0001">
+                        <namePart type="family">Ögren</namePart>
+                        <namePart type="given">Kenneth</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Umeå universitet, Institutionen för socialt arbete</affiliation>
+                        <description>diva-portal.org=authority-person:65104</description>
+                    </name>
+                    <name type="corporate" authority="umu" xlink:href="849">
+                        <namePart>Umeå universitet</namePart>
+                        <namePart>Samhällsvetenskapliga fakulteten</namePart>
+                        <namePart>Institutionen för socialt arbete</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <name type="corporate" authority="umu" xlink:href="723">
+                        <namePart>Umeå universitet</namePart>
+                        <namePart>Medicinska fakulteten</namePart>
+                        <namePart>Institutionen för folkhälsa och klinisk medicin</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <name type="corporate" authority="umu" xlink:href="9752">
+                        <namePart>Umeå universitet</namePart>
+                        <namePart>Samhällsvetenskapliga fakulteten</namePart>
+                        <namePart>Enheten för polisutbildning vid Umeå universitet</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <name type="corporate" authority="umu" xlink:href="5303">
+                        <namePart>Umeå universitet</namePart>
+                        <namePart>Medicinska fakulteten</namePart>
+                        <namePart>Institutionen för folkhälsa och klinisk medicin</namePart>
+                        <namePart>Epidemiologi och global hälsa</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <name type="corporate" authority="umu" xlink:href="852">
+                        <namePart>Umeå universitet</namePart>
+                        <namePart>Samhällsvetenskapliga fakulteten</namePart>
+                        <namePart>Statsvetenskapliga institutionen</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <titleInfo lang="swe">
+                        <title>En resa med tvång</title>
+                        <subTitle>
+                            erfarenheter av avvisningar och utvisningar av ensamkommande asylsökande flyktingbarn
+                        </subTitle>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">swe</languageTerm>
+                    </language>
+                    <originInfo>
+                        <place>
+                            <placeTerm>Umeå</placeTerm>
+                        </place>
+                        <publisher>Umeå universitet</publisher>
+                        <dateIssued>2015</dateIssued>
+                        <dateOther type="availableFrom">2015-08-07T12:20:00</dateOther>
+                    </originInfo>
+                    <physicalDescription>
+                        <form authority="marcform">electronic</form>
+                        <extent>68</extent>
+                    </physicalDescription>
+                    <identifier type="isbn" displayLabel="print">978-911-7601-301-4</identifier>
+                    <identifier type="uri">
+                        http://urn.kb.se/resolve?urn=urn:nbn:se:umu:diva-106809
+                    </identifier>
+                    <typeOfResource>text</typeOfResource>
+                    <relatedItem type="series">
+                        <titleInfo>
+                            <title>Polisutbildningens skriftserie</title>
+                        </titleInfo>
+                        <identifier type="local">14500</identifier>
+                        <identifier type="issue number">4</identifier>
+                    </relatedItem>
+                    <subject lang="swe">
+                        <topic>flyktingungdomar</topic>
+                    </subject>
+                    <subject lang="swe">
+                        <topic>utvisningar</topic>
+                    </subject>
+                    <subject lang="swe">
+                        <topic>polisen</topic>
+                    </subject>
+                    <subject lang="swe">
+                        <topic>socialsekreterare</topic>
+                    </subject>
+                    <subject lang="swe">
+                        <topic>stress</topic>
+                    </subject>
+                    <subject lang="swe">
+                        <topic>socialt stöd</topic>
+                    </subject>
+                    <subject lang="eng" authority="hsv" xlink:href="50904">
+                        <topic>Social Sciences</topic>
+                        <topic>Other Social Sciences</topic>
+                        <topic>International Migration and Ethnic Relations</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="50904">
+                        <topic>Samhällsvetenskap</topic>
+                        <topic>Annan samhällsvetenskap</topic>
+                        <topic>
+                            Internationell Migration och Etniska Relationer (IMER)
+                        </topic>
+                    </subject>
+                    <note type="project">Vad är ett värdigt återvändande?</note>
+                    <note type="funder">EU, Europeiska forskningsrådet</note>
+                    <location>
+                        <url displayLabel="fulltext" note="free" access="raw object">
+                            http://umu.diva-portal.org/smash/get/diva2:844675/FULLTEXT01.pdf
+                        </url>
+                    </location>
+                    <recordInfo>
+                        <recordOrigin>megh0001</recordOrigin>
+                        <recordContentSource>umu</recordContentSource>
+                        <recordCreationDate>2015-08-07</recordCreationDate>
+                        <recordChangeDate>2018-06-07</recordChangeDate>
+                        <recordIdentifier>diva2:844675</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:oru-80544</identifier>
+                <datestamp>2020-03-10T14:28:00Z</datestamp>
+                <setSpec>oru</setSpec>
+                <setSpec>manuscript</setSpec>
+                <setSpec>science</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" version="3.7"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                    <genre authority="diva" type="contentTypeCode">science</genre>
+                    <genre authority="svep" type="contentType">vet</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Other academic</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Övrigt vetenskapligt</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Annet vitenskapelig</genre>
+                    <genre authority="diva" type="publicationTypeCode">manuscript</genre>
+                    <genre authority="svep" type="publicationType">ovr</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Manuscript (preprint)</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Manuskript (preprint)</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Manuskript (preprint)</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">preprint</genre>
+                    <name type="personal">
+                        <namePart type="family">Afanasyev</namePart>
+                        <namePart type="given">Ilya</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Innopolis University, Innopolis, Russia</affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Mazzara</namePart>
+                        <namePart type="given">Manuel</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Innopolis University, Innopolis, Russia</affiliation>
+                    </name>
+                    <name type="personal" authority="oru" xlink:href="scy">
+                        <namePart type="family">Chakraborty</namePart>
+                        <namePart type="given">Subham</namePart>
+                        <namePart type="date">1988-</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Innopolis University, Innopolis, Russia</affiliation>
+                        <description>diva-portal.org=authority-person:75249</description>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Zhuchkov</namePart>
+                        <namePart type="given">Nikita</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Innopolis University, Innopolis, Russia</affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Maksatbek</namePart>
+                        <namePart type="given">Aizhan</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Yildiz Technical University, Istanbul, Turkey</affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Kassab</namePart>
+                        <namePart type="given">Mohamad</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Pennsylvania State University, PA, United States</affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Distefano</namePart>
+                        <namePart type="given">Salvatore</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>University of Messina, Messina, Italy</affiliation>
+                    </name>
+                    <titleInfo lang="eng">
+                        <title>Towards the Internet of Robotic Things</title>
+                        <subTitle>Analysis, Architecture, Components and Challenges</subTitle>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                    </language>
+                    <originInfo>
+                        <dateIssued>2019</dateIssued>
+                        <dateOther type="availableFrom">2020-03-10T13:59:00</dateOther>
+                    </originInfo>
+                    <note type="publicationChannel"/>
+                    <physicalDescription>
+                        <form authority="marcform">electronic</form>
+                    </physicalDescription>
+                    <identifier type="uri">
+                        http://urn.kb.se/resolve?urn=urn:nbn:se:oru:diva-80544
+                    </identifier>
+                    <location>
+                        <url displayLabel="Towards the Internet of Robotic Things: Analysis, Architecture, Components and Challenges"
+                             note="free">https://arxiv.org/abs/1907.03817
+                        </url>
+                    </location>
+                    <typeOfResource>text</typeOfResource>
+                    <subject lang="eng" authority="hsv" xlink:href="20201">
+                        <topic>Engineering and Technology</topic>
+                        <topic>
+                            Electrical Engineering, Electronic Engineering, Information Engineering
+                        </topic>
+                        <topic>Robotics</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="20201">
+                        <topic>Teknik och teknologier</topic>
+                        <topic>Elektroteknik och elektronik</topic>
+                        <topic>Robotteknik och automation</topic>
+                    </subject>
+                    <abstract lang="eng">
+                        <p>Internet of Things (IoT) and robotics cannot be considered two separate domains these days.
+                            Internet of Robotics Things (IoRT) is a concept that has been recently introduced to
+                            describe the integration of robotics technologies in IoT scenarios. As a consequence, these
+                            two research fields have started interacting, and thus linking research communities. In this
+                            paper we intend to make further steps in joining the two communities and broaden the
+                            discussion on the development of this interdisciplinary field. The paper provides an
+                            overview, analysis and challenges of possible solutions for the Internet of Robotic Things,
+                            discussing the issues of the IoRT architecture, the integration of smart spaces and robotic
+                            applications.
+                        </p>
+                    </abstract>
+                    <note>
+                        <p>arXiv:1907.03817</p>
+                    </note>
+                    <location>
+                        <url displayLabel="fulltext" note="free" access="raw object">
+                            http://oru.diva-portal.org/smash/get/diva2:1413471/FULLTEXT01.pdf
+                        </url>
+                    </location>
+                    <recordInfo>
+                        <recordOrigin>clhn</recordOrigin>
+                        <recordContentSource>oru</recordContentSource>
+                        <recordCreationDate>2020-03-10</recordCreationDate>
+                        <recordChangeDate>2020-03-10</recordChangeDate>
+                        <recordIdentifier>diva2:1413471</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+    </ListRecords>
+</OAI-PMH>

@@ -1,0 +1,1140 @@
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2021-01-20T10:17:34Z</responseDate>
+    <request verb="GetRecord" identifier="oai:DiVA.org:ri-24321" metadataPrefix="swepub_mods">
+        http://www.diva-portal.org/dice/oai
+    </request>
+    <ListRecords>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:ri-1367</identifier>
+                <datestamp>2020-12-01T20:05:00Z</datestamp>
+                <setSpec>ri</setSpec>
+                <setSpec>report</setSpec>
+                <setSpec>refereed</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" version="3.7"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                    <genre authority="diva" type="contentTypeCode">refereed</genre>
+                    <genre authority="svep" type="contentType">ref</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Refereed</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Refereegranskat</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Fagfellevurdert</genre>
+                    <genre authority="diva" type="publicationTypeCode">report</genre>
+                    <genre authority="svep" type="publicationType">rap</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Report</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Rapport</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Rapport</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">book</genre>
+                    <name type="personal">
+                        <namePart type="family">Bengtsson</namePart>
+                        <namePart type="given">N</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>RISE., SIK – Svenska livmedelsinstitutet</affiliation>
+                    </name>
+                    <name type="corporate" authority="ri" xlink:href="874885">
+                        <namePart>RISE.</namePart>
+                        <namePart>SP – Sveriges Tekniska Forskningsinstitut</namePart>
+                        <namePart>SP Sveriges tekniska forskningsinstitut</namePart>
+                        <namePart>SIK – Svenska livmedelsinstitutet</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <titleInfo lang="swe">
+                        <title>SIK:s forskningsprogram. 1980/81</title>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">swe</languageTerm>
+                    </language>
+                    <originInfo>
+                        <publisher>
+                            SIK Svenska Livsmedelsinstitutet, Göteborg, Sverige
+                        </publisher>
+                        <dateIssued>1980</dateIssued>
+                        <dateOther type="availableFrom">2016-09-07T11:18:14</dateOther>
+                    </originInfo>
+                    <physicalDescription>
+                        <form authority="marcform">print</form>
+                    </physicalDescription>
+                    <identifier type="uri">
+                        http://urn.kb.se/resolve?urn=urn:nbn:se:ri:diva-1367
+                    </identifier>
+                    <typeOfResource>text</typeOfResource>
+                    <relatedItem type="series">
+                        <titleInfo>
+                            <title>SIK Rapport</title>
+                        </titleInfo>
+                        <identifier type="issn">0436-2071</identifier>
+                        <identifier type="local">14212</identifier>
+                        <identifier type="issue number">476</identifier>
+                    </relatedItem>
+                    <subject lang="eng">
+                        <topic>Food Engineering</topic>
+                    </subject>
+                    <subject lang="swe">
+                        <topic>Livsmedelsteknik</topic>
+                    </subject>
+                    <subject lang="eng" authority="hsv" xlink:href="40103">
+                        <topic>Agricultural Sciences</topic>
+                        <topic>Agricultural Science, Forestry and Fisheries</topic>
+                        <topic>Food Science</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="40103">
+                        <topic>Lantbruksvetenskaper</topic>
+                        <topic>Lantbruksvetenskap, skogsbruk och fiske</topic>
+                        <topic>Livsmedelsvetenskap</topic>
+                    </subject>
+                    <name type="conference">
+                        <namePart/>
+                    </name>
+                    <recordInfo>
+                        <recordOrigin>marso310</recordOrigin>
+                        <recordContentSource>ri</recordContentSource>
+                        <recordCreationDate>2016-09-07</recordCreationDate>
+                        <recordChangeDate>2020-12-01</recordChangeDate>
+                        <recordIdentifier>diva2:958910</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:ri-1167</identifier>
+                <datestamp>2020-12-01T20:10:00Z</datestamp>
+                <setSpec>ri</setSpec>
+                <setSpec>report</setSpec>
+                <setSpec>refereed</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" version="3.7"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                    <genre authority="diva" type="contentTypeCode">refereed</genre>
+                    <genre authority="svep" type="contentType">ref</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Refereed</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Refereegranskat</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Fagfellevurdert</genre>
+                    <genre authority="diva" type="publicationTypeCode">report</genre>
+                    <genre authority="svep" type="publicationType">rap</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Report</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Rapport</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Rapport</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">book</genre>
+                    <name type="personal">
+                        <namePart type="family">Bengtsson</namePart>
+                        <namePart type="given">N</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>
+                            RISE., SIK – Svenska institutet för konserveringsforskning
+                        </affiliation>
+                    </name>
+                    <name type="corporate" authority="ri" xlink:href="874884">
+                        <namePart>RISE.</namePart>
+                        <namePart>SP – Sveriges Tekniska Forskningsinstitut</namePart>
+                        <namePart>SP Sveriges tekniska forskningsinstitut</namePart>
+                        <namePart>
+                            SIK – Svenska institutet för konserveringsforskning
+                        </namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <titleInfo lang="swe">
+                        <title>Serviceverksamheten vid SIK</title>
+                        <subTitle>En allmän orientering</subTitle>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">swe</languageTerm>
+                    </language>
+                    <originInfo>
+                        <publisher>
+                            SIK - Svenska institutet för konserveringsforskning, Göteborg, Sverige
+                        </publisher>
+                        <dateIssued>1968</dateIssued>
+                        <dateOther type="availableFrom">2016-09-07T11:17:00</dateOther>
+                    </originInfo>
+                    <note type="publicationChannel"/>
+                    <physicalDescription>
+                        <form authority="marcform">electronic</form>
+                    </physicalDescription>
+                    <identifier type="uri">
+                        http://urn.kb.se/resolve?urn=urn:nbn:se:ri:diva-1167
+                    </identifier>
+                    <typeOfResource>text</typeOfResource>
+                    <relatedItem type="series">
+                        <titleInfo>
+                            <title>SIK Rapport</title>
+                        </titleInfo>
+                        <identifier type="issn">0436-2071</identifier>
+                        <identifier type="local">14212</identifier>
+                        <identifier type="issue number">245</identifier>
+                    </relatedItem>
+                    <subject lang="eng">
+                        <topic>Food Engineering</topic>
+                    </subject>
+                    <subject lang="swe">
+                        <topic>Livsmedelsteknik</topic>
+                    </subject>
+                    <subject lang="eng" authority="hsv" xlink:href="40103">
+                        <topic>Agricultural Sciences</topic>
+                        <topic>Agricultural Science, Forestry and Fisheries</topic>
+                        <topic>Food Science</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="40103">
+                        <topic>Lantbruksvetenskaper</topic>
+                        <topic>Lantbruksvetenskap, skogsbruk och fiske</topic>
+                        <topic>Livsmedelsvetenskap</topic>
+                    </subject>
+                    <name type="conference">
+                        <namePart/>
+                    </name>
+                    <location>
+                        <url displayLabel="fulltext" note="free" access="raw object">
+                            http://ri.diva-portal.org/smash/get/diva2:958709/FULLTEXT01.pdf
+                        </url>
+                    </location>
+                    <recordInfo>
+                        <recordOrigin>marso310</recordOrigin>
+                        <recordContentSource>ri</recordContentSource>
+                        <recordCreationDate>2016-09-07</recordCreationDate>
+                        <recordChangeDate>2020-12-01</recordChangeDate>
+                        <recordIdentifier>diva2:958709</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:ri-1220</identifier>
+                <datestamp>2020-12-01T20:09:00Z</datestamp>
+                <setSpec>ri</setSpec>
+                <setSpec>report</setSpec>
+                <setSpec>refereed</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" version="3.7"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                    <genre authority="diva" type="contentTypeCode">refereed</genre>
+                    <genre authority="svep" type="contentType">ref</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Refereed</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Refereegranskat</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Fagfellevurdert</genre>
+                    <genre authority="diva" type="publicationTypeCode">report</genre>
+                    <genre authority="svep" type="publicationType">rap</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Report</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Rapport</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Rapport</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">book</genre>
+                    <name type="personal">
+                        <namePart type="family">von Sydow</namePart>
+                        <namePart type="given">E</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>
+                            RISE., SIK – Svenska institutet för konserveringsforskning
+                        </affiliation>
+                    </name>
+                    <name type="corporate" authority="ri" xlink:href="874884">
+                        <namePart>RISE.</namePart>
+                        <namePart>SP – Sveriges Tekniska Forskningsinstitut</namePart>
+                        <namePart>SP Sveriges tekniska forskningsinstitut</namePart>
+                        <namePart>
+                            SIK – Svenska institutet för konserveringsforskning
+                        </namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <titleInfo lang="swe">
+                        <title>SIK 25-årsjubilerar</title>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">swe</languageTerm>
+                    </language>
+                    <originInfo>
+                        <publisher>
+                            SIK - Svenska institutet för konserveringsforskning, Göteborg, Sverige
+                        </publisher>
+                        <dateIssued>1972</dateIssued>
+                        <dateOther type="availableFrom">2016-09-07T11:17:00</dateOther>
+                    </originInfo>
+                    <note type="publicationChannel"/>
+                    <physicalDescription>
+                        <form authority="marcform">electronic</form>
+                    </physicalDescription>
+                    <identifier type="uri">
+                        http://urn.kb.se/resolve?urn=urn:nbn:se:ri:diva-1220
+                    </identifier>
+                    <typeOfResource>text</typeOfResource>
+                    <relatedItem type="series">
+                        <titleInfo>
+                            <title>SIK Rapport</title>
+                        </titleInfo>
+                        <identifier type="issn">0436-2071</identifier>
+                        <identifier type="local">14212</identifier>
+                        <identifier type="issue number">300</identifier>
+                    </relatedItem>
+                    <subject lang="eng">
+                        <topic>Food Engineering</topic>
+                    </subject>
+                    <subject lang="swe">
+                        <topic>Livsmedelsteknik</topic>
+                    </subject>
+                    <subject lang="eng" authority="hsv" xlink:href="40103">
+                        <topic>Agricultural Sciences</topic>
+                        <topic>Agricultural Science, Forestry and Fisheries</topic>
+                        <topic>Food Science</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="40103">
+                        <topic>Lantbruksvetenskaper</topic>
+                        <topic>Lantbruksvetenskap, skogsbruk och fiske</topic>
+                        <topic>Livsmedelsvetenskap</topic>
+                    </subject>
+                    <name type="conference">
+                        <namePart/>
+                    </name>
+                    <location>
+                        <url displayLabel="fulltext" note="free" access="raw object">
+                            http://ri.diva-portal.org/smash/get/diva2:958763/FULLTEXT01.pdf
+                        </url>
+                    </location>
+                    <recordInfo>
+                        <recordOrigin>marso310</recordOrigin>
+                        <recordContentSource>ri</recordContentSource>
+                        <recordCreationDate>2016-09-07</recordCreationDate>
+                        <recordChangeDate>2020-12-01</recordChangeDate>
+                        <recordIdentifier>diva2:958763</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:ri-9199</identifier>
+                <datestamp>2020-12-01T17:16:00Z</datestamp>
+                <setSpec>ri</setSpec>
+                <setSpec>article</setSpec>
+                <setSpec>science</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" version="3.7"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                    <genre authority="diva" type="contentTypeCode">science</genre>
+                    <genre authority="svep" type="contentType">vet</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Other academic</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Övrigt vetenskapligt</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Annet vitenskapelig</genre>
+                    <genre authority="diva" type="publicationTypeCode">article</genre>
+                    <genre authority="svep" type="publicationType">art</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Article in journal</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Artikel i tidskrift</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Artikkel i tidsskrift</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">article</genre>
+                    <name type="personal">
+                        <namePart type="family">Andersson</namePart>
+                        <namePart type="given">Yngve</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>RISE., SIK – Svenska livmedelsinstitutet</affiliation>
+                    </name>
+                    <name type="corporate" authority="ri" xlink:href="874885">
+                        <namePart>RISE.</namePart>
+                        <namePart>SP – Sveriges Tekniska Forskningsinstitut</namePart>
+                        <namePart>SP Sveriges tekniska forskningsinstitut</namePart>
+                        <namePart>SIK – Svenska livmedelsinstitutet</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <titleInfo lang="swe">
+                        <title>Extruderingsarbeten vid SIK.</title>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">swe</languageTerm>
+                    </language>
+                    <originInfo>
+                        <dateIssued>1983</dateIssued>
+                        <dateOther type="availableFrom">2016-09-08T11:29:12</dateOther>
+                    </originInfo>
+                    <physicalDescription>
+                        <form authority="marcform">print</form>
+                    </physicalDescription>
+                    <identifier type="uri">
+                        http://urn.kb.se/resolve?urn=urn:nbn:se:ri:diva-9199
+                    </identifier>
+                    <typeOfResource>text</typeOfResource>
+                    <subject lang="eng">
+                        <topic>Food Engineering</topic>
+                    </subject>
+                    <subject lang="swe">
+                        <topic>Livsmedelsteknik</topic>
+                    </subject>
+                    <subject lang="eng" authority="hsv" xlink:href="40103">
+                        <topic>Agricultural Sciences</topic>
+                        <topic>Agricultural Science, Forestry and Fisheries</topic>
+                        <topic>Food Science</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="40103">
+                        <topic>Lantbruksvetenskaper</topic>
+                        <topic>Lantbruksvetenskap, skogsbruk och fiske</topic>
+                        <topic>Livsmedelsvetenskap</topic>
+                    </subject>
+                    <name type="conference">
+                        <namePart/>
+                    </name>
+                    <relatedItem type="host">
+                        <titleInfo>
+                            <title>Livsmedelsteknik</title>
+                        </titleInfo>
+                        <part>
+                            <detail type="volume">
+                                <number>25</number>
+                            </detail>
+                            <detail type="issue">
+                                <number>8</number>
+                            </detail>
+                            <extent>
+                                <start>392</start>
+                                <end>393</end>
+                            </extent>
+                        </part>
+                    </relatedItem>
+                    <recordInfo>
+                        <recordOrigin>marso310</recordOrigin>
+                        <recordContentSource>ri</recordContentSource>
+                        <recordCreationDate>2016-09-08</recordCreationDate>
+                        <recordChangeDate>2020-12-01</recordChangeDate>
+                        <recordIdentifier>diva2:967073</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:ri-1182</identifier>
+                <datestamp>2020-12-01T20:10:00Z</datestamp>
+                <setSpec>ri</setSpec>
+                <setSpec>report</setSpec>
+                <setSpec>refereed</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" version="3.7"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                    <genre authority="diva" type="contentTypeCode">refereed</genre>
+                    <genre authority="svep" type="contentType">ref</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Refereed</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Refereegranskat</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Fagfellevurdert</genre>
+                    <genre authority="diva" type="publicationTypeCode">report</genre>
+                    <genre authority="svep" type="publicationType">rap</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Report</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Rapport</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Rapport</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">book</genre>
+                    <name type="personal">
+                        <namePart type="family">von Sydow</namePart>
+                        <namePart type="given">E</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>
+                            RISE., SIK – Svenska institutet för konserveringsforskning
+                        </affiliation>
+                    </name>
+                    <name type="corporate" authority="ri" xlink:href="874884">
+                        <namePart>RISE.</namePart>
+                        <namePart>SP – Sveriges Tekniska Forskningsinstitut</namePart>
+                        <namePart>SP Sveriges tekniska forskningsinstitut</namePart>
+                        <namePart>
+                            SIK – Svenska institutet för konserveringsforskning
+                        </namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <titleInfo lang="swe">
+                        <title>SIK. Årsredogörelse 1968/1969</title>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">swe</languageTerm>
+                    </language>
+                    <originInfo>
+                        <publisher>
+                            SIK - Svenska institutet för konserveringsforskning, Göteborg, Sverige
+                        </publisher>
+                        <dateIssued>1969</dateIssued>
+                        <dateOther type="availableFrom">2016-09-07T11:17:12</dateOther>
+                    </originInfo>
+                    <physicalDescription>
+                        <form authority="marcform">print</form>
+                    </physicalDescription>
+                    <identifier type="uri">
+                        http://urn.kb.se/resolve?urn=urn:nbn:se:ri:diva-1182
+                    </identifier>
+                    <typeOfResource>text</typeOfResource>
+                    <relatedItem type="series">
+                        <titleInfo>
+                            <title>SIK Rapport</title>
+                        </titleInfo>
+                        <identifier type="issn">0436-2071</identifier>
+                        <identifier type="local">14212</identifier>
+                        <identifier type="issue number">260</identifier>
+                    </relatedItem>
+                    <subject lang="eng">
+                        <topic>Food Engineering</topic>
+                    </subject>
+                    <subject lang="swe">
+                        <topic>Livsmedelsteknik</topic>
+                    </subject>
+                    <subject lang="eng" authority="hsv" xlink:href="40103">
+                        <topic>Agricultural Sciences</topic>
+                        <topic>Agricultural Science, Forestry and Fisheries</topic>
+                        <topic>Food Science</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="40103">
+                        <topic>Lantbruksvetenskaper</topic>
+                        <topic>Lantbruksvetenskap, skogsbruk och fiske</topic>
+                        <topic>Livsmedelsvetenskap</topic>
+                    </subject>
+                    <name type="conference">
+                        <namePart/>
+                    </name>
+                    <recordInfo>
+                        <recordOrigin>marso310</recordOrigin>
+                        <recordContentSource>ri</recordContentSource>
+                        <recordCreationDate>2016-09-07</recordCreationDate>
+                        <recordChangeDate>2020-12-01</recordChangeDate>
+                        <recordIdentifier>diva2:958724</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:ri-1048</identifier>
+                <datestamp>2020-12-01T20:13:00Z</datestamp>
+                <setSpec>ri</setSpec>
+                <setSpec>report</setSpec>
+                <setSpec>refereed</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" version="3.7"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                    <genre authority="diva" type="contentTypeCode">refereed</genre>
+                    <genre authority="svep" type="contentType">ref</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Refereed</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Refereegranskat</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Fagfellevurdert</genre>
+                    <genre authority="diva" type="publicationTypeCode">report</genre>
+                    <genre authority="svep" type="publicationType">rap</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Report</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Rapport</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Rapport</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">book</genre>
+                    <name type="personal">
+                        <namePart type="family">Bengtsson</namePart>
+                        <namePart type="given">N</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>
+                            RISE., SIK – Svenska institutet för konserveringsforskning
+                        </affiliation>
+                    </name>
+                    <name type="corporate" authority="ri" xlink:href="874884">
+                        <namePart>RISE.</namePart>
+                        <namePart>SP – Sveriges Tekniska Forskningsinstitut</namePart>
+                        <namePart>SP Sveriges tekniska forskningsinstitut</namePart>
+                        <namePart>
+                            SIK – Svenska institutet för konserveringsforskning
+                        </namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <titleInfo lang="swe">
+                        <title>Serviceverksamheten vid SIK</title>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">swe</languageTerm>
+                    </language>
+                    <originInfo>
+                        <publisher>
+                            SIK - Svenska institutet för konserveringsforskning, Göteborg, Sverige
+                        </publisher>
+                        <dateIssued>1962</dateIssued>
+                        <dateOther type="availableFrom">2016-09-07T11:16:00</dateOther>
+                    </originInfo>
+                    <note type="publicationChannel"/>
+                    <physicalDescription>
+                        <form authority="marcform">electronic</form>
+                    </physicalDescription>
+                    <identifier type="uri">
+                        http://urn.kb.se/resolve?urn=urn:nbn:se:ri:diva-1048
+                    </identifier>
+                    <typeOfResource>text</typeOfResource>
+                    <relatedItem type="series">
+                        <titleInfo>
+                            <title>SIK Rapport</title>
+                        </titleInfo>
+                        <identifier type="issn">0436-2071</identifier>
+                        <identifier type="local">14212</identifier>
+                        <identifier type="issue number">126</identifier>
+                    </relatedItem>
+                    <subject lang="eng">
+                        <topic>Food Engineering</topic>
+                    </subject>
+                    <subject lang="swe">
+                        <topic>Livsmedelsteknik</topic>
+                    </subject>
+                    <subject lang="eng" authority="hsv" xlink:href="40103">
+                        <topic>Agricultural Sciences</topic>
+                        <topic>Agricultural Science, Forestry and Fisheries</topic>
+                        <topic>Food Science</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="40103">
+                        <topic>Lantbruksvetenskaper</topic>
+                        <topic>Lantbruksvetenskap, skogsbruk och fiske</topic>
+                        <topic>Livsmedelsvetenskap</topic>
+                    </subject>
+                    <name type="conference">
+                        <namePart/>
+                    </name>
+                    <location>
+                        <url displayLabel="fulltext" note="free" access="raw object">
+                            http://ri.diva-portal.org/smash/get/diva2:958590/FULLTEXT01.pdf
+                        </url>
+                    </location>
+                    <recordInfo>
+                        <recordOrigin>marso310</recordOrigin>
+                        <recordContentSource>ri</recordContentSource>
+                        <recordCreationDate>2016-09-07</recordCreationDate>
+                        <recordChangeDate>2020-12-01</recordChangeDate>
+                        <recordIdentifier>diva2:958590</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:ri-1316</identifier>
+                <datestamp>2020-12-01T20:06:00Z</datestamp>
+                <setSpec>ri</setSpec>
+                <setSpec>report</setSpec>
+                <setSpec>refereed</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" version="3.7"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                    <genre authority="diva" type="contentTypeCode">refereed</genre>
+                    <genre authority="svep" type="contentType">ref</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Refereed</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Refereegranskat</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Fagfellevurdert</genre>
+                    <genre authority="diva" type="publicationTypeCode">report</genre>
+                    <genre authority="svep" type="publicationType">rap</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Report</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Rapport</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Rapport</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">book</genre>
+                    <name type="personal">
+                        <namePart type="family">Kahl</namePart>
+                        <namePart type="given">J</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>RISE., SIK – Svenska livmedelsinstitutet</affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Zetherström</namePart>
+                        <namePart type="given">B</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="corporate" authority="ri" xlink:href="874885">
+                        <namePart>RISE.</namePart>
+                        <namePart>SP – Sveriges Tekniska Forskningsinstitut</namePart>
+                        <namePart>SP Sveriges tekniska forskningsinstitut</namePart>
+                        <namePart>SIK – Svenska livmedelsinstitutet</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <titleInfo lang="swe">
+                        <title>Vad gör vi på SIK?</title>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">swe</languageTerm>
+                    </language>
+                    <originInfo>
+                        <publisher>
+                            SIK Svenska Livsmedelsinstitutet, Göteborg, Sverige
+                        </publisher>
+                        <dateIssued>1977</dateIssued>
+                        <dateOther type="availableFrom">2016-09-07T11:17:00</dateOther>
+                    </originInfo>
+                    <note type="publicationChannel"/>
+                    <physicalDescription>
+                        <form authority="marcform">print</form>
+                    </physicalDescription>
+                    <identifier type="uri">
+                        http://urn.kb.se/resolve?urn=urn:nbn:se:ri:diva-1316
+                    </identifier>
+                    <typeOfResource>text</typeOfResource>
+                    <relatedItem type="series">
+                        <titleInfo>
+                            <title>SIK Rapport</title>
+                        </titleInfo>
+                        <identifier type="issn">0436-2071</identifier>
+                        <identifier type="local">14212</identifier>
+                        <identifier type="issue number">418</identifier>
+                    </relatedItem>
+                    <subject lang="eng">
+                        <topic>Food Engineering</topic>
+                    </subject>
+                    <subject lang="swe">
+                        <topic>Livsmedelsteknik</topic>
+                    </subject>
+                    <subject lang="eng" authority="hsv" xlink:href="40103">
+                        <topic>Agricultural Sciences</topic>
+                        <topic>Agricultural Science, Forestry and Fisheries</topic>
+                        <topic>Food Science</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="40103">
+                        <topic>Lantbruksvetenskaper</topic>
+                        <topic>Lantbruksvetenskap, skogsbruk och fiske</topic>
+                        <topic>Livsmedelsvetenskap</topic>
+                    </subject>
+                    <note>
+                        <p>Särtryck ur Livsmedelsteknik 19 (1977): 2</p>
+                    </note>
+                    <name type="conference">
+                        <namePart/>
+                    </name>
+                    <recordInfo>
+                        <recordOrigin>marso310</recordOrigin>
+                        <recordContentSource>ri</recordContentSource>
+                        <recordCreationDate>2016-09-07</recordCreationDate>
+                        <recordChangeDate>2020-12-01</recordChangeDate>
+                        <recordIdentifier>diva2:958859</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:ri-1270</identifier>
+                <datestamp>2020-12-01T20:07:00Z</datestamp>
+                <setSpec>ri</setSpec>
+                <setSpec>report</setSpec>
+                <setSpec>refereed</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" version="3.7"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+                    <genre authority="diva" type="contentTypeCode">refereed</genre>
+                    <genre authority="svep" type="contentType">ref</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Refereed</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Refereegranskat</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Fagfellevurdert</genre>
+                    <genre authority="diva" type="publicationTypeCode">report</genre>
+                    <genre authority="svep" type="publicationType">rap</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Report</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Rapport</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Rapport</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">book</genre>
+                    <name type="personal">
+                        <namePart type="family">von Sydow</namePart>
+                        <namePart type="given">E</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>
+                            RISE., SIK – Svenska institutet för konserveringsforskning
+                        </affiliation>
+                    </name>
+                    <name type="corporate" authority="ri" xlink:href="874884">
+                        <namePart>RISE.</namePart>
+                        <namePart>SP – Sveriges Tekniska Forskningsinstitut</namePart>
+                        <namePart>SP Sveriges tekniska forskningsinstitut</namePart>
+                        <namePart>
+                            SIK – Svenska institutet för konserveringsforskning
+                        </namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <titleInfo lang="swe">
+                        <title>Verksamheten vid SIK 1974-77</title>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">swe</languageTerm>
+                    </language>
+                    <originInfo>
+                        <publisher>
+                            SIK - Svenska institutet för konserveringsforskning, Göteborg, Sverige
+                        </publisher>
+                        <dateIssued>1974</dateIssued>
+                        <dateOther type="availableFrom">2016-09-07T11:17:00</dateOther>
+                    </originInfo>
+                    <note type="publicationChannel"/>
+                    <physicalDescription>
+                        <form authority="marcform">electronic</form>
+                    </physicalDescription>
+                    <identifier type="uri">
+                        http://urn.kb.se/resolve?urn=urn:nbn:se:ri:diva-1270
+                    </identifier>
+                    <typeOfResource>text</typeOfResource>
+                    <relatedItem type="series">
+                        <titleInfo>
+                            <title>SIK Rapport</title>
+                        </titleInfo>
+                        <identifier type="issn">0436-2071</identifier>
+                        <identifier type="local">14212</identifier>
+                        <identifier type="issue number">361</identifier>
+                    </relatedItem>
+                    <subject lang="eng">
+                        <topic>Food Engineering</topic>
+                    </subject>
+                    <subject lang="swe">
+                        <topic>Livsmedelsteknik</topic>
+                    </subject>
+                    <subject lang="eng" authority="hsv" xlink:href="40103">
+                        <topic>Agricultural Sciences</topic>
+                        <topic>Agricultural Science, Forestry and Fisheries</topic>
+                        <topic>Food Science</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="40103">
+                        <topic>Lantbruksvetenskaper</topic>
+                        <topic>Lantbruksvetenskap, skogsbruk och fiske</topic>
+                        <topic>Livsmedelsvetenskap</topic>
+                    </subject>
+                    <name type="conference">
+                        <namePart/>
+                    </name>
+                    <location>
+                        <url displayLabel="fulltext" note="free" access="raw object">
+                            http://ri.diva-portal.org/smash/get/diva2:958813/FULLTEXT01.pdf
+                        </url>
+                    </location>
+                    <recordInfo>
+                        <recordOrigin>marso310</recordOrigin>
+                        <recordContentSource>ri</recordContentSource>
+                        <recordCreationDate>2016-09-07</recordCreationDate>
+                        <recordChangeDate>2020-12-01</recordChangeDate>
+                        <recordIdentifier>diva2:958813</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:ri-9223</identifier>
+                <datestamp>2016-09-08T09:29:00Z</datestamp>
+                <setSpec>ri</setSpec>
+                <setSpec>article</setSpec>
+                <setSpec>science</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+                    <genre authority="diva" type="contentTypeCode">science</genre>
+                    <genre authority="svep" type="contentType">vet</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Other academic</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Övrigt vetenskapligt</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Annet vitenskapelig</genre>
+                    <genre authority="diva" type="publicationTypeCode">article</genre>
+                    <genre authority="svep" type="publicationType">art</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Article in journal</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Artikel i tidskrift</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Artikkel i tidsskrift</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">article</genre>
+                    <name type="personal">
+                        <namePart type="family">Kahl</namePart>
+                        <namePart type="given">J.</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Zetherström</namePart>
+                        <namePart type="given">B.</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>
+                    <titleInfo lang="swe">
+                        <title>Vad gör vi på SIK?</title>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">swe</languageTerm>
+                    </language>
+                    <originInfo>
+                        <dateIssued>1977</dateIssued>
+                        <dateOther type="availableFrom">2016-09-08T11:29:19</dateOther>
+                    </originInfo>
+                    <physicalDescription>
+                        <form authority="marcform">print</form>
+                    </physicalDescription>
+                    <identifier type="uri">
+                        http://urn.kb.se/resolve?urn=urn:nbn:se:ri:diva-9223
+                    </identifier>
+                    <typeOfResource>text</typeOfResource>
+                    <subject lang="eng">
+                        <topic>Food Engineering</topic>
+                    </subject>
+                    <subject lang="swe">
+                        <topic>Livsmedelsteknik</topic>
+                    </subject>
+                    <subject lang="eng" authority="hsv" xlink:href="40103">
+                        <topic>Agricultural Sciences</topic>
+                        <topic>Agricultural Science, Forestry and Fisheries</topic>
+                        <topic>Food Science</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="40103">
+                        <topic>Lantbruksvetenskaper</topic>
+                        <topic>Lantbruksvetenskap, skogsbruk och fiske</topic>
+                        <topic>Livsmedelsvetenskap</topic>
+                    </subject>
+                    <name type="conference">
+                        <namePart/>
+                    </name>
+                    <relatedItem type="host">
+                        <titleInfo>
+                            <title>Livsmedelsteknik</title>
+                        </titleInfo>
+                        <part>
+                            <detail type="volume">
+                                <number>19</number>
+                            </detail>
+                            <detail type="issue">
+                                <number>2</number>
+                            </detail>
+                            <extent>
+                                <start>66</start>
+                                <end>70</end>
+                            </extent>
+                        </part>
+                    </relatedItem>
+                    <recordInfo>
+                        <recordOrigin>marso310</recordOrigin>
+                        <recordContentSource>ri</recordContentSource>
+                        <recordCreationDate>2016-09-08</recordCreationDate>
+                        <recordIdentifier>diva2:967097</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:umu-15508</identifier>
+                <datestamp>2018-06-09T01:45:00Z</datestamp>
+                <setSpec>umu</setSpec>
+                <setSpec>chapter</setSpec>
+                <setSpec>science</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+                    <genre authority="diva" type="contentTypeCode">science</genre>
+                    <genre authority="svep" type="contentType">vet</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Other academic</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Övrigt vetenskapligt</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Annet vitenskapelig</genre>
+                    <genre authority="diva" type="publicationTypeCode">chapter</genre>
+                    <genre authority="svep" type="publicationType">kap</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Chapter in book</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Kapitel i bok, del av antologi</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Kapittel i bok, del av antologi</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">bookitem</genre>
+                    <name type="personal" authority="umu" xlink:href="kavi0003">
+                        <namePart type="family">Viklund</namePart>
+                        <namePart type="given">Karin</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Umeå universitet, Arkeologi och samiska studier</affiliation>
+                        <description>diva-portal.org=authority-person:65328</description>
+                    </name>
+                    <name type="corporate" authority="umu" xlink:href="804">
+                        <namePart>Umeå universitet</namePart>
+                        <namePart>Humanistiska fakulteten</namePart>
+                        <namePart>Arkeologi och samiska studier</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <titleInfo lang="swe">
+                        <title>Kråkbär och gravad sik</title>
+                        <subTitle>
+                            Västerbottens mångkulturella förfluta i miljöarkeologisk belysning
+                        </subTitle>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">swe</languageTerm>
+                    </language>
+                    <originInfo>
+                        <publisher>
+                            Institutionen för arkeologi och samiska studier, Umeå universitet
+                        </publisher>
+                        <dateIssued>2005</dateIssued>
+                        <dateOther type="availableFrom">2007-08-01T16:30:00</dateOther>
+                    </originInfo>
+                    <physicalDescription>
+                        <form authority="marcform">print</form>
+                    </physicalDescription>
+                    <identifier type="isbn" displayLabel="print">91-7305-928-5</identifier>
+                    <identifier type="uri">
+                        http://urn.kb.se/resolve?urn=urn:nbn:se:umu:diva-15508
+                    </identifier>
+                    <typeOfResource>text</typeOfResource>
+                    <relatedItem type="host">
+                        <titleInfo>
+                            <title>En lång historia...</title>
+                            <subTitle>Festskrift till Evert Baudou på 80-årsdagen</subTitle>
+                        </titleInfo>
+                        <part>
+                            <extent>
+                                <start/>
+                            </extent>
+                        </part>
+                    </relatedItem>
+                    <recordInfo>
+                        <recordOrigin>migration</recordOrigin>
+                        <recordContentSource>umu</recordContentSource>
+                        <recordCreationDate>2007-08-01</recordCreationDate>
+                        <recordChangeDate>2018-06-09</recordChangeDate>
+                        <recordIdentifier>diva2:155180</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+        <record>
+            <header>
+                <identifier>oai:DiVA.org:kth-248435</identifier>
+                <datestamp>2019-06-26T12:06:00Z</datestamp>
+                <setSpec>kth</setSpec>
+                <setSpec>article</setSpec>
+                <setSpec>popular</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+                    <genre authority="diva" type="contentTypeCode">other</genre>
+                    <genre authority="svep" type="contentType">pop</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Other (popular science, discussion, etc.)
+                    </genre>
+                    <genre authority="diva" type="contentType" lang="swe">Övrig (populärvetenskap, debatt, mm)</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Annet (populærvitenskap, debatt, mm)</genre>
+                    <genre authority="diva" type="publicationTypeCode">article</genre>
+                    <genre authority="svep" type="publicationType">art</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Article in journal</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Artikel i tidskrift</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Artikkel i tidsskrift</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">article</genre>
+                    <genre authority="diva" type="publicationSubTypeCode">editorialMaterial</genre>
+                    <name type="personal" authority="kth" xlink:href="u1m3ayy5">
+                        <namePart type="family">Sörstedt</namePart>
+                        <namePart type="given">Claes</namePart>
+                        <namePart type="date">1972-</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>KTH, Arkitektur</affiliation>
+                    </name>
+                    <name type="corporate" authority="kth" xlink:href="5851">
+                        <namePart>KTH</namePart>
+                        <namePart>Skolan för arkitektur och samhällsbyggnad (ABE)</namePart>
+                        <namePart>Arkitektur</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <titleInfo lang="swe">
+                        <title>Arena: Miroslav Sik</title>
+                        <subTitle>Utforskning som drivkraft</subTitle>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">swe</languageTerm>
+                    </language>
+                    <originInfo>
+                        <place>
+                            <placeTerm>Stockholm</placeTerm>
+                        </place>
+                        <dateIssued>2008</dateIssued>
+                        <dateOther type="availableFrom">2019-04-09T10:46:06</dateOther>
+                    </originInfo>
+                    <physicalDescription>
+                        <form authority="marcform">print</form>
+                    </physicalDescription>
+                    <identifier type="uri">
+                        http://urn.kb.se/resolve?urn=urn:nbn:se:kth:diva-248435
+                    </identifier>
+                    <typeOfResource>text</typeOfResource>
+                    <subject lang="swe">
+                        <topic>Miroslav Sik</topic>
+                    </subject>
+                    <subject lang="swe">
+                        <topic>Altneu</topic>
+                    </subject>
+                    <subject lang="eng" authority="hsv" xlink:href="60405">
+                        <topic>Humanities and the Arts</topic>
+                        <topic>Arts</topic>
+                        <topic>Architecture</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="60405">
+                        <topic>Humaniora och konst</topic>
+                        <topic>Konst</topic>
+                        <topic>Arkitektur</topic>
+                    </subject>
+                    <note>
+                        <p>QC 20190626</p>
+                    </note>
+                    <relatedItem type="host">
+                        <titleInfo>
+                            <title>Arkitektur</title>
+                            <subTitle>byggnad, interiör, plan, landskap</subTitle>
+                        </titleInfo>
+                        <identifier type="issn">0004-2021</identifier>
+                        <part>
+                            <detail type="issue">
+                                <number>4</number>
+                            </detail>
+                            <extent>
+                                <start>48</start>
+                                <end>55</end>
+                            </extent>
+                        </part>
+                    </relatedItem>
+                    <note type="publicationStatus" lang="eng">Published</note>
+                    <recordInfo>
+                        <recordOrigin>u1m3ayy5</recordOrigin>
+                        <recordContentSource>kth</recordContentSource>
+                        <recordCreationDate>2019-04-09</recordCreationDate>
+                        <recordChangeDate>2019-06-26</recordChangeDate>
+                        <recordIdentifier>diva2:1303243</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+    </ListRecords>
+</OAI-PMH>

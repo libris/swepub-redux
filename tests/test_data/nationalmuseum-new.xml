@@ -1,0 +1,93 @@
+<OAI-PMH xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd" xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <responseDate>2020-02-03T13:14:14Z</responseDate>
+    <request verb="ListRecords" identifier="oai:DiVA.org:nationalmuseum-107" metadataPrefix="swepub_mods">
+        http://www.diva-portal.org/dice/oai
+    </request>
+    <record>
+      <header>
+        <identifier>oai:DiVA.org:nationalmuseum-107</identifier>
+        <datestamp>2014-05-09T11:05:00Z</datestamp>
+        <setSpec>nationalmuseum</setSpec>
+        <setSpec>book</setSpec>
+        <setSpec>science</setSpec>
+      </header>
+      <metadata>
+        <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+          <genre authority="diva" type="contentTypeCode">science</genre>
+          <genre authority="svep" type="contentType">vet</genre>
+          <genre authority="diva" type="contentType" lang="eng">Other academic</genre>
+          <genre authority="diva" type="contentType" lang="swe">&#xD6;vrigt vetenskapligt</genre>
+          <genre authority="diva" type="contentType" lang="nor">Annet vitenskapelig</genre>
+          <genre authority="diva" type="publicationTypeCode">book</genre>
+          <genre authority="svep" type="publicationType">bok</genre>
+          <genre authority="diva" type="publicationType" lang="eng">Book</genre>
+          <genre authority="diva" type="publicationType" lang="swe">Bok</genre>
+          <genre authority="diva" type="publicationType" lang="nor">Bok</genre>
+          <genre authority="kev" type="publicationType" lang="eng">book</genre>
+          <name type="personal">
+            <namePart type="family">Bjurstr&#xF6;m</namePart>
+            <namePart type="given">Per</namePart>
+            <namePart type="date">1928-</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+            <affiliation>Nationalmuseum</affiliation>
+          </name>
+          <name type="corporate" authority="nationalmuseum" xlink:href="13150">
+            <namePart>Nationalmuseum</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+            </role>
+          </name>
+          <titleInfo lang="eng">
+            <title>The genesis of the art museum in the 18th century</title>
+            <subTitle>
+    papers given at a symposium in Nationalmuseum Stockholm, June 26, 1992, in cooperation with the Roya...
+    </subTitle>
+          </titleInfo>
+          <language>
+            <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+          </language>
+          <originInfo>
+            <place>
+              <placeTerm>Stockholm</placeTerm>
+            </place>
+            <publisher>Nationalmuseum</publisher>
+            <dateIssued>1993</dateIssued>
+            <dateOther type="availableFrom">2014-05-05T10:35:00</dateOther>
+          </originInfo>
+          <physicalDescription>
+            <form authority="marcform">print</form>
+          </physicalDescription>
+          <identifier type="isbn" displayLabel="print">91-7100-447-5</identifier>
+          <identifier type="uri">
+    http://urn.kb.se/resolve?urn=urn:nbn:se:nationalmuseum:diva-107
+    </identifier>
+          <typeOfResource>text</typeOfResource>
+          <relatedItem type="series">
+            <titleInfo>
+              <title>Nationalmusei skriftserie</title>
+            </titleInfo>
+            <identifier type="issn">0081-5683</identifier>
+            <identifier type="local">11456</identifier>
+            <identifier type="issue number">N.S., 12</identifier>
+          </relatedItem>
+          <subject lang="eng" authority="hsv" xlink:href="604">
+            <topic>Humanities</topic>
+            <topic>Arts</topic>
+          </subject>
+          <subject lang="swe" authority="hsv" xlink:href="604">
+            <topic>Humaniora</topic>
+            <topic>Konst</topic>
+          </subject>
+          <recordInfo>
+            <recordOrigin>mzg</recordOrigin>
+            <recordContentSource>nationalmuseum</recordContentSource>
+            <recordCreationDate>2014-04-08</recordCreationDate>
+            <recordChangeDate>2014-05-09</recordChangeDate>
+            <recordIdentifier>diva2:715414</recordIdentifier>
+          </recordInfo>
+        </mods>
+      </metadata>
+    </record>
+</OAI-PMH>

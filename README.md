@@ -68,3 +68,57 @@ python3 -m service.swepub
 ```
 
 Then visit http://localhost:5000. API docs are available on http://localhost:5000/api/v1/apidocs.
+
+
+## Tests
+
+Unit tests:
+
+```bash
+# Make sure you're in the virtualenv created above
+pytest
+```
+
+To harvest specific test records, first start the mock API server:
+
+```bash
+python3 -m tests.mock_api
+```
+
+Then, in another terminal:
+
+```bash
+export SWEPUB_SOURCE_FILE=tests/sources_test.json
+python3 -m pipeline.harvest -f dedup
+python3 -m service.swepub
+```
+
+To add a new test record, for example `foobar.xml`:
+
+First, add `foobar.xml` to `tests/test_data`
+
+Then, edit `tests/sources_test.json` and add an entry for the file:
+
+```json
+  "foobar": {
+    "code": "whatever",
+    "name": "TEST - whatever",
+    "sets": [
+      {
+        "url": "http://localhost:8549/foobar",
+        "subset": "SwePub-whatever",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  }
+ ```
+
+Make sure `foobar` in `url` corresponds to the filename (minus the `.xml` suffix).
+
+Now you should be able to harvest it:
+
+```bash
+# Again, make sure the mock API server is rnning and that you've set
+# export SWEPUB_SOURCE_FILE=tests/sources_test.json
+python3 -m pipeline.harvest -f foobar
+```

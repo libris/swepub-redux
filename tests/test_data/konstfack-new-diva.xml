@@ -1,0 +1,109 @@
+<OAI-PMH xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd" xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <responseDate>2020-02-03T13:14:14Z</responseDate>
+    <request verb="ListRecords" identifier="oai:DiVA.org:konstfack-6638" metadataPrefix="swepub_mods">
+        http://www.diva-portal.org/dice/oai
+    </request>
+        <record xmlns="http://www.openarchives.org/OAI/2.0/">
+            <header>
+                <identifier>oai:DiVA.org:konstfack-6638</identifier>
+                <datestamp>2019-01-30T12:18:00Z</datestamp>
+                <setSpec>konstfack</setSpec>
+                <setSpec>artisticOutput</setSpec>
+                <setSpec>refereedArtisticOutput</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2"
+                      xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+                    <genre authority="diva" type="contentTypeCode">refereedArtisticOutput</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Refereed</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Granskad</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Granskad</genre>
+                    <genre authority="diva" type="publicationTypeCode">artisticOutput</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Artistic output</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Konstnärlig output</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Kunstnerisk output</genre>
+                    <genre authority="kev" type="publicationType" lang="eng"/>
+                    <name type="personal">
+                        <namePart type="family">Heberling</namePart>
+                        <namePart type="given">Rikard</namePart>
+                        <namePart type="date">1981-</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">tyd</roleTerm>
+                        </role>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">cre</roleTerm>
+                        </role>
+                        <affiliation>Konstfack, Grafisk design och illustration</affiliation>
+                        <description>orcid.org=0000-0001-8817-5822</description>
+                    </name>
+                    <titleInfo lang="eng">
+                        <title>
+                            Typographic Novelties (Iaspis door numbers)
+                        </title>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                    </language>
+                    <originInfo>
+                        <place>
+                            <placeTerm>Stockholm</placeTerm>
+                        </place>
+                        <publisher>
+                            Iaspis - The Swedish Arts Grants Committee's International Programme for Visual and Applied
+                            Artists
+                        </publisher>
+                        <dateIssued>2018</dateIssued>
+                        <dateOther type="availableFrom">2018-12-13T18:09:00</dateOther>
+                    </originInfo>
+                    <physicalDescription>
+                        <form authority="marcform">print</form>
+                        <extent>24</extent>
+                    </physicalDescription>
+                    <identifier type="uri">
+                        http://urn.kb.se/resolve?urn=urn:nbn:se:konstfack:diva-6638
+                    </identifier>
+                    <location>
+                        <url>
+                            https://www.konstnarsnamnden.se/default.aspx?id=21639
+                        </url>
+                    </location>
+                    <typeOfResource>text</typeOfResource>
+                    <subject lang="eng" authority="hsv" xlink:href="60406">
+                        <topic>Humanities and the Arts</topic>
+                        <topic>Arts</topic>
+                        <topic>Design</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="60406">
+                        <topic>Humaniora och konst</topic>
+                        <topic>Konst</topic>
+                        <topic>Design</topic>
+                    </subject>
+                    <subject lang="eng" authority="konstfack" xlink:href="11354">
+                        <topic>Design</topic>
+                        <genre>Research subject</genre>
+                    </subject>
+                    <subject lang="swe" authority="konstfack" xlink:href="11354">
+                        <topic>Design</topic>
+                        <genre>Research subject</genre>
+                    </subject>
+                    <abstract lang="eng">
+                        <p>Typographic Novelties is a series of door numbers for the Iaspis studios at Maria Skolgata
+                            83, Stockholm. The numbers are modeled after typefaces produced by the Berlingska
+                            typefoundry in Lund from the mid-1800s until the company’s closing in 1980. The project is a
+                            reflection on how this production was dependent on international networks and in which ways
+                            the Berlingska typefaces were circulated, through trade and not least piracy, between
+                            various companies and national markets.
+                        </p>
+                    </abstract>
+                    <recordInfo>
+                        <recordOrigin>rihe</recordOrigin>
+                        <recordContentSource>konstfack</recordContentSource>
+                        <recordCreationDate>2018-12-13</recordCreationDate>
+                        <recordChangeDate>2019-01-30</recordChangeDate>
+                        <recordIdentifier>diva2:1270614</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+</OAI-PMH>

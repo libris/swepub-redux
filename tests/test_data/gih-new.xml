@@ -1,0 +1,132 @@
+<OAI-PMH xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd" xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <responseDate>2020-02-03T13:14:14Z</responseDate>
+    <request verb="ListRecords" identifier="oai:DiVA.org:gih-3019" metadataPrefix="swepub_mods">
+        http://www.diva-portal.org/dice/oai
+    </request>
+    <record>
+      <header>
+        <identifier>oai:DiVA.org:gih-3019</identifier>
+        <datestamp>2015-09-18T09:29:00Z</datestamp>
+        <setSpec>gih</setSpec>
+        <setSpec>chapter</setSpec>
+        <setSpec>science</setSpec>
+      </header>
+      <metadata>
+        <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+          <genre authority="diva" type="contentTypeCode">science</genre>
+          <genre authority="svep" type="contentType">vet</genre>
+          <genre authority="diva" type="contentType" lang="eng">Other academic</genre>
+          <genre authority="diva" type="contentType" lang="swe">&#xD6;vrigt vetenskapligt</genre>
+          <genre authority="diva" type="contentType" lang="nor">Annet vitenskapelig</genre>
+          <genre authority="diva" type="publicationTypeCode">chapter</genre>
+          <genre authority="svep" type="publicationType">kap</genre>
+          <genre authority="diva" type="publicationType" lang="eng">Chapter in book</genre>
+          <genre authority="diva" type="publicationType" lang="swe">Kapitel i bok, del av antologi</genre>
+          <genre authority="diva" type="publicationType" lang="nor">Kapittel i bok, del av antologi</genre>
+          <genre authority="kev" type="publicationType" lang="eng">bookitem</genre>
+          <name type="personal">
+            <namePart type="family">Taube</namePart>
+            <namePart type="given">Jill</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+          </name>
+          <name type="personal" authority="gih" xlink:href="eline">
+            <namePart type="family">Ekblom Bak</namePart>
+            <namePart type="given">Elin</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+            <affiliation>
+    Gymnastik- och idrottsh&#xF6;gskolan, GIH, Bj&#xF6;rn Ekbloms forskningsgrupp
+    </affiliation>
+            <description>orcid.org=0000-0002-3901-7833</description>
+            <description>diva-portal.org=authority-person:40751</description>
+          </name>
+          <name type="personal">
+            <namePart type="family">Hell&#xE9;nius</namePart>
+            <namePart type="given">Mai-Lis</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+            <affiliation>Karolinska institutet</affiliation>
+          </name>
+          <name type="corporate" authority="gih" xlink:href="60">
+            <namePart>Gymnastik- och idrottsh&#xF6;gskolan, GIH</namePart>
+            <namePart>Institutionen f&#xF6;r idrotts- och h&#xE4;lsovetenskap</namePart>
+            <namePart>&#xC5;strandlaboratoriet</namePart>
+            <namePart>Bj&#xF6;rn Ekbloms forskningsgrupp</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+            </role>
+          </name>
+          <titleInfo lang="swe">
+            <title>Stillasittande och psykisk oh&#xE4;lsa</title>
+          </titleInfo>
+          <language>
+            <languageTerm type="code" authority="iso639-2b">swe</languageTerm>
+          </language>
+          <originInfo>
+            <publisher>Studentlitteratur</publisher>
+            <dateIssued>2013</dateIssued>
+            <dateOther type="availableFrom">2013-11-01T11:53:54</dateOther>
+          </originInfo>
+          <physicalDescription>
+            <form authority="marcform">print</form>
+          </physicalDescription>
+          <identifier type="isbn" displayLabel="print">9789144078052</identifier>
+          <identifier type="uri">
+    http://urn.kb.se/resolve?urn=urn:nbn:se:gih:diva-3019
+    </identifier>
+          <location>
+            <url displayLabel="L&#xE4;nk till boken i DiVA">
+    http://urn.kb.se/resolve?urn=urn:nbn:se:gih:diva-2908
+    </url>
+          </location>
+          <typeOfResource>text</typeOfResource>
+          <subject lang="eng" authority="hsv" xlink:href="30302">
+            <topic>Medical and Health Sciences</topic>
+            <topic>Health Sciences</topic>
+            <topic>
+    Public Health, Global Health, Social Medicine and Epidemiology
+    </topic>
+          </subject>
+          <subject lang="swe" authority="hsv" xlink:href="30302">
+            <topic>Medicin och h&#xE4;lsovetenskap</topic>
+            <topic>H&#xE4;lsovetenskaper</topic>
+            <topic>
+    Folkh&#xE4;lsovetenskap, global h&#xE4;lsa, socialmedicin och epidemiologi
+    </topic>
+          </subject>
+          <subject lang="swe" authority="gih" xlink:href="10100">
+            <topic>Medicin/Teknik</topic>
+            <genre>Research subject</genre>
+          </subject>
+          <subject lang="eng" authority="gih" xlink:href="10100">
+            <topic>Medicine/Technology</topic>
+            <genre>Research subject</genre>
+          </subject>
+          <relatedItem type="host">
+            <titleInfo>
+              <title>L&#xE5;ngvarigt stillasittande</title>
+              <subTitle>en h&#xE4;lsofara i tiden</subTitle>
+            </titleInfo>
+            <part>
+              <extent>
+                <start>47</start>
+                <end>55</end>
+              </extent>
+            </part>
+            <note type="statement of responsibility">Elin Ekblom Bak</note>
+          </relatedItem>
+          <recordInfo>
+            <recordOrigin>karinj</recordOrigin>
+            <recordContentSource>gih</recordContentSource>
+            <recordCreationDate>2013-11-01</recordCreationDate>
+            <recordChangeDate>2015-09-18</recordChangeDate>
+            <recordIdentifier>diva2:661229</recordIdentifier>
+          </recordInfo>
+        </mods>
+      </metadata>
+    </record>
+</OAI-PMH>

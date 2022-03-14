@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2019-01-11T12:30:56Z</responseDate>
+    <request verb="ListRecords" set="SwePub-hj" metadataPrefix="swepub_mods">http://hj.diva-portal.org/dice/oai</request>
+    <ListRecords>
+        <!-- oai:DiVA.org:mdh-7150 -->
+        <!-- This a duplicate of oai:DiVA.org:kth-37315 in dedup_org_1.xml. -->
+        <!-- Used with 'make harvest_dedup_two_orgs' to import a duplicate with different organization -->
+        <record>
+          <header xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <identifier>oai:DiVA.org:mdh-7150</identifier>
+            <datestamp>2015-06-29T11:57:00Z</datestamp>
+            <setSpec>mdh</setSpec>
+            <setSpec>article</setSpec>
+            <setSpec>refereed</setSpec>
+          </header>
+          <metadata>
+            <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.5" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd">
+              <name type="personal" authority="mdh" xlink:href="nxg01">
+                <namePart type="family">Xiong</namePart>
+                <namePart type="given">Ning</namePart>
+                <role>
+                  <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                </role>
+                <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="mdh.se">M&#xE4;lardalens h&#xF6;gskola</affiliation>
+                <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="mdh.se" valueURI="Institutionen f&#xF6;r datavetenskap och elektronik">Institutionen f&#xF6;r datavetenskap och elektronik</affiliation>
+                <affiliation>Royal Institute of Technology, Stockholm, Sweden</affiliation>
+                <description xsi:type="identifierDefinition" type="orcid">0000-0001-9857-4317</description>
+              </name>
+              <name type="personal">
+                <namePart type="family">Christensen</namePart>
+                <namePart type="given">Henrik</namePart>
+                <role>
+                  <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                </role>
+                <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="mdh.se">M&#xE4;lardalens h&#xF6;gskola</affiliation>
+                <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="mdh.se" valueURI="Institutionen f&#xF6;r datavetenskap och elektronik">Institutionen f&#xF6;r datavetenskap och elektronik</affiliation>
+                <affiliation>Royal Institute of Technology, Stockholm, Sweden</affiliation>
+              </name>
+              <name type="personal">
+                <namePart type="family">Svensson</namePart>
+                <namePart type="given">Per</namePart>
+                <role>
+                  <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                </role>
+                <affiliation>Swedish Defense Research Agency (FOI), Stockholm, Sweden</affiliation>
+              </name>
+              <name type="corporate" authority="mdh" xlink:href="328">
+                <namePart>M&#xE4;lardalens h&#xF6;gskola</namePart>
+                <namePart>Institutionen f&#xF6;r datavetenskap och elektronik</namePart>
+                <role>
+                  <roleTerm type="code" authority="marcrelator">org</roleTerm>
+                </role>
+              </name>
+              <titleInfo lang="eng">
+                <title>Reactive tuning of target estimate accuracy in multisensor data fusion</title>
+              </titleInfo>
+              <genre authority="svep" type="publicationType">art</genre>
+              <genre authority="svep" type="contentType">ref</genre>
+              <subject lang="eng" authority="uka.se" xlink:href="20206">
+                <topic>Engineering and Technology</topic>
+                <topic>Electrical Engineering, Electronic Engineering, Information Engineering</topic>
+                <topic>Computer Systems</topic>
+              </subject>
+              <subject lang="swe" authority="uka.se" xlink:href="20206">
+                <topic>Teknik och teknologier</topic>
+                <topic>Elektroteknik och elektronik</topic>
+                <topic>Datorsystem</topic>
+              </subject>
+              <subject lang="eng" authority="uka.se" xlink:href="20207">
+                <topic>Engineering and Technology</topic>
+                <topic>Electrical Engineering, Electronic Engineering, Information Engineering</topic>
+                <topic>Embedded Systems</topic>
+              </subject>
+              <subject lang="swe" authority="uka.se" xlink:href="20207">
+                <topic>Teknik och teknologier</topic>
+                <topic>Elektroteknik och elektronik</topic>
+                <topic>Inb&#xE4;ddad systemteknik</topic>
+              </subject>
+              <originInfo>
+                <dateIssued>2007</dateIssued>
+              </originInfo>
+              <relatedItem type="host">
+                <titleInfo>
+                  <title>Cybernetics and Systems</title>
+                </titleInfo>
+                <identifier type="issn">0196-9722</identifier>
+                <part>
+                  <detail type="volume">
+                    <number>38</number>
+                  </detail>
+                  <detail type="issue">
+                    <number>1</number>
+                  </detail>
+                  <extent>
+                    <start>83</start>
+                    <end>103</end>
+                  </extent>
+                </part>
+              </relatedItem>
+              <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:mdh:diva-7150</identifier>
+              <identifier type="doi">10.1080/01969720600998652</identifier>
+              <identifier type="isi">000243367800004</identifier>
+              <identifier type="scopus">2-s2.0-33847168492</identifier>
+              <language>
+                <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+              </language>
+              <abstract lang="eng">&lt;p&gt;Dealing with conflicting and target-specific requirements is an important issue in multisensor and multitarget tracking. This paper aims to allocate sensing resources among various targets in reaction to individual information requests. The proposed approach is to introduce agents for every relevant target responsible for its tracking. Such agents are expected to bargain with each other for a division of resources. A bilateral negotiation model is established for resource allocation in two-target tracking. The applications of agent negotiation to target covariance tuning are illustrated together with simulation results presented. Moreover, we suggest a way of organizing simultaneous one-to-one negotiations, making our negotiation model still applicable in scenarios of tracking more than two targets.&lt;/p&gt;</abstract>
+              <note type="creatorCount">3</note>
+              <physicalDescription>
+                <form authority="marcform">print</form>
+              </physicalDescription>
+              <note type="publicationStatus">Published</note>
+              <recordInfo>
+                <recordContentSource>org2</recordContentSource>
+              </recordInfo>
+            </mods>
+          </metadata>
+        </record>
+    </ListRecords>
+</OAI-PMH>

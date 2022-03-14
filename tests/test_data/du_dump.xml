@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2019-03-05T12:15:55Z</responseDate>
+    <request verb="ListRecords" set="SwePub-du" metadataPrefix="swepub_mods">http://du.diva-portal.org/dice/oai/</request>
+    <ListRecords>
+		<record>
+            <header>
+                <identifier>oai:DiVA.org:du-23428</identifier>
+                <datestamp>2017-11-29T20:51:00Z</datestamp>
+                <setSpec>du</setSpec>
+                <setSpec>article</setSpec>
+                <setSpec>refereed</setSpec>
+            </header>
+            <metadata>
+                <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+                    <genre authority="diva" type="contentTypeCode">refereed</genre>
+                    <genre authority="svep" type="contentType">ref</genre>
+                    <genre authority="diva" type="contentType" lang="eng">Refereed</genre>
+                    <genre authority="diva" type="contentType" lang="swe">Refereegranskat</genre>
+                    <genre authority="diva" type="contentType" lang="nor">Fagfellevurdert</genre>
+                    <genre authority="diva" type="publicationTypeCode">article</genre>
+                    <genre authority="svep" type="publicationType">art</genre>
+                    <genre authority="diva" type="publicationType" lang="eng">Article in journal</genre>
+                    <genre authority="diva" type="publicationType" lang="swe">Artikel i tidskrift</genre>
+                    <genre authority="diva" type="publicationType" lang="nor">Artikkel i tidsskrift</genre>
+                    <genre authority="kev" type="publicationType" lang="eng">article</genre>
+                    <name type="personal" authority="du" xlink:href="ace">
+                        <namePart type="family">Eldh</namePart>
+                        <namePart type="given">Ann Catrine</namePart>
+                        <namePart type="date">1965-</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Högskolan Dalarna, Omvårdnad</affiliation>
+                        <affiliation>Uppsala universitet</affiliation>
+                        <description>orcid.org=0000-0002-7737-169X</description>
+                        <description>diva-portal.org=authority-person:30967</description>
+                    </name>
+                    <name type="personal" authority="du" xlink:href="lwa">
+                        <namePart type="family">Wallin</namePart>
+                        <namePart type="given">Lars</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Högskolan Dalarna, Omvårdnad</affiliation>
+                        <affiliation>Karolinska institutet</affiliation>
+                        <description>diva-portal.org=authority-person:33292</description>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Fredriksson</namePart>
+                        <namePart type="given">Mio</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Uppsala universitet</affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Vengberg</namePart>
+                        <namePart type="given">Sofie</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Uppsala universitet</affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Winblad</namePart>
+                        <namePart type="given">Ulrika</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Uppsala universitet</affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Halford</namePart>
+                        <namePart type="given">Christina</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Uppsala universitet</affiliation>
+                    </name>
+                    <name type="personal">
+                        <namePart type="family">Dahlström</namePart>
+                        <namePart type="given">Tobias</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                        <affiliation>Uppsala universitet</affiliation>
+                    </name>
+                    <name type="corporate" authority="du" xlink:href="9423">
+                        <namePart>Högskolan Dalarna</namePart>
+                        <namePart>Akademin Utbildning, hälsa och samhälle</namePart>
+                        <namePart>Omvårdnad</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                        </role>
+                    </name>
+                    <titleInfo lang="eng">
+                        <title>Factors facilitating a national quality registry to aid clinical quality improvement</title>
+                        <subTitle>findings of a national survey</subTitle>
+                    </titleInfo>
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                    </language>
+                    <originInfo>
+                        <dateIssued>2016</dateIssued>
+                        <dateOther type="availableFrom">2016-11-21T10:00:00</dateOther>
+                    </originInfo>
+                    <physicalDescription>
+                        <form authority="marcform">electronic</form>
+                    </physicalDescription>
+                    <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:du-23428</identifier>
+                    <identifier type="doi">10.1136/bmjopen-2016-011562</identifier>
+                    <identifier type="pmid">28128099</identifier>
+                    <identifier type="isi">000391303400046</identifier>
+                    <identifier type="articleId">e011562</identifier>
+                    <location>
+                        <url displayLabel="Fulltext" note="free">https://doi.org/10.1136/bmjopen-2016-011562</url>
+                    </location>
+                    <typeOfResource>text</typeOfResource>
+                    <subject lang="eng" authority="hsv" xlink:href="30301">
+                        <topic>Medical and Health Sciences</topic>
+                        <topic>Health Sciences</topic>
+                        <topic>Health Care Service and Management, Health Policy and Services and Health Economy</topic>
+                    </subject>
+                    <subject lang="swe" authority="hsv" xlink:href="30301">
+                        <topic>Medicin och hälsovetenskap</topic>
+                        <topic>Hälsovetenskaper</topic>
+                        <topic>Hälso- och sjukvårdsorganisation, hälsopolitik och hälsoekonomi</topic>
+                    </subject>
+                    <subject lang="swe" authority="du" xlink:href="13851">
+                        <topic>Hälsa och välfärd</topic>
+                        <genre>Research subject</genre>
+                    </subject>
+                    <subject lang="eng" authority="du" xlink:href="13851">
+                        <topic>Health and Welfare</topic>
+                        <genre>Research subject</genre>
+                    </subject>
+                    <abstract lang="eng">&lt;p&gt;Objectives: While national quality registries (NQRs) are suggested to provide opportunities for systematic follow-up and learning opportunities, and thus clinical improvements, features in registries and contexts triggering such processes are not fully known. This study focuses on one of the world's largest stroke registries, the Swedish NQR &lt;em&gt;Riksstroke&lt;/em&gt;, investigating what aspects of the registry and healthcare organisations facilitate or hinder the use of registry data in clinical quality improvement.&lt;/p&gt;&lt;p&gt;Methods: Following particular qualitative studies, we performed a quantitative survey in an exploratory sequential design. The survey, including 50 items on context, processes and the registry, was sent to managers, physicians and nurses engaged in Riksstroke in all 72 Swedish stroke units. Altogether, 242 individuals were presented with the survey; 163 responded, representing all but two units. Data were analysed descriptively and through multiple linear regression.&lt;/p&gt;&lt;p&gt;Results: A majority (88%) considered Riksstroke data to facilitate detection of stroke care improvement needs and acknowledged that their data motivated quality improvements (78%). The use of Riksstroke for quality improvement initiatives was associated (R&lt;sup&gt;2&lt;/sup&gt;=0.76) with ‘Colleagues’ call for local results’ (p=&amp;lt;0.001), ‘Management Request of Registry data’ (p=&amp;lt;0.001), and it was said to be ‘Simple to explain the results to colleagues’ (p=0.02). Using stepwise regression, ‘Colleagues’ call for local results’ was identified as the most influential factor. Yet, while 73% reported that managers request registry data, only 39% reported that their colleagues call for the unit's Riksstroke results.&lt;/p&gt;&lt;p&gt;Conclusions: While an NQR like Riksstroke demonstrates improvement needs and motivates stakeholders to make progress, local stroke care staff and managers need to engage to keep the momentum going in terms of applying registry data when planning, performing and evaluating quality initiatives.&lt;/p&gt;</abstract>
+                    <relatedItem type="host">
+                        <titleInfo>
+                            <title>BMJ Open</title>
+                        </titleInfo>
+                        <identifier type="issn">2044-6055</identifier>
+                        <identifier type="eissn">2044-6055</identifier>
+                        <part>
+                            <detail type="volume">
+                                <number>6</number>
+                            </detail>
+                            <detail type="issue">
+                                <number>11</number>
+                            </detail>
+                        </part>
+                    </relatedItem>
+                    <note type="publicationStatus" lang="eng">Published</note>
+                    <location>
+                        <url displayLabel="fulltext:print" note="free" access="raw object">http://du.diva-portal.org/smash/get/diva2:1048234/FULLTEXT01.pdf</url>
+                    </location>
+                    <recordInfo>
+                        <recordOrigin>ace</recordOrigin>
+                        <recordContentSource>du</recordContentSource>
+                        <recordCreationDate>2016-11-21</recordCreationDate>
+                        <recordChangeDate>2017-11-29</recordChangeDate>
+                        <recordIdentifier>diva2:1048234</recordIdentifier>
+                    </recordInfo>
+                </mods>
+            </metadata>
+        </record>
+	</ListRecords>
+</OAI-PMH>

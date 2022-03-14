@@ -1,0 +1,224 @@
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2020-02-06T13:42:17Z</responseDate>
+    <request verb="ListRecords" identifier="oai:DiVA.org:kth-256035" metadataPrefix="swepub_mods">
+        http://www.diva-portal.org/dice/oai
+    </request>
+    <record>
+        <header>
+            <identifier>oai:DiVA.org:kth-256035</identifier>
+            <datestamp>2019-08-16T12:11:00Z</datestamp>
+            <setSpec>kth</setSpec>
+            <setSpec>comprehensiveDoctoralThesis</setSpec>
+            <setSpec>science</setSpec>
+        </header>
+        <metadata>
+            <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:xlink="http://www.w3.org/1999/xlink" version="3.2"
+                  xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-2.xsd">
+                <genre authority="diva" type="contentTypeCode">science</genre>
+                <genre authority="svep" type="contentType">vet</genre>
+                <genre authority="diva" type="contentType" lang="eng">Other academic</genre>
+                <genre authority="diva" type="contentType" lang="swe">Övrigt vetenskapligt</genre>
+                <genre authority="diva" type="contentType" lang="nor">Annet vitenskapelig</genre>
+                <genre authority="diva" type="publicationTypeCode">comprehensiveDoctoralThesis</genre>
+                <genre authority="svep" type="publicationType">dok</genre>
+                <genre authority="diva" type="publicationType" lang="eng">Doctoral thesis, comprehensive summary</genre>
+                <genre authority="diva" type="publicationType" lang="swe">Doktorsavhandling, sammanläggning</genre>
+                <genre authority="diva" type="publicationType" lang="nor">Doktoravhandling, med artikler</genre>
+                <genre authority="kev" type="publicationType" lang="eng">dissertation</genre>
+                <name type="personal" authority="kth" xlink:href="u1qvds70">
+                    <namePart type="family">Sollami Delekta</namePart>
+                    <namePart type="given">Szymon</namePart>
+                    <namePart type="date">1990-</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                    </role>
+                    <affiliation>KTH, Elektronik</affiliation>
+                    <description>orcid.org=0000-0001-9329-9088</description>
+                </name>
+                <name type="personal" authority="kth" xlink:href="u1u0kle4">
+                    <namePart type="family">Östling</namePart>
+                    <namePart type="given">Mikael</namePart>
+                    <namePart type="termsOfAddress">Prof.</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">ths</roleTerm>
+                    </role>
+                    <affiliation>KTH, Elektronik</affiliation>
+                </name>
+                <name type="personal">
+                    <namePart type="family">Li</namePart>
+                    <namePart type="given">Jiantong</namePart>
+                    <namePart type="termsOfAddress">Dr.</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">ths</roleTerm>
+                    </role>
+                </name>
+                <name type="personal">
+                    <namePart type="family">Lupo</namePart>
+                    <namePart type="given">Donald</namePart>
+                    <namePart type="termsOfAddress">Prof.</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">opn</roleTerm>
+                    </role>
+                    <affiliation>Tampere University of Technology, Finland</affiliation>
+                </name>
+                <name type="corporate" authority="kth" xlink:href="879249">
+                    <namePart>KTH</namePart>
+                    <namePart>Skolan för elektroteknik och datavetenskap (EECS)</namePart>
+                    <namePart>Elektronik</namePart>
+                    <role>
+                        <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+                    </role>
+                </name>
+                <titleInfo lang="eng">
+                    <title>
+                        Inkjet Printing of Graphene-based Microsupercapacitors for Miniaturized Energy Storage
+                        Applications
+                    </title>
+                </titleInfo>
+                <language>
+                    <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                </language>
+                <originInfo>
+                    <publisher>KTH Royal Institute of Technology</publisher>
+                    <dateIssued>2019</dateIssued>
+                    <dateOther type="defence">2019-09-13T13:00:00</dateOther>
+                    <dateOther type="availableFrom">2019-08-16T14:11:39</dateOther>
+                </originInfo>
+                <physicalDescription>
+                    <form authority="marcform">electronic</form>
+                    <extent>73</extent>
+                </physicalDescription>
+                <identifier type="isbn" displayLabel="print">978-91-7873-255-5</identifier>
+                <identifier type="uri">
+                    http://urn.kb.se/resolve?urn=urn:nbn:se:kth:diva-256035
+                </identifier>
+                <typeOfResource>text</typeOfResource>
+                <relatedItem type="series">
+                    <titleInfo>
+                        <title>TRITA-EECS-AVL</title>
+                    </titleInfo>
+                    <identifier type="local">16854</identifier>
+                    <identifier type="issue number">2019:61</identifier>
+                </relatedItem>
+                <subject lang="eng">
+                    <topic>Inkjet printing</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>graphene</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>supercapacitor</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>microsupercapacitor</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>energy storage</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>printed electronics</topic>
+                </subject>
+                <subject lang="eng">
+                    <topic>printing technologies</topic>
+                </subject>
+                <subject lang="eng" authority="hsv" xlink:href="202">
+                    <topic>Engineering and Technology</topic>
+                    <topic>
+                        Electrical Engineering, Electronic Engineering, Information Engineering
+                    </topic>
+                </subject>
+                <subject lang="swe" authority="hsv" xlink:href="202">
+                    <topic>Teknik och teknologier</topic>
+                    <topic>Elektroteknik och elektronik</topic>
+                </subject>
+                <subject lang="swe" authority="kth" xlink:href="19371">
+                    <topic>Informations- och kommunikationsteknik</topic>
+                    <genre>Research subject</genre>
+                </subject>
+                <subject lang="eng" authority="kth" xlink:href="19371">
+                    <topic>Information and Communication Technology</topic>
+                    <genre>Research subject</genre>
+                </subject>
+                <abstract lang="eng">
+                    <p>Printing technologies are becoming increasingly popular because they enable the large-scale and
+                        low-cost production of functional devices with various designs, functions, mechanical properties
+                        and materials. Among these technologies, inkjet printing is promising thanks to its direct
+                        (mask-free) patterning, non-contact nature, low material waste, resolution down to 10 µm, and
+                        compatibility with a broad range of materials and substrates. As a result, inkjet printing has
+                        applications in several fields like wearables, opto-electronics, thin-film transistors,
+                        displays, photovoltaic devices, and in energy storage. It's in energy storage that the technique
+                        shows its full potential by allowing the production of miniaturized devices with a compact form
+                        factor, high power density and long cycle life, called microsupercapacitors (MSCs). To this end,
+                        graphene has a number of remarkable properties like high electrical conductivity, large surface
+                        area, elasticity and transparency, making it a top candidate as an electrode material for MSCs.
+                    </p>
+                    <p>Some key drawbacks limit the use of inkjet printing for the production of graphene-based MSCs.
+                        This thesis aims at improving its scalability by producing fully inkjet printed devices, and
+                        extending its applications through the integration of inkjet printing with other fabrication
+                        techniques.
+                    </p>
+                    <p>MSCs typically rely on the deposition by hand of gel electrolyte that is not printable or by
+                        submerging the whole structure into liquid electrolyte. Because of this, so far large-scale
+                        production of more than 10 interconnected devices has not been attempted. In this thesis, a
+                        printable gel electrolyte ink based on poly(4-styrene sulfonic acid) was developed, allowing the
+                        production of large arrays of more than 100 fully inkjet printed devices connected in series and
+                        parallel that can be reliably charged up to 12 V. Also, a second electrolyte ink based on
+                        nano-graphene oxide, a solid-state material with high ionic conductivity, was formulated to
+                        optimize the volumetric performance of these devices. The resulting MSCs were also fully inkjet
+                        printed and exhibited an overall device thickness of around 1 µm, yielding a power density of 80
+                        mW cm<sup>-3</sup>.
+                    </p>
+                    <p>Next, the use of inkjet printing of graphene was explored for the fabrication of transparent
+                        MSCs. This application is typically hindered by the so-called coffee-ring effect, which creates
+                        dark deposits on the edges of the drying patterns and depletes material from the inside area. In
+                        light of this issue, inkjet printing was combined with etching to remove the dark deposits thus
+                        leaving uniform and thin films of graphene with vertical sidewalls. The resulting devices showed
+                        a transmittance of up to 90%.
+                    </p>
+                    <p>Finally, the issue of the substrate compatibility of inkjet printed graphene was addressed.
+                        Although inkjet printing is considered to have broad substrate versatility, it is unreliable on
+                        hydrophilic or porous substrates and most inks (including graphene inks) require thermal
+                        annealing that damages substrates that are not resistant to heat. Accordingly, a technique based
+                        on inkjet printing and wet transfer was developed to reliably deposit graphene-based MSCs on a
+                        number of substrates, including flat, 3D, porous, plastics and biological (plants and fruits)
+                        with adverse surfaces.
+                    </p>
+                    <p>The contributions of this thesis have the potential to boost the use of inkjet printed MSCs in
+                        applications requiring scalability and resolution (e.g. on-chip integration) as well as
+                        applications requiring conformability and versatility (e.g. wearable electronics).
+                    </p>
+                </abstract>
+                <note>
+                    <p>QC 20190816</p>
+                </note>
+                <note type="papers" lang="swe">Härtill 4 uppsatser</note>
+                <note type="thesis">
+                    Diss. (sammanfattning) Stockholm : Kungliga Tekniska högskolan, 2019
+                </note>
+                <note type="degree" lang="sv">Teknologie doktorsexamen</note>
+                <note type="degree" lang="en">Degree of Doctor of Philosophy</note>
+                <language objectPart="defence">
+                    <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+                </language>
+                <note type="venue">
+                    Sal B, Electrum, Kistagången 16, Kungliga tekniska högskolan, Kista
+                </note>
+                <note type="funder">Vetenskapsrådet</note>
+                <location>
+                    <url displayLabel="fulltext" note="free" access="raw object">
+                        http://kth.diva-portal.org/smash/get/diva2:1343393/FULLTEXT01.pdf
+                    </url>
+                </location>
+                <recordInfo>
+                    <recordOrigin>u1qvds70</recordOrigin>
+                    <recordContentSource>kth</recordContentSource>
+                    <recordCreationDate>2019-08-16</recordCreationDate>
+                    <recordChangeDate>2019-08-16</recordChangeDate>
+                    <recordIdentifier>diva2:1343393</recordIdentifier>
+                </recordInfo>
+            </mods>
+        </metadata>
+    </record>
+</OAI-PMH>
