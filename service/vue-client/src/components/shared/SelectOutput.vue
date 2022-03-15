@@ -41,7 +41,8 @@ export default {
           });
         }
       });
-      return transformedOptions;
+      return transformedOptions.sort((a, b) => a.label.toLowerCase()
+        .localeCompare(b.label.toLowerCase()));
     },
   },
   mounted() {
