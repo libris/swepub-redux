@@ -150,8 +150,10 @@ def bibliometrics_api():
             limit = int(limit)
 
         doi = query_data.get("DOI")
+        # TODO: Ugly replacements, fix frontend
+        # TODO: Genreform broader?
         genre_form = [
-            gf.strip() for gf in query_data.get("genreForm", []) if len(gf.strip()) > 0
+            gf.strip().replace(".", "/").rstrip("/") for gf in query_data.get("genreForm", []) if len(gf.strip()) > 0
         ]
         orgs = [o.strip() for o in query_data.get("org", []) if len(o.strip()) > 0]
         title = query_data.get("title", "").replace(",", " ")
@@ -248,7 +250,7 @@ def bibliometrics_api():
                     [Parameter(", ".join(["?"] * len(value)))]
                 )
             )
-            values.append(content_marking)
+            values.append(value)
     if any(
         [
             (from_yr and to_yr),

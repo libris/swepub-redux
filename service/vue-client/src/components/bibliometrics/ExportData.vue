@@ -312,7 +312,7 @@ export default {
       'settings',
     ]),
     apiEndpoint() {
-      return `${this.settings.apiPath}/bibliometrics/`;
+      return `${this.settings.apiPath}/bibliometrics`;
     },
     exportDescr() {
       return Helptexts.bibliometrics.export_descr;

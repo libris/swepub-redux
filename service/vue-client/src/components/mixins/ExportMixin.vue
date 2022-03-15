@@ -27,7 +27,7 @@ export default {
       paginationError: '',
       // setttings
       previewLimit: 20,
-      exportLimit: 10000,
+      exportLimit: 9999999,
       shouldScroll: true,
       currentOffset: 0,
     };

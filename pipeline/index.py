@@ -43,7 +43,7 @@ def generate_search_tables():
             for subject in [item for sublist in doc.uka_subjects.values() for item in sublist]:
                 inner_cursor.execute("INSERT INTO search_subject (finalized_id, value) VALUES (?, ?)", (finalized_id, subject))
 
-            inner_cursor.execute("INSERT INTO search_fulltext (rowid, title, keywords) VALUES (?, ?, ?)", (
+            inner_cursor.execute("INSERT INTO search_fulltext (finalized_id, title, keywords) VALUES (?, ?, ?)", (
                         finalized_id,
                         doc.title,
                         " ".join(doc.keywords)
