@@ -102,6 +102,7 @@ def validate_doi(field, session, harvest_cache):
             field.validation_status = 'invalid'
             if field.is_enriched():
                 field.enrichment_status = 'unsuccessful'
+            return
     field.events.append(make_event(type="validation", code=code, result="valid", value=(new_value or field.value)))
     field.value = new_value or field.value
     field.validation_status = 'valid'

@@ -252,6 +252,8 @@ def threaded_handle_harvested(source, source_subset, harvest_id, batch):
                             connection
                         )
                         converted_rowids.append(converted_rowid)
+            except Exception as e:
+                log.warning(traceback.format_exc())
             finally:
                 lock.release()
 
