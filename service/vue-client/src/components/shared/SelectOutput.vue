@@ -42,7 +42,7 @@ export default {
         }
       });
       return transformedOptions.sort((a, b) => a.label.toLowerCase()
-        .localeCompare(b.label.toLowerCase()));
+        .localeCompare(b.label.toLowerCase(), 'sv'));
     },
   },
   mounted() {

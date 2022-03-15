@@ -29,7 +29,7 @@ export default {
       const { sources } = response;
       if (sources && sources.length > 0) {
         return sources.slice().sort((a, b) => a.name.toLowerCase()
-          .localeCompare(b.name.toLowerCase()));
+          .localeCompare(b.name.toLowerCase(), 'sv'));
       }
       return sources;
     },
