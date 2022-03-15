@@ -92,6 +92,9 @@ def clean_and_init_storage():
     );
     """)
     cur.execute("CREATE INDEX idx_converted_audit_events_converted_id ON converted_audit_events(converted_id)")
+    cur.execute("CREATE INDEX idx_converted_audit_events_code ON converted_audit_events(code)")
+    cur.execute("CREATE INDEX idx_converted_audit_events_code_result ON converted_audit_events(code, result)")
+
 
     cur.execute("""
     CREATE TABLE converted_record_info (
@@ -137,6 +140,7 @@ def clean_and_init_storage():
     cur.execute("CREATE INDEX idx_converted_modified ON converted(modified)")
     cur.execute("CREATE INDEX idx_converted_deleted ON converted(deleted)")
     cur.execute("CREATE INDEX idx_converted_original_id ON converted(original_id)")
+    cur.execute("CREATE INDEX idx_converted_source_deleted ON converted(source, deleted)")
 
     cur.execute("""
     CREATE TABLE converted_ssif_1 (
