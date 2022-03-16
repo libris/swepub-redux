@@ -14,6 +14,38 @@ def update_at_path(root, path, new_value):
     #print(f"Replacing {parent_object[key]} with {new_value} at {path}")
     parent_object[key] = new_value
 
+# Remove the value at path and clear any (now) empty containing structures for that value.
+# _additionally_ clean min_prune_levels above it (even it they're not empty).
+def remove_at_path(root, path, min_prune_level):
+    _steps = path.split('.')
+    steps = []
+    stack = []
+    current = root
+    for step in _steps:
+        if '[' in step:
+            steps.append(int(step[1:-1]))
+        else:
+            steps.append(step)
+    #print (f"steps: {steps}")
+
+    for step in steps:
+        stack.append(current)
+        print (f"*   Will now access {step} of {current}:")
+        current = current[step]
+    
+    current = stack.pop()
+    key = steps.pop()
+    del current[key]
+
+    prune_level = 0
+    while stack:
+        current = stack.pop()
+        key = steps.pop()
+
+        if prune_level < min_prune_level or len(current) == 0:
+            #print(f"   now deleting key {key} from obj: {current}")
+            del current[key]
+        prune_level += 1
 
 def add_sibling_at_path(root, path, type, value):
     basepath, _, _ = path.rsplit('.', 2)

@@ -7,7 +7,7 @@ from os import path
 
 from pipeline.normalize import *
 
-from pipeline.util import get_at_path, FieldMeta
+from pipeline.util import get_at_path, remove_at_path, FieldMeta
 
 from pipeline.validators.datetime import validate_date_time
 from pipeline.validators.doi import validate_doi
@@ -173,11 +173,16 @@ def normalize_stuff(body, field_events):
                     normalize_free_text(body, field)
 
 
-def add_incorrectlyIdentifiedBy(body, field_events):
+def move_incorrectlyIdentifiedBy(body, field_events):
     for id_type in field_events.values():
         for field in id_type.values():
             # For the _invalid_ fields, we (sometimes) want to add them under incorrectlyIdentifiedBy
             if field.validation_status != 'valid' and field.id_type in ["DOI", "ISBN", "ISI", "ISSN"]:
+
+                # Remove the bad value
+                remove_at_path(body, field.path, 1)
+
+                # Add it back, as incorrectlyIdentifiedBy
                 parentPath = ".".join(field.path.split(".")[:-3]) # strip away ".identifiedBy.[0].value" (3 items)
                 parent = get_at_path(body, parentPath)
                 incorrectlyIdentifiedByEntity = {"@type":field.id_type, "value": field.value}
@@ -229,7 +234,7 @@ def validate(body, harvest_cache, session):
     # Second validation pass to see if enrichments made some values valid
     validate_stuff(field_events, session, harvest_cache)
     normalize_stuff(body, field_events)
-    add_incorrectlyIdentifiedBy(body, field_events)
+    move_incorrectlyIdentifiedBy(body, field_events)
     censor_invalid_orcids(body, field_events)
 
     record_info = get_record_info(field_events)
