@@ -141,6 +141,7 @@ def clean_and_init_storage():
     cur.execute("CREATE INDEX idx_converted_deleted ON converted(deleted)")
     cur.execute("CREATE INDEX idx_converted_original_id ON converted(original_id)")
     cur.execute("CREATE INDEX idx_converted_source_deleted ON converted(source, deleted)")
+    cur.execute("CREATE INDEX idx_converted_source_deleted_date ON converted(source, deleted, date)")
 
     cur.execute("""
     CREATE TABLE converted_ssif_1 (
