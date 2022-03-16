@@ -29,20 +29,33 @@ export default {
       const transformedOptions = [];
       Object.keys(types).forEach((type) => {
         if (types[type].hasOwnProperty('subcategories')) {
-          transformedOptions.push({ label: `${types[type][this.settings.language].toUpperCase()} - ALLA`, value: `*${type}` }); // add broader option - '*' is just to track these internally
-          transformedOptions.push({ label: `${types[type][this.settings.language]}`, value: type }); // level 1
-          Object.keys(types[type].subcategories).forEach((subtype) => {
-            transformedOptions.push({ label: `${types[type].subcategories[subtype][this.settings.language]}`, value: `${type}.${subtype}` }); // level 2
+          transformedOptions.push({
+            label: `${types[type][this.settings.language].toUpperCase()} - ALLA`,
+            value: `*${type}`,
+            sortKey: `${types[type][this.settings.language].toUpperCase()} - ALLA`,
+          }); // add broader option - '*' is just to track these internally
+          transformedOptions.push({ // level 1
+            label: `${types[type][this.settings.language]}`,
+            value: type,
+            sortKey: `${types[type][this.settings.language].toUpperCase()} - ALLA`,
+          });
+          Object.keys(types[type].subcategories).forEach((subtype) => { // level 2
+            transformedOptions.push({
+              label: `-- ${types[type].subcategories[subtype][this.settings.language]}`,
+              value: `${type}.${subtype}`,
+              sortKey: `${types[type][this.settings.language].toUpperCase()} - ALLA - ${types[type].subcategories[subtype][this.settings.language]}`,
+            });
           });
         } else {
           transformedOptions.push({ // level 1 - no subcats
             label: types[type][this.settings.language],
             value: type,
+            sortKey: types[type][this.settings.language],
           });
         }
       });
-      return transformedOptions.sort((a, b) => a.label.toLowerCase()
-        .localeCompare(b.label.toLowerCase(), 'sv'));
+      return transformedOptions.sort((a, b) => a.sortKey.toLowerCase()
+        .localeCompare(b.sortKey.toLowerCase(), 'sv'));
     },
   },
   mounted() {
