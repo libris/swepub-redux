@@ -18,16 +18,17 @@ def generate_search_tables():
 
             inner_cursor.execute("""
                 INSERT INTO search_single(
-                finalized_id, year, content_marking, publication_status, swedish_list
+                finalized_id, year, content_marking, publication_status, swedish_list, open_access
                 ) VALUES(
-                ?, ?, ?, ?, ?
+                ?, ?, ?, ?, ?, ?
                 )
                 """, (
                 finalized_id,
                 doc.publication_year,
                 doc.content_marking,
                 get_publication_status(doc),
-                doc.is_swedishlist
+                doc.is_swedishlist,
+                doc.open_access
             ))
 
             for doi in doc.DOI:
