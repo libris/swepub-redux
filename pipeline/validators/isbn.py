@@ -34,6 +34,9 @@ def validate_checksum(isbn):
 
 
 def validate_isbn(field):
+    if field.validation_status == "invalid" and field.enrichment_status in ["unchanged", "unsuccessful"]:
+        return
+
     for validator in [validate_format, validate_checksum]:
         success, code = validator(field.value)
         if not success:

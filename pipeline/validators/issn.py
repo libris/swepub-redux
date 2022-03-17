@@ -39,6 +39,9 @@ def validate_cache_or_remote(issn, session=None, harvest_cache=None):
 
 
 def validate_issn(field, session=None, harvest_cache=None):
+    if field.validation_status == "invalid" and field.enrichment_status in ["unchanged", "unsuccessful"]:
+        return
+
     for validator in [validate_format, validate_checksum, validate_cache_or_remote]:
         success, code = validator(field.value, session, harvest_cache)
         if not success:

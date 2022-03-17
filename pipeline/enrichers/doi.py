@@ -29,6 +29,7 @@ def recover_doi(body, field):
         update_at_path(body, path, doi)
         field.events.append(make_event(type="enrichment", code="recovery", initial_value=initial, value=doi, result="enriched"))
         field.value = doi
+        field.enrichment_status = "enriched"
 
     if doi.startswith(VALID_STARTS):
         return
@@ -38,6 +39,7 @@ def recover_doi(body, field):
             update_at_path(body, path, doi[hit:])
             field.events.append(make_event(type="enrichment", code="recovery", value=doi[hit:], initial_value=initial, result="enriched"))
             field.value = doi[hit:]
+            field.enrichment_status = "enriched"
 
     if field.enrichment_status != 'enriched':
         field.enrichment_status = 'unsuccessful'

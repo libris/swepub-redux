@@ -31,7 +31,7 @@ def get_at_path(root, path):
 
 
 class FieldMeta:
-    def __init__(self, path='', id_type='', value=None, validation_status="pending", normalization_status="unchanged", enrichment_status="pending"):
+    def __init__(self, path="", id_type="", value=None, validation_status="pending", normalization_status="unchanged", enrichment_status="unchanged"):
         self.id_type = id_type
         self.path = path
         self.initial_value = value
