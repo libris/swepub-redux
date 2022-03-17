@@ -36,6 +36,8 @@ def recover_doi(body, field):
     else:
         hit = doi.find(DOI_START)
         if hit != -1:
+            if field.enrichment_status == "enriched":
+                initial = field.value
             update_at_path(body, path, doi[hit:])
             field.events.append(make_event(type="enrichment", code="recovery", value=doi[hit:], initial_value=initial, result="enriched"))
             field.value = doi[hit:]
