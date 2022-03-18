@@ -10,11 +10,9 @@ def generate_processing_stats():
         # Add stats about records in converted ("duplicated"), per source and year
         for row in cursor.execute("""
             SELECT
-                source, date, count(distinct id) AS total, sum(is_open_access) AS open_access, sum(classification_level) AS swedishlist, count(distinct converted_ssif_1.converted_id) AS ssif_1
+                source, date, count(distinct id) AS total, sum(is_open_access) AS open_access, sum(classification_level) AS swedishlist, sum(has_ssif_1) AS ssif_1
             FROM
                 converted
-            LEFT JOIN
-                converted_ssif_1 ON converted.id=converted_ssif_1.converted_id
             WHERE
                 converted.deleted = 0
             GROUP BY

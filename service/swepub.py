@@ -1085,7 +1085,11 @@ def process_get_export(source=None):
                         (converted_audit_events.code == Parameter("?"))
                         & (converted_audit_events.result == Parameter("?"))
                     )
-                    int_flag_value = 0 if flag_value == "valid" else 1
+                    # TODO: Fix horrible "valid"/"invalid" 0/1 confusion
+                    if flag_value == "valid" or (flag_name == "creator_count_check" and flag_value == "invalid"):
+                        int_flag_value = 0
+                    else:
+                        int_flag_value = 1
                     values.append([flag_name, int_flag_value])
     q = q.where(Criterion.any(criteria))
 

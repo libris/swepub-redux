@@ -9,12 +9,24 @@ from tempfile import TemporaryDirectory
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
 
+from jsonpath_rw_ext import parse
+from dateutil.parser import parse as parse_date
+
 import orjson as json
 
 from pipeline.storage import *
 
 categories = load(open(path.join(path.dirname(path.abspath(__file__)), '../resources/categories.json')))
 
+
+RAW_SUMMARY_PATH = 'instanceOf.summary[?(@.@type=="Summary")]'
+SUMMARY_PATH = parse(RAW_SUMMARY_PATH)
+
+RAW_DATE_PATH = 'publication[?(@.@type=="Publication")].date'
+DATE_PATH = parse(RAW_DATE_PATH)
+
+RAW_PUBLICATION_STATUS_PATH = 'instanceOf.hasNote[?(@.@type=="PublicationStatus")].@id'
+PUBLICATION_STATUS_PATH = parse(RAW_PUBLICATION_STATUS_PATH)
 
 class Publication:
     def __init__(self, publication):
@@ -95,6 +107,69 @@ class Publication:
                 if subject_code:
                     uka_subject_codes.append(subject_code)
         return set(uka_subject_codes)
+    
+    @property
+    def year(self):
+        """Return the publication year as a string or None if missing or invalid."""
+        dates = DATE_PATH.find(self._publication)
+        if len(dates) == 1 and dates[0].value:
+            try:
+                parsed_date = parse_date(dates[0].value)
+                return '{}'.format(parsed_date.year)
+            except ValueError:
+                return None
+        else:
+            return None
+    
+    @property
+    def summaries(self):
+        """Return a list of all summaries."""
+        summaries = SUMMARY_PATH.find(self._publication)
+        return [summary.value for summary in summaries if summary.value]
+    
+    @property
+    def status(self):
+        """Return publication status or None if missing."""
+        pub_statuses = PUBLICATION_STATUS_PATH.find(self._publication)
+        # FIXME Can we have more than one pub status?
+        if len(pub_statuses) == 1 and pub_statuses[0].value:
+            return pub_statuses[0].value
+        else:
+            return None
+    
+    @property
+    def is_classified(self):
+        """Return True if publication has at least one 3 or 5 level UKA subject."""
+        SUBJECT_PREFIX = 'https://id.kb.se/term/uka/'
+        for code in self.subject_codes:
+            if not code.startswith(SUBJECT_PREFIX):
+                continue
+            short = code[len(SUBJECT_PREFIX):]
+            if len(short) == 3 or len(short) == 5:
+                return True
+        return False
+
+
+    def get_english_summary(self):
+        """Get summary text in English if it exists."""
+        return self._get_lang_summary('eng')
+
+    def get_swedish_summary(self):
+        """Get summary text in Swedish if it exists."""
+        return self._get_lang_summary('swe')
+
+    def _get_lang_summary(self, lang):
+        """Get summary for specified language if it exists."""
+        for summary in self.summaries:
+            if 'language' not in summary:
+                continue
+            if 'code' not in summary['language']:
+                continue
+            if summary['language']['code'] != lang:
+                continue
+            if 'label' in summary:
+                return summary['label']
+        return None
 
     def add_subjects(self, subjects):
         """Add a list of subjects to the publication.
@@ -205,6 +280,23 @@ def _select_rarest_words():
                 """, (rare_word, converted_rowid))
             connection.commit()
 
+def elligible_for_autoclassification(converted_data):
+    publication =Publication(converted_data)
+    # 1. Publication year >= 2012
+    if publication.year is None or int(publication.year) < 2012: # 2010 According to some? Old swepub uses 2012
+        return False
+    # 2. Swe/eng abstract
+    if not (publication.get_english_summary() or publication.get_swedish_summary()):
+        return False
+    # 3. Publication status == (Published || None)
+    if (publication.status is not None
+            and publication.status != 'https://id.kb.se/term/swepub/Published'):
+        return False
+    # 4. No 3-level/5-level classification
+    if publication.is_classified:
+        return False
+    return True
+
 def _find_and_add_subjects():
     with get_connection() as connection:
         cursor = connection.cursor()
@@ -218,7 +310,6 @@ def _find_and_add_subjects():
             file_sequence_number = 0
             with ProcessPoolExecutor(max_workers=20) as executor:
                 batch = []
-                processes = []
                 for converted_row in cursor.execute("""
                 SELECT
                     converted.id, converted.data
@@ -227,12 +318,13 @@ def _find_and_add_subjects():
                 WHERE
                     deleted = 0
                 """):
-                    batch.append(converted_row)
-                    if (len(batch) >= 256):
-                        func = partial(_conc_find_subjects, temp_dir, file_sequence_number)
-                        executor.submit(func, batch)
-                        file_sequence_number += 1
-                        batch = []
+                    if elligible_for_autoclassification(json.loads(converted_row[1])):
+                        batch.append(converted_row)
+                        if (len(batch) >= 256):
+                            func = partial(_conc_find_subjects, temp_dir, file_sequence_number)
+                            executor.submit(func, batch)
+                            file_sequence_number += 1
+                            batch = []
                 file_sequence_number += 1
                 func = partial(_conc_find_subjects, temp_dir, file_sequence_number)
                 executor.submit(func, batch)
@@ -291,30 +383,6 @@ def _find_and_add_subjects():
                             (?, ?, ?, ?);
                         """, (rowid, "AutoclassifierAuditor", code, result) )
                 connection.commit()
-
-        # # Add "did nothing"-events (ffs..) for every publication that was not affected by autoclassification
-        # cursor.execute("""
-        # SELECT id FROM converted WHERE id NOT IN
-        # (
-        #     SELECT
-        #         converted_id
-        #     FROM
-        #         converted_audit_events
-        #     WHERE
-        #         name = 'AutoclassifierAuditor'
-        # );
-        # """)
-        # rows = cursor.fetchall()
-
-        # for row in rows:
-        #     rowid = row[0]
-        #     cursor.execute("""
-        #     INSERT INTO converted_audit_events
-        #         (converted_id, name, step, code, result, initial_value, value)
-        #     VALUES
-        #         (?, ?, ?, ?, ?, ?, ?);
-        #     """, (rowid, "AutoclassifierAuditor", None, None, "0", None, None) )
-        # connection.commit()
         
 
 def _conc_find_subjects(temp_dir, file_sequence_number, converted_rows):
@@ -501,18 +569,19 @@ def auto_classify(incremental, incrementally_converted_rowids):
                 row = cursor.fetchall()[0] # Can only be one
                 converted = json.loads(row[0])
 
-                added_count, new_data = find_subjects_for(converted_rowid, converted, cursor)
-                if added_count:
-                    cursor.execute("""
-                    UPDATE
-                        converted
-                    SET
-                        data = ?
-                    WHERE
-                        id = ? ;
-                    """, (new_data, converted_rowid) )
-                #else:
-                #    print(f"Nothing to add for {converted_rowid}")
+                if elligible_for_autoclassification(converted):
+                    added_count, new_data = find_subjects_for(converted_rowid, converted, cursor)
+                    if added_count:
+                        cursor.execute("""
+                        UPDATE
+                            converted
+                        SET
+                            data = ?
+                        WHERE
+                            id = ? ;
+                        """, (new_data, converted_rowid) )
+                    #else:
+                    #    print(f"Nothing to add for {converted_rowid}")
             connection.commit()
 
         

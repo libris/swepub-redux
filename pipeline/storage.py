@@ -126,6 +126,7 @@ def clean_and_init_storage():
         source TEXT, -- source code, e.g. "kth", "ltu"
         is_open_access INTEGER,
         classification_level INT, -- 0 = https://id.kb.se/term/swepub/swedishlist/non-peer-reviewed, 1 = peer-reviewed (1 also means "is_swedishlist")
+        has_ssif_1 INTEGER,
         events TEXT,
         modified INTEGER DEFAULT (strftime('%s', 'now')), -- seconds since epoch
         deleted INTEGER DEFAULT 0,-- bool
@@ -137,10 +138,12 @@ def clean_and_init_storage():
     cur.execute("CREATE INDEX idx_converted_source ON converted(source)")
     cur.execute("CREATE INDEX idx_converted_is_open_access ON converted(is_open_access)")
     cur.execute("CREATE INDEX idx_converted_classification_level ON converted(classification_level)")
+    cur.execute("CREATE INDEX idx_converted_has_ssif_1 ON converted(has_ssif_1)")
     cur.execute("CREATE INDEX idx_converted_modified ON converted(modified)")
     cur.execute("CREATE INDEX idx_converted_deleted ON converted(deleted)")
     cur.execute("CREATE INDEX idx_converted_original_id ON converted(original_id)")
     cur.execute("CREATE INDEX idx_converted_source_deleted ON converted(source, deleted)")
+    cur.execute("CREATE INDEX idx_converted_source_deleted_date ON converted(source, deleted, date)")
 
     cur.execute("""
     CREATE TABLE converted_ssif_1 (
@@ -392,7 +395,7 @@ def clean_and_init_storage():
         UPDATE
             converted
         SET
-            data = null, original_id = null, events = null, date = null, source = null, is_open_access = null, classification_level = null, modified = (strftime('%s', 'now')), deleted = 1
+            data = null, original_id = null, events = null, date = null, source = null, is_open_access = null, has_ssif_1 = null, classification_level = null, modified = (strftime('%s', 'now')), deleted = 1
         WHERE
             original_id = OLD.id;
     END
@@ -468,11 +471,11 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
 
     converted_rowid = cursor.execute("""
     INSERT INTO
-        converted(data, original_id, oai_id, date, source, is_open_access, classification_level, events)
+        converted(data, original_id, oai_id, date, source, is_open_access, has_ssif_1, classification_level, events)
     VALUES
-        (?, ?, ?, ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT(oai_id) DO UPDATE SET
-        data = excluded.data, original_id = excluded.original_id, oai_id = excluded.oai_id, date = excluded.date, source = excluded.source, is_open_access = excluded.is_open_access, classification_level = excluded.classification_level, events = excluded.events, deleted = 0
+        data = excluded.data, original_id = excluded.original_id, oai_id = excluded.oai_id, date = excluded.date, source = excluded.source, is_open_access = excluded.is_open_access, has_ssif_1 = excluded.has_ssif_1, classification_level = excluded.classification_level, events = excluded.events, deleted = 0
     """, (
         json.dumps(converted),
         original_rowid,
@@ -480,6 +483,7 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
         doc.publication_year,
         doc.source_org_master,
         doc.open_access,
+        (len(doc.ssif_1_codes) > 0),
         doc.level,
         json.dumps(converted_events, default=lambda o: o.__dict__)
     )).lastrowid

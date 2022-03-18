@@ -280,10 +280,10 @@ def _get_flags_for_type(field, checks, selected_flags, flag_type):
             if flag_event["type"] != flag_type:
                 continue
             flag = {"path": path}
-            if "old_value" in flag_event:
-                flag["old_value"] = flag_event["old_value"]
-            if "new_value" in flag_event:
-                flag["new_value"] = flag_event["new_value"]
+            if "initial_value" in flag_event:
+                flag["old_value"] = flag_event["initial_value"]
+            if "value" in flag_event:
+                flag["new_value"] = flag_event["value"]
             if _should_export_simple(has_selection, status, selected_flags_for_type):
                 if "code" in flag_event:
                     if field not in flags:

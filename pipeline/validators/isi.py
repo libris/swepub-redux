@@ -23,6 +23,9 @@ def validate_format(field):
 
 
 def validate_isi(field):
+    if field.validation_status == "invalid" and field.enrichment_status in ["unchanged", "unsuccessful"]:
+        return
+
     for validator in [_validate_base_unicode, validate_format]:
         success, code = validator(field)
         if not success:

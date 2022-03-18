@@ -95,6 +95,9 @@ def validate_with_remote(doi, session, harvest_cache):
 
 
 def validate_doi(field, session, harvest_cache):
+    if field.validation_status == "invalid" and field.enrichment_status in ["unchanged", "unsuccessful"]:
+        return
+
     for validator in [validate_unicode, validate_format, validate_with_remote]:
         success, code, new_value = validator(field.value, session, harvest_cache)
         if not success:

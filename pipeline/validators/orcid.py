@@ -56,6 +56,9 @@ def validate_checksum(orcid):
 
 
 def validate_orcid(field):
+    if field.validation_status == "invalid" and field.enrichment_status in ["unchanged", "unsuccessful"]:
+        return
+
     for validator in [validate_unicode, validate_format, validate_span, validate_checksum]:
         success, code = validator(field.value)
         if not success:
