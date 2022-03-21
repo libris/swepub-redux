@@ -2,7 +2,6 @@ import lxml.etree as et
 from io import StringIO
 from jsonpath_rw_ext import parse
 import itertools
-import requests
 from os import path
 
 from pipeline.normalize import *
@@ -26,34 +25,39 @@ from pipeline.enrichers.orcid import recover_orcid
 from pipeline.enrichers.doi import recover_doi
 from pipeline.enrichers.unicode import recover_unicode
 
-MINIMUM_LEVEL_FILTER = et.XSLT(et.parse(path.join(path.dirname(path.abspath(__file__)), '../resources/minimumlevelfilter.xsl')))
+MINIMUM_LEVEL_FILTER = et.XSLT(
+    et.parse(path.join(path.dirname(path.abspath(__file__)), "../resources/minimumlevelfilter.xsl"))
+)
 
 PATHS = {
-    'URI': ('identifiedBy[?(@.@type=="URI")].value', ),
-    'DOI': ('identifiedBy[?(@.@type=="DOI")].value', ),
-    'ISI': ('identifiedBy[?(@.@type=="ISI")].value', ),
-    'ORCID': ('instanceOf.contribution.[*].agent.identifiedBy[?(@.@type=="ORCID")].value', ),
-    'publication_year': ('publication[?(@.@type=="Publication")].date', ),
-    'creator_count': ('instanceOf.[*].hasNote[?(@.@type=="CreatorCount")].label', ),
-    'ISBN': (
+    "URI": ('identifiedBy[?(@.@type=="URI")].value',),
+    "DOI": ('identifiedBy[?(@.@type=="DOI")].value',),
+    "ISI": ('identifiedBy[?(@.@type=="ISI")].value',),
+    "ORCID": ('instanceOf.contribution.[*].agent.identifiedBy[?(@.@type=="ORCID")].value',),
+    "publication_year": ('publication[?(@.@type=="Publication")].date',),
+    "creator_count": ('instanceOf.[*].hasNote[?(@.@type=="CreatorCount")].label',),
+    "ISBN": (
         'identifiedBy[?(@.@type=="ISBN")].value',
-        'partOf.[*].identifiedBy[?(@.@type=="ISBN")].value'),
-    'ISSN': (
+        'partOf.[*].identifiedBy[?(@.@type=="ISBN")].value',
+    ),
+    "ISSN": (
         'identifiedBy[?(@.@type=="ISSN")].value',
         'hasSeries.[*].identifiedBy[?(@.@type=="ISSN")].value',
         'partOf.[*].hasSeries.[*].identifiedBy[?(@.@type=="ISSN")].value',
-        'partOf.[*].identifiedBy[?(@.@type=="ISSN")].value',),
-    'free_text': (
-        'hasSeries.[*].hasTitle.[*].mainTitle',
-        'partOf.[*].hasSeries.[*].hasTitle.[*].mainTitle',
-        'hasSeries.[*].hasTitle.[*].subtitle',
-        'partOf.[*].hasSeries.[*].hasTitle.[*].subtitle',
-        'instanceOf.hasTitle[*].mainTitle',
-        'instanceOf.hasTitle[*].subtitle',
-        'instanceOf.summary[*].label',
+        'partOf.[*].identifiedBy[?(@.@type=="ISSN")].value',
+    ),
+    "free_text": (
+        "hasSeries.[*].hasTitle.[*].mainTitle",
+        "partOf.[*].hasSeries.[*].hasTitle.[*].mainTitle",
+        "hasSeries.[*].hasTitle.[*].subtitle",
+        "partOf.[*].hasSeries.[*].hasTitle.[*].subtitle",
+        "instanceOf.hasTitle[*].mainTitle",
+        "instanceOf.hasTitle[*].subtitle",
+        "instanceOf.summary[*].label",
         'instanceOf.subject[?(@.@type=="Topic")].prefLabel',
-        'instanceOf.hasNote[?(@.@type=="Note")].label'),
-    'UKA': ('instanceOf.subject[?(@.inScheme.code=="uka.se")].code',),
+        'instanceOf.hasNote[?(@.@type=="Note")].label',
+    ),
+    "UKA": ('instanceOf.subject[?(@.inScheme.code=="uka.se")].code',),
 }
 
 PRECOMPILED_PATHS = {k: [parse(p) for p in v] for k, v in PATHS.items()}
@@ -81,47 +85,50 @@ def get_record_info(field_events):
     for id_type in field_events.values():
         for field in id_type.values():
             if not stats.get(field.id_type):
-                stats[field.id_type] = {'events': []}
+                stats[field.id_type] = {"events": []}
 
-            if stats[field.id_type].get('validation_status', '') != 'invalid':
-                stats[field.id_type]['validation_status'] = field.validation_status
+            if stats[field.id_type].get("validation_status", "") != "invalid":
+                stats[field.id_type]["validation_status"] = field.validation_status
 
-            current_enrichment_status = stats[field.id_type].get('enrichment_status', '')
-            if current_enrichment_status != 'unsuccessful':
-                if not (current_enrichment_status == 'enriched' and field.enrichment_status == 'unchanged'):
-                    stats[field.id_type]['enrichment_status'] = field.enrichment_status
+            current_enrichment_status = stats[field.id_type].get("enrichment_status", "")
+            if current_enrichment_status != "unsuccessful":
+                if not (
+                    current_enrichment_status == "enriched"
+                    and field.enrichment_status == "unchanged"
+                ):
+                    stats[field.id_type]["enrichment_status"] = field.enrichment_status
 
-            if stats[field.id_type].get('normalization_status', '') != 'normalized':
-                stats[field.id_type]['normalization_status'] = field.normalization_status
+            if stats[field.id_type].get("normalization_status", "") != "normalized":
+                stats[field.id_type]["normalization_status"] = field.normalization_status
 
-            stats[field.id_type]['events'].extend(field.events)
+            stats[field.id_type]["events"].extend(field.events)
     return stats
 
 
 def validate_stuff(field_events, session, harvest_cache):
     for id_type in field_events.values():
         for field in id_type.values():
-            if field.validation_status != 'valid':
-                if field.id_type == 'ISBN':
+            if field.validation_status != "valid":
+                if field.id_type == "ISBN":
                     validate_isbn(field)
-                if field.id_type == 'ISI':
+                if field.id_type == "ISI":
                     validate_isi(field)
-                if field.id_type == 'ORCID':
+                if field.id_type == "ORCID":
                     validate_orcid(field)
-                if field.id_type == 'ISSN':
+                if field.id_type == "ISSN":
                     validate_issn(field, session, harvest_cache)
-                if field.id_type == 'DOI':
+                if field.id_type == "DOI":
                     validate_doi(field, session, harvest_cache)
-                if field.id_type == 'URI':
+                if field.id_type == "URI":
                     validate_uri(field)
-                if field.id_type == 'publication_year':
+                if field.id_type == "publication_year":
                     validate_date_time(field)
-                if field.id_type == 'creator_count':
+                if field.id_type == "creator_count":
                     validate_creator_count(field)
-                if field.id_type == 'UKA':
+                if field.id_type == "UKA":
                     validate_uka(field)
-                if field.id_type == 'free_text':
-                    field.validation_status = 'valid'  # formerly "AcceptingValidator"
+                if field.id_type == "free_text":
+                    field.validation_status = "valid"  # formerly "AcceptingValidator"
 
 
 def enrich_stuff(body, field_events):
@@ -129,20 +136,20 @@ def enrich_stuff(body, field_events):
     for id_type in field_events.values():
         for field in id_type.values():
             added_stuff = []
-            if field.validation_status != 'valid':
-                if field.id_type == 'ISBN':
+            if field.validation_status != "valid":
+                if field.id_type == "ISBN":
                     added_stuff = recover_isbn(body, field)
-                if field.id_type == 'ISI':
+                if field.id_type == "ISI":
                     recover_isi(body, field)
-                if field.id_type == 'ORCID':
+                if field.id_type == "ORCID":
                     recover_orcid(body, field)
-                if field.id_type == 'ISSN':
+                if field.id_type == "ISSN":
                     added_stuff = recover_issn(body, field)
-                if field.id_type == 'DOI':
+                if field.id_type == "DOI":
                     recover_doi(body, field)
-                if field.id_type == 'publication_year':
+                if field.id_type == "publication_year":
                     recover_unicode(body, field)
-                if field.id_type == 'creator_count':
+                if field.id_type == "creator_count":
                     recover_unicode(body, field)
 
                 if added_stuff:
@@ -158,18 +165,18 @@ def normalize_stuff(body, field_events):
     for id_type in field_events.values():
         for field in id_type.values():
             # Unlike with validations/enrichments we now only look at *valid* fields
-            if field.validation_status == 'valid':
-                if field.id_type == 'ISBN':
+            if field.validation_status == "valid":
+                if field.id_type == "ISBN":
                     normalize_isbn(body, field)
-                if field.id_type == 'ISI':
+                if field.id_type == "ISI":
                     normalize_isi(body, field)
-                if field.id_type == 'ORCID':
+                if field.id_type == "ORCID":
                     normalize_orcid(body, field)
-                if field.id_type == 'ISSN':
+                if field.id_type == "ISSN":
                     normalize_issn(body, field)
-                if field.id_type == 'DOI':
+                if field.id_type == "DOI":
                     normalize_doi(body, field)
-                if field.id_type == 'free_text':
+                if field.id_type == "free_text":
                     normalize_free_text(body, field)
 
 
@@ -177,11 +184,18 @@ def add_incorrectlyIdentifiedBy(body, field_events):
     for id_type in field_events.values():
         for field in id_type.values():
             # For the _invalid_ fields, we (sometimes) want to add them under incorrectlyIdentifiedBy
-            if field.validation_status != 'valid' and field.id_type in ["DOI", "ISBN", "ISI", "ISSN"]:
-                parentPath = ".".join(field.path.split(".")[:-3]) # strip away ".identifiedBy.[0].value" (3 items)
+            if field.validation_status != "valid" and field.id_type in [
+                "DOI",
+                "ISBN",
+                "ISI",
+                "ISSN",
+            ]:
+                # strip away ".identifiedBy.[0].value" (3 items)
+                parentPath = ".".join(field.path.split(".")[:-3])
+
                 parent = get_at_path(body, parentPath)
-                incorrectlyIdentifiedByEntity = {"@type":field.id_type, "value": field.value}
-                if not "incorrectlyIdentifiedBy" in parent:
+                incorrectlyIdentifiedByEntity = {"@type": field.id_type, "value": field.value}
+                if "incorrectlyIdentifiedBy" not in parent:
                     parent["incorrectlyIdentifiedBy"] = [incorrectlyIdentifiedByEntity]
                 else:
                     parent["incorrectlyIdentifiedBy"] += incorrectlyIdentifiedByEntity
@@ -192,7 +206,7 @@ def add_incorrectlyIdentifiedBy(body, field_events):
 def censor_invalid_orcids(body, field_events):
     for id_type in field_events.values():
         for field in id_type.values():
-            if field.validation_status != 'valid' and field.id_type == "ORCID":
+            if field.validation_status != "valid" and field.id_type == "ORCID":
                 update_at_path(body, field.path, "[redacted]")
 
 
@@ -204,10 +218,10 @@ def get_clean_events(field_events):
         for path, values in paths.items():
             if values.events:
                 events_only[id_type][path] = {
-                    'events': values.events,
-                    'normalization_status': values.normalization_status,
-                    'validation_status': values.validation_status,
-                    'enrichment_status': values.enrichment_status
+                    "events": values.events,
+                    "normalization_status": values.normalization_status,
+                    "validation_status": values.validation_status,
+                    "enrichment_status": values.enrichment_status,
                 }
     return events_only
 
@@ -222,7 +236,9 @@ def validate(body, harvest_cache, session):
             if match.value:
                 if not field_events.get(id_type):
                     field_events[id_type] = {}
-                field_events[id_type][str(match.full_path)] = FieldMeta(str(match.full_path), id_type, match.value)
+                field_events[id_type][str(match.full_path)] = FieldMeta(
+                    str(match.full_path), id_type, match.value
+                )
 
     validate_stuff(field_events, session, harvest_cache)
     enrich_stuff(body, field_events)

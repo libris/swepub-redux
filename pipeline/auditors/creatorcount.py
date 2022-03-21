@@ -1,5 +1,6 @@
 from pipeline.auditors import BaseAuditor
 
+
 class CreatorCountAuditor(BaseAuditor):
     """A class used to verify existance and value of CreatorCount."""
 
@@ -13,23 +14,19 @@ class CreatorCountAuditor(BaseAuditor):
         if creator_count is not None:
             cc_exists = True
 
-        code = 'creator_count_note_exists'
-        new_audit_events = self._add_audit_event(
-            audit_events, code, cc_exists)
+        code = "creator_count_note_exists"
+        new_audit_events = self._add_audit_event(audit_events, code, cc_exists)
 
         if creator_count:
             is_valid_count = True
             actual_creator_count = publication.count_creators()
             if actual_creator_count > creator_count:
                 is_valid_count = False
-                msg = (f'Invalid CreatorCount: was {creator_count}, '
-                       f'expected at least {actual_creator_count}')
         else:
             is_valid_count = False
 
-        code = 'creator_count_check'
-        new_audit_events = self._add_audit_event(
-            new_audit_events, code, is_valid_count)
+        code = "creator_count_check"
+        new_audit_events = self._add_audit_event(new_audit_events, code, is_valid_count)
 
         return publication, new_audit_events
 

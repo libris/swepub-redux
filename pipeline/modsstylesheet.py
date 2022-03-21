@@ -25,13 +25,14 @@ class ModsStylesheet:
         except lxml.etree.XMLSyntaxError:
             print(
                 f'Failed to parse XML from "{self.url}" for stylesheet '
-                'transform. Continuing harvest without transform, even though '
-                'a stylesheet to be applied exists.', file=sys.stderr
+                "transform. Continuing harvest without transform, even though "
+                "a stylesheet to be applied exists.",
+                file=sys.stderr,
             )
             return raw_xml
         transform = et.XSLT(self.stylesheet)
         transformed_xml = transform(parsed_xml)
-        return et.tostring(transformed_xml, encoding='unicode')
+        return et.tostring(transformed_xml, encoding="unicode")
 
     def get_stylesheet(self):
         if self.parsed_stylesheets.get(self.url):
@@ -45,12 +46,18 @@ class ModsStylesheet:
         self._add_to_cache()
 
     def _get_xsl_file_path(self):
-        xsl = path.join(path.dirname(path.abspath(__file__)), f'../resources/modsstylesheet/{self.code}_stylesheet.xml')
+        xsl = path.join(
+            path.dirname(path.abspath(__file__)),
+            f"../resources/modsstylesheet/{self.code}_stylesheet.xml",
+        )
         if path.isfile(xsl):
             return xsl
 
-        if 'diva' in self.url:
-            return path.join(path.dirname(path.abspath(__file__)), '../resources/modsstylesheet/general_stylesheet.xml')
+        if "diva" in self.url:
+            return path.join(
+                path.dirname(path.abspath(__file__)),
+                "../resources/modsstylesheet/general_stylesheet.xml",
+            )
 
         return None
 
@@ -61,4 +68,4 @@ class ModsStylesheet:
 
     def _add_to_cache(self):
         self.parsed_stylesheets[self.url] = self.stylesheet
-        #print('Stylesheet for "{}" added to cache'.format(self.url))
+        # print('Stylesheet for "{}" added to cache'.format(self.url))

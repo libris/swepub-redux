@@ -18,18 +18,28 @@ from argparse import ArgumentParser
 import traceback
 
 import orjson as json
+import requests
 
+from pipeline import sickle
 from pipeline.autoclassify import auto_classify
 from pipeline.merge import merge
 from pipeline.convert import convert
 from pipeline.deduplicate import deduplicate
-from pipeline.storage import *
+from pipeline.storage import (
+    clean_and_init_storage,
+    store_original,
+    store_converted,
+    get_connection,
+    storage_exists,
+    get_sqlite_path,
+)
 from pipeline.index import generate_search_tables
 from pipeline.stats import generate_processing_stats
-from pipeline.oai import *
+from pipeline.oai import RecordIterator
 from pipeline.validate import validate, should_be_rejected
 from pipeline.audit import audit
 from pipeline.legacy_sync import legacy_sync
+
 # To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..
 from pipeline.swepublog import logger as log
 from pipeline.util import chunker
@@ -38,22 +48,33 @@ DEFAULT_SWEPUB_ENV = getenv("SWEPUB_ENV", "DEV")  # or QA, PROD
 FILE_PATH = path.dirname(path.abspath(__file__))
 DEFAULT_SWEPUB_DB = path.join(FILE_PATH, "../swepub.sqlite3")
 
-CACHE_DIR = path.join(FILE_PATH, '../cache/')
+CACHE_DIR = path.join(FILE_PATH, "../cache/")
 
-SWEPUB_DOAB_URL = getenv("SWEPUB_DOAB_URL", "https://directory.doabooks.org/download-export?format=csv")
-DOAB_CACHE_FILE = path.join(FILE_PATH, '../cache/doab.json')
+SWEPUB_DOAB_URL = getenv(
+    "SWEPUB_DOAB_URL", "https://directory.doabooks.org/download-export?format=csv"
+)
+DOAB_CACHE_FILE = path.join(FILE_PATH, "../cache/doab.json")
 DOAB_CACHE_TIME = 604800
 
 ID_CACHE_FILE = path.join(FILE_PATH, "../cache/id_cache.json")
 KNOWN_ISSN_FILE = path.join(FILE_PATH, "../resources/known_valid_issn.txt")
 KNOWN_DOI_FILE = path.join(FILE_PATH, "../resources/known_valid_doi.txt")
 
-DEFAULT_SWEPUB_SOURCE_FILE = path.join(FILE_PATH, '../resources/sources.json')
+DEFAULT_SWEPUB_SOURCE_FILE = path.join(FILE_PATH, "../resources/sources.json")
 TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = [
-    "cluster", "finalized",
-    "search_single", "search_doi", "search_genre_form",
-    "search_subject", "search_creator", "search_org", "search_fulltext",
-    "stats_field_events", "stats_audit_events", "stats_converted", "stats_ssif_1"
+    "cluster",
+    "finalized",
+    "search_single",
+    "search_doi",
+    "search_genre_form",
+    "search_subject",
+    "search_creator",
+    "search_org",
+    "search_fulltext",
+    "stats_field_events",
+    "stats_audit_events",
+    "stats_converted",
+    "stats_ssif_1",
 ]
 
 
@@ -95,7 +116,7 @@ def harvest(source):
             cur = con.cursor()
             cur.execute(
                 "SELECT strftime('%Y-%m-%dT%H:%M:%SZ', last_successful_harvest) from last_harvest WHERE source = ?",
-                (source["code"],)
+                (source["code"],),
             )
             rows = cur.fetchall()
             if rows:
@@ -103,15 +124,17 @@ def harvest(source):
 
     start_time = time.time()
     harvest_id = str(uuid.uuid4())
-    harvest_cache['meta'][harvest_id] = [0, 0]  # for keeping track of records accepted / rejected
+    harvest_cache["meta"][harvest_id] = [0, 0]  # for keeping track of records accepted / rejected
     harvest_succeeded = True
 
     with get_connection() as con:
         cur = con.cursor()
         lock.acquire()
         try:
-            cur.execute("INSERT INTO harvest_history(id, source, harvest_start) VALUES (?, ?, ?)",
-                        (harvest_id, source["code"], datetime.now(timezone.utc).isoformat()))
+            cur.execute(
+                "INSERT INTO harvest_history(id, source, harvest_start) VALUES (?, ?, ?)",
+                (harvest_id, source["code"], datetime.now(timezone.utc).isoformat()),
+            )
             con.commit()
         finally:
             lock.release()
@@ -123,8 +146,18 @@ def harvest(source):
         record_iterator = RecordIterator(source["code"], source_set, fromtime, None)
         # For each set we put records into batches and let a number of workers handle these batches.
         try:
-            with ProcessPoolExecutor(max_workers=4, initializer=init, initargs=(lock, harvest_cache, added_converted_rowids, log, incremental,)) as executor:
-                #fromtime = "2020-05-05T00:00:00Z"  # Only while debugging, use to force FROM date to get some incremental test data.
+            with ProcessPoolExecutor(
+                max_workers=4,
+                initializer=init,
+                initargs=(
+                    lock,
+                    harvest_cache,
+                    added_converted_rowids,
+                    log,
+                    incremental,
+                ),
+            ) as executor:
+                # fromtime = "2020-05-05T00:00:00Z"  # Only while debugging, use to force FROM date to get some incremental test data.
                 batch = []
                 for record in record_iterator:
                     if record.is_successful():
@@ -132,11 +165,18 @@ def harvest(source):
                         if len(batch) >= 128:
                             # Partial to add additional arguments to threaded_handle_harvested.
                             # Note: `batch` will appear as the _last_ argument.
-                            func = partial(threaded_handle_harvested, source["code"], source_set["subset"], harvest_id)
+                            func = partial(
+                                threaded_handle_harvested,
+                                source["code"],
+                                source_set["subset"],
+                                harvest_id,
+                            )
                             executor.submit(func, batch)
                             batch = []
                         record_count += 1
-                func = partial(threaded_handle_harvested, source["code"], source_set["subset"], harvest_id)
+                func = partial(
+                    threaded_handle_harvested, source["code"], source_set["subset"], harvest_id
+                )
                 executor.submit(func, batch)
                 executor.shutdown(wait=True)
 
@@ -147,7 +187,9 @@ def harvest(source):
                 obsolete_ids = []
                 with get_connection() as con:
                     cur = con.cursor()
-                    for original_id_row in cur.execute("SELECT oai_id FROM original WHERE source = ?", (source["code"],)):
+                    for original_id_row in cur.execute(
+                        "SELECT oai_id FROM original WHERE source = ?", (source["code"],)
+                    ):
                         existing_oai_id = original_id_row[0]
                         if existing_oai_id not in all_source_ids:
                             obsolete_ids.append(existing_oai_id)
@@ -158,12 +200,17 @@ def harvest(source):
                         # (2020-05-22) or 32766 for SQLite versions after 3.32.0."). So, we do it by chunks.
                         try:
                             for group in chunker(obsolete_ids, 100):
-                                cur.execute(f"""
+                                cur.execute(
+                                    f"""
                                 DELETE FROM
                                     original
                                 WHERE oai_id IN ({','.join('?'*len(group))});
-                                """, group)
-                            log.info(f"Deleted {len(obsolete_ids)} obsolete records from {source['code']}, after checking their ID list.")
+                                """,
+                                    group,
+                                )
+                            log.info(
+                                f"Deleted {len(obsolete_ids)} obsolete records from {source['code']}, after checking their ID list."
+                            )
                             con.commit()
                         finally:
                             lock.release()
@@ -174,34 +221,49 @@ def harvest(source):
             harvest_cache["meta"]["sources_failed"].append(source["code"])
             harvest_succeeded = False
 
-    num_accepted, num_rejected = harvest_cache['meta'][harvest_id]
+    num_accepted, num_rejected = harvest_cache["meta"][harvest_id]
     with get_connection() as con:
         cur = con.cursor()
         lock.acquire()
         try:
             if harvest_succeeded:
-                cur.execute("""
+                cur.execute(
+                    """
                 INSERT INTO last_harvest(source, last_successful_harvest) VALUES (?, ?)
-                ON CONFLICT(source) DO UPDATE SET last_successful_harvest = ?;""", (source["code"], harvest_start, harvest_start))
+                ON CONFLICT(source) DO UPDATE SET last_successful_harvest = ?;""",
+                    (source["code"], harvest_start, harvest_start),
+                )
 
-            cur.execute("""
+            cur.execute(
+                """
             UPDATE
                 harvest_history
             SET
                 harvest_completed = ?, successes = ?, rejected = ?, harvest_succeeded = ?
             WHERE
                 id = ?""",
-            (datetime.now(timezone.utc).isoformat(), num_accepted, num_rejected, harvest_succeeded, harvest_id))
+                (
+                    datetime.now(timezone.utc).isoformat(),
+                    num_accepted,
+                    num_rejected,
+                    harvest_succeeded,
+                    harvest_id,
+                ),
+            )
             con.commit()
         finally:
             lock.release()
 
     finish_time = time.time()
-    record_per_s = round(record_count / (finish_time-start_time), 2)
+    record_per_s = round(record_count / (finish_time - start_time), 2)
     if harvest_succeeded:
-        log.info(f'[FINISHED]\t{source["code"]} ({round(finish_time-start_time, 2)} seconds, {record_count} records, {record_per_s} records/s)')
+        log.info(
+            f'[FINISHED]\t{source["code"]} ({round(finish_time-start_time, 2)} seconds, {record_count} records, {record_per_s} records/s)'
+        )
     else:
-        log.info(f'[ABORTED]\t{source["code"]} ({round(finish_time-start_time, 2)} seconds, {record_count} records, {record_per_s} records/s)')
+        log.info(
+            f'[ABORTED]\t{source["code"]} ({round(finish_time-start_time, 2)} seconds, {record_count} records, {record_per_s} records/s)'
+        )
     return harvest_succeeded
 
 
@@ -240,7 +302,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, batch):
                         connection,
                         incremental,
                         min_level_errors,
-                        harvest_id
+                        harvest_id,
                     )
                     if accepted:
                         converted_rowid = store_converted(
@@ -249,7 +311,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, batch):
                             audit_events.data,
                             field_events,
                             record_info,
-                            connection
+                            connection,
                         )
                         converted_rowids.append(converted_rowid)
             except Exception as e:
@@ -261,9 +323,9 @@ def threaded_handle_harvested(source, source_subset, harvest_id, batch):
         for rowid in converted_rowids:
             added_converted_rowids[rowid] = None
 
-    harvest_cache['meta'][harvest_id] = [
-        harvest_cache['meta'][harvest_id][0] + num_accepted,
-        harvest_cache['meta'][harvest_id][1] + num_rejected
+    harvest_cache["meta"][harvest_id] = [
+        harvest_cache["meta"][harvest_id][0] + num_accepted,
+        harvest_cache["meta"][harvest_id][1] + num_rejected,
     ]
 
 
@@ -276,7 +338,7 @@ def _get_source_ids(source_set):
     }
     if source_set["subset"]:
         list_ids_params["set"] = source_set["subset"]
-    headers = sickle_client.ListIdentifiers(** list_ids_params)
+    headers = sickle_client.ListIdentifiers(**list_ids_params)
     for header in headers:
         source_ids.add(header.identifier)
     return source_ids
@@ -290,28 +352,30 @@ def _get_has_persistent_deletes(source_set):
 
 def _load_doab():
     doab_data = {}
-    if Path(DOAB_CACHE_FILE).is_file() and (time.time() - path.getmtime(DOAB_CACHE_FILE) < DOAB_CACHE_TIME):
+    if Path(DOAB_CACHE_FILE).is_file() and (
+        time.time() - path.getmtime(DOAB_CACHE_FILE) < DOAB_CACHE_TIME
+    ):
         log.info(f"DOAB data still fresh enough (< {DOAB_CACHE_TIME} seconds), not refreshing")
-        with open(DOAB_CACHE_FILE, 'rb') as f:
+        with open(DOAB_CACHE_FILE, "rb") as f:
             doab_data = json.loads(f.read())
     else:
         try:
             log.info("Refreshing DOAB data")
             with closing(requests.get(SWEPUB_DOAB_URL, stream=True, timeout=30)) as r:
-                reader = csv.DictReader(codecs.iterdecode(r.iter_lines(), 'utf-8'), delimiter=',')
+                reader = csv.DictReader(codecs.iterdecode(r.iter_lines(), "utf-8"), delimiter=",")
                 for idx, row in enumerate(reader, 1):
-                    if row['oapen.relation.isbn']:
-                        for isbn in re.split(r';|\|\|', row['oapen.relation.isbn']):
+                    if row["oapen.relation.isbn"]:
+                        for isbn in re.split(r";|\|\|", row["oapen.relation.isbn"]):
                             if len(isbn) > 9:  # sanity check
-                                cleaned_isbn = isbn.strip().replace('-', '')
-                                doab_data[cleaned_isbn] = row['BITSTREAM Download URL']
-                    if row['oapen.identifier.doi']:
-                        for doi in row['oapen.identifier.doi'].split('||'):
-                            if '10.' in doi:
-                                cleaned_doi = doi[doi.find('10.'):]
-                                if '/' in cleaned_doi and len(cleaned_doi) > 5:
-                                    doab_data[cleaned_doi] = row['BITSTREAM Download URL']
-            with open(DOAB_CACHE_FILE, 'wb') as f:
+                                cleaned_isbn = isbn.strip().replace("-", "")
+                                doab_data[cleaned_isbn] = row["BITSTREAM Download URL"]
+                    if row["oapen.identifier.doi"]:
+                        for doi in row["oapen.identifier.doi"].split("||"):
+                            if "10." in doi:
+                                cleaned_doi = doi[doi.find("10.") :]
+                                if "/" in cleaned_doi and len(cleaned_doi) > 5:
+                                    doab_data[cleaned_doi] = row["BITSTREAM Download URL"]
+            with open(DOAB_CACHE_FILE, "wb") as f:
                 f.write(json.dumps(doab_data))
         except Exception as e:
             log.warning(f"Failed reading DOAB data: {e}")
@@ -331,9 +395,11 @@ def _get_harvest_cache_manager(manager):
     # cache file is missing/corrupt/whatever.
     previously_validated_ids = {"doi": {}, "issn": {}}
     try:
-        with open(ID_CACHE_FILE, 'rb') as f:
+        with open(ID_CACHE_FILE, "rb") as f:
             previously_validated_ids = json.loads(f.read())
-        log.info(f"Cache populated with {len(previously_validated_ids)} previously validated IDs from {ID_CACHE_FILE}")
+        log.info(
+            f"Cache populated with {len(previously_validated_ids)} previously validated IDs from {ID_CACHE_FILE}"
+        )
     except FileNotFoundError:
         log.warning("ID cache file not found, starting fresh")
     except Exception as e:
@@ -343,7 +409,7 @@ def _get_harvest_cache_manager(manager):
     known_issn = {}
     known_doi = {}
     try:
-        with open(KNOWN_ISSN_FILE, 'r') as issn, open(KNOWN_DOI_FILE, 'r') as doi:
+        with open(KNOWN_ISSN_FILE, "r") as issn, open(KNOWN_DOI_FILE, "r") as doi:
             issn_count = 0
             doi_count = 0
             for line in issn:
@@ -352,7 +418,9 @@ def _get_harvest_cache_manager(manager):
             for line in doi:
                 known_doi[line.strip()] = 1
                 doi_count += 1
-            log.info(f"Cache populated with {issn_count} ISSNs from {KNOWN_ISSN_FILE}, {doi_count} DOIs from {KNOWN_DOI_FILE}")
+            log.info(
+                f"Cache populated with {issn_count} ISSNs from {KNOWN_ISSN_FILE}, {doi_count} DOIs from {KNOWN_DOI_FILE}"
+            )
     except Exception as e:
         log.warning(f"Failed loading ISSN/DOI files: {e}")
     # Stuff seen during requests to external sources should be saved for future use,
@@ -368,14 +436,16 @@ def _get_harvest_cache_manager(manager):
     harvest_meta = manager.dict({})
     doab = manager.dict(_load_doab())
 
-    return manager.dict({
-        'doi_new': doi_new,
-        'doi_static': doi_static,
-        'issn_new': issn_new,
-        'issn_static': issn_static,
-        'meta': harvest_meta,
-        'doab': doab
-    })
+    return manager.dict(
+        {
+            "doi_new": doi_new,
+            "doi_static": doi_static,
+            "issn_new": issn_new,
+            "issn_static": issn_static,
+            "meta": harvest_meta,
+            "doab": doab,
+        }
+    )
 
 
 def init(l, c, a, lg, inc):
@@ -395,23 +465,45 @@ def handle_args():
     parser = ArgumentParser()
 
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("-f", "--force-new", action="store_false",
-                       help="Forcibly creates a new database, removing the existing one if one exists as the given path")
-    group.add_argument("-u", "--update", action="store_true",
-                       help="Updates sources incrementally. Creates database and harvests from the beginning if the database doesn't already exist.")
-    group.add_argument("-p", "--purge", action="store_true",
-                       help="Delete records (from specified sources, if sources are specified, otherwise everything (but harvest history is kept)")
+    group.add_argument(
+        "-f",
+        "--force-new",
+        action="store_false",
+        help="Forcibly creates a new database, removing the existing one if one exists as the given path",
+    )
+    group.add_argument(
+        "-u",
+        "--update",
+        action="store_true",
+        help="Updates sources incrementally. Creates database and harvests from the beginning if the database doesn't already exist.",
+    )
+    group.add_argument(
+        "-p",
+        "--purge",
+        action="store_true",
+        help="Delete records (from specified sources, if sources are specified, otherwise everything (but harvest history is kept)",
+    )
 
-    parser.add_argument("-d", "--database", default="swepub.sqlite3",
-                        help="Path to sqlite3 database (to be created or updated; overrides SWEPUB_DB)")
-    parser.add_argument("-e", "--env", default=None,
-                        help="One of DEV, QA, PROD (default DEV). Overrides SWEPUB_ENV.")
-    parser.add_argument("--skip-unpaywall", action="store_true",
-                        help="Skip Unpaywall check")
-    parser.add_argument("-s", "--source-file", default=None,
-                        help="Source file to use.")
-    parser.add_argument("source", nargs="*", default="",
-                        help="Source(s) to process (if not specified, everything in sources.json will be processed, e.g. uniarts ths mdh")
+    parser.add_argument(
+        "-d",
+        "--database",
+        default="swepub.sqlite3",
+        help="Path to sqlite3 database (to be created or updated; overrides SWEPUB_DB)",
+    )
+    parser.add_argument(
+        "-e",
+        "--env",
+        default=None,
+        help="One of DEV, QA, PROD (default DEV). Overrides SWEPUB_ENV.",
+    )
+    parser.add_argument("--skip-unpaywall", action="store_true", help="Skip Unpaywall check")
+    parser.add_argument("-s", "--source-file", default=None, help="Source file to use.")
+    parser.add_argument(
+        "source",
+        nargs="*",
+        default="",
+        help="Source(s) to process (if not specified, everything in sources.json will be processed, e.g. uniarts ths mdh",
+    )
 
     return parser.parse_args()
 
@@ -439,7 +531,6 @@ if __name__ == "__main__":
 
     sources = load(open(environ["SWEPUB_SOURCE_FILE"]))
 
-
     # The Unpaywall mirror is not accessible from the public Internet, so for local testing one might want to avoid it
     if args.skip_unpaywall:
         environ["SWEPUB_SKIP_UNPAYWALL"] = "1"
@@ -459,36 +550,46 @@ if __name__ == "__main__":
                 log.error(f"Source {code} does not exist in {environ['SWEPUB_SOURCE_FILE']}")
                 sys.exit(1)
             # Some sources should have different URIs/settings for different environments
-            sources[code]["sets"][:] = [item for item in sources[code]["sets"] if getenv("SWEPUB_ENV") in item.get("envs", []) or "envs" not in item]
+            sources[code]["sets"][:] = [
+                item
+                for item in sources[code]["sets"]
+                if getenv("SWEPUB_ENV") in item.get("envs", []) or "envs" not in item
+            ]
             sources_to_process.append(sources[code])
     else:
         for source in sources.values():
-            source["sets"][:] = [item for item in source["sets"] if getenv("SWEPUB_ENV") in item.get("envs", []) or "envs" not in item]
+            source["sets"][:] = [
+                item
+                for item in source["sets"]
+                if getenv("SWEPUB_ENV") in item.get("envs", []) or "envs" not in item
+            ]
             sources_to_process.append(source)
 
     harvest_cache = None
     t1 = None
     # If we're purging we skip the harvesting and auto-classification phases but do the rest.
     if args.purge:
-        log.info("Purging " + " ".join([source['code'] for source in sources_to_process]))
+        log.info("Purging " + " ".join([source["code"] for source in sources_to_process]))
         with get_connection() as connection:
             cursor = connection.cursor()
             for source in sources_to_process:
-                cursor.execute("DELETE FROM original WHERE source = ?", [source['code']])
-                cursor.execute("DELETE FROM last_harvest WHERE source = ?", [source['code']])
+                cursor.execute("DELETE FROM original WHERE source = ?", [source["code"]])
+                cursor.execute("DELETE FROM last_harvest WHERE source = ?", [source["code"]])
             for table in TABLES_DELETED_ON_INCREMENTAL_OR_PURGE:
                 cursor.execute(f"DELETE FROM {table}")
     else:
         # All harvest jobs have access to the same Manager-managed dictionaries
         manager = Manager()
         harvest_cache = _get_harvest_cache_manager(manager)
-        harvest_cache["meta"]["sources_to_go"] = manager.list([source['code'] for source in sources_to_process])
+        harvest_cache["meta"]["sources_to_go"] = manager.list(
+            [source["code"] for source in sources_to_process]
+        )
         harvest_cache["meta"]["sources_in_progress"] = manager.list()
         harvest_cache["meta"]["sources_succeeded"] = manager.list()
         harvest_cache["meta"]["sources_failed"] = manager.list()
         added_converted_rowids = manager.dict()
 
-        log.info("Harvesting " + " ".join([source['code'] for source in sources_to_process]))
+        log.info("Harvesting " + " ".join([source["code"] for source in sources_to_process]))
 
         t0 = time.time()
         if incremental:
@@ -514,50 +615,60 @@ if __name__ == "__main__":
         # Having many processes going at once is not a liability in terms of overhead.
         # Context switching is a cost payed per core, not per thread/process.
         max_workers = max(psutil.cpu_count(logical=True) * 2, 8)
-        with ProcessPoolExecutor(max_workers=max_workers, initializer=init, initargs=(lock, harvest_cache, added_converted_rowids, log, incremental,)) as executor:
+        with ProcessPoolExecutor(
+            max_workers=max_workers,
+            initializer=init,
+            initargs=(
+                lock,
+                harvest_cache,
+                added_converted_rowids,
+                log,
+                incremental,
+            ),
+        ) as executor:
             for source in sources_to_process:
                 executor.submit(harvest_wrapper, source)
             executor.shutdown(wait=True)
 
         t1 = time.time()
-        diff = round(t1-t0, 2)
+        diff = round(t1 - t0, 2)
         log.info(f"Phase 1 (harvesting) ran for {diff} seconds")
 
         t0 = t1
         auto_classify(incremental, added_converted_rowids.keys())
         t1 = time.time()
-        diff = round(t1-t0, 2)
+        diff = round(t1 - t0, 2)
         log.info(f"Phase 2 (auto-classification) ran for {diff} seconds")
 
     t0 = t1 if t1 else time.time()
     deduplicate()
     t1 = time.time()
-    diff = round(t1-t0, 2)
+    diff = round(t1 - t0, 2)
     log.info(f"Phase 3 (deduplication) ran for {diff} seconds")
 
     t0 = t1
     merge()
     t1 = time.time()
-    diff = round(t1-t0, 2)
+    diff = round(t1 - t0, 2)
     log.info(f"Phase 4 (merging) ran for {diff} seconds")
 
     t0 = t1
     generate_search_tables()
     t1 = time.time()
-    diff = round(t1-t0, 2)
+    diff = round(t1 - t0, 2)
     log.info(f"Phase 5 (generate search tables) ran for {diff} seconds")
 
     t0 = t1
     generate_processing_stats()
     t1 = time.time()
-    diff = round(t1-t0, 2)
+    diff = round(t1 - t0, 2)
     log.info(f"Phase 6 (generate processing stats) ran for {diff} seconds")
 
     if environ.get("SWEPUB_LEGACY_SEARCH_DATABASE"):
         t0 = t1
         legacy_sync()
         t1 = time.time()
-        diff = round(t1-t0, 2)
+        diff = round(t1 - t0, 2)
         log.info(f"Phase 7 (legacy search sync) ran for {diff} seconds")
 
     if harvest_cache and not args.purge:
@@ -566,8 +677,17 @@ if __name__ == "__main__":
             log.warning(f'Sources failed: {" ".join(harvest_cache["meta"]["sources_failed"])}')
         # Save ISSN/DOI cache for use next time
         try:
-            log.info(f'Saving {len(harvest_cache["issn_new"]) + len(harvest_cache["doi_new"])} cached IDs to {ID_CACHE_FILE}')
-            with open(ID_CACHE_FILE, 'wb') as f:
-                f.write(json.dumps({"doi": dict(harvest_cache['doi_new']), "issn": dict(harvest_cache["issn_new"])}))
+            log.info(
+                f'Saving {len(harvest_cache["issn_new"]) + len(harvest_cache["doi_new"])} cached IDs to {ID_CACHE_FILE}'
+            )
+            with open(ID_CACHE_FILE, "wb") as f:
+                f.write(
+                    json.dumps(
+                        {
+                            "doi": dict(harvest_cache["doi_new"]),
+                            "issn": dict(harvest_cache["issn_new"]),
+                        }
+                    )
+                )
         except Exception as e:
             log.warning(f"Failed saving harvest ID cache to {ID_CACHE_FILE}: {e}")

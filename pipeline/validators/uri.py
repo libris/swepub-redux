@@ -4,14 +4,18 @@ from pipeline.util import make_event
 
 def validate_uri(field):
     if validate_base_unicode(field.value):
-        field.events.append(make_event(type="validation", code="unicode", result="valid", value=field.value))
-        field.validation_status = 'valid'
+        field.events.append(
+            make_event(event_type="validation", code="unicode", result="valid", value=field.value)
+        )
+        field.validation_status = "valid"
         if not field.is_enriched():
-            field.enrichment_status = 'unchanged'
+            field.enrichment_status = "unchanged"
         return True
     else:
-        field.events.append(make_event(type="validation", code="unicode", result="invalid", value=field.value))
-        field.validation_status = 'invalid'
+        field.events.append(
+            make_event(event_type="validation", code="unicode", result="invalid", value=field.value)
+        )
+        field.validation_status = "invalid"
         if field.is_enriched():
-            field.enrichment_status = 'unsuccessful'
+            field.enrichment_status = "unsuccessful"
         return False

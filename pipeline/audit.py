@@ -39,27 +39,28 @@ class AuditEvents:
         """Add an audit event."""
         if name not in self._audit_events:
             self._audit_events[name] = []
-        audit_event = {'code': code, 'result': result}
+        audit_event = {"code": code, "result": result}
         if initial_value:
-            audit_event['initial_value'] = initial_value
+            audit_event["initial_value"] = initial_value
         if value:
-            audit_event['value'] = value
+            audit_event["value"] = value
         self._audit_events[name].append(audit_event)
-        #self._audit_events.append(make_audit_event(
-        #    name=name, type="audit", code=code, step=step, result=result, initial_value=initial_value
-        #))
 
     def get_event_result(self, name, code_name):
         """Get result for specific audit code or None if not found."""
         if name not in self._audit_events:
             return None
         for event in self._audit_events[name]:
-            if event['code'] == code_name:
-                return event['result']
+            if event["code"] == code_name:
+                return event["result"]
         return None
 
 
 def audit(body, harvest_cache, session):
     initial_val = (Publication(body), AuditEvents())
-    (updated_publication, audit_events) = reduce(lambda acc, auditor: auditor.audit(*acc, harvest_cache, session), auditors, initial_val)
+    (updated_publication, audit_events) = reduce(
+        lambda acc, auditor: auditor.audit(*acc, harvest_cache, session),
+        auditors,
+        initial_val,
+    )
     return updated_publication, audit_events

@@ -6,19 +6,21 @@ from lxml.etree import parse, XSLT, fromstring, LxmlError, XMLSyntaxError
 
 
 class ModsParser(object):
-    IDENTIFIER = '{http://www.openarchives.org/OAI/2.0/}identifier'
-    MODS = '{http://www.loc.gov/mods/v3}mods'
-    PARSED_XSL = parse(path.join(path.dirname(path.abspath(__file__)), '../resources/mods_to_xjsonld.xsl'))
+    IDENTIFIER = "{http://www.openarchives.org/OAI/2.0/}identifier"
+    MODS = "{http://www.loc.gov/mods/v3}mods"
+    PARSED_XSL = parse(
+        path.join(path.dirname(path.abspath(__file__)), "../resources/mods_to_xjsonld.xsl")
+    )
     _convert = XSLT(PARSED_XSL)
     match = re.compile("&(?!(#\\d+|\\w+);)")
 
     def _xjson(self, x):
-        if x.tag == 'string':
-            return ''.join([y for y in x.itertext()])
-        elif x.tag == 'array':
+        if x.tag == "string":
+            return "".join([y for y in x.itertext()])
+        elif x.tag == "array":
             return [self._xjson(y) for y in x]
-        elif x.tag == 'dict':
-            return {y.attrib['key']: self._xjson(y) for y in x}
+        elif x.tag == "dict":
+            return {y.attrib["key"]: self._xjson(y) for y in x}
 
         return None
 
@@ -26,7 +28,7 @@ class ModsParser(object):
         myid = None
         mods = None
         if encode_ampsersand:
-            elems = parse(StringIO(self.match.sub('&amp;', xml))).getroot()
+            elems = parse(StringIO(self.match.sub("&amp;", xml))).getroot()
         else:
             elems = parse(StringIO(xml)).getroot()
         for elem in elems:
@@ -52,13 +54,13 @@ class ModsParser(object):
             else:
                 doc = {}
 
-            doc['@id'] = myid
+            doc["@id"] = myid
             doc = self.strip(doc)
 
-            #return {'publication': doc, 'events': {'mods_converter_version': self.PARSED_XSL.getroot().get('version')}}
+            # return {'publication': doc, 'events': {'mods_converter_version': self.PARSED_XSL.getroot().get('version')}}
             return doc
         except (LxmlError, XMLSyntaxError) as e:
-            #logger.exception(e)
+            # logger.exception(e)
             raise e
 
     def strip(self, node):

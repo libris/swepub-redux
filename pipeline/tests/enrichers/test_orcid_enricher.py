@@ -88,9 +88,7 @@ def test_orcid_non_recoverable_values_too_short():
 def _test_orcid_enrichment(test_data, expected_result, expected_codes):
     body = {
         "instanceOf": {
-            "contribution": [
-                {"agent": {"identifiedBy": [{"@type": "ORCID", "value": test_data}]}}
-            ]
+            "contribution": [{"agent": {"identifiedBy": [{"@type": "ORCID", "value": test_data}]}}]
         }
     }
 
@@ -115,9 +113,7 @@ def _test_orcid_enrichment(test_data, expected_result, expected_codes):
 def _test_none_orcid_enrichment(test_data):
     body = {
         "instanceOf": {
-            "contribution": [
-                {"agent": {"identifiedBy": [{"@type": "ORCID", "value": test_data}]}}
-            ]
+            "contribution": [{"agent": {"identifiedBy": [{"@type": "ORCID", "value": test_data}]}}]
         }
     }
 

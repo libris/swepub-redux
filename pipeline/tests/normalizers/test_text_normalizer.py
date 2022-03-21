@@ -4,9 +4,7 @@ from pipeline.normalize import normalize_free_text
 
 def test_text_cleaner_succeeds():
     body = {
-        "instanceOf": {
-            "subject": [{"prefLabel": "<p>Performance\rEnhancement &amp; Health</p>"}]
-        }
+        "instanceOf": {"subject": [{"prefLabel": "<p>Performance\rEnhancement &amp; Health</p>"}]}
     }
 
     test_data = "<p>Performance\rEnhancement &amp; Health</p>"

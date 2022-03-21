@@ -5,13 +5,14 @@ from os import path
 from pipeline.auditors import BaseAuditor
 
 
-
-DEFAULT_FILE_PATH = path.join(path.dirname(path.abspath(__file__)), '../../resources/swedish_list.csv')
+DEFAULT_FILE_PATH = path.join(
+    path.dirname(path.abspath(__file__)), "../../resources/swedish_list.csv"
+)
 
 
 class Level(Enum):
-    PEERREVIEWED = 'https://id.kb.se/term/swepub/swedishlist/peer-reviewed'
-    NONPEERREVIEWED = 'https://id.kb.se/term/swepub/swedishlist/non-peer-reviewed'
+    PEERREVIEWED = "https://id.kb.se/term/swepub/swedishlist/peer-reviewed"
+    NONPEERREVIEWED = "https://id.kb.se/term/swepub/swedishlist/non-peer-reviewed"
 
 
 class SwedishListAuditor(BaseAuditor):
@@ -44,43 +45,41 @@ class SwedishListAuditor(BaseAuditor):
                         if level == Level.PEERREVIEWED:
                             break
 
-        if level:
-            msg = 'Setting publication level to "{}"'.format(level.value)
-        else:
-            msg = 'Publication not audited, skipping setting level'
-        #logger.info(msg, extra={'auditor': self.name})
-
         new_audit_events = self._add_audit_event(audit_events, level)
         new_publication = self._set_publication_level(publication, level)
-        return (new_publication, new_audit_events)
+        return new_publication, new_audit_events
 
     def _read_swedish_list_from_file(self):
         swedish_list = {}
         if self.file_path:
             with open(self.file_path) as csv_file:
-                csv_reader = csv.DictReader(csv_file, delimiter=';')
+                csv_reader = csv.DictReader(csv_file, delimiter=";")
                 for row in csv_reader:
                     self._parse_row(swedish_list, row)
         return swedish_list
 
     def _parse_row(self, swedish_list, row):
-        year = row['Year']
-        identifier = row['Identifier'].upper()
-        level = row['Level']
+        year = row["Year"]
+        identifier = row["Identifier"].upper()
+        level = row["Level"]
         if year not in swedish_list:
             swedish_list[year] = {}
         if identifier in swedish_list[year]:
-            #logger.warning(('Duplicate identifier/year combo for Swedish list: '
+            # logger.warning(('Duplicate identifier/year combo for Swedish list: '
             #                '{} occurred more than once for year {}').format(identifier, year))
-            print(('Duplicate identifier/year combo for Swedish list: {} occurred more than once for year {}').format(identifier, year))
+            print(
+                (
+                    "Duplicate identifier/year combo for Swedish list: {} occurred more than once for year {}"
+                ).format(identifier, year)
+            )
             exit(-1)
         swedish_list[year][identifier] = self._parse_level(level)
 
     @staticmethod
     def _parse_level(level):
-        if level == '1':
+        if level == "1":
             return Level.PEERREVIEWED
-        elif level == '0':
+        elif level == "0":
             return Level.NONPEERREVIEWED
         else:
             return None
@@ -88,8 +87,8 @@ class SwedishListAuditor(BaseAuditor):
     @staticmethod
     def _add_audit_event(audit_events, level):
         name = SwedishListAuditor.__name__
-        code = 'set_publication_level'
-        result = '0'
+        code = "set_publication_level"
+        result = "0"
         if level:
             result = level.value
         audit_events.add_event(name, code, result)
