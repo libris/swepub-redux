@@ -18,18 +18,21 @@ from flask import (
     send_from_directory,
     render_template,
 )
+from lxml.etree import LxmlError
 from pypika import Query, Tables, Parameter, Table, Criterion
 from pypika.terms import BasicCriterion
 from pypika import functions as fn
 from collections import Counter
 from tempfile import NamedTemporaryFile
 
-from service.utils import bibliometrics, xsleditor
+from service.utils import bibliometrics
 from service.utils.common import *
 from service.utils.process import *
 from service.utils.process_csv import export as process_csv_export
 from service.utils.bibliometrics_csv import export as bibliometrics_csv_export
 from service.utils.classify import enrich_subject
+
+from pipeline.convert import ModsParser
 
 FILE_PATH = path.dirname(path.abspath(__file__))
 
@@ -1209,12 +1212,17 @@ def xsl_editor():
         f = NamedTemporaryFile(mode='w')
         f.write(xslt)
         f.flush()
-        result = xsleditor.Parser(f).parse(mods)
+
+        result = {"publication": {}, "errors": []}
+        try:
+            result["publication"] = ModsParser().parse_mods(mods, encode_ampersand=True)
+        except LxmlError as e:
+            result["errors"] = [{'message': str(e)}]
         f.close()
 
         return jsonify({
-            'result': re.sub(r'(\\u[0-9A-Fa-f]{1,4})', xsleditor.unescapematch, json.dumps(result["publication"], indent=4)),
-            'error': re.sub(r'(\\u[0-9A-Fa-f]{1,4})', xsleditor.unescapematch, json.dumps(result["errors"], indent=4))
+            'result': re.sub(r'(\\u[0-9A-Fa-f]{1,4})', unescape_match, json.dumps(result["publication"], indent=4)),
+            'error': re.sub(r'(\\u[0-9A-Fa-f]{1,4})', unescape_match, json.dumps(result["errors"], indent=4))
         })
     else:
         return render_template(

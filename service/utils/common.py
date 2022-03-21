@@ -156,3 +156,11 @@ def get_base_url(request):
     if (proto == "https" and port != "443") or (proto == "http" and port != 80):
         return f"{proto}://{host}:{port}", (proto, host, port, path, netloc)
     return f"{proto}://{host}", (proto, host, port, path, netloc)
+
+
+def unescape_match(match_obj):
+    escape_sequence = match_obj.group(0)
+    digits = escape_sequence[2:]
+    ordinal = int(digits, 16)
+    char = chr(ordinal)
+    return char
