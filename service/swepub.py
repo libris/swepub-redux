@@ -18,18 +18,21 @@ from flask import (
     send_from_directory,
     render_template,
 )
+from lxml.etree import LxmlError
 from pypika import Query, Tables, Parameter, Table, Criterion
 from pypika.terms import BasicCriterion
 from pypika import functions as fn
 from collections import Counter
 from tempfile import NamedTemporaryFile
 
-from service.utils import bibliometrics, xsleditor
+from service.utils import bibliometrics
 from service.utils.common import *
 from service.utils.process import *
 from service.utils.process_csv import export as process_csv_export
 from service.utils.bibliometrics_csv import export as bibliometrics_csv_export
 from service.utils.classify import enrich_subject
+
+from pipeline.convert import ModsParser
 
 FILE_PATH = path.dirname(path.abspath(__file__))
 
@@ -58,21 +61,21 @@ INFO_API_MAPPINGS = sort_mappings(
         )
     )
 )
-INFO_API_OUTPUT_TYPES = json.load(
-    open(path.join(FILE_PATH, "../resources/output_types.json"))
-)
+INFO_API_OUTPUT_TYPES = json.load(open(path.join(FILE_PATH, "../resources/output_types.json")))
 
 
-DEFAULT_SWEPUB_SOURCE_FILE = path.join(FILE_PATH, '../resources/sources.json')
+DEFAULT_SWEPUB_SOURCE_FILE = path.join(FILE_PATH, "../resources/sources.json")
 SWEPUB_SOURCE_FILE = getenv("SWEPUB_SOURCE_FILE", DEFAULT_SWEPUB_SOURCE_FILE)
 
-INFO_API_SOURCE_ORG_MAPPING = json.load(
-    open(SWEPUB_SOURCE_FILE)
-)
+INFO_API_SOURCE_ORG_MAPPING = json.load(open(SWEPUB_SOURCE_FILE))
 CATEGORIES = json.load(open(path.join(FILE_PATH, "../resources/categories.json")))
 
-DEFAULT_XSLT = '\n'.join(
-    [x.strip('\n\r') for x in open(path.join(FILE_PATH, "../resources/mods_to_xjsonld.xsl")).readlines() if x.strip(' \t\n\r')]
+DEFAULT_XSLT = "\n".join(
+    [
+        x.strip("\n\r")
+        for x in open(path.join(FILE_PATH, "../resources/mods_to_xjsonld.xsl")).readlines()
+        if x.strip(" \t\n\r")
+    ]
 )
 
 # Note: static files should be served by Apache/nginx
@@ -113,12 +116,17 @@ def check_from_to(f):
         if errors:
             _errors(errors)
         return f(*args, **kwargs)
+
     return decorated_function
 
 
 @app.before_request
 def valid_source():
-    if request.view_args and "source" in request.view_args and request.view_args["source"] not in INFO_API_SOURCE_ORG_MAPPING:
+    if (
+        request.view_args
+        and "source" in request.view_args
+        and request.view_args["source"] not in INFO_API_SOURCE_ORG_MAPPING
+    ):
         _errors(["Source not found"], status_code=404)
 
 
@@ -153,7 +161,9 @@ def bibliometrics_api():
         # TODO: Ugly replacements, fix frontend
         # TODO: Genreform broader?
         genre_form = [
-            gf.strip().replace(".", "/").rstrip("/") for gf in query_data.get("genreForm", []) if len(gf.strip()) > 0
+            gf.strip().replace(".", "/").rstrip("/")
+            for gf in query_data.get("genreForm", [])
+            if len(gf.strip()) > 0
         ]
         orgs = [o.strip() for o in query_data.get("org", []) if len(o.strip()) > 0]
         title = query_data.get("title", "").replace(",", " ")
@@ -171,28 +181,18 @@ def bibliometrics_api():
             return _errors(errors)
 
         content_marking = [
-            cm.strip()
-            for cm in query_data.get("contentMarking", [])
-            if len(cm.strip()) > 0
+            cm.strip() for cm in query_data.get("contentMarking", []) if len(cm.strip()) > 0
         ]
         if len(content_marking) > 0:
             if not (all(cm in ("ref", "vet", "pop") for cm in content_marking)):
-                _errors(
-                    errors=[f"Invalid value for content marking."], status_code=400
-                )
+                _errors(errors=[f"Invalid value for content marking."], status_code=400)
 
         publication_status = [
-            ps.strip()
-            for ps in query_data.get("publicationStatus", [])
-            if len(ps.strip()) > 0
+            ps.strip() for ps in query_data.get("publicationStatus", []) if len(ps.strip()) > 0
         ]
         if len(publication_status) > 0:
-            if not all(
-                ps in ("published", "epub", "submitted") for ps in publication_status
-            ):
-                _errors(
-                    errors=[f"Invalid value for publication status."], status_code=400
-                )
+            if not all(ps in ("published", "epub", "submitted") for ps in publication_status):
+                _errors(errors=[f"Invalid value for publication status."], status_code=400)
 
         swedish_list = query_data.get("swedishList")
         open_access = query_data.get("openAccess")
@@ -204,9 +204,7 @@ def bibliometrics_api():
         person_local_id_by = query_data.get("creator", {}).get("localIdBy")
 
     except (AttributeError, ValueError, TypeError):
-        _errors(
-            errors=[f"Invalid value for json body query parameter/s."], status_code=400
-        )
+        _errors(errors=[f"Invalid value for json body query parameter/s."], status_code=400)
 
     (
         finalized,
@@ -231,10 +229,7 @@ def bibliometrics_api():
     values = []
 
     if from_yr and to_yr:
-        q = q.where(
-            (search_single.year >= Parameter("?"))
-            & (search_single.year <= Parameter("?"))
-        )
+        q = q.where((search_single.year >= Parameter("?")) & (search_single.year <= Parameter("?")))
         values.append([from_yr, to_yr])
     if swedish_list:
         q = q.where(search_single.swedish_list == 1)
@@ -245,11 +240,7 @@ def bibliometrics_api():
         "publication_status": publication_status,
     }.items():
         if value:
-            q = q.where(
-                search_single[field_name].isin(
-                    [Parameter(", ".join(["?"] * len(value)))]
-                )
-            )
+            q = q.where(search_single[field_name].isin([Parameter(", ".join(["?"] * len(value)))]))
             values.append(value)
     if any(
         [
@@ -296,9 +287,7 @@ def bibliometrics_api():
     ]:
         if param[1]:
             if isinstance(param[1], list):
-                q = q.where(
-                    param[0].value.isin([Parameter(", ".join(["?"] * len(param[1])))])
-                )
+                q = q.where(param[0].value.isin([Parameter(", ".join(["?"] * len(param[1])))]))
             else:
                 q = q.where(param[0].value == Parameter("?"))
             q = q.join(param[0]).on(finalized.id == param[0].finalized_id)
@@ -352,9 +341,7 @@ def bibliometrics_api():
 @app.route("/api/v1/bibliometrics/publications/<record_id>", methods=["GET"])
 def bibliometrics_get_record(record_id):
     cur = get_db().cursor()
-    row = cur.execute(
-        "SELECT data FROM finalized WHERE oai_id = ?", [record_id]
-    ).fetchone()
+    row = cur.execute("SELECT data FROM finalized WHERE oai_id = ?", [record_id]).fetchone()
     if not row:
         _errors(["Not Found"], status_code=404)
     doc = json.loads(row[0])
@@ -547,9 +534,15 @@ def datastatus_source(source):
     result.update(
         {
             "total": total_docs,
-            "openAccess": {"percentage": get_percentage(total_open_access, total_docs), "total": total_open_access},
+            "openAccess": {
+                "percentage": get_percentage(total_open_access, total_docs),
+                "total": total_open_access,
+            },
             "ssif": {"percentage": get_percentage(total_ssif, total_docs), "total": total_ssif},
-            "swedishList": {"percentage": get_percentage(total_swedishlist, total_docs), "total": total_swedishlist,},
+            "swedishList": {
+                "percentage": get_percentage(total_swedishlist, total_docs),
+                "total": total_swedishlist,
+            },
         }
     )
 
@@ -588,9 +581,7 @@ def datastatus_ssif_source_api(source=None):
 
     if g.from_yr and g.to_yr:
         result.update({"from": g.from_yr, "to": g.to_yr})
-        q = q.where(
-            (stats_ssif_1.date >= Parameter("?")) & (stats_ssif_1.date <= Parameter("?"))
-        )
+        q = q.where((stats_ssif_1.date >= Parameter("?")) & (stats_ssif_1.date <= Parameter("?")))
         q_total = q_total.where(
             (stats_converted.date >= Parameter("?")) & (stats_converted.date <= Parameter("?"))
         )
@@ -702,9 +693,7 @@ def info_sources():
     codes = cur.execute("SELECT DISTINCT source FROM harvest_history").fetchall()
     sources = []
     for code in codes:
-        sources.append(
-            {"name": INFO_API_SOURCE_ORG_MAPPING[code]["name"], "code": code}
-        )
+        sources.append({"name": INFO_API_SOURCE_ORG_MAPPING[code]["name"], "code": code})
     return {"sources": sources}
 
 
@@ -736,9 +725,7 @@ def process_get_original_publication(record_id=None):
         _errors(['Missing parameter: "record_id"'], status_code=400)
 
     cur = get_db().cursor()
-    row = cur.execute(
-        "SELECT data FROM original WHERE oai_id = ?", [record_id]
-    ).fetchone()
+    row = cur.execute("SELECT data FROM original WHERE oai_id = ?", [record_id]).fetchone()
     if not row:
         _errors(["Not Found"], status_code=404)
     return Response(row[0], mimetype="application/xml; charset=utf-8")
@@ -873,9 +860,7 @@ def process_get_rejected_publications(harvest_id):
                 error["labelByLang"] = labels
             error_list.append(error)
 
-        result["rejected_publications"].append(
-            {"record_id": row["oai_id"], "errors": error_list}
-        )
+        result["rejected_publications"].append({"record_id": row["oai_id"], "errors": error_list})
 
     resp = make_response(jsonify(result))
 
@@ -897,7 +882,12 @@ def process_get_rejected_publications(harvest_id):
 @app.route("/api/v1/process/<source>", methods=["GET"])
 @check_from_to
 def process_get_stats(source=None):
-    audit_labels_to_include = ['ISSN_missing_check', 'UKA_comprehensive_check', 'contributor_duplicate_check', 'creator_count_check']
+    audit_labels_to_include = [
+        "ISSN_missing_check",
+        "UKA_comprehensive_check",
+        "contributor_duplicate_check",
+        "creator_count_check",
+    ]
 
     result = {
         "code": source,
@@ -986,18 +976,12 @@ def process_get_stats(source=None):
         if row["e_unchanged"]:
             result["enrichments"][row["field_name"]]["unchanged"] = row["e_unchanged"]
         if row["e_unsuccessful"]:
-            result["enrichments"][row["field_name"]]["unsuccessful"] = row[
-                "e_unsuccessful"
-            ]
+            result["enrichments"][row["field_name"]]["unsuccessful"] = row["e_unsuccessful"]
 
         if row["n_unchanged"]:
-            result["normalizations"][row["field_name"]]["unchanged"] = row[
-                "n_unchanged"
-            ]
+            result["normalizations"][row["field_name"]]["unchanged"] = row["n_unchanged"]
         if row["n_normalized"]:
-            result["normalizations"][row["field_name"]]["normalized"] = row[
-                "n_normalized"
-            ]
+            result["normalizations"][row["field_name"]]["normalized"] = row["n_normalized"]
 
         if row["v_valid"]:
             result["validations"][row["field_name"]]["valid"] = row["v_valid"]
@@ -1031,8 +1015,7 @@ def process_get_export(source=None):
     )
     values = []
     q = (
-        Query
-        .from_(converted)
+        Query.from_(converted)
         .where(converted.source == Parameter("?"))
         .where(converted.deleted == 0)
     )
@@ -1053,15 +1036,17 @@ def process_get_export(source=None):
         )
 
     # ...and likewise for converted_audit_events
-    if selected_flags["audit"] or not any(selected_flags.values()) or "auto_classify" in selected_flags["enrichment"]:
+    if (
+        selected_flags["audit"]
+        or not any(selected_flags.values())
+        or "auto_classify" in selected_flags["enrichment"]
+    ):
         q = q.left_join(converted_audit_events).on(
             converted.id == converted_audit_events.converted_id
         )
 
     if g.from_yr and g.to_yr:
-        q = q.where(
-            (converted.date >= Parameter("?")) & (converted.date <= Parameter("?"))
-        )
+        q = q.where((converted.date >= Parameter("?")) & (converted.date <= Parameter("?")))
         values.append([g.from_yr, g.to_yr])
 
     # Specified flags should be OR'd together, so we build up a list of criteria and use
@@ -1069,14 +1054,13 @@ def process_get_export(source=None):
     criteria = []
     for flag_type, flags in selected_flags.items():
         for flag_name, flag_values in flags.items():
-            if flag_type in ["validation", "enrichment", "normalization"] and flag_name not in ["auto_classify"]:
+            if flag_type in ["validation", "enrichment", "normalization"] and flag_name not in [
+                "auto_classify"
+            ]:
                 for flag_value in flag_values:
                     criteria.append(
                         (converted_record_info.field_name == Parameter("?"))
-                        & (
-                            converted_record_info[f"{flag_type}_status"]
-                            == Parameter("?")
-                        )
+                        & (converted_record_info[f"{flag_type}_status"] == Parameter("?"))
                     )
                     values.append([flag_name, flag_value])
             if flag_type == "audit" or flag_name in ["auto_classify"]:
@@ -1086,21 +1070,19 @@ def process_get_export(source=None):
                         & (converted_audit_events.result == Parameter("?"))
                     )
                     # TODO: Fix horrible "valid"/"invalid" 0/1 confusion
-                    if flag_value == "valid" or (flag_name == "creator_count_check" and flag_value == "invalid"):
+                    if flag_value == "valid" or (
+                        flag_name == "creator_count_check" and flag_value == "invalid"
+                    ):
                         int_flag_value = 0
                     else:
                         int_flag_value = 1
                     values.append([flag_name, int_flag_value])
     q = q.where(Criterion.any(criteria))
 
-    q_total = (
-        q
-        .select(fn.Count(converted.oai_id).distinct().as_("total"))
-    )
+    q_total = q.select(fn.Count(converted.oai_id).distinct().as_("total"))
 
     q = (
-        q
-        .select(converted.oai_id)
+        q.select(converted.oai_id)
         .distinct()
         .select(converted.date, converted.data, converted.events)
     )
@@ -1125,9 +1107,7 @@ def process_get_export(source=None):
             yield f'{{"code": "{source}",' f'"hits": ['
         count = 0
         for row in cur.execute(str(q), list(flatten(values))):
-            flask_url = url_for(
-                "process_get_original_publication", record_id=row["oai_id"]
-            )
+            flask_url = url_for("process_get_original_publication", record_id=row["oai_id"])
             base_url, _parts = get_base_url(request)
             mods_url = f"{base_url}{flask_url}"
             export_result = build_export_result(
@@ -1163,9 +1143,7 @@ def process_get_export(source=None):
                 "}"
             )
 
-    resp = app.response_class(
-        stream_with_context(get_results()), mimetype=export_mimetype
-    )
+    resp = app.response_class(stream_with_context(get_results()), mimetype=export_mimetype)
 
     (prev_page, next_page) = process_get_pagination_links(
         request,
@@ -1182,10 +1160,10 @@ def process_get_export(source=None):
     return resp
 
 
-# ███╗   ███╗██╗███████╗ ██████╗   
-# ████╗ ████║██║██╔════╝██╔════╝   
-# ██╔████╔██║██║███████╗██║        
-# ██║╚██╔╝██║██║╚════██║██║        
+# ███╗   ███╗██╗███████╗ ██████╗
+# ████╗ ████║██║██╔════╝██╔════╝
+# ██╔████╔██║██║███████╗██║
+# ██║╚██╔╝██║██║╚════██║██║
 # ██║ ╚═╝ ██║██║███████║╚██████╗██╗
 # ╚═╝     ╚═╝╚═╝╚══════╝ ╚═════╝╚═╝
 
@@ -1195,32 +1173,42 @@ def api_docs():
     return send_from_directory(app.root_path, "apidocs/index.html")
 
 
-@app.route('/apidocs/<path:filename>')
+@app.route("/apidocs/<path:filename>")
 def custom_static(filename):
-    return send_from_directory(app.root_path + '/apidocs/', filename)
+    return send_from_directory(app.root_path + "/apidocs/", filename)
 
 
-@app.route('/xsleditor', methods=["GET", "POST"])
+@app.route("/xsleditor", methods=["GET", "POST"])
 def xsl_editor():
     if request.method == "POST":
-        xslt = request.form.get('xslt', '')
-        mods = request.form.get('mods', '')
+        xslt = request.form.get("xslt", "")
+        mods = request.form.get("mods", "")
 
-        f = NamedTemporaryFile(mode='w')
+        f = NamedTemporaryFile(mode="w")
         f.write(xslt)
         f.flush()
-        result = xsleditor.Parser(f).parse(mods)
+
+        result = {"publication": {}, "errors": []}
+        try:
+            result["publication"] = ModsParser().parse_mods(mods, encode_ampersand=True)
+        except LxmlError as e:
+            result["errors"] = [{"message": str(e)}]
         f.close()
 
-        return jsonify({
-            'result': re.sub(r'(\\u[0-9A-Fa-f]{1,4})', xsleditor.unescapematch, json.dumps(result["publication"], indent=4)),
-            'error': re.sub(r'(\\u[0-9A-Fa-f]{1,4})', xsleditor.unescapematch, json.dumps(result["errors"], indent=4))
-        })
-    else:
-        return render_template(
-            'xsleditor.html',
-            default_xslt=DEFAULT_XSLT
+        return jsonify(
+            {
+                "result": re.sub(
+                    r"(\\u[0-9A-Fa-f]{1,4})",
+                    unescape_match,
+                    json.dumps(result["publication"], indent=4),
+                ),
+                "error": re.sub(
+                    r"(\\u[0-9A-Fa-f]{1,4})", unescape_match, json.dumps(result["errors"], indent=4)
+                ),
+            }
         )
+    else:
+        return render_template("xsleditor.html", default_xslt=DEFAULT_XSLT)
 
 
 if __name__ == "__main__":

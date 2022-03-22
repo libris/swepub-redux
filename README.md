@@ -14,7 +14,7 @@ $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
-(Note that at the moment only Python 3.6 and 3.7 has been used for this project, later versions may also work)
+(Note that at the moment only Python 3.7 and 3.8 has been used for this project, later versions may also work)
 
 ## Pipeline
 

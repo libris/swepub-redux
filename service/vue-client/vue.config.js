@@ -5,8 +5,16 @@ process.env.VUE_APP_API_PATH = '/api/v1';
 // TODO: https://jira.kb.se/browse/SWEPUB2-619
 // process.env.VUE_APP_SWEPUB_VERSION = require('./swepub.json').version;
 
+
+// TODO: Remove this ugly workaround, introduced to make e2e tests not fail
+// due to publicPath nedding to be /app/ for Flask/nginx...
+publicPath = '/app/';
+if (['test', 'e2e'].includes(process.env.NODE_ENV)) {
+  publicPath = '/';
+}
+
 module.exports = {
-  publicPath: '/app/',
+  publicPath: publicPath,
   css: {
     loaderOptions: {
       sass: {

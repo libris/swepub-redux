@@ -41,9 +41,7 @@ def test_with_http_prefix_and_without_delimeter():
 def _test_orcid(test_data, expected_result, expected_codes):
     body = {
         "instanceOf": {
-            "contribution": [
-                {"agent": {"identifiedBy": [{"@type": "ORCID", "value": test_data}]}}
-            ]
+            "contribution": [{"agent": {"identifiedBy": [{"@type": "ORCID", "value": test_data}]}}]
         }
     }
 

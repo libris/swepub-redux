@@ -8,8 +8,8 @@ def chunker(seq, size):
 
 
 def update_at_path(root, path, new_value):
-    basepath, key = path.rsplit('.', 1)
-    found = parse(basepath).find(root)
+    base_path, key = path.rsplit('.', 1)
+    found = parse(base_path).find(root)
     parent_object = found[0].value
     #print(f"Replacing {parent_object[key]} with {new_value} at {path}")
     parent_object[key] = new_value
@@ -49,12 +49,12 @@ def remove_at_path(root, path, min_prune_level):
         prune_level += 1
 
 def add_sibling_at_path(root, path, type, value):
-    basepath, _, _ = path.rsplit('.', 2)
-    found = parse(basepath).find(root)
+    base_path, _, _ = path.rsplit('.', 2)
+    found = parse(base_path).find(root)
     found[0].value.append({"@type": type, "value": value})
     # Figure out and return the path for the new sibling (surely there is a better
     # way to do this...)
-    return f"{basepath}.[{len(found[0].value) - 1}].value"
+    return f"{base_path}.[{len(found[0].value) - 1}].value"
 
 
 def get_at_path(root, path):
@@ -96,9 +96,9 @@ def unicode_translate(input_string):
     return input_string.translate(UnicodeAsciiTranslator())
 
 
-def make_event(type=None, code=None, result=None, initial_value=None, value=None):
+def make_event(event_type=None, code=None, result=None, initial_value=None, value=None):
     result = {
-        "type": type,
+        "type": event_type,
         "code": code,
         "result": result,
         "initial_value": initial_value,
@@ -108,9 +108,9 @@ def make_event(type=None, code=None, result=None, initial_value=None, value=None
     return {k: v for k, v in result.items() if v is not None}
 
 
-def make_audit_event(type=None, code=None, result=None, initial_value=None, value=None, name=None):
+def make_audit_event(event_type=None, code=None, result=None, initial_value=None, value=None, name=None):
     return {
-        "type": type,
+        "type": event_type,
         "code": code,
         "result": result,
         "initial_value": initial_value,
@@ -213,9 +213,9 @@ def get_part_of(body):
 
 def part_of_with_title(body):
     """ Return partOf object that has @type Title, None otherwise"""
-    part_of_with_title = [p for p in get_part_of(body) if part_of_main_title(p)]
-    if len(part_of_with_title) > 0:
-        return part_of_with_title[0]
+    _part_of_with_title = [p for p in get_part_of(body) if part_of_main_title(p)]
+    if len(_part_of_with_title) > 0:
+        return _part_of_with_title[0]
     else:
         return None
 
@@ -239,14 +239,14 @@ def genre_form(body):
     return [gf for gf in genre_forms if gf]
 
 
-def get_ids(body, path, type):
-    if type:
+def get_ids(body, path, id_type):
+    if id_type:
         ids = []
         ids_array = body.get(path, [])
-        for id in ids_array:
-            if isinstance(id, dict) and id.get('@type') == type:
-                ids.append(id.get('value'))
-        return [id for id in ids if id]
+        for identifier in ids_array:
+            if isinstance(identifier, dict) and identifier.get('@type') == id_type:
+                ids.append(identifier.get('value'))
+        return [identifier for identifier in ids if identifier]
     else:
         if body.get(path):
             return body[path]
@@ -289,7 +289,7 @@ def has_same_ids(a, b):
 
 
 def get_summary(body):
-    """ Return value for instanceOf.summary[?(@.@type=="Summary")].label if exist, None otherwise """
+    """ Return value for instanceOf.summary[?(@.@type=="Summary")].label if it exists, None otherwise"""
     summary_array = body.get('instanceOf', {}).get('summary', [])
     for s in summary_array:
         if isinstance(s, dict) and s.get('@type') == 'Summary':
@@ -306,7 +306,7 @@ def get_publication_information(body):
 
 
 def get_publication_date(body):
-    """ Return value for publication[?(@.@type=="Publication")].date if exist, None otherwise """
+    """ Return value for publication[?(@.@type=="Publication")].date if it exists, None otherwise"""
     pub_info = get_publication_information(body)
     if pub_info:
         return pub_info.get("date")
@@ -314,7 +314,7 @@ def get_publication_date(body):
 
 
 def get_language(body):
-    """ Return value for instanceOf.summary[?(@.@type=="Summary")].label if exist, None otherwise """
+    """ Return value for instanceOf.summary[?(@.@type=="Summary")].label if it exists, None otherwise"""
     language_array = body.get('instanceOf', {}).get('language', [])
     for l in language_array:
         if isinstance(l, dict) and l.get('@type') == 'Language':

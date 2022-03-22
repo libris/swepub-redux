@@ -5,18 +5,18 @@ from stdnum.iso7064.mod_11_2 import is_valid
 from pipeline.validators.shared import validate_base_unicode
 from pipeline.util import make_event
 
-    # flake8: noqa W504
+# flake8: noqa W504
 orcid_regex = re.compile(
-    r'(?:(https?://orcid\.org/)?)' +  # Check for optional url prefix
-    '([0-9]{4}-?){3}' +  # Three groups of four digits delimited by hyphen
-    '([0-9]{3})' +  # Last group of three digits
-    '([0-9xX])'  # And last character that can be a digit or an x
+    r"(?:(https?://orcid\.org/)?)"
+    + "([0-9]{4}-?){3}"  # Check for optional url prefix
+    + "([0-9]{3})"  # Three groups of four digits delimited by hyphen
+    + "([0-9xX])"  # Last group of three digits  # And last character that can be a digit or an x
 )
- 
+
 
 def strip_url(orcid):
-    if orcid.startswith('http'):
-        return orcid.split('/')[-1]
+    if orcid.startswith("http"):
+        return orcid.split("/")[-1]
     return orcid
 
 
@@ -38,7 +38,7 @@ def validate_format(orcid):
 
 def validate_span(orcid):
     try:
-        orcnum = int(strip_url(orcid).replace('-', '')[:-1])
+        orcnum = int(strip_url(orcid).replace("-", "")[:-1])
         inspan = 15000000 <= orcnum <= 35000001
         if inspan:
             return True, "span"
@@ -49,24 +49,29 @@ def validate_span(orcid):
 
 
 def validate_checksum(orcid):
-    if is_valid(strip_url(orcid).upper().replace('-', '')):
+    if is_valid(strip_url(orcid).upper().replace("-", "")):
         return True, "checksum"
     else:
         return False, "checksum"
 
 
 def validate_orcid(field):
-    if field.validation_status == "invalid" and field.enrichment_status in ["unchanged", "unsuccessful"]:
+    if field.validation_status == "invalid" and field.enrichment_status in [
+        "unchanged",
+        "unsuccessful",
+    ]:
         return
 
     for validator in [validate_unicode, validate_format, validate_span, validate_checksum]:
         success, code = validator(field.value)
         if not success:
-            field.events.append(make_event(type="validation", code=code, result="invalid", value=field.value))
-            field.validation_status = 'invalid'
+            field.events.append(
+                make_event(event_type="validation", code=code, result="invalid", value=field.value)
+            )
+            field.validation_status = "invalid"
             if field.is_enriched():
-                field.enrichment_status = 'unsuccessful'
+                field.enrichment_status = "unsuccessful"
             return
-    field.validation_status = 'valid'
+    field.validation_status = "valid"
     if not field.is_enriched():
-        field.enrichment_status = 'unchanged'
+        field.enrichment_status = "unchanged"

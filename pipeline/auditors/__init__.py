@@ -1,4 +1,4 @@
-class BaseAuditor():
+class BaseAuditor:
     """
     Base class for all auditor classes.
 
@@ -7,5 +7,5 @@ class BaseAuditor():
     both.
     """
 
-    def audit(self, publication, audit_events, harvest_cache):
+    def audit(self, publication, audit_events, harvest_cache, session):
         raise NotImplementedError

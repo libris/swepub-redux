@@ -4,7 +4,6 @@ import time
 import os
 from json import load
 from os import path
-from multiprocessing import Process
 from tempfile import TemporaryDirectory
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
@@ -14,9 +13,11 @@ from dateutil.parser import parse as parse_date
 
 import orjson as json
 
-from pipeline.storage import *
+from pipeline.storage import get_connection
 
-categories = load(open(path.join(path.dirname(path.abspath(__file__)), '../resources/categories.json')))
+categories = load(
+    open(path.join(path.dirname(path.abspath(__file__)), "../resources/categories.json"))
+)
 
 
 RAW_SUMMARY_PATH = 'instanceOf.summary[?(@.@type=="Summary")]'
@@ -27,6 +28,7 @@ DATE_PATH = parse(RAW_DATE_PATH)
 
 RAW_PUBLICATION_STATUS_PATH = 'instanceOf.hasNote[?(@.@type=="PublicationStatus")].@id'
 PUBLICATION_STATUS_PATH = parse(RAW_PUBLICATION_STATUS_PATH)
+
 
 class Publication:
     def __init__(self, publication):
@@ -57,12 +59,12 @@ class Publication:
         subjects = self.subjects
         keywords = []
         for subj in subjects:
-            if 'inScheme' in subj and 'code' in subj['inScheme']:
-                code = subj['inScheme']['code']
+            if "inScheme" in subj and "code" in subj["inScheme"]:
+                code = subj["inScheme"]["code"]
                 if code == "hsv" or code == "uka.se":
                     continue
-            if 'prefLabel' in subj:
-                keywords.append(subj['prefLabel'])
+            if "prefLabel" in subj:
+                keywords.append(subj["prefLabel"])
         return keywords
 
     @property
@@ -75,7 +77,7 @@ class Publication:
 
     @property
     def subject_codes(self):
-        return [subj['@id'] for subj in self.subjects if '@id' in subj]
+        return [subj["@id"] for subj in self.subjects if "@id" in subj]
 
     @property
     def uka_swe_classification_list(self):
@@ -102,12 +104,15 @@ class Publication:
     def uka_subject_codes(self):
         uka_subject_codes = []
         for subject in self._publication.get("instanceOf", {}).get("subject", {}):
-            if subject.get("inScheme", {}).get("code", "") == "uka.se" and subject.get("@type", "") == "Topic":
+            if (
+                subject.get("inScheme", {}).get("code", "") == "uka.se"
+                and subject.get("@type", "") == "Topic"
+            ):
                 subject_code = subject.get("code", "").strip()
                 if subject_code:
                     uka_subject_codes.append(subject_code)
         return set(uka_subject_codes)
-    
+
     @property
     def year(self):
         """Return the publication year as a string or None if missing or invalid."""
@@ -115,18 +120,18 @@ class Publication:
         if len(dates) == 1 and dates[0].value:
             try:
                 parsed_date = parse_date(dates[0].value)
-                return '{}'.format(parsed_date.year)
+                return "{}".format(parsed_date.year)
             except ValueError:
                 return None
         else:
             return None
-    
+
     @property
     def summaries(self):
         """Return a list of all summaries."""
         summaries = SUMMARY_PATH.find(self._publication)
         return [summary.value for summary in summaries if summary.value]
-    
+
     @property
     def status(self):
         """Return publication status or None if missing."""
@@ -136,61 +141,58 @@ class Publication:
             return pub_statuses[0].value
         else:
             return None
-    
+
     @property
     def is_classified(self):
         """Return True if publication has at least one 3 or 5 level UKA subject."""
-        SUBJECT_PREFIX = 'https://id.kb.se/term/uka/'
+        SUBJECT_PREFIX = "https://id.kb.se/term/uka/"
         for code in self.subject_codes:
             if not code.startswith(SUBJECT_PREFIX):
                 continue
-            short = code[len(SUBJECT_PREFIX):]
+            short = code[len(SUBJECT_PREFIX) :]
             if len(short) == 3 or len(short) == 5:
                 return True
         return False
 
-
     def get_english_summary(self):
         """Get summary text in English if it exists."""
-        return self._get_lang_summary('eng')
+        return self._get_lang_summary("eng")
 
     def get_swedish_summary(self):
         """Get summary text in Swedish if it exists."""
-        return self._get_lang_summary('swe')
+        return self._get_lang_summary("swe")
 
     def _get_lang_summary(self, lang):
         """Get summary for specified language if it exists."""
         for summary in self.summaries:
-            if 'language' not in summary:
+            if "language" not in summary:
                 continue
-            if 'code' not in summary['language']:
+            if "code" not in summary["language"]:
                 continue
-            if summary['language']['code'] != lang:
+            if summary["language"]["code"] != lang:
                 continue
-            if 'label' in summary:
-                return summary['label']
+            if "label" in summary:
+                return summary["label"]
         return None
 
     def add_subjects(self, subjects):
         """Add a list of subjects to the publication.
 
         Each subject is flagged with "Autoclassified by Swepub"."""
-        if 'instanceOf' not in self._publication:
-            self._publication['instanceOf'] = {}
-        if 'subject' not in self._publication['instanceOf']:
-            self._publication['instanceOf']['subject'] = []
+        if "instanceOf" not in self._publication:
+            self._publication["instanceOf"] = {}
+        if "subject" not in self._publication["instanceOf"]:
+            self._publication["instanceOf"]["subject"] = []
         flag = "Autoclassified by Swepub"
         marked_subjects = [self._add_note(subj, flag) for subj in subjects]
-        self._publication['instanceOf']['subject'].extend(marked_subjects)
+        self._publication["instanceOf"]["subject"].extend(marked_subjects)
 
-    def _add_note(self, obj, text):
-        if 'hasNote' not in obj:
-            obj['hasNote'] = []
-        note = {
-            "@type": "Note",
-            "label": text
-        }
-        obj['hasNote'].append(note)
+    @staticmethod
+    def _add_note(obj, text):
+        if "hasNote" not in obj:
+            obj["hasNote"] = []
+        note = {"@type": "Note", "label": text}
+        obj["hasNote"].append(note)
         return obj
 
 
@@ -198,14 +200,16 @@ def _generate_occurrence_table():
     with get_connection() as connection:
         cursor = connection.cursor()
         count_per_word = {}
-        for converted_row in cursor.execute("""
+        for converted_row in cursor.execute(
+            """
         SELECT
             data
         FROM
             converted
         WHERE
             deleted = 0
-        """):
+        """
+        ):
             converted = json.loads(converted_row[0])
             publication = Publication(converted)
             strings_to_scan = []
@@ -216,34 +220,40 @@ def _generate_occurrence_table():
             strings_to_scan += publication.subtitle or ""
 
             for string in strings_to_scan:
-                words = re.findall(r'\w+', string)
+                words = re.findall(r"\w+", string)
                 for word in words:
                     if word.isnumeric():
                         continue
                     word = word.lower()
-                    if not word in count_per_word:
+                    if word not in count_per_word:
                         count_per_word[word] = 1
                     else:
                         count_per_word[word] = 1 + count_per_word[word]
         for word in count_per_word:
-            cursor.execute("""
+            cursor.execute(
+                """
             INSERT INTO abstract_total_word_counts(word, occurrences) VALUES(?, ?);
-            """, (word, count_per_word[word]) )
+            """,
+                (word, count_per_word[word]),
+            )
         connection.commit()
+
 
 def _select_rarest_words():
     with get_connection() as connection:
         cursor = connection.cursor()
         second_cursor = connection.cursor()
         third_cursor = connection.cursor()
-        for converted_row in cursor.execute("""
+        for converted_row in cursor.execute(
+            """
         SELECT
             id, data
         FROM
             converted
         WHERE
             deleted = 0
-        """):
+        """
+        ):
             converted_rowid = converted_row[0]
             converted = json.loads(converted_row[1])
             publication = Publication(converted)
@@ -251,17 +261,18 @@ def _select_rarest_words():
             for summary in converted.get("instanceOf", {}).get("summary", []):
                 strings_to_scan.append(summary.get("label", ""))
             strings_to_scan += publication.keywords
-            
+
             words_set = set()
             for string in strings_to_scan:
-                words = re.findall(r'\w+', string)
+                words = re.findall(r"\w+", string)
                 for word in words:
                     if word.isnumeric():
                         continue
                     words_set.add(word.lower())
             words = list(words_set)[0:150]
 
-            for total_count_row in second_cursor.execute(f"""
+            for total_count_row in second_cursor.execute(
+                f"""
             SELECT
                 word
             FROM
@@ -272,35 +283,46 @@ def _select_rarest_words():
                 occurrences ASC
             LIMIT
                 6;
-            """, words):
+            """,
+                words,
+            ):
                 rare_word = total_count_row[0]
-                #print(f"Writing rare word {rare_word} for id: {converted_rowid}")
-                third_cursor.execute("""
+                # print(f"Writing rare word {rare_word} for id: {converted_rowid}")
+                third_cursor.execute(
+                    """
                 INSERT INTO abstract_rarest_words(word, converted_id) VALUES(?, ?);
-                """, (rare_word, converted_rowid))
+                """,
+                    (rare_word, converted_rowid),
+                )
             connection.commit()
 
-def elligible_for_autoclassification(converted_data):
-    publication =Publication(converted_data)
+
+def eligible_for_autoclassification(converted_data):
+    publication = Publication(converted_data)
     # 1. Publication year >= 2012
-    if publication.year is None or int(publication.year) < 2012: # 2010 According to some? Old swepub uses 2012
+    if (
+        publication.year is None or int(publication.year) < 2012
+    ):  # 2010 According to some? Old swepub uses 2012
         return False
     # 2. Swe/eng abstract
     if not (publication.get_english_summary() or publication.get_swedish_summary()):
         return False
     # 3. Publication status == (Published || None)
-    if (publication.status is not None
-            and publication.status != 'https://id.kb.se/term/swepub/Published'):
+    if (
+        publication.status is not None
+        and publication.status != "https://id.kb.se/term/swepub/Published"
+    ):
         return False
     # 4. No 3-level/5-level classification
     if publication.is_classified:
         return False
     return True
 
+
 def _find_and_add_subjects():
     with get_connection() as connection:
         cursor = connection.cursor()
-    
+
         # Sqlite does not allow reading and writing to occurr concurrently. In this particular
         # case what we want to do concurrently (many in parallell!) is the query in _conc_find_subjects.
         # By writing to a temp dir, instead of directly to the database, it becomes possible to
@@ -310,17 +332,19 @@ def _find_and_add_subjects():
             file_sequence_number = 0
             with ProcessPoolExecutor(max_workers=20) as executor:
                 batch = []
-                for converted_row in cursor.execute("""
+                for converted_row in cursor.execute(
+                    """
                 SELECT
                     converted.id, converted.data
                 FROM
                     converted
                 WHERE
                     deleted = 0
-                """):
-                    if elligible_for_autoclassification(json.loads(converted_row[1])):
+                """
+                ):
+                    if eligible_for_autoclassification(json.loads(converted_row[1])):
                         batch.append(converted_row)
-                        if (len(batch) >= 256):
+                        if len(batch) >= 256:
                             func = partial(_conc_find_subjects, temp_dir, file_sequence_number)
                             executor.submit(func, batch)
                             file_sequence_number += 1
@@ -338,16 +362,19 @@ def _find_and_add_subjects():
                             break
                         jsontext = f.readline().rstrip()
 
-                        #print(f"About to write at id: {rowid}, data:\n{jsontext}")
+                        # print(f"About to write at id: {rowid}, data:\n{jsontext}")
 
-                        cursor.execute("""
+                        cursor.execute(
+                            """
                         SELECT
                             data, events
                         FROM
                             converted
                         WHERE
                             id = ? ;
-                        """, (rowid,) )
+                        """,
+                            (rowid,),
+                        )
                         row = cursor.fetchone()
                         old_publication = Publication(json.loads(row[0]))
                         events = json.loads(row[1])
@@ -363,32 +390,38 @@ def _find_and_add_subjects():
                                 "code": "auto_classify",
                                 "result": "enriched",
                                 "initial_value": initial_value,
-                                "value": value
+                                "value": value,
                             }
                         ]
 
-                        cursor.execute("""
+                        cursor.execute(
+                            """
                         UPDATE
                             converted
                         SET
                             data = ?, events = ?
                         WHERE
                             id = ? ;
-                        """, (jsontext, json.dumps(events), rowid) )
+                        """,
+                            (jsontext, json.dumps(events), rowid),
+                        )
 
-                        cursor.execute("""
+                        cursor.execute(
+                            """
                         INSERT INTO converted_audit_events
                             (converted_id, name, code, result)
                         VALUES
                             (?, ?, ?, ?);
-                        """, (rowid, "AutoclassifierAuditor", code, result) )
+                        """,
+                            (rowid, "AutoclassifierAuditor", code, result),
+                        )
                 connection.commit()
-        
+
 
 def _conc_find_subjects(temp_dir, file_sequence_number, converted_rows):
     with get_connection() as connection:
         cursor = connection.cursor()
-        
+
         # orjson's dumps() returns bytes, hence binary mode
         with open(f"{temp_dir}/{file_sequence_number}", "wb") as output:
             for converted_row in converted_rows:
@@ -402,6 +435,7 @@ def _conc_find_subjects(temp_dir, file_sequence_number, converted_rows):
                     output.write(json.dumps(new_data))
                     output.write("\n".encode())
 
+
 def find_subjects_for(converted_rowid, converted, cursor):
     level = 3
     classes = 5
@@ -409,66 +443,71 @@ def find_subjects_for(converted_rowid, converted, cursor):
     subjects = Counter()
     publication_subjects = set()
 
-    for candidate_row in cursor.execute("""
-        SELECT
-            converted.id, converted.data, group_concat(abstract_rarest_words.word, '\n')
-        FROM
-            abstract_rarest_words
-        LEFT JOIN
-            converted
-        ON
-            converted.id = abstract_rarest_words.converted_id
-        WHERE
-            abstract_rarest_words.word IN (SELECT word FROM abstract_rarest_words WHERE converted_id = ?)
-        GROUP BY
-            abstract_rarest_words.converted_id;
-        """, (converted_rowid,)):
-            candidate_rowid = candidate_row[0]
-            candidate_matched_words = []
-            if isinstance(candidate_row[2], str):
-                candidate_matched_words = candidate_row[2].split("\n")
+    for candidate_row in cursor.execute(
+        """
+    SELECT
+        converted.id, converted.data, group_concat(abstract_rarest_words.word, '\n')
+    FROM
+        abstract_rarest_words
+    LEFT JOIN
+        converted
+    ON
+        converted.id = abstract_rarest_words.converted_id
+    WHERE
+        abstract_rarest_words.word IN (SELECT word FROM abstract_rarest_words WHERE converted_id = ?)
+    GROUP BY
+        abstract_rarest_words.converted_id;
+    """,
+        (converted_rowid,),
+    ):
+        candidate_rowid = candidate_row[0]
+        candidate_matched_words = []
+        if isinstance(candidate_row[2], str):
+            candidate_matched_words = candidate_row[2].split("\n")
 
-            if candidate_rowid == converted_rowid:
+        if candidate_rowid == converted_rowid:
+            continue
+
+        # This is a vital tweaking point. How many _rare_ words do two abstracts need to share
+        # in order to be considered on the same subject? 2 seems a balanced choice. 1 "works" too,
+        # but may be a bit too aggressive (providing a bit too many false positive matches).
+        if len(candidate_matched_words) < 2:
+            continue
+
+        # print(f"Matched {converted_rowid} with {candidate_rowid} based on shared rare words: {candidate_matched_words}")
+        candidate = json.loads(candidate_row[1])
+        for subject in candidate.get("instanceOf", {}).get("subject", []):
+            try:
+                authority, subject_id = subject["inScheme"]["code"], subject["code"]
+            except KeyError:
                 continue
-            
-            # This is a vital tweaking point. How many _rare_ words do two abstracts need to share
-            # in order to be considered on the same subject? 2 seems a balanced choice. 1 "works" too,
-            # but may be a bit too aggressive (providing a bit too many false positive matches).
-            if len(candidate_matched_words) < 3:
+
+            if authority not in ("hsv", "uka.se") or len(subject_id) < level:
                 continue
 
-            #print(f"Matched {converted_rowid} with {candidate_rowid} based on shared rare words: {candidate_matched_words}")
-            candidate = json.loads(candidate_row[1])
-            for subject in candidate.get("instanceOf", {}).get("subject", []):
-                try:
-                    authority, subject_id = subject['inScheme']['code'], subject['code']
-                except KeyError:
-                    continue
-
-                if authority not in ('hsv', 'uka.se') or len(subject_id) < level:
-                    continue
-
-                publication_subjects.add(subject_id[:level])
-            score = len(candidate_matched_words)
-            for sub in publication_subjects:
-                subjects[sub] += score
+            publication_subjects.add(subject_id[:level])
+        score = len(candidate_matched_words)
+        for sub in publication_subjects:
+            subjects[sub] += score
 
     publication = Publication(converted)
     old_subject_codes = publication.uka_subject_codes
     subjects = subjects.most_common(classes)
-    new_subjects = [(subject, score) for subject, score in subjects if subject not in old_subject_codes]
+    new_subjects = [
+        (subject, score) for subject, score in subjects if subject not in old_subject_codes
+    ]
     if len(new_subjects) > 0:
         publication = Publication(converted)
-        enriched_subjects =_enrich_subject(new_subjects)
-        #print(f"enriched subjects for {converted_rowid}: {str(enriched_subjects)}")
+        enriched_subjects = _enrich_subject(new_subjects)
+        # print(f"enriched subjects for {converted_rowid}: {str(enriched_subjects)}")
 
-        LANGS = ['eng', 'swe']
+        langs = ["eng", "swe"]
         classifications = []
         for item in enriched_subjects:
-            for lang in LANGS:
+            for lang in langs:
                 if lang in item:
                     classifications.append(item[lang])
-        
+
         publication.add_subjects(classifications)
 
         return True, publication.data
@@ -483,24 +522,21 @@ def find_subjects_for(converted_rowid, converted, cursor):
         # print("\n")
     return False, None
 
+
 def _enrich_subject(subjects):
     ret = []
     for code, score in subjects:
         r = {
-            'score': score,
-            'swe': _create_subject(code, 'swe'),
-            'eng': _create_subject(code, 'eng')
+            "score": score,
+            "swe": _create_subject(code, "swe"),
+            "eng": _create_subject(code, "eng"),
         }
         ret += [r]
     return ret
 
 
 def _create_subject(code, lang):
-    category_level = {
-        1: (1, ),
-        3: (1, 3),
-        5: (1, 3, 5)
-    }
+    category_level = {1: (1,), 3: (1, 3), 5: (1, 3, 5)}
 
     return {
         "@type": "Topic",
@@ -508,30 +544,23 @@ def _create_subject(code, lang):
         "inScheme": {
             "@id": "https://id.kb.se/term/uka/",
             "@type": "ConceptScheme",
-            "code": "uka.se"
+            "code": "uka.se",
         },
         "code": code,
         "prefLabel": categories.get(code, {}).get(lang),
-        "language": {
-            "@type": "Language",
-            "@id": f"https://id.kb.se/language/{lang}",
-            "code": lang
-        },
-        "_topic_tree": [
-            categories.get(code[:x], {}).get(lang) for x in category_level[len(code)]
-        ]
+        "language": {"@type": "Language", "@id": f"https://id.kb.se/language/{lang}", "code": lang},
+        "_topic_tree": [categories.get(code[:x], {}).get(lang) for x in category_level[len(code)]],
     }
 
+
 def auto_classify(incremental, incrementally_converted_rowids):
-
     if not incremental:
-
         t0 = time.time()
         # First populate the abstract_total_word_counts table, so that we know
         # how many times each word occurs (within all combined abstracts).
         _generate_occurrence_table()
         t1 = time.time()
-        diff = round(t1-t0, 2)
+        diff = round(t1 - t0, 2)
         print(f"  auto classify 1 (counting) ran for {diff} seconds")
         t0 = t1
 
@@ -540,7 +569,7 @@ def auto_classify(incremental, incrementally_converted_rowids):
         # Put these rare words in the abstract_rarest_words table.
         _select_rarest_words()
         t1 = time.time()
-        diff = round(t1-t0, 2)
+        diff = round(t1 - t0, 2)
         print(f"  auto classify 2 (selecting) ran for {diff} seconds")
         t0 = t1
 
@@ -549,42 +578,45 @@ def auto_classify(incremental, incrementally_converted_rowids):
         # Selectively copy good subjects over
         _find_and_add_subjects()
         t1 = time.time()
-        diff = round(t1-t0, 2)
+        diff = round(t1 - t0, 2)
         print(f"  auto classify 3 (adding) ran for {diff} seconds")
-        t0 = t1
-    
     else:
-        #print(f"Should now have done peicemeal auto classication on: {incrementally_converted_rowids}")
+        # print(f"Should now have done peicemeal auto classication on: {incrementally_converted_rowids}")
         with get_connection() as connection:
             cursor = connection.cursor()
             for converted_rowid in incrementally_converted_rowids:
-                cursor.execute("""
+                cursor.execute(
+                    """
                 SELECT
                     data
                 FROM
                     converted
                 WHERE
                     id = ? AND deleted = 0
-                """, (converted_rowid,))
-                row = cursor.fetchall()[0] # Can only be one
+                """,
+                    (converted_rowid,),
+                )
+                row = cursor.fetchall()[0]  # Can only be one
                 converted = json.loads(row[0])
 
-                if elligible_for_autoclassification(converted):
+                if eligible_for_autoclassification(converted):
                     added_count, new_data = find_subjects_for(converted_rowid, converted, cursor)
                     if added_count:
-                        cursor.execute("""
+                        cursor.execute(
+                            """
                         UPDATE
                             converted
                         SET
                             data = ?
                         WHERE
                             id = ? ;
-                        """, (new_data, converted_rowid) )
-                    #else:
+                        """,
+                            (new_data, converted_rowid),
+                        )
+                    # else:
                     #    print(f"Nothing to add for {converted_rowid}")
             connection.commit()
 
-        
 
 # For debugging
 if __name__ == "__main__":

@@ -385,7 +385,8 @@ class Publication:
         genreforms.append({'@id': level.value})
         self.body['instanceOf']['genreForm'] = genreforms
 
-    def _is_unmarked(self, gform):
+    @staticmethod
+    def _is_unmarked(gform):
         levels = [Level.PEERREVIEWED.value, Level.NONPEERREVIEWED.value]
         return '@id' not in gform or gform['@id'] not in levels
 

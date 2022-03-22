@@ -71,9 +71,12 @@ LEGACY_SEARCH_DATABASE = environ.get("SWEPUB_LEGACY_SEARCH_DATABASE")
 
 def _get_mysql_connection():
     try:
-        cnx = mysql.connector.connect(user=LEGACY_SEARCH_USER, password=LEGACY_SEARCH_PASSWORD,
-                                      host=LEGACY_SEARCH_HOST,
-                                      database=LEGACY_SEARCH_DATABASE)
+        cnx = mysql.connector.connect(
+            user=LEGACY_SEARCH_USER,
+            password=LEGACY_SEARCH_PASSWORD,
+            host=LEGACY_SEARCH_HOST,
+            database=LEGACY_SEARCH_DATABASE,
+        )
         # This charset and collation is what is needed and matches table's (but is also default):
         # cnx.set_charset_collation(charset="utf8mb4", collation="utf8mb4_general_ci")
         return cnx
@@ -93,7 +96,7 @@ def _sets(xml):
     for setSpec in root.xpath("//*[local-name() = 'setSpec']"):
         sets.append(setSpec.text)
     if len(sets) > 0:
-        return ', '.join(sets)
+        return ", ".join(sets)
     return ""
 
 
@@ -113,7 +116,7 @@ def legacy_sync(hours=24):
 
         # Process records modified < `hours` ago, default < 24 hours agos
         # TODO: look at last_harvest_time (different for each source)?
-        modified_since = int(time.time()) - 60*60*hours
+        modified_since = int(time.time()) - 60 * 60 * hours
 
         # We need to INSERT/UPDATE any records that have been modified since some time ago.
         # This is done by looking at the `modified` timestamp of everything in `converted`:
@@ -128,7 +131,8 @@ def legacy_sync(hours=24):
         # a trigger that, when a record is deleted, bumps the timestamp of related records
         # in converted (related = belonging to the same cluster). See storage.py.
         counter = 0
-        for row in cur.execute("""
+        for row in cur.execute(
+            """
         SELECT
             converted.oai_id, converted.data AS converted_json, converted.source, converted.deleted, finalized.oai_id AS duplicateof, finalized.data AS finalized_json, original.data AS xml, original.source_subset, modified
         FROM
@@ -140,14 +144,20 @@ def legacy_sync(hours=24):
         LEFT JOIN finalized ON cluster.cluster_id=finalized.cluster_id
         WHERE
             converted.modified > ?
-        """, [modified_since]):
+        """,
+            [modified_since],
+        ):
             counter += 1
             if counter % 500:
                 mysql_con.commit()
 
             if row["deleted"]:
-                mysql_cur.execute("UPDATE record SET deleted=1 WHERE identifier=%s", (row["oai_id"],))
-                mysql_cur.execute("UPDATE enriched SET deleted=1 WHERE identifier=%s", (row["oai_id"],))
+                mysql_cur.execute(
+                    "UPDATE record SET deleted=1 WHERE identifier=%s", (row["oai_id"],)
+                )
+                mysql_cur.execute(
+                    "UPDATE enriched SET deleted=1 WHERE identifier=%s", (row["oai_id"],)
+                )
                 continue
 
             identifier = row["oai_id"]
@@ -174,7 +184,7 @@ def legacy_sync(hours=24):
 
             xml_data = row["xml"]
 
-            origin = row["source_subset"] # SwePub-ths
+            origin = row["source_subset"]  # SwePub-ths
             target = "SWEPUB"
             format = "swepub_mods"
             sets = _sets(xml_data)
@@ -182,29 +192,63 @@ def legacy_sync(hours=24):
             remote_timestamp = _remote_timestamp(xml_data)
             deleted = row["deleted"]
 
-            mysql_cur.execute("""
+            mysql_cur.execute(
+                """
                 INSERT INTO
                     record(identifier, origin, target, format, data, sets, timestamp, remote_timestamp, deleted)
                 VALUES
                     (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                 ON DUPLICATE KEY UPDATE
                     origin=%s, data=%s, sets=%s, timestamp=%s, remote_timestamp=%s, deleted=%s
-                """, (
-                    identifier, origin, target, format, xml_data, sets, timestamp, remote_timestamp, deleted,
-                    origin, xml_data, sets, timestamp, remote_timestamp, deleted
-                ))
+                """,
+                (
+                    identifier,
+                    origin,
+                    target,
+                    format,
+                    xml_data,
+                    sets,
+                    timestamp,
+                    remote_timestamp,
+                    deleted,
+                    origin,
+                    xml_data,
+                    sets,
+                    timestamp,
+                    remote_timestamp,
+                    deleted,
+                ),
+            )
 
-            mysql_cur.execute("""
+            mysql_cur.execute(
+                """
                 INSERT INTO
                     enriched(identifier, origin, target, format, data, sets, timestamp, remote_timestamp, deleted, duplicateof)
                 VALUES
                     (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 ON DUPLICATE KEY UPDATE
                     origin=%s, data=%s, sets=%s, timestamp=%s, remote_timestamp=%s, deleted=%s, duplicateof=%s
-                """, (
-                    identifier, origin, target, format, updated_json, sets, timestamp, remote_timestamp, deleted, duplicateof,
-                    origin, updated_json, sets, timestamp, remote_timestamp, deleted, duplicateof
-                ))
+                """,
+                (
+                    identifier,
+                    origin,
+                    target,
+                    format,
+                    updated_json,
+                    sets,
+                    timestamp,
+                    remote_timestamp,
+                    deleted,
+                    duplicateof,
+                    origin,
+                    updated_json,
+                    sets,
+                    timestamp,
+                    remote_timestamp,
+                    deleted,
+                    duplicateof,
+                ),
+            )
         mysql_con.commit()
 
 

@@ -24,9 +24,7 @@ def test_issn_with_whitespace_before_check():
 def test_issn_with_weird_signs():
     test_data = "2045â€“4902"
     expected_result = "20454902"
-    _test_issn_enrichment(
-        recover_issn, test_data, expected_result, ["unicode", "recovery"]
-    )
+    _test_issn_enrichment(recover_issn, test_data, expected_result, ["unicode", "recovery"])
 
 
 def test_issn_with_trailing_code():
@@ -44,9 +42,7 @@ def test_issn_with_text_prefix_and_no_whitespace():
 def test_issn_with_multiple_delimiter_signs_and_unicode():
     test_data = "0255 – 0644"
     expected_result = "02550644"
-    _test_issn_enrichment(
-        recover_issn, test_data, expected_result, ["unicode", "recovery"]
-    )
+    _test_issn_enrichment(recover_issn, test_data, expected_result, ["unicode", "recovery"])
 
 
 def test_non_recoverable_issn_from_isbn():

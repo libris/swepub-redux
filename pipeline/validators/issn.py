@@ -6,7 +6,7 @@ from stdnum.issn import format as issn_format
 from pipeline.validators.shared import remote_verification
 from pipeline.util import make_event
 
-issn_regex = re.compile('[0-9]{4}-?[0-9]{3}[0-9xX]')
+issn_regex = re.compile("[0-9]{4}-?[0-9]{3}[0-9xX]")
 
 
 def validate_format(issn, session=None, harvest_cache=None):
@@ -27,10 +27,14 @@ def validate_cache_or_remote(issn, session=None, harvest_cache=None):
     formatted_issn = issn_format(issn)
 
     if harvest_cache:
-        if harvest_cache['issn_static'].get(formatted_issn, 0) or harvest_cache['issn_new'].get(issn, 0):
+        if harvest_cache["issn_static"].get(formatted_issn, 0) or harvest_cache["issn_new"].get(
+            issn, 0
+        ):
             return True, "remote.cache"
 
-    if session and not remote_verification(f'https://portal.issn.org/resource/ISSN/{issn}?format=json', session):
+    if session and not remote_verification(
+        f"https://portal.issn.org/resource/ISSN/{issn}?format=json", session
+    ):
         return False, "remote"
 
     if harvest_cache:
@@ -39,18 +43,25 @@ def validate_cache_or_remote(issn, session=None, harvest_cache=None):
 
 
 def validate_issn(field, session=None, harvest_cache=None):
-    if field.validation_status == "invalid" and field.enrichment_status in ["unchanged", "unsuccessful"]:
+    if field.validation_status == "invalid" and field.enrichment_status in [
+        "unchanged",
+        "unsuccessful",
+    ]:
         return
 
     for validator in [validate_format, validate_checksum, validate_cache_or_remote]:
         success, code = validator(field.value, session, harvest_cache)
         if not success:
-            field.events.append(make_event(type="validation", code=code, result="invalid", value=field.value))
-            field.validation_status = 'invalid'
+            field.events.append(
+                make_event(event_type="validation", code=code, result="invalid", value=field.value)
+            )
+            field.validation_status = "invalid"
             if field.is_enriched():
-                field.enrichment_status = 'unsuccessful'
+                field.enrichment_status = "unsuccessful"
             return
-    field.events.append(make_event(type="validation", code=code, result="valid", value=field.value))
-    field.validation_status = 'valid'
+    field.events.append(
+        make_event(event_type="validation", code=code, result="valid", value=field.value)
+    )
+    field.validation_status = "valid"
     if not field.is_enriched():
-        field.enrichment_status = 'unchanged'
+        field.enrichment_status = "unchanged"

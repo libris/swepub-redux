@@ -3,7 +3,7 @@ from multiprocessing import Pool
 
 import orjson as json
 
-from pipeline.storage import *
+from pipeline.storage import get_connection
 from pipeline.util import *
 
 """Max length in characters to compare text"""
@@ -39,11 +39,13 @@ def _partof_has_same_main_title(partof_a, partof_b):
     # partOf w/o main title should never match
     if part_of_main_title(partof_a) is None and part_of_main_title(partof_b) is None:
         return False
-    return compare_text(part_of_main_title(partof_a), part_of_main_title(partof_b), STRING_MATCH_PARTOF_MAIN_TITLE)
+    return compare_text(
+        part_of_main_title(partof_a), part_of_main_title(partof_b), STRING_MATCH_PARTOF_MAIN_TITLE
+    )
 
 
 def _has_same_partof_main_title(a, b):
-    """ Returns True if partOf has the same main title """
+    """Returns True if partOf has the same main title"""
     if part_of_with_title(a) and part_of_with_title(b):
         return _has_same_main_title(part_of_with_title(a), part_of_with_title(b))
     else:
@@ -66,15 +68,15 @@ def _has_same_publication_date(a, b):
     master_pub_date_str = master_pub_date_str.strip()
     candidate_pub_date_str = candidate_pub_date_str.strip()
     if len(master_pub_date_str) > len(candidate_pub_date_str):
-        master_pub_date_str = master_pub_date_str[:len(candidate_pub_date_str)]
+        master_pub_date_str = master_pub_date_str[: len(candidate_pub_date_str)]
     elif len(master_pub_date_str) < len(candidate_pub_date_str):
-        candidate_pub_date_str = candidate_pub_date_str[:len(master_pub_date_str)]
+        candidate_pub_date_str = candidate_pub_date_str[: len(master_pub_date_str)]
     return master_pub_date_str == candidate_pub_date_str
 
 
 def _has_compatible_doi_set(a, b):
-    l1 = get_identifiedby_ids(a, 'DOI')
-    l2 = get_identifiedby_ids(b, 'DOI')
+    l1 = get_identifiedby_ids(a, "DOI")
+    l2 = get_identifiedby_ids(b, "DOI")
 
     # If either set is empty, they're compatible
     if (not l1) or (not l2):
@@ -105,15 +107,18 @@ def _is_close_enough(a_rowid, b_rowid):
 
     with get_connection() as connection:
         cursor = connection.cursor()
-        cursor.execute("""
+        cursor.execute(
+            """
         SELECT
             data
         FROM
             converted
         WHERE
             rowid = ? OR rowid = ?;
-        """, (a_rowid, b_rowid))
-        candidate_rows = cursor.fetchall() # Will give exactly 2 rows, per definition
+        """,
+            (a_rowid, b_rowid),
+        )
+        candidate_rows = cursor.fetchall()  # Will give exactly 2 rows, per definition
         a = json.loads(candidate_rows[0][0])
         b = json.loads(candidate_rows[1][0])
 
@@ -126,30 +131,36 @@ def _is_close_enough(a_rowid, b_rowid):
             return True
 
         # 2.
-        #print(f'*** {b["@id"]} now to be checked for duplicity (2) with {a["@id"]}')
-        if _has_same_main_title(a, b) \
-                and has_same_ids(a, b):
-            #print(f'*** {b["@id"]} was (type 2) duplicate of {a["@id"]}')
+        # print(f'*** {b["@id"]} now to be checked for duplicity (2) with {a["@id"]}')
+        if _has_same_main_title(a, b) and has_same_ids(a, b):
+            # print(f'*** {b["@id"]} was (type 2) duplicate of {a["@id"]}')
             return True
-        #print(f'*** {b["@id"]} was NOT (type 2) duplicate of {a["@id"]}')
+        # print(f'*** {b["@id"]} was NOT (type 2) duplicate of {a["@id"]}')
 
         # 3.
-        if _has_same_main_title(a, b) \
-                and CONFERENCE_PAPER_GENREFORM not in genre_form(a) \
-                and CONFERENCE_PAPER_GENREFORM not in genre_form(b) \
-                and _has_same_sub_title(a, b) \
-                and _has_same_summary(a, b) \
-                and _has_same_publication_date(a, b) \
-                and _has_same_genre_form(a, b):
+        if (
+            _has_same_main_title(a, b)
+            and CONFERENCE_PAPER_GENREFORM not in genre_form(a)
+            and CONFERENCE_PAPER_GENREFORM not in genre_form(b)
+            and _has_same_sub_title(a, b)
+            and _has_same_summary(a, b)
+            and _has_same_publication_date(a, b)
+            and _has_same_genre_form(a, b)
+        ):
             return True
 
         # 4.
-        if _has_same_main_title(a, b) \
-                and (CONFERENCE_PAPER_GENREFORM in genre_form(a) or CONFERENCE_PAPER_GENREFORM in genre_form(b)) \
-                and _has_same_sub_title(a, b) \
-                and _has_same_summary(a, b) \
-                and _has_same_publication_date(a, b) \
-                and _has_same_partof_main_title(a, b):
+        if (
+            _has_same_main_title(a, b)
+            and (
+                CONFERENCE_PAPER_GENREFORM in genre_form(a)
+                or CONFERENCE_PAPER_GENREFORM in genre_form(b)
+            )
+            and _has_same_sub_title(a, b)
+            and _has_same_summary(a, b)
+            and _has_same_publication_date(a, b)
+            and _has_same_partof_main_title(a, b)
+        ):
             return True
 
     return False
@@ -172,7 +183,8 @@ def _generate_clusters():
         with get_connection() as connection:
             cursor = connection.cursor()
             inner_cursor = connection.cursor()
-            for candidatelist_row in cursor.execute("""
+            for candidatelist_row in cursor.execute(
+                """
             SELECT
                 group_concat(converted.id, "\n")
             FROM
@@ -183,23 +195,25 @@ def _generate_clusters():
                 converted.deleted = 0
             GROUP BY
                 clusteringidentifiers.identifier;
-            """):
-                candidates = candidatelist_row[0].split('\n')
+            """
+            ):
+                candidates = candidatelist_row[0].split("\n")
                 if len(candidates) > 1:
-                    #print(json.dumps(candidates))
                     batch.append(candidates)
 
-                    if (len(batch) >= 32):
-                        while (len(tasks) >= 32):
+                    if len(batch) >= 32:
+                        while len(tasks) >= 32:
                             time.sleep(1)
                             n = len(tasks)
-                            i = n-1
+                            i = n - 1
                             while i > -1:
                                 if tasks[i].ready():
                                     result = tasks[i].get()
-                                    write_detected_duplicate_pairs(result, inner_cursor, next_cluster_id)
+                                    write_detected_duplicate_pairs(
+                                        result, inner_cursor, next_cluster_id
+                                    )
                                     next_cluster_id += len(result[0])
-                                    del(tasks[i])
+                                    del tasks[i]
                                 i -= 1
                         tasks.append(pool.map_async(_check_candidate_groups, (batch,)))
                         batch = []
@@ -224,18 +238,24 @@ def _check_candidate_groups(batch):
         for a in candidate_list:
             for b in candidate_list:
                 if a != b and _is_close_enough(a, b):
-                    pairs.append( (a,b) )
+                    pairs.append((a, b))
     return pairs
 
 
 def write_detected_duplicate_pairs(result, inner_cursor, next_cluster_id):
     for pair in result[0]:
-        inner_cursor.execute("""
+        inner_cursor.execute(
+            """
         INSERT INTO cluster(cluster_id, converted_id) VALUES(?, ?);
-        """, (next_cluster_id, pair[0]))
-        inner_cursor.execute("""
+        """,
+            (next_cluster_id, pair[0]),
+        )
+        inner_cursor.execute(
+            """
         INSERT INTO cluster(cluster_id, converted_id) VALUES(?, ?);
-        """, (next_cluster_id, pair[1]))
+        """,
+            (next_cluster_id, pair[1]),
+        )
         next_cluster_id += 1
 
 
@@ -243,15 +263,18 @@ def write_detected_duplicate_pairs(result, inner_cursor, next_cluster_id):
 def _join_overlapping_clusters(next_cluster_id):
     with get_connection() as connection:
         cursor = connection.cursor()
-        cursor.execute("""
+        cursor.execute(
+            """
         SELECT
             count(cluster_id), group_concat(cluster_id, "\n")
         FROM
             cluster
         GROUP BY
             converted_id;
-        """)
-        rows = cursor.fetchall() # This is necessary in order to allow modification of the table while iterating
+        """
+        )
+        # This is necessary in order to allow modification of the table while iterating:
+        rows = cursor.fetchall()
 
         # Holds information on already merged clusters, so for example 1 -> 2 means cluster 1 no longer exists,
         # but it's publications are now in 2 instead.
@@ -260,16 +283,16 @@ def _join_overlapping_clusters(next_cluster_id):
         for cluster_row in rows:
             cluster_count = cluster_row[0]
             if cluster_count > 1:
-                clusters = cluster_row[1].split('\n')
+                clusters = cluster_row[1].split("\n")
 
-                #print(f"-----\nNow considering merging: {clusters}")
+                # print(f"-----\nNow considering merging: {clusters}")
 
                 cluster_a = clusters.pop()
 
                 while len(clusters) > 0:
                     cluster_b = clusters.pop()
 
-                    #print(f"  To be merged: {cluster_a} into {cluster_b}")
+                    # print(f"  To be merged: {cluster_a} into {cluster_b}")
 
                     # Replace cluster_a and cluster_b with where ever their contents are now
                     while cluster_a in merged_into:
@@ -277,33 +300,37 @@ def _join_overlapping_clusters(next_cluster_id):
                     while cluster_b in merged_into:
                         cluster_b = merged_into[cluster_b]
 
-                    #print(f"  After following history: {cluster_a} into {cluster_b}")
+                    # print(f"  After following history: {cluster_a} into {cluster_b}")
 
                     if cluster_a == cluster_b:
                         continue
 
                     # Merge cluster_a into cluster_b
-                    cursor.execute("""
+                    cursor.execute(
+                        """
                     UPDATE
                         cluster
                     SET
                         cluster_id = ?
                     WHERE
                         cluster_id = ?;
-                    """, (cluster_b, cluster_a))
+                    """,
+                        (cluster_b, cluster_a),
+                    )
                     merged_into[cluster_a] = cluster_b
 
-                    #print(f"Merged cluster {cluster_a} into {cluster_b}")
+                    # print(f"Merged cluster {cluster_a} into {cluster_b}")
 
                     cluster_a = cluster_b
 
-                #print("\n")
+                # print("\n")
 
                 connection.commit()
-    
+
         # Given two clusters (A,B,C) and (B,C,D) which have now been joined, there will now be duplicate
         # rows for B and C. These must (should) be cleared:
-        cursor.execute("""
+        cursor.execute(
+            """
         DELETE FROM
             cluster
         WHERE
@@ -316,11 +343,13 @@ def _join_overlapping_clusters(next_cluster_id):
                 GROUP BY
                     cluster_id, converted_id
             );
-        """)
+        """
+        )
         connection.commit()
 
         # Add single member clusters for solitary publications (those that are not part of any other clusters)
-        cursor.execute("""
+        cursor.execute(
+            """
         SELECT
             id
         FROM
@@ -333,14 +362,19 @@ def _join_overlapping_clusters(next_cluster_id):
                     cluster
             )
             AND deleted = 0
-        """)
-        rows = cursor.fetchall() # This is necessary in order to allow modification of the table while iterating
+        """
+        )
+        # This is necessary in order to allow modification of the table while iterating:
+        rows = cursor.fetchall()
         for solitary_row in rows:
             solitary_converted_id = solitary_row[0]
             inner_cursor = connection.cursor()
-            inner_cursor.execute("""
+            inner_cursor.execute(
+                """
             INSERT INTO cluster(cluster_id, converted_id) VALUES(?, ?);
-            """, (next_cluster_id, solitary_converted_id))
+            """,
+                (next_cluster_id, solitary_converted_id),
+            )
             next_cluster_id += 1
         connection.commit()
 
@@ -352,7 +386,7 @@ def deduplicate():
     next_cluster_id = _generate_clusters()
     _join_overlapping_clusters(next_cluster_id)
 
-            
+
 # For debugging
 if __name__ == "__main__":
     deduplicate()
