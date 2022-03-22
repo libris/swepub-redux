@@ -1,8 +1,10 @@
 import sqlite3
-import orjson as json
 import os
 
+import orjson as json
+
 from pipeline.bibframesource import BibframeSource
+from pipeline.swepublog import logger as log
 
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 SQL_SCHEMA_FILE = os.path.join(FILE_PATH, "../resources/schema.sql")
@@ -99,94 +101,96 @@ def store_original(
 
 
 def store_converted(original_rowid, converted, audit_events, field_events, record_info, connection):
-    cur = connection.cursor()
-    doc = BibframeSource(converted)
-    converted_events = {"audit_events": audit_events, "field_events": field_events}
+    try:
+        cur = connection.cursor()
+        doc = BibframeSource(converted)
+        converted_events = {"audit_events": audit_events, "field_events": field_events}
 
-    converted_rowid = cur.execute(
-        """
-    INSERT INTO
-        converted(data, original_id, oai_id, date, source, is_open_access, has_ssif_1, classification_level, events)
-    VALUES
-        (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ON CONFLICT(oai_id) DO UPDATE SET
-        data = excluded.data, original_id = excluded.original_id, oai_id = excluded.oai_id, date = excluded.date, source = excluded.source, is_open_access = excluded.is_open_access, has_ssif_1 = excluded.has_ssif_1, classification_level = excluded.classification_level, events = excluded.events, deleted = 0
-    """,
-        (
-            json.dumps(converted),
-            original_rowid,
-            doc.record_id,
-            doc.publication_year,
-            doc.source_org_master,
-            doc.open_access,
-            (len(doc.ssif_1_codes) > 0),
-            doc.level,
-            json.dumps(converted_events, default=lambda o: o.__dict__),
-        ),
-    ).lastrowid
+        cur.execute(
+            """
+        INSERT INTO
+            converted(data, original_id, oai_id, date, source, is_open_access, has_ssif_1, classification_level, events)
+        VALUES
+            (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(oai_id) DO UPDATE SET
+            data = excluded.data, original_id = excluded.original_id, oai_id = excluded.oai_id, date = excluded.date, source = excluded.source, is_open_access = excluded.is_open_access, has_ssif_1 = excluded.has_ssif_1, classification_level = excluded.classification_level, events = excluded.events, deleted = 0
+        """,
+            (
+                json.dumps(converted),
+                original_rowid,
+                doc.record_id,
+                doc.publication_year,
+                doc.source_org_master,
+                doc.open_access,
+                (len(doc.ssif_1_codes) > 0),
+                doc.level,
+                json.dumps(converted_events, default=lambda o: o.__dict__),
+            ),
+        )
 
-    # If we inserted a *new* record into converted above, we could just get .lastrowid; but if
-    # the row already exists, that won't work.
-    if not converted_rowid:
+        # This is necessary because of .lastrowid weirdness on conflict
         converted_rowid = cur.execute(
             "SELECT id FROM converted WHERE oai_id = ?", [doc.record_id]
         ).fetchone()[0]
 
-    for ssif_1 in doc.ssif_1_codes:
-        cur.execute(
-            """
-        INSERT INTO converted_ssif_1(converted_id, value) VALUES(?, ?)
-        """,
-            (converted_rowid, ssif_1),
-        )
-
-    for field, value in record_info.items():
-        cur.execute(
-            """
-        INSERT INTO converted_record_info(
-            converted_id, field_name, validation_status, enrichment_status, normalization_status
-        ) VALUES (?, ?, ?, ?, ?)
-        """,
-            (
-                converted_rowid,
-                field,
-                value["validation_status"],
-                value["enrichment_status"],
-                value["normalization_status"],
-            ),
-        )
-
-    for name, events in audit_events.items():
-        for event in events:
+        for ssif_1 in doc.ssif_1_codes:
             cur.execute(
                 """
-            INSERT INTO converted_audit_events(converted_id, code, result, name) VALUES (?, ?, ?, ?)
+            INSERT INTO converted_ssif_1(converted_id, value) VALUES(?, ?)
             """,
-                (converted_rowid, event.get("code", None), event.get("result", None), name),
+                (converted_rowid, ssif_1,)
             )
 
-    identifiers = []
-    for title in converted["instanceOf"]["hasTitle"]:
-        main_title = title.get("mainTitle")
-        if main_title is not None and isinstance(main_title, str):
-            identifiers.append(main_title)  # TODO: STRIP AWAY WHITESPACE ETC
+        for field, value in record_info.items():
+            cur.execute(
+                """
+            INSERT INTO converted_record_info(
+                converted_id, field_name, validation_status, enrichment_status, normalization_status
+            ) VALUES (?, ?, ?, ?, ?)
+            """,
+                (
+                    converted_rowid,
+                    field,
+                    value["validation_status"],
+                    value["enrichment_status"],
+                    value["normalization_status"],
+                ),
+            )
 
-    for id_object in converted["identifiedBy"]:
-        if id_object["@type"] != "Local":
-            identifier = id_object["value"]
-            if identifier is not None and isinstance(identifier, str):
-                identifiers.append(identifier)
+        for name, events in audit_events.items():
+            for event in events:
+                cur.execute(
+                    """
+                INSERT INTO converted_audit_events(converted_id, code, result, name) VALUES (?, ?, ?, ?)
+                """,
+                    (converted_rowid, event.get("code", None), event.get("result", None), name),
+                )
 
-    for identifier in identifiers:
-        cur.execute(
-            """
-        INSERT INTO clusteringidentifiers(identifier, converted_id) VALUES (?, ?)
-        """,
-            (identifier, converted_rowid),
-        )
+        identifiers = []
+        for title in converted["instanceOf"]["hasTitle"]:
+            main_title = title.get("mainTitle")
+            if main_title is not None and isinstance(main_title, str):
+                identifiers.append(main_title)  # TODO: STRIP AWAY WHITESPACE ETC
 
-    connection.commit()
-    return converted_rowid
+        for id_object in converted["identifiedBy"]:
+            if id_object["@type"] != "Local":
+                identifier = id_object["value"]
+                if identifier is not None and isinstance(identifier, str):
+                    identifiers.append(identifier)
+
+        for identifier in identifiers:
+            cur.execute(
+                """
+            INSERT INTO clusteringidentifiers(identifier, converted_id) VALUES (?, ?)
+            """,
+                (identifier, converted_rowid),
+            )
+
+        connection.commit()
+        return converted_rowid
+    except Exception as e:
+        log.warning(f"Failed saving converted record for original_rowid {original_rowid} ({doc.record_id})")
+        raise e
 
 
 def get_connection():
