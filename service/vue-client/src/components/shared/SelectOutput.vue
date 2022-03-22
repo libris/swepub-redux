@@ -54,8 +54,12 @@ export default {
           });
         }
       });
-      return transformedOptions.sort((a, b) => a.sortKey.toLowerCase()
+      transformedOptions.sort((a, b) => a.sortKey.toLowerCase()
         .localeCompare(b.sortKey.toLowerCase(), 'sv'));
+      // For whatever reason we need to remove `sortKey` from each option
+      // before returning, because otherwise Vue code elsewhere gets confused
+      // or angry or something. Sigh.
+      return transformedOptions.map(({ sortKey, ...item }) => item);
     },
   },
   mounted() {
