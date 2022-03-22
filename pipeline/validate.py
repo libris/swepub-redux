@@ -181,7 +181,6 @@ def move_incorrectlyIdentifiedBy(body, field_events):
             if field.validation_status != 'valid' and field.id_type in ["DOI", "ISBN", "ISI", "ISSN"]:
 
                 # Schedule the path of the bad value for removal
-                #remove_at_path(body, field.path, 1)
                 pathsToRemove.append(field.path)
 
                 # Add it back, as incorrectlyIdentifiedBy
@@ -246,6 +245,8 @@ def validate(body, harvest_cache, session):
     # Second validation pass to see if enrichments made some values valid
     validate_stuff(field_events, session, harvest_cache)
     normalize_stuff(body, field_events)
+    # Beware, after this point all field_event paths must be considered potentially corrupt,
+    # as moving things around places them at new paths!
     move_incorrectlyIdentifiedBy(body, field_events)
     censor_invalid_orcids(body, field_events)
 
