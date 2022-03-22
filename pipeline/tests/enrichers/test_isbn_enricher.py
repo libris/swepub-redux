@@ -44,27 +44,26 @@ def test_isbn13_with_numerical_prefix():
     _test_isbn_enrichment(test_data, expected_result, ["recovery"])
 
 
-# TODO: Fix split in enricher
-# def test_dual_isbn():
-#    test_data = '0415579961, 9780415579964'
-#    original_field_data = {'value': test_data, 'enrichment_status': 'pending', 'path': '<path>',
-#                           'validation_status': 'true', 'events': []}
-#    field, actions = isbn_enricher(FieldMetadata(original_field_data))
-#    assert field.value == '0415579961'
-#    action1 = actions[0]
-#    event1 = field.events[0]
-#    assert isinstance(action1, DuplicateFieldAction)
-#    assert action1.field_type == 'isbn'
-#    assert event1['new_value'] == '0415579961'
-#    assert event1['old_value'] == '0415579961, 9780415579964'
-#    assert event1['code'] == 'recovery'
-#    action2 = actions[1]
-#    event2 = field.events[1]
-#    assert isinstance(action2, ChangeAction)
-#    assert action2.field_type == 'isbn'
-#    assert event2['created_value'] == '9780415579964'
-#    assert event2['old_value'] == '0415579961, 9780415579964'
-#    assert event2['code'] == 'split'
+def test_dual_isbn():
+    test_data = "0415579961, 9780415579964"
+
+    body = {"identifiedBy": [{"value": test_data}]}
+
+    field = FieldMeta(
+        value=test_data,
+        enrichment_status="pending",
+        validation_status="valid",
+        path="identifiedBy.[0].value",
+    )
+
+    created_fields = recover_isbn(body, field)
+    
+    assert field.value == "0415579961"
+    assert field.enrichment_status == "enriched"
+
+    assert len(created_fields) == 1
+    assert field.events[1]["code"] == "split"
+    assert created_fields[0].value == "9780415579964"
 
 
 def test_isbn_non_recoverable_wrong_length_and_strange_prefix():

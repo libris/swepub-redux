@@ -80,36 +80,26 @@ def test_non_recoverable_issn_from_isbn10_with_delimiter_and_withespace():
     _test_none_issn_enrichment(recover_isbn, test_data)
 
 
-# TODO: Fix ISSN split in enricher
-# def test_dual_issn():
-#    test_data = '0256-4718 (Print), 1753-5387 (Online)'
-#
-#    body = {"partOf": [{"identifiedBy": [{"value": test_data}]}]}
-#
-#    field = FieldMeta(
-#        value=test_data,
-#        enrichment_status="pending",
-#        validation_status="valid",
-#        path="partOf.[0].identifiedBy.[0].value",
-#    )
-#
-#    recover_issn(body, field)
-#
-#    assert field.value == '0256-4718'
-#    action1 = actions[0]
-#    event1 = field.events[0]
-#    assert isinstance(action1, DuplicateFieldAction)
-#    assert action1.field_type == 'issn'
-#    assert event1['new_value'] == '0256-4718'
-#    assert event1['old_value'] == '0256-4718 (Print), 1753-5387 (Online)'
-#    assert event1['code'] == 'recovery'
-#    action2 = actions[1]
-#    event2 = field.events[1]
-#    assert isinstance(action2, ChangeAction)
-#    assert action2.field_type == 'issn'
-#    assert event2['created_value'] == '1753-5387'
-#    assert event2['old_value'] == '0256-4718 (Print), 1753-5387 (Online)'
-#    assert event2['code'] == 'split'
+def test_dual_issn():
+    test_data = '0256-4718 (Print), 1753-5387 (Online)'
+
+    body = {"partOf": [{"identifiedBy": [{"value": test_data}]}]}
+
+    field = FieldMeta(
+        value=test_data,
+        enrichment_status="pending",
+        validation_status="valid",
+        path="partOf.[0].identifiedBy.[0].value",
+    )
+
+    created_fields = recover_issn(body, field)
+
+    assert field.value == "0256-4718"
+    assert field.enrichment_status == "enriched"
+
+    assert len(created_fields) == 1
+    assert field.events[1]["code"] == "split"
+    assert created_fields[0].value == "1753-5387"
 
 
 def _test_issn_enrichment(enricher, test_data, expected_result, expected_codes):
