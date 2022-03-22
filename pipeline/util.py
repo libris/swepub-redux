@@ -42,7 +42,8 @@ def remove_at_path(root, path, min_prune_level):
         current = stack.pop()
         key = steps.pop()
 
-        if prune_level < min_prune_level or len(current) == 0:
+        #print(f" * now considering deleting key {key} from obj: {current} if it is empty")
+        if prune_level < min_prune_level or len(current[key]) == 0:
             #print(f"   now deleting key {key} from obj: {current}")
             del current[key]
         prune_level += 1
