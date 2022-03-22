@@ -30,7 +30,7 @@ def remove_at_path(root, path, min_prune_level):
 
     for step in steps:
         stack.append(current)
-        print (f"*   Will now access {step} of {current}:")
+        #print (f"*   Will now access {step} of {current}:")
         current = current[step]
     
     current = stack.pop()

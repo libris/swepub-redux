@@ -174,13 +174,15 @@ def normalize_stuff(body, field_events):
 
 
 def move_incorrectlyIdentifiedBy(body, field_events):
+    pathsToRemove = []
     for id_type in field_events.values():
         for field in id_type.values():
             # For the _invalid_ fields, we (sometimes) want to add them under incorrectlyIdentifiedBy
             if field.validation_status != 'valid' and field.id_type in ["DOI", "ISBN", "ISI", "ISSN"]:
 
-                # Remove the bad value
-                remove_at_path(body, field.path, 1)
+                # Schedule the path of the bad value for removal
+                #remove_at_path(body, field.path, 1)
+                pathsToRemove.append(field.path)
 
                 # Add it back, as incorrectlyIdentifiedBy
                 parentPath = ".".join(field.path.split(".")[:-3]) # strip away ".identifiedBy.[0].value" (3 items)
@@ -190,6 +192,16 @@ def move_incorrectlyIdentifiedBy(body, field_events):
                     parent["incorrectlyIdentifiedBy"] = [incorrectlyIdentifiedByEntity]
                 else:
                     parent["incorrectlyIdentifiedBy"] += incorrectlyIdentifiedByEntity
+
+    if pathsToRemove:
+
+        # The point of this is that for example ..identifiedBy.[1].. be
+        # removed _before_ ..identifiedBy.[0].. , becuase removing a lower index first,
+        # would displace the higher index and the wrong thing would be deleted.
+        pathsToRemove.sort(reverse=True)
+        for path in pathsToRemove:
+            remove_at_path(body, path, 1)
+
 
 
 # The point of this is that invalid ORCIDs often contain other sorts of personal information
