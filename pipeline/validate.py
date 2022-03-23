@@ -192,13 +192,15 @@ def move_incorrectlyIdentifiedBy(body, field_events):
 
                 # Add it back, as incorrectlyIdentifiedBy
                 parentPath = ".".join(field.path.split(".")[:-3]) # strip away ".identifiedBy.[0].value" (3 items)
+                entityPath = ".".join(field.path.split(".")[:-1]) # strip away ".value" (1 item)
 
                 parent = get_at_path(body, parentPath)
-                incorrectlyIdentifiedByEntity = {"@type": field.id_type, "value": field.value}
+                incorrectlyIdentifiedByEntity = dict(get_at_path(body, entityPath))
+
                 if "incorrectlyIdentifiedBy" not in parent:
                     parent["incorrectlyIdentifiedBy"] = [incorrectlyIdentifiedByEntity]
                 else:
-                    parent["incorrectlyIdentifiedBy"] += incorrectlyIdentifiedByEntity
+                    parent["incorrectlyIdentifiedBy"].append(incorrectlyIdentifiedByEntity)
 
     if pathsToRemove:
 
