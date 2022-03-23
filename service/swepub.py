@@ -159,12 +159,15 @@ def bibliometrics_api():
 
         doi = query_data.get("DOI")
         # TODO: Ugly replacements, fix frontend
-        # TODO: Genreform broader?
+
         genre_form = [
             gf.strip().replace(".", "/").rstrip("/")
             for gf in query_data.get("genreForm", [])
             if len(gf.strip()) > 0
         ]
+
+        genreform_broader = [gfb.strip() for gfb in query_data.get("match-genreForm", []) if len(gfb.strip()) > 0]
+
         orgs = [o.strip() for o in query_data.get("org", []) if len(o.strip()) > 0]
         title = query_data.get("title", "").replace(",", " ")
         keywords = query_data.get("keywords", "").replace(",", " ")
@@ -292,6 +295,14 @@ def bibliometrics_api():
                 q = q.where(param[0].value == Parameter("?"))
             q = q.join(param[0]).on(finalized.id == param[0].finalized_id)
             values.append(param[1])
+
+    if genreform_broader:
+        criteria = []
+        for _gf_b in genreform_broader:
+            criteria.append(search_genre_form.value.like(Parameter("?")))
+        q = q.where(Criterion.any(criteria))
+        q = q.join(search_genre_form).on(finalized.id == search_genre_form.finalized_id)
+        values.append(list(map(lambda x: f"{x}%", genreform_broader)))
 
     q_total = q.select(fn.Count("*").as_("total"))
     q = q.select("data")
