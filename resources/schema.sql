@@ -227,6 +227,8 @@ CREATE TABLE search_genre_form (
 );
 CREATE INDEX idx_search_genre_form_finalized_id ON search_genre_form(finalized_id);
 CREATE INDEX idx_search_genre_form_value ON search_genre_form(value);
+-- case-insensitive index needed for LIKE searches
+CREATE INDEX idx_search_genre_form_value_nocase ON search_genre_form(value COLLATE NOCASE);
 
 
 CREATE TABLE search_subject (
