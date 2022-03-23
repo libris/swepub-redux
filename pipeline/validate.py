@@ -201,6 +201,16 @@ def move_incorrectlyIdentifiedBy(body, field_events):
                     parent["incorrectlyIdentifiedBy"] = [incorrectlyIdentifiedByEntity]
                 else:
                     parent["incorrectlyIdentifiedBy"].append(incorrectlyIdentifiedByEntity)
+                
+                field.events.append(
+                    make_event(
+                        event_type="postprocessing",
+                        code="moveIncorrectlyIdentifiedBy",
+                        value=None,
+                        initial_value=None,
+                        result=None,
+                    )
+                )
 
     if pathsToRemove:
 
@@ -219,6 +229,15 @@ def censor_invalid_orcids(body, field_events):
     for id_type in field_events.values():
         for field in id_type.values():
             if field.validation_status != "valid" and field.id_type == "ORCID":
+                field.events.append(
+                    make_event(
+                        event_type="postprocessing",
+                        code="censor",
+                        value="[redacted]",
+                        initial_value=field.value,
+                        result=None,
+                    )
+                )
                 update_at_path(body, field.path, "[redacted]")
 
 
