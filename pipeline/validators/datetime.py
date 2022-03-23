@@ -25,7 +25,7 @@ def validate_format(dt):
 
 
 def validate_date_time(field):
-    success, code = validate_format(field)
+    success, code = validate_format(field.value)
 
     if success:
         field.events.append(
