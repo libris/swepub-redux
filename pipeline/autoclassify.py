@@ -438,7 +438,7 @@ def _conc_find_subjects(temp_dir, file_sequence_number, converted_rows):
 
 def find_subjects_for(converted_rowid, converted, cursor):
     level = 3
-    classes = 5
+    classes = 3
 
     subjects = Counter()
     publication_subjects = set()
