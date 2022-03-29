@@ -418,7 +418,7 @@ def classify():
         ORDER BY
             occurrences ASC
         LIMIT
-            6
+            8
     """,
         words,
     ).fetchall()
@@ -466,7 +466,7 @@ def classify():
                 continue
 
             publication_subjects.add(subject_id[:level])
-        score = len(candidate_matched_words)
+        score = 10 * len(candidate_matched_words)
         for sub in publication_subjects:
             subjects[sub] += score
 
