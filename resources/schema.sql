@@ -264,6 +264,7 @@ CREATE TABLE search_org (
 );
 CREATE INDEX idx_search_org_finalized_id ON search_org(finalized_id);
 CREATE INDEX idx_search_org_value ON search_org(value);
+CREATE INDEX idx_search_org_value_finalized_id ON search_org(value, finalized_id);
 
 
 CREATE VIRTUAL TABLE search_fulltext USING FTS5 (

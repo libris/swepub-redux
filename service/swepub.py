@@ -228,7 +228,7 @@ def bibliometrics_api():
         "search_subject",
         "search_org",
     )
-    q = Query.from_(finalized)
+    q = Query.from_(search_single)
     values = []
 
     if from_yr and to_yr:
@@ -245,16 +245,6 @@ def bibliometrics_api():
         if value:
             q = q.where(search_single[field_name].isin([Parameter(", ".join(["?"] * len(value)))]))
             values.append(value)
-    if any(
-        [
-            (from_yr and to_yr),
-            content_marking,
-            publication_status,
-            swedish_list,
-            open_access,
-        ]
-    ):
-        q = q.join(search_single).on(finalized.id == search_single.finalized_id)
 
     for field_name, value in {
         "orcid": orcid,
@@ -267,7 +257,7 @@ def bibliometrics_api():
             q = q.where(search_creator[field_name] == Parameter("?"))
             values.append(value)
     if any([orcid, given_name, family_name, person_local_id, person_local_id_by]):
-        q = q.join(search_creator).on(finalized.id == search_creator.finalized_id)
+        q = q.join(search_creator).on(search_single.finalized_id == search_creator.finalized_id)
 
     for field_name, value in {"title": title, "keywords": keywords}.items():
         if value:
@@ -280,7 +270,7 @@ def bibliometrics_api():
             )
             values.append(value)
     if any([title, keywords]):
-        q = q.join(search_fulltext).on(finalized.id == search_fulltext.finalized_id)
+        q = q.join(search_fulltext).on(search_single.finalized_id == search_fulltext.finalized_id)
 
     for param in [
         (search_doi, doi),
@@ -293,7 +283,7 @@ def bibliometrics_api():
                 q = q.where(param[0].value.isin([Parameter(", ".join(["?"] * len(param[1])))]))
             else:
                 q = q.where(param[0].value == Parameter("?"))
-            q = q.join(param[0]).on(finalized.id == param[0].finalized_id)
+            q = q.join(param[0]).on(search_single.finalized_id == param[0].finalized_id)
             values.append(param[1])
 
     if genreform_broader:
@@ -301,11 +291,12 @@ def bibliometrics_api():
         for _gf_b in genreform_broader:
             criteria.append(search_genre_form.value.like(Parameter("?")))
         q = q.where(Criterion.any(criteria))
-        q = q.join(search_genre_form).on(finalized.id == search_genre_form.finalized_id)
+        q = q.join(search_genre_form).on(search_single.finalized_id == search_genre_form.finalized_id)
         values.append(list(map(lambda x: f"{x}%", genreform_broader)))
 
     q_total = q.select(fn.Count("*").as_("total"))
-    q = q.select("data")
+    q = q.select(finalized.data)
+    q = q.join(finalized).on(search_single.finalized_id == finalized.id)
     if limit:
         q = q.limit(limit)
 
