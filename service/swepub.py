@@ -369,7 +369,8 @@ def bibliometrics_get_record(record_id):
 # ╚██████╗███████╗██║  ██║███████║███████║██║██║        ██║
 #  ╚═════╝╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝╚═╝        ╚═╝
 
-
+undesired_binary_chars_table = dict.fromkeys(map(ord, '-–_'), None)
+undesired_unary_chars_table = dict.fromkeys(map(ord, ',.;:!?"\'@#$'), ' ')
 @app.route("/api/v1/classify", methods=["POST"])
 def classify():
     if request.content_type != "application/json":
@@ -397,9 +398,13 @@ def classify():
     # Extract individual words
     words_set = set()
     for string in [abstract, title, keywords]:
+        string = string.translate(undesired_binary_chars_table)
+        string = string.translate(undesired_unary_chars_table)
+        string = string.lower()
+        string = re.sub(r"[^a-zåäö ]+", "", string)
         words = re.findall(r"\w+", string)
         for word in words:
-            if word.isnumeric():
+            if word == "" or len(word) < 3:
                 continue
             words_set.add(word.lower())
     words = list(words_set)[0:150]
@@ -418,7 +423,7 @@ def classify():
         ORDER BY
             occurrences ASC
         LIMIT
-            8
+            12
     """,
         words,
     ).fetchall()

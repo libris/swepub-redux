@@ -29,6 +29,8 @@ DATE_PATH = parse(RAW_DATE_PATH)
 RAW_PUBLICATION_STATUS_PATH = 'instanceOf.hasNote[?(@.@type=="PublicationStatus")].@id'
 PUBLICATION_STATUS_PATH = parse(RAW_PUBLICATION_STATUS_PATH)
 
+undesired_binary_chars_table = dict.fromkeys(map(ord, '-–_'), None)
+undesired_unary_chars_table = dict.fromkeys(map(ord, ',.;:!?"\'@#$'), ' ')
 
 class Publication:
     def __init__(self, publication):
@@ -220,9 +222,13 @@ def _generate_occurrence_table():
             strings_to_scan += publication.subtitle or ""
 
             for string in strings_to_scan:
+                string = string.translate(undesired_binary_chars_table)
+                string = string.translate(undesired_unary_chars_table)
+                string = string.lower()
+                string = re.sub(r"[^a-zåäö ]+", "", string)
                 words = re.findall(r"\w+", string)
                 for word in words:
-                    if word.isnumeric():
+                    if word == "" or len(word) < 3:
                         continue
                     word = word.lower()
                     if word not in count_per_word:
@@ -264,9 +270,13 @@ def _select_rarest_words():
 
             words_set = set()
             for string in strings_to_scan:
+                string = string.translate(undesired_binary_chars_table)
+                string = string.translate(undesired_unary_chars_table)
+                string = string.lower()
+                string = re.sub(r"[^a-zåäö ]+", "", string)
                 words = re.findall(r"\w+", string)
                 for word in words:
-                    if word.isnumeric():
+                    if word == "" or len(word) < 3:
                         continue
                     words_set.add(word.lower())
             words = list(words_set)[0:150]
@@ -282,7 +292,7 @@ def _select_rarest_words():
             ORDER BY
                 occurrences ASC
             LIMIT
-                8;
+                12;
             """,
                 words,
             ):
