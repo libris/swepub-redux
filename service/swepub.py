@@ -370,7 +370,7 @@ def bibliometrics_get_record(record_id):
 #  ╚═════╝╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝╚═╝        ╚═╝
 
 undesired_binary_chars_table = dict.fromkeys(map(ord, '-–_'), None)
-undesired_unary_chars_table = dict.fromkeys(map(ord, ',.;:!?"\'@#$'), ' ')
+undesired_unary_chars_table = dict.fromkeys(map(ord, ',.;:!?"\'@#$\u00a0'), ' ')
 @app.route("/api/v1/classify", methods=["POST"])
 def classify():
     if request.content_type != "application/json":

@@ -30,7 +30,7 @@ RAW_PUBLICATION_STATUS_PATH = 'instanceOf.hasNote[?(@.@type=="PublicationStatus"
 PUBLICATION_STATUS_PATH = parse(RAW_PUBLICATION_STATUS_PATH)
 
 undesired_binary_chars_table = dict.fromkeys(map(ord, '-–_'), None)
-undesired_unary_chars_table = dict.fromkeys(map(ord, ',.;:!?"\'@#$'), ' ')
+undesired_unary_chars_table = dict.fromkeys(map(ord, ',.;:!?"\'@#$\u00a0'), ' ')
 
 class Publication:
     def __init__(self, publication):
