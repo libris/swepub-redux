@@ -506,6 +506,18 @@ def find_subjects_for(converted_rowid, converted, cursor):
     new_subjects = [
         (subject, score) for subject, score in subjects if subject not in old_subject_codes
     ]
+
+    # Filter out matches with a score less than 50% of the top match.
+    if len(new_subjects) > 1:
+        new_subjects = sorted(new_subjects, key=lambda tup: tup[1], reverse=True)
+
+        (top_subject, top_score) = new_subjects.pop(0)
+        result = [(top_subject, top_score)]
+        good_matches = [(subj, score) for (subj, score) in new_subjects
+                        if score >= top_score / 2]
+        result.extend(good_matches)
+        new_subjects = result
+
     if len(new_subjects) > 0:
         publication = Publication(converted)
         enriched_subjects = _enrich_subject(new_subjects)
