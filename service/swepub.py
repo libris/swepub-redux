@@ -578,7 +578,7 @@ def datastatus_ssif_source_api(source=None):
     q = (
         Query.select(
             stats_ssif_1.ssif_1,
-            fn.Count("*").as_("total"),
+            fn.Sum(stats_ssif_1.total).as_("total"),
         )
         .from_(stats_ssif_1)
         .groupby(stats_ssif_1.ssif_1)
