@@ -14,7 +14,7 @@ $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
-(Note that at the moment only Python 3.7 and 3.8 has been used for this project, later versions may also work)
+(Note that at the moment only Python 3.7 and 3.8 have been used for this project, later versions may also work)
 
 ## Pipeline
 
@@ -24,13 +24,13 @@ To run the pipeline and harvest a few sources do:
 $ python3 -m pipeline.harvest --update --skip-unpaywall mdh miun mau
 ```
 
-Expect this to take a few minutes. If you don't specify source(s) you instead get the full production data which takes a lot longer. Sources must exist in `pipeline/sources.json`. If the database doesn't exist, it will be created; if it already exists, sources will be incrementally updated (harvesting records added/updated/deleted since the previous execution of `pipeline.harvest --update`).
+Expect this to take a few minutes. If you don't specify source(s) you instead get the full production data which takes a lot longer (~8 hours). Sources must exist in `pipeline/sources.json`. If the database doesn't exist, it will be created; if it already exists, sources will be incrementally updated (harvesting records added/updated/deleted since the previous execution of `pipeline.harvest --update`).
 
 To forcibly create a new database, run `python3 -m pipeline.harvest --force` (or `-f`).
 
 Run `python3 -m pipeline.harvest -h` to see all options. 
 
-There are no running "services". Each time the pipeline is executed, an sqlite3 database is either created or updated. You may even run more than one harvester (with a different database path) in parallel if you like.
+There are no running "services", nor any global state. Each time the pipeline is executed, an sqlite3 database is either created or updated. You may even run more than one harvester (with a different database path) in parallel if you like.
 
 You can `purge` (delete) one or more sources. In combination with a subsequent `update` command, this lets you completely remove a source and then harvest it fully, while keeping records from other sources in the database intact:
 

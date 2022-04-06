@@ -1,4 +1,5 @@
 import copy
+import unicodedata
 from collections import OrderedDict
 
 from pipeline.publication import Contribution, Publication
@@ -6,6 +7,13 @@ from pipeline.publication import Contribution, Publication
 
 GENRE_FORMS_TO_MERGE = ["https://id.kb.se/term/swepub/ArtisticWork"]
 
+def mangle_contributor_for_comparison(name):
+    undesired_name_separators = dict.fromkeys(map(ord, '-–_,.;:!?#\u00a0'), None)
+    name = name.translate(undesired_name_separators)
+    name = name.lower()
+    nfkd = unicodedata.normalize('NFKD', name)
+    name = u"".join([c for c in nfkd if not unicodedata.combining(c)])
+    return name
 
 class PublicationMerger:
     def merge(self, publications):
@@ -54,45 +62,55 @@ class PublicationMerger:
         Otherwise add candidate contributions
         """
         master_contribs = OrderedDict()
+        master_names_mangled_to_id = {}
         for contrib in master.contributions:
             if contrib.agent_name:
-                master_contribs[contrib.agent_name] = contrib
-            else:
-                master_contribs[id(contrib)] = contrib
+                master_names_mangled_to_id[mangle_contributor_for_comparison(contrib.agent_name)] = id(contrib)
+            master_contribs[id(contrib)] = contrib
 
+        candidate_names_mangled_to_id = {}
         candidate_contribs = OrderedDict()
         for contrib in candidate.contributions:
             if contrib.agent_name:
-                candidate_contribs[contrib.agent_name] = contrib
-            else:
-                candidate_contribs[id(contrib)] = contrib
+                candidate_names_mangled_to_id[mangle_contributor_for_comparison(contrib.agent_name)] = id(contrib)
+            candidate_contribs[id(contrib)] = contrib
 
-        master_names = set(master_contribs.keys())
-        candidate_names = set(candidate_contribs.keys())
-        overlapping = master_names & candidate_names
-        new_contribs = candidate_names - overlapping
+        overlapping = []
+        for mangled_name in master_names_mangled_to_id.keys():
+            if mangled_name in candidate_names_mangled_to_id.keys():
+                overlapping.append(mangled_name)
+        
+        new_contribs = []
+        for mangled_name in candidate_names_mangled_to_id.keys():
+            if not mangled_name in master_names_mangled_to_id.keys():
+                new_contribs.append(mangled_name)
+
+        #print(f"Contribution summary: \n\tunion: {master_names_mangled_to_id}\n\tcandidate: {candidate_names_mangled_to_id}\n\tnew: {new_contribs}\n\toverlapping: {overlapping}")
 
         for contrib_name in overlapping:
+            master_contrib = master_contribs[master_names_mangled_to_id[contrib_name]]
+            candidate_contrib = candidate_contribs[candidate_names_mangled_to_id[contrib_name]]
 
             if _should_replace_affiliation(
-                master_contribs[contrib_name], candidate_contribs[contrib_name]
+                master_contrib, candidate_contrib
             ):
-                master_contribs[contrib_name].affiliations = candidate_contribs[
-                    contrib_name
-                ].affiliations
+                master_contrib.affiliations = candidate_contrib.affiliations
             else:
-                master_contribs[contrib_name].affiliations = _merge_contrib_affiliations(
-                    master_contribs[contrib_name].affiliations,
-                    candidate_contribs[contrib_name].affiliations,
+                master_contrib.affiliations = _merge_contrib_affiliations(
+                    master_contrib.affiliations,
+                    candidate_contrib.affiliations,
                 )
-            master_contribs[contrib_name].identified_bys = _merge_contrib_identified_by(
-                master_contribs[contrib_name].identified_bys,
-                candidate_contribs[contrib_name].identified_bys,
+            master_contrib.identified_bys = _merge_contrib_identified_by(
+                master_contrib.identified_bys,
+                candidate_contrib.identified_bys,
             )
 
         for contrib_name in new_contribs:
-            master_contribs[contrib_name] = candidate_contribs[contrib_name]
+            master_contribs[contrib_name] = candidate_contribs[candidate_names_mangled_to_id[contrib_name]]
+
         master.contributions = list(master_contribs.values())
+        #for contrib in master.contributions:
+        #    print(f"  master.contributions after additions: {contrib.agent_name}")
         return master
 
     @staticmethod
