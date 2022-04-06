@@ -1,6 +1,7 @@
 import copy
 import unicodedata
 from collections import OrderedDict
+from Levenshtein import distance
 
 from pipeline.publication import Contribution, Publication
 
@@ -61,56 +62,46 @@ class PublicationMerger:
         """If same contributions exist in both keep masters unless candidate has kb.se affiliation and master do not
         Otherwise add candidate contributions
         """
-        master_contribs = OrderedDict()
-        master_names_mangled_to_id = {}
-        for contrib in master.contributions:
-            if contrib.agent_name:
-                master_names_mangled_to_id[mangle_contributor_for_comparison(contrib.agent_name)] = id(contrib)
-            master_contribs[id(contrib)] = contrib
 
-        candidate_names_mangled_to_id = {}
-        candidate_contribs = OrderedDict()
-        for contrib in candidate.contributions:
-            if contrib.agent_name:
-                candidate_names_mangled_to_id[mangle_contributor_for_comparison(contrib.agent_name)] = id(contrib)
-            candidate_contribs[id(contrib)] = contrib
-
-        overlapping = []
-        for mangled_name in master_names_mangled_to_id.keys():
-            if mangled_name in candidate_names_mangled_to_id.keys():
-                overlapping.append(mangled_name)
+        # print(f"Contribution summary: \n\tcandidate:", end = "")
+        # for contrib in list(candidate.contributions):
+        #     print(f"{contrib.agent_name}; ", end = "")
+        # print(f"\n\tunion:", end = "")
+        # for contrib in list(master.contributions):
+        #     print(f"{contrib.agent_name}; ", end = "")
+        # print("")
         
-        new_contribs = []
-        for mangled_name in candidate_names_mangled_to_id.keys():
-            if not mangled_name in master_names_mangled_to_id.keys():
-                new_contribs.append(mangled_name)
+        for candidate_contrib in list(candidate.contributions):
+            candidate_contrib_name = candidate_contrib.agent_name
+            exists_in_master = False
+            for master_contrib in list(master.contributions):
+                master_contrib_name = master_contrib.agent_name
 
-        #print(f"Contribution summary: \n\tunion: {master_names_mangled_to_id}\n\tcandidate: {candidate_names_mangled_to_id}\n\tnew: {new_contribs}\n\toverlapping: {overlapping}")
-
-        for contrib_name in overlapping:
-            master_contrib = master_contribs[master_names_mangled_to_id[contrib_name]]
-            candidate_contrib = candidate_contribs[candidate_names_mangled_to_id[contrib_name]]
-
-            if _should_replace_affiliation(
-                master_contrib, candidate_contrib
-            ):
-                master_contrib.affiliations = candidate_contrib.affiliations
-            else:
-                master_contrib.affiliations = _merge_contrib_affiliations(
-                    master_contrib.affiliations,
-                    candidate_contrib.affiliations,
-                )
-            master_contrib.identified_bys = _merge_contrib_identified_by(
-                master_contrib.identified_bys,
-                candidate_contrib.identified_bys,
-            )
-
-        for contrib_name in new_contribs:
-            master_contribs[contrib_name] = candidate_contribs[candidate_names_mangled_to_id[contrib_name]]
-
-        master.contributions = list(master_contribs.values())
-        #for contrib in master.contributions:
-        #    print(f"  master.contributions after additions: {contrib.agent_name}")
+                # If this contribution also exists in the master (it is "overlapping")
+                if distance(mangle_contributor_for_comparison(master_contrib_name), mangle_contributor_for_comparison(candidate_contrib_name)) < 4:
+                    if _should_replace_affiliation(master_contrib, candidate_contrib):
+                        master_contrib.affiliations = candidate_contrib.affiliations
+                    else:
+                        master_contrib.affiliations = _merge_contrib_affiliations(
+                            master_contrib.affiliations,
+                            candidate_contrib.affiliations,
+                        )
+                    master_contrib.identified_bys = _merge_contrib_identified_by(
+                        master_contrib.identified_bys,
+                        candidate_contrib.identified_bys,
+                    )
+                    exists_in_master = True
+                    break
+                
+            # If this contribution does _not_ exist in master (it is "new")
+            if not exists_in_master:
+                #print(f"ADDING {candidate_contrib.agent_name} to master")
+                tmp = list(master.contributions)
+                tmp.append(candidate_contrib)
+                master.contributions = tmp
+                # for contrib in master.contributions:
+                #     print(f"  master.contributions after additions: {contrib.agent_name}")
+        
         return master
 
     @staticmethod

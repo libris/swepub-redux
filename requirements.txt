@@ -14,3 +14,4 @@ orjson==3.6.7
 mysql-connector-python==8.0.28
 pytest==7.0.1
 mock>=1.0.1
+python-Levenshtein==0.12.1
