@@ -1,7 +1,8 @@
 import copy
 import unicodedata
+import re
 from collections import OrderedDict
-from Levenshtein import distance
+import Levenshtein
 
 from pipeline.publication import Contribution, Publication
 
@@ -9,12 +10,53 @@ from pipeline.publication import Contribution, Publication
 GENRE_FORMS_TO_MERGE = ["https://id.kb.se/term/swepub/ArtisticWork"]
 
 def mangle_contributor_for_comparison(name):
-    undesired_name_separators = dict.fromkeys(map(ord, '-–_,.;:!?#\u00a0'), None)
+    undesired_name_separators = dict.fromkeys(map(ord, '-–_,.;:!?#\u00a0'), " ")
     name = name.translate(undesired_name_separators)
+
+    # Separate double capital letters, like "JO" (Waldner), so that they can may be
+    # considered initials and match against "Jan Ove Waldner" or "Jan-Ove Waldner"
+    if len(name) == 2 and name.isupper():
+        name = name[0] + " " + name[1]
+
     name = name.lower()
     nfkd = unicodedata.normalize('NFKD', name)
     name = u"".join([c for c in nfkd if not unicodedata.combining(c)])
     return name
+
+def equal_name_part(a, b):
+    # Initials?
+    if len(a) == 1 and a[0] == b[0]:
+        return True
+    if len(b) == 1 and a[0] == b[0]:
+        return True
+
+    # Otherwise check edit distance
+    if Levenshtein.distance(a, b) < 4:
+        return True
+    return False
+
+def probably_same_name(a, b):
+    a = mangle_contributor_for_comparison(a)
+    b = mangle_contributor_for_comparison(b)
+    name_words_a = re.findall(r"\w+", a)
+    name_words_b = re.findall(r"\w+", b)
+    
+    # Make sure a has fewer "words" than b, so that
+    # "agata beata cristine" can match "agata beta" (we should only check for 2 matches in this case)
+    if len(name_words_a) > len(name_words_b):
+        tmp = name_words_b
+        name_words_b = name_words_a
+        name_words_a = tmp
+    
+    # Check name by name against all of the other names, or initials ("agata b" should match "beata agata")
+    for word_a in name_words_a:
+        has_equal = False
+        for word_b in name_words_b:
+            if equal_name_part(word_a, word_b):
+                has_equal = True
+        if not has_equal:
+            return False
+    return True
 
 class PublicationMerger:
     def merge(self, publications):
@@ -78,7 +120,7 @@ class PublicationMerger:
                 master_contrib_name = master_contrib.agent_name
 
                 # If this contribution also exists in the master (it is "overlapping")
-                if distance(mangle_contributor_for_comparison(master_contrib_name), mangle_contributor_for_comparison(candidate_contrib_name)) < 4:
+                if probably_same_name(master_contrib_name, candidate_contrib_name):
                     if _should_replace_affiliation(master_contrib, candidate_contrib):
                         master_contrib.affiliations = candidate_contrib.affiliations
                     else:
@@ -95,7 +137,7 @@ class PublicationMerger:
                 
             # If this contribution does _not_ exist in master (it is "new")
             if not exists_in_master:
-                #print(f"ADDING {candidate_contrib.agent_name} to master")
+                # print(f"ADDING {candidate_contrib.agent_name} to master")
                 tmp = list(master.contributions)
                 tmp.append(candidate_contrib)
                 master.contributions = tmp
