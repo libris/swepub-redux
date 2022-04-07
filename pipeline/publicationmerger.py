@@ -115,9 +115,13 @@ class PublicationMerger:
         
         for candidate_contrib in list(candidate.contributions):
             candidate_contrib_name = candidate_contrib.agent_name
+            if not candidate_contrib_name:
+                continue
             exists_in_master = False
             for master_contrib in list(master.contributions):
                 master_contrib_name = master_contrib.agent_name
+                if not master_contrib_name:
+                    continue
 
                 # If this contribution also exists in the master (it is "overlapping")
                 if probably_same_name(master_contrib_name, candidate_contrib_name):
