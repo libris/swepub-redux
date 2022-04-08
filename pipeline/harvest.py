@@ -32,6 +32,7 @@ from pipeline.storage import (
     get_connection,
     storage_exists,
     get_sqlite_path,
+    checkpoint,
 )
 from pipeline.index import generate_search_tables
 from pipeline.stats import generate_processing_stats
@@ -630,36 +631,42 @@ if __name__ == "__main__":
                 executor.submit(harvest_wrapper, source)
             executor.shutdown(wait=True)
 
+        checkpoint()
         t1 = time.time()
         diff = round(t1 - t0, 2)
         log.info(f"Phase 1 (harvesting) ran for {diff} seconds")
 
         t0 = t1
         auto_classify(incremental, added_converted_rowids.keys())
+        checkpoint()
         t1 = time.time()
         diff = round(t1 - t0, 2)
         log.info(f"Phase 2 (auto-classification) ran for {diff} seconds")
 
     t0 = t1 if t1 else time.time()
     deduplicate()
+    checkpoint()
     t1 = time.time()
     diff = round(t1 - t0, 2)
     log.info(f"Phase 3 (deduplication) ran for {diff} seconds")
 
     t0 = t1
     merge()
+    checkpoint()
     t1 = time.time()
     diff = round(t1 - t0, 2)
     log.info(f"Phase 4 (merging) ran for {diff} seconds")
 
     t0 = t1
     generate_search_tables()
+    checkpoint()
     t1 = time.time()
     diff = round(t1 - t0, 2)
     log.info(f"Phase 5 (generate search tables) ran for {diff} seconds")
 
     t0 = t1
     generate_processing_stats()
+    checkpoint()
     t1 = time.time()
     diff = round(t1 - t0, 2)
     log.info(f"Phase 6 (generate processing stats) ran for {diff} seconds")
