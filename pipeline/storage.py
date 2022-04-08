@@ -205,9 +205,3 @@ def dict_factory(cursor, row):
     for idx, col in enumerate(cursor.description):
         d[col[0]] = row[idx]
     return d
-
-
-def checkpoint():
-    with get_connection() as con:
-        cur = con.cursor()
-        cur.execute("PRAGMA wal_checkpoint(TRUNCATE)")

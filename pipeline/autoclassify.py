@@ -13,7 +13,7 @@ from dateutil.parser import parse as parse_date
 
 import orjson as json
 
-from pipeline.storage import get_connection, checkpoint
+from pipeline.storage import get_connection
 
 categories = load(
     open(path.join(path.dirname(path.abspath(__file__)), "../resources/categories.json"))
@@ -581,7 +581,6 @@ def auto_classify(incremental, incrementally_converted_rowids):
         # First populate the abstract_total_word_counts table, so that we know
         # how many times each word occurs (within all combined abstracts).
         _generate_occurrence_table()
-        checkpoint()
         t1 = time.time()
         diff = round(t1 - t0, 2)
         print(f"  auto classify 1 (counting) ran for {diff} seconds")
@@ -591,7 +590,6 @@ def auto_classify(incremental, incrementally_converted_rowids):
         # abstract, which we can now calculate given the table populated above.
         # Put these rare words in the abstract_rarest_words table.
         _select_rarest_words()
-        checkpoint()
         t1 = time.time()
         diff = round(t1 - t0, 2)
         print(f"  auto classify 2 (selecting) ran for {diff} seconds")
