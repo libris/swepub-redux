@@ -13,7 +13,7 @@ from dateutil.parser import parse as parse_date
 
 import orjson as json
 
-from pipeline.storage import get_connection
+from pipeline.storage import get_connection, checkpoint
 
 categories = load(
     open(path.join(path.dirname(path.abspath(__file__)), "../resources/categories.json"))
@@ -250,61 +250,71 @@ def _select_rarest_words():
         cursor = connection.cursor()
         second_cursor = connection.cursor()
         third_cursor = connection.cursor()
-        for converted_row in cursor.execute(
-            """
-        SELECT
-            id, data
-        FROM
-            converted
-        WHERE
-            deleted = 0
-        """
-        ):
-            converted_rowid = converted_row[0]
-            converted = json.loads(converted_row[1])
-            publication = Publication(converted)
-            strings_to_scan = []
-            for summary in converted.get("instanceOf", {}).get("summary", []):
-                strings_to_scan.append(summary.get("label", ""))
-            strings_to_scan += publication.keywords
 
-            words_set = set()
-            for string in strings_to_scan:
-                string = string.translate(undesired_binary_chars_table)
-                string = string.translate(undesired_unary_chars_table)
-                string = string.lower()
-                string = re.sub(r"[^a-zåäö ]+", "", string)
-                words = re.findall(r"\w+", string)
-                for word in words:
-                    if word == "" or len(word) < 3:
-                        continue
-                    words_set.add(word.lower())
-            words = list(words_set)[0:150]
+        total = cursor.execute("SELECT COUNT(*) FROM converted WHERE deleted = 0").fetchone()[0]
+        limit = 25000
 
-            for total_count_row in second_cursor.execute(
+        for n in range(0, total//limit + 1):
+            # Necessary for WAL file not to grow too big
+            checkpoint()
+
+            for converted_row in cursor.execute(
                 f"""
             SELECT
-                word
+                id, data
             FROM
-                abstract_total_word_counts
+                converted
             WHERE
-                word IN ({','.join('?'*len(words))})
-            ORDER BY
-                occurrences ASC
-            LIMIT
-                12;
-            """,
-                words,
+                deleted = 0
+            LIMIT {limit}
+            OFFSET {limit*n}
+            """
             ):
-                rare_word = total_count_row[0]
-                # print(f"Writing rare word {rare_word} for id: {converted_rowid}")
-                third_cursor.execute(
-                    """
-                INSERT INTO abstract_rarest_words(word, converted_id) VALUES(?, ?);
+                converted_rowid = converted_row[0]
+                converted = json.loads(converted_row[1])
+                publication = Publication(converted)
+                strings_to_scan = []
+                for summary in converted.get("instanceOf", {}).get("summary", []):
+                    strings_to_scan.append(summary.get("label", ""))
+                strings_to_scan += publication.keywords
+
+                words_set = set()
+                for string in strings_to_scan:
+                    string = string.translate(undesired_binary_chars_table)
+                    string = string.translate(undesired_unary_chars_table)
+                    string = string.lower()
+                    string = re.sub(r"[^a-zåäö ]+", "", string)
+                    words = re.findall(r"\w+", string)
+                    for word in words:
+                        if word == "" or len(word) < 3:
+                            continue
+                        words_set.add(word.lower())
+                words = list(words_set)[0:150]
+
+                for total_count_row in second_cursor.execute(
+                    f"""
+                SELECT
+                    word
+                FROM
+                    abstract_total_word_counts
+                WHERE
+                    word IN ({','.join('?'*len(words))})
+                ORDER BY
+                    occurrences ASC
+                LIMIT
+                    12;
                 """,
-                    (rare_word, converted_rowid),
-                )
-            connection.commit()
+                    words,
+                ):
+                    rare_word = total_count_row[0]
+                    # print(f"Writing rare word {rare_word} for id: {converted_rowid}")
+                    third_cursor.execute(
+                        """
+                    INSERT INTO abstract_rarest_words(word, converted_id) VALUES(?, ?);
+                    """,
+                        (rare_word, converted_rowid),
+                    )
+                connection.commit()
 
 
 def eligible_for_autoclassification(converted_data):
