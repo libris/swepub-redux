@@ -148,7 +148,7 @@ def legacy_sync(hours=24):
             [modified_since],
         ):
             counter += 1
-            if counter % 500:
+            if counter % 1000 == 0:
                 mysql_con.commit()
 
             if row["deleted"]:
