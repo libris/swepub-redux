@@ -666,7 +666,11 @@ if __name__ == "__main__":
 
     if environ.get("SWEPUB_LEGACY_SEARCH_DATABASE"):
         t0 = t1
-        legacy_sync()
+        if incremental:
+            legacy_sync(24)
+        else:
+            # If we're doing a full refresh, sync *all* records
+            legacy_sync(-1)
         t1 = time.time()
         diff = round(t1 - t0, 2)
         log.info(f"Phase 7 (legacy search sync) ran for {diff} seconds")

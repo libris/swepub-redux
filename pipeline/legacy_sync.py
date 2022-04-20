@@ -114,9 +114,11 @@ def legacy_sync(hours=24):
         cur.row_factory = dict_factory
         mysql_cur = mysql_con.cursor(prepared=True)
 
-        # Process records modified < `hours` ago, default < 24 hours agos
-        # TODO: look at last_harvest_time (different for each source)?
-        modified_since = int(time.time()) - 60 * 60 * hours
+        # Process records modified < `hours` ago. -1 = all records.
+        if hours == -1:
+            modified_since = 0
+        else:
+            modified_since = int(time.time()) - 60 * 60 * hours
 
         # We need to INSERT/UPDATE any records that have been modified since some time ago.
         # This is done by looking at the `modified` timestamp of everything in `converted`:
@@ -150,6 +152,8 @@ def legacy_sync(hours=24):
             counter += 1
             if counter % 1000 == 0:
                 mysql_con.commit()
+            if counter % 20000 == 0:
+                log.info(f"Processed {counter} records")
 
             if row["deleted"]:
                 mysql_cur.execute(
@@ -250,6 +254,7 @@ def legacy_sync(hours=24):
                 ),
             )
         mysql_con.commit()
+        log.info(f"Inserted/updated {counter} records")
 
 
 # For debugging
