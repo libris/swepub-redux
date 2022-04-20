@@ -3,6 +3,7 @@ import time
 from os import environ
 import json
 from datetime import datetime
+import dateutil.parser
 
 import mysql.connector
 from lxml import etree as ET
@@ -190,10 +191,9 @@ def legacy_sync(hours=24):
 
             origin = row["source_subset"]  # SwePub-ths
             target = "SWEPUB"
-            format = "swepub_mods"
             sets = _sets(xml_data)
             timestamp = datetime.fromtimestamp(row["modified"]).isoformat()
-            remote_timestamp = _remote_timestamp(xml_data)
+            remote_timestamp = dateutil.parser.isoparse(_remote_timestamp(xml_data))
             deleted = row["deleted"]
 
             mysql_cur.execute(
@@ -209,7 +209,7 @@ def legacy_sync(hours=24):
                     identifier,
                     origin,
                     target,
-                    format,
+                    "swepub_mods",
                     xml_data,
                     sets,
                     timestamp,
@@ -237,7 +237,7 @@ def legacy_sync(hours=24):
                     identifier,
                     origin,
                     target,
-                    format,
+                    "swepub_json",
                     updated_json,
                     sets,
                     timestamp,
