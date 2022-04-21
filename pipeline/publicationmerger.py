@@ -21,6 +21,7 @@ def mangle_contributor_for_comparison(name):
             separated += name[i] + " "
         else:
             separated += name[i]
+    separated += name[-1]
     name = separated
 
     name = name.lower()
