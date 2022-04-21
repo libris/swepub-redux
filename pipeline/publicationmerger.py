@@ -15,8 +15,13 @@ def mangle_contributor_for_comparison(name):
 
     # Separate double capital letters, like "JO" (Waldner), so that they can may be
     # considered initials and match against "Jan Ove Waldner" or "Jan-Ove Waldner"
-    if len(name) == 2 and name.isupper():
-        name = name[0] + " " + name[1]
+    separated = ""
+    for i in range(0, len(name)-1):
+        if name[i].isupper() and name[i+1].isupper():
+            separated += name[i] + " "
+        else:
+            separated += name[i]
+    name = separated
 
     name = name.lower()
     nfkd = unicodedata.normalize('NFKD', name)
