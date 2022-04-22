@@ -1,6 +1,8 @@
 from difflib import SequenceMatcher
 
 from jsonpath_rw import parse
+import re
+import Levenshtein
 
 
 def chunker(seq, size):
@@ -61,6 +63,66 @@ def get_at_path(root, path):
     if path == "":
         return root
     return parse(path).find(root)[0].value
+
+# This is a heuristic, not an exact algorithm.
+# The idea is to first find the longest substring (loosely defined) shared between both a and b.
+# What is returned, a float within (0.0, 1.0), is then the length of that substring
+# (in words) divided by the length of the longest input string (in words).
+# Further: Words need not match exactly, a "short" edit distance is considered enough to match.
+undesired_chars = dict.fromkeys(map(ord, '-–_,.;:!?#\u00a0'), " ")
+def get_common_substring_factor(a, b):
+    a = a.translate(undesired_chars).lower()
+    b = b.translate(undesired_chars).lower()
+
+    # Turn strings into word lists
+    a = re.findall(r"\w+", a)
+    b = re.findall(r"\w+", b)
+
+    # Make sure a is the shorter list
+    if len(a) > len(b):
+        tmp = b
+        b = a
+        a = tmp
+
+    # Find the middlemost unique word of 'a' that also exists in 'b' (start_word)
+    already_found = set()
+    not_suitable = set()
+    for word in a:
+        if word in already_found or word not in b:
+            not_suitable.add(word)
+        else:
+            already_found.add(word)
+    #a_filtered = a.remove(not_suitable)
+    a_filtered = [x for x in a if x not in not_suitable]
+    if len(a_filtered) == 0: # Could not find a common word to start on
+        return 0.0
+    af_index = len(a_filtered) // 2
+    start_word = a_filtered[af_index]
+
+    # Find the index of start_word in a and b
+    index_a = a.index(start_word)
+    index_b = b.index(start_word)
+
+    # Count substring length from start_word, backwards and forwards
+    count = 1 # start_word itself is part of the shared substring and counts as 1
+    i = 0
+    while index_a + i > 0 and index_b + i > 0: # Don't move beyond beginning of list
+        i -= 1
+        #print(f"\ngoing down:\na={a}\nb={b}\n\tstart_word={start_word}\n\t{index_a}, {index_b}, i = {i}")
+        if Levenshtein.distance(a[index_a + i], b[index_b + i]) < 4:
+            count += 1
+        else:
+            break
+    i = 0
+    while index_a + i < len(a)-1 and index_b + i < len(b)-1: # Don't move beyond end of list
+        i += 1
+        #print(f"\ngoing up:\na={a}\nb={b}\n\tstart_word={start_word}\n\t{index_a + i}, {index_b + i}")
+        if Levenshtein.distance(a[index_a + i], b[index_b + i]) < 4:
+            count += 1
+        else:
+            break
+    
+    return count / len(b)
 
 
 class FieldMeta:
@@ -155,6 +217,20 @@ def compare_text(master_text, candidate_text, match_ratio, max_length_string_to_
     sequence_matcher_ratio = sequence_matcher.quick_ratio()
     return sequence_matcher_ratio >= match_ratio
 
+def get_combined_title(body):
+    """Return the main title with and subtitle appended."""
+    has_title_array = body.get('instanceOf', {}).get('hasTitle', [])
+    for h_t in has_title_array:
+        if isinstance(h_t, dict) and h_t.get('@type') == 'Title':
+            main_title = h_t.get('mainTitle')
+            sub_title = h_t.get('subtitle')
+            combined = ""
+            if not empty_string(main_title):
+                combined = main_title
+            if not empty_string(sub_title):
+                combined += " " + sub_title
+            return combined
+    return ""
 
 def get_main_title(body):
     """Return value of instanceOf.hasTitle[?(@.@type=="Title")].mainTitle if it exists and

@@ -18,6 +18,14 @@ STRING_MATCH_PARTOF_MAIN_TITLE = 0.8
 
 CONFERENCE_PAPER_GENREFORM = "https://id.kb.se/term/swepub/ConferencePaper"
 
+known_poor_titles = {"Introduction", "Inledning", "Indledning", "Editorial", "Förord", "Preface",
+"Introduktion", "Review of", "Foreword", "Recensioner", "Conclusion", "Efterord", "Reply",
+"Book review", "Recension", "Conclusions", "Review", "Erratum", "Commentary", "Guest editorial",
+"Untitled", "Erratum to", "Editorial Introduction", "Avslutning", "Corrigendum", "Afterword",
+"Response", "Correction to", "Re", "Epilogue", "Från redaktionen", "Kommentar", "Vorwort",
+"Epilog", "Recension av", "Letter", "In memoriam", "Correction", "Debatt", "[Not Available]",
+"Aktuellt", "Letter to the Editor", "recension", "Discussion", "Slutord", "Note", "Invited",
+"Comment on"}
 
 def _has_same_main_title(a, b):
     """True if publication has the same main title"""
@@ -28,6 +36,19 @@ def _has_same_sub_title(a, b):
     """True if publication has the same sub title"""
     return compare_text(get_sub_title(a), get_sub_title(b), STRING_MATCH_RATIO_SUB_TITLE)
 
+def _has_similar_combined_title(a, b):
+    combined_a = get_combined_title(a)
+    combined_b = get_combined_title(b)
+    if combined_a in known_poor_titles or combined_b in known_poor_titles:
+        return False
+    simliarity = get_common_substring_factor(combined_a, combined_b)
+
+    if simliarity < 0.8 and simliarity > 0.4:
+        print(f"{combined_a}\n{combined_b}\n\t{simliarity}")
+
+    if simliarity > 0.8:
+        return True
+    return False
 
 def _has_same_summary(a, b):
     """True if publication has the same summary"""
@@ -131,11 +152,10 @@ def _is_close_enough(a_rowid, b_rowid):
             return True
 
         # 2.
-        # print(f'*** {b["@id"]} now to be checked for duplicity (2) with {a["@id"]}')
-        if _has_same_main_title(a, b) and has_same_ids(a, b):
-            # print(f'*** {b["@id"]} was (type 2) duplicate of {a["@id"]}')
+        #if _has_same_main_title(a, b) and has_same_ids(a, b):
+
+        if _has_similar_combined_title(a, b) and has_same_ids(a, b):
             return True
-        # print(f'*** {b["@id"]} was NOT (type 2) duplicate of {a["@id"]}')
 
         # 3.
         if (
