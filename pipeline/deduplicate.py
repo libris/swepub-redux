@@ -43,10 +43,8 @@ def _has_similar_combined_title(a, b):
         return False
     simliarity = get_common_substring_factor(combined_a, combined_b)
 
-    if simliarity < 0.8 and simliarity > 0.4:
-        print(f"{combined_a}\n{combined_b}\n\t{simliarity}")
-
-    if simliarity > 0.8:
+    if simliarity > 0.7:
+        #print(f"{combined_a}\n{combined_b}\n\t{simliarity}")
         return True
     return False
 
@@ -152,8 +150,6 @@ def _is_close_enough(a_rowid, b_rowid):
             return True
 
         # 2.
-        #if _has_same_main_title(a, b) and has_same_ids(a, b):
-
         if _has_similar_combined_title(a, b) and has_same_ids(a, b):
             return True
 

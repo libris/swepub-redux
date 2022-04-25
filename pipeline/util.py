@@ -69,7 +69,7 @@ def get_at_path(root, path):
 # What is returned, a float within (0.0, 1.0), is then the length of that substring
 # (in words) divided by the length of the longest input string (in words).
 # Further: Words need not match exactly, a "short" edit distance is considered enough to match.
-undesired_chars = dict.fromkeys(map(ord, '-–_,.;:!?#\u00a0'), " ")
+undesired_chars = dict.fromkeys(map(ord, '-–_,.;:’\'!?#\u00a0'), " ")
 def get_common_substring_factor(a, b):
     a = a.translate(undesired_chars).lower()
     b = b.translate(undesired_chars).lower()
@@ -92,7 +92,6 @@ def get_common_substring_factor(a, b):
             not_suitable.add(word)
         else:
             already_found.add(word)
-    #a_filtered = a.remove(not_suitable)
     a_filtered = [x for x in a if x not in not_suitable]
     if len(a_filtered) == 0: # Could not find a common word to start on
         return 0.0
@@ -100,25 +99,47 @@ def get_common_substring_factor(a, b):
     start_word = a_filtered[af_index]
 
     # Find the index of start_word in a and b
-    index_a = a.index(start_word)
-    index_b = b.index(start_word)
+    start_index_a = a.index(start_word)
+    start_index_b = b.index(start_word)
 
     # Count substring length from start_word, backwards and forwards
     count = 1 # start_word itself is part of the shared substring and counts as 1
-    i = 0
-    while index_a + i > 0 and index_b + i > 0: # Don't move beyond beginning of list
-        i -= 1
-        #print(f"\ngoing down:\na={a}\nb={b}\n\tstart_word={start_word}\n\t{index_a}, {index_b}, i = {i}")
-        if Levenshtein.distance(a[index_a + i], b[index_b + i]) < 4:
+    
+    # Check backwards
+    ia = 0
+    ib = 0
+    while start_index_a + ia > 0 and start_index_b + ib > 0: # Don't move beyond beginning of list
+        ia -= 1
+        ib -= 1
+        if Levenshtein.distance(a[start_index_a + ia], b[start_index_b + ib]) < 4:
             count += 1
+        # The two elif cases are here to counter words that are "särstavade", basically
+        # try again with the next word added to the previous one
+        elif start_index_a + ia > 0 and Levenshtein.distance(a[start_index_a + ia - 1] + a[start_index_a + ia], b[start_index_b + ib]) < 4:
+            count += 1
+            ia -= 1
+        elif start_index_b + ib > 0 and Levenshtein.distance(a[start_index_a + ia], b[start_index_b + ib - 1] + b[start_index_b + ib]) < 4:
+            count += 2 # We're eating two words out of B which is what we'll divide by in a second
+            ib -= 1
         else:
             break
-    i = 0
-    while index_a + i < len(a)-1 and index_b + i < len(b)-1: # Don't move beyond end of list
-        i += 1
-        #print(f"\ngoing up:\na={a}\nb={b}\n\tstart_word={start_word}\n\t{index_a + i}, {index_b + i}")
-        if Levenshtein.distance(a[index_a + i], b[index_b + i]) < 4:
+
+    # Check forwards
+    ia = 0
+    ib = 0
+    while start_index_a + ia < len(a)-1 and start_index_b + ib < len(b)-1: # Don't move beyond end of list
+        ia += 1
+        ib += 1
+        if Levenshtein.distance(a[start_index_a + ia], b[start_index_b + ib]) < 4:
             count += 1
+        # The two elif cases are here to counter words that are "särstavade", basically
+        # try again with the next word added to the previous one
+        elif start_index_a + ia < len(a) - 2 and Levenshtein.distance(a[start_index_a + ia] + a[start_index_a + ia + 1], b[start_index_b + ib]) < 4:
+            count += 1
+            ia += 1
+        elif start_index_b + ib < len(b) - 2 and Levenshtein.distance(a[start_index_a + ia], b[start_index_b + ib] + b[start_index_b + ib + 1]) < 4:
+            count += 2 # We're eating two words out of B which is what we'll divide by in a second
+            ib += 1
         else:
             break
     
