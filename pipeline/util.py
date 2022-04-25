@@ -69,8 +69,8 @@ def get_at_path(root, path):
 # What is returned, a float within (0.0, 1.0), is then the length of that substring
 # (in words) divided by the length of the longest input string (in words).
 # Further: Words need not match exactly, a "short" edit distance is considered enough to match.
-undesired_chars = dict.fromkeys(map(ord, '-–_,.;:’\'!?#\u00a0'), " ")
-def get_common_substring_factor(a, b):
+undesired_chars = dict.fromkeys(map(ord, '-–_,.;:’\'!?”“#\u00a0'), " ")
+def get_common_substring_factor(a, b, allowed_misses = 0):
     a = a.translate(undesired_chars).lower()
     b = b.translate(undesired_chars).lower()
 
@@ -108,6 +108,7 @@ def get_common_substring_factor(a, b):
     # Check backwards
     ia = 0
     ib = 0
+    misses = 0
     while start_index_a + ia > 0 and start_index_b + ib > 0: # Don't move beyond beginning of list
         ia -= 1
         ib -= 1
@@ -122,11 +123,15 @@ def get_common_substring_factor(a, b):
             count += 2 # We're eating two words out of B which is what we'll divide by in a second
             ib -= 1
         else:
-            break
+            if misses > allowed_misses:
+                break
+            misses += 1
+            ia -= 1
 
     # Check forwards
     ia = 0
     ib = 0
+    misses = 0
     while start_index_a + ia < len(a)-1 and start_index_b + ib < len(b)-1: # Don't move beyond end of list
         ia += 1
         ib += 1
@@ -141,7 +146,10 @@ def get_common_substring_factor(a, b):
             count += 2 # We're eating two words out of B which is what we'll divide by in a second
             ib += 1
         else:
-            break
+            if misses > allowed_misses:
+                break
+            misses += 1
+            ia -= 1
     
     return count / len(b)
 

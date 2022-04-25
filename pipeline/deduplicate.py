@@ -52,6 +52,20 @@ def _has_same_summary(a, b):
     """True if publication has the same summary"""
     return compare_text(get_summary(a), get_summary(b), STRING_MATCH_RATIO_SUMMARY)
 
+def _has_similar_summary(a, b):
+    summary_a = get_summary(a)
+    summary_b = get_summary(b)
+    if bool(summary_a) != bool(summary_b):
+        return False
+    if not summary_a:
+        return True # Both a and b lack a summary? Guess they match then..
+    simliarity = get_common_substring_factor(summary_a, summary_b, 3)
+
+    if simliarity > 0.6:
+        #print(f"{summary_a}\n{summary_b}\n\t{simliarity}")
+        return True
+    return False
+
 
 def _partof_has_same_main_title(partof_a, partof_b):
     """True if part_of has the same main title"""
@@ -61,6 +75,23 @@ def _partof_has_same_main_title(partof_a, partof_b):
     return compare_text(
         part_of_main_title(partof_a), part_of_main_title(partof_b), STRING_MATCH_PARTOF_MAIN_TITLE
     )
+
+
+def _has_similar_partof_main_title(a, b):
+    part_a = part_of_with_title(a)
+    part_b = part_of_with_title(b)
+    if not part_a or not part_b:
+        return False
+    part_title_a = part_of_main_title(part_a)
+    part_title_b = part_of_main_title(part_b)
+    if not part_title_a or not part_title_b:
+        return False
+    
+    simliarity = get_common_substring_factor(part_title_a, part_title_b)
+    if simliarity > 0.9:
+        print(f"{part_title_a}\n{part_title_b}\n\t{simliarity}")
+        return True
+    return False
 
 
 def _has_same_partof_main_title(a, b):
@@ -111,19 +142,6 @@ def _has_compatible_doi_set(a, b):
 # Are publications 'a' and 'b' similiar enough to justify clustering them?
 # 'a' and 'b' are row IDs into the 'converted' table.
 def _is_close_enough(a_rowid, b_rowid):
-    """Two publications are duplicates if they have (
-    1. Have the same (oai) id
-        _or_
-    2. Same title and one of directly identified ids (DOI, PMID, ISI, ScopusID, ISBN)
-        or indirectly identified ISBN
-        _or_
-    3. None are conferancepaper -> Same title, subtitle, summary, publication date and genreform
-        _or_
-    4. One or both are conferancepaper -> Same title, subtitle, summary, publication date and partof.maintitle )
-        _and_
-    5. Their respective sets of DOIs (if any) are compatible
-    """
-
     with get_connection() as connection:
         cursor = connection.cursor()
         cursor.execute(
@@ -141,25 +159,21 @@ def _is_close_enough(a_rowid, b_rowid):
         a = json.loads(candidate_rows[0][0])
         b = json.loads(candidate_rows[1][0])
 
-        # 5.
+        # 'a' and 'b' may not have different DOIs.
         if not _has_compatible_doi_set(a, b):
             return False
 
-        # 1. # THIS IS POINTLESS, CANT HAPPEN ANYMORE
-        if a["@id"] == b["@id"]:
-            return True
-
-        # 2.
+        
+        # A similar title and _one_ shared ID of some sort qualifies
         if _has_similar_combined_title(a, b) and has_same_ids(a, b):
             return True
 
         # 3.
         if (
-            _has_same_main_title(a, b)
+            _has_similar_combined_title(a, b)
             and CONFERENCE_PAPER_GENREFORM not in genre_form(a)
             and CONFERENCE_PAPER_GENREFORM not in genre_form(b)
-            and _has_same_sub_title(a, b)
-            and _has_same_summary(a, b)
+            and _has_similar_summary(a, b)
             and _has_same_publication_date(a, b)
             and _has_same_genre_form(a, b)
         ):
@@ -167,15 +181,14 @@ def _is_close_enough(a_rowid, b_rowid):
 
         # 4.
         if (
-            _has_same_main_title(a, b)
+            _has_similar_combined_title(a, b)
             and (
                 CONFERENCE_PAPER_GENREFORM in genre_form(a)
                 or CONFERENCE_PAPER_GENREFORM in genre_form(b)
             )
-            and _has_same_sub_title(a, b)
-            and _has_same_summary(a, b)
+            and _has_similar_summary(a, b)
             and _has_same_publication_date(a, b)
-            and _has_same_partof_main_title(a, b)
+            and _has_similar_partof_main_title(a, b)
         ):
             return True
 
