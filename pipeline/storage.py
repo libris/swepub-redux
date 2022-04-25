@@ -178,6 +178,16 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
                 if identifier is not None and isinstance(identifier, str):
                     identifiers.append(identifier)
 
+        # To loosely/speculatively "search" for simliar (but possibly misspelled) summaries, add the
+        # vowels of the last N chars of the summary as a clustering identifier
+        vowels = "AaEeIiOoUuYyÅåÄäÖö"
+        work = converted["instanceOf"]
+        if "summary" in work:
+            for summary in work["summary"]:
+                ending = summary["label"][-40:]
+                degraded = "".join([c for c in ending if c in vowels])
+                identifiers.append(degraded)
+
         for identifier in identifiers:
             cur.execute(
                 """
