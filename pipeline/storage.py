@@ -5,6 +5,7 @@ import orjson as json
 
 from pipeline.bibframesource import BibframeSource
 from pipeline.swepublog import logger as log
+from pipeline.deduplicate import known_poor_titles
 
 FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 SQL_SCHEMA_FILE = os.path.join(FILE_PATH, "../resources/schema.sql")
@@ -99,7 +100,6 @@ def store_original(
     connection.commit()
     return original_rowid
 
-
 def store_converted(original_rowid, converted, audit_events, field_events, record_info, connection):
     try:
         cur = connection.cursor()
@@ -184,17 +184,18 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
         work = converted["instanceOf"]
         if "summary" in work:
             for summary in work["summary"]:
-                ending = summary["label"][-40:]
+                ending = summary["label"][-60:]
                 degraded = "".join([c for c in ending if c in vowels])
                 identifiers.append(degraded)
 
         for identifier in identifiers:
-            cur.execute(
-                """
-            INSERT INTO clusteringidentifiers(identifier, converted_id) VALUES (?, ?)
-            """,
-                (identifier, converted_rowid),
-            )
+            if len(identifier) > 4 and identifier not in known_poor_titles:
+                cur.execute(
+                    """
+                INSERT INTO clusteringidentifiers(identifier, converted_id) VALUES (?, ?)
+                """,
+                    (identifier, converted_rowid),
+                )
 
         connection.commit()
         return converted_rowid

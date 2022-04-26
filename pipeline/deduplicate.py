@@ -89,7 +89,7 @@ def _has_similar_partof_main_title(a, b):
     
     simliarity = get_common_substring_factor(part_title_a, part_title_b)
     if simliarity > 0.9:
-        print(f"{part_title_a}\n{part_title_b}\n\t{simliarity}")
+        #print(f"{part_title_a}\n{part_title_b}\n\t{simliarity}")
         return True
     return False
 
