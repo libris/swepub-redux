@@ -1,8 +1,9 @@
 import re
 from enum import Enum
 from datetime import date, datetime
-
 from dateutil.parser import parse as dateutil_parse
+
+from pipeline.util import Level
 
 
 CREATOR_FIELDS = [
@@ -69,11 +70,6 @@ def _add_id_by_code_to_person(person, agent, id_type, id_by_code_label):
                 break
     person.update({id_by_code_label: id_by_code})
     return person
-
-
-class Level(Enum):
-    PEERREVIEWED = "https://id.kb.se/term/swepub/swedishlist/peer-reviewed"
-    NONPEERREVIEWED = "https://id.kb.se/term/swepub/swedishlist/non-peer-reviewed"
 
 
 class BibframeSource:
@@ -747,13 +743,11 @@ class BibframeSource:
 
         for gform in self._bibframe_master["instanceOf"]["genreForm"]:
             # Peer-reviewed always trumps non-peer-reviewed
-            if "@id" in gform and gform["@id"] == Level.PEERREVIEWED.value:
-                # return Level.PEERREVIEWED
-                return 1
+            if "@id" in gform and gform["@id"] == str(Level.PEERREVIEWED):
+                return Level.PEERREVIEWED.value
 
-            if "@id" in gform and gform["@id"] == Level.NONPEERREVIEWED.value:
-                # return Level.NONPEERREVIEWED
-                return 0
+            if "@id" in gform and gform["@id"] == str(Level.NONPEERREVIEWED):
+                return Level.NONPEERREVIEWED.value
         return None
 
     @property

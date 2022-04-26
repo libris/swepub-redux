@@ -1,18 +1,13 @@
 import csv
-from enum import Enum
 from os import path
 
 from pipeline.auditors import BaseAuditor
+from pipeline.util import Level
 
 
 DEFAULT_FILE_PATH = path.join(
     path.dirname(path.abspath(__file__)), "../../resources/swedish_list.csv"
 )
-
-
-class Level(Enum):
-    PEERREVIEWED = "https://id.kb.se/term/swepub/swedishlist/peer-reviewed"
-    NONPEERREVIEWED = "https://id.kb.se/term/swepub/swedishlist/non-peer-reviewed"
 
 
 class SwedishListAuditor(BaseAuditor):
@@ -88,7 +83,7 @@ class SwedishListAuditor(BaseAuditor):
     def _add_audit_event(audit_events, level):
         name = SwedishListAuditor.__name__
         code = "set_publication_level"
-        result = "0"
+        result = -1
         if level:
             result = level.value
         audit_events.add_event(name, code, result)

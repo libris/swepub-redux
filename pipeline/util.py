@@ -1,6 +1,17 @@
-from difflib import SequenceMatcher
+from aenum import Enum
 
+from difflib import SequenceMatcher
 from jsonpath_rw import parse
+
+
+class Level(Enum):
+    _init_ = 'value fullname'
+
+    NONPEERREVIEWED = 0, "https://id.kb.se/term/swepub/swedishlist/non-peer-reviewed"
+    PEERREVIEWED = 1, "https://id.kb.se/term/swepub/swedishlist/peer-reviewed"
+
+    def __int__(self):
+        return self.value
 
 
 def chunker(seq, size):

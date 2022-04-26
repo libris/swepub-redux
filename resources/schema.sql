@@ -46,7 +46,7 @@ CREATE TABLE converted_audit_events (
     converted_id INTEGER,
     name TEXT,
     code TEXT,
-    result TEXT,
+    result INTEGER,
     FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
 );
 CREATE INDEX idx_converted_audit_events_converted_id ON converted_audit_events(converted_id);

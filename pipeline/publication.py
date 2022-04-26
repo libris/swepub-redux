@@ -1,4 +1,3 @@
-from pipeline.auditors.swedishlist import Level
 from pipeline.util import *
 
 import itertools
@@ -361,10 +360,10 @@ class Publication:
 
         for gform in self.body['instanceOf']['genreForm']:
             # Peer-reviewed always trumps non-peer-reviewed
-            if '@id' in gform and gform['@id'] == Level.PEERREVIEWED.value:
+            if '@id' in gform and gform['@id'] == str(Level.PEERREVIEWED):
                 return Level.PEERREVIEWED
 
-            if '@id' in gform and gform['@id'] == Level.NONPEERREVIEWED.value:
+            if '@id' in gform and gform['@id'] == str(Level.NONPEERREVIEWED):
                 return Level.NONPEERREVIEWED
 
         return None
@@ -382,12 +381,12 @@ class Publication:
         if 'genreForm' not in self.body['instanceOf']:
             self.body['instanceOf']['genreForm'] = []
         genreforms = self.body['instanceOf']['genreForm']
-        genreforms.append({'@id': level.value})
+        genreforms.append({'@id': str(level)})
         self.body['instanceOf']['genreForm'] = genreforms
 
     @staticmethod
     def _is_unmarked(gform):
-        levels = [Level.PEERREVIEWED.value, Level.NONPEERREVIEWED.value]
+        levels = [str(Level.PEERREVIEWED), str(Level.NONPEERREVIEWED)]
         return '@id' not in gform or gform['@id'] not in levels
 
     def _purge_markings(self, publication):
