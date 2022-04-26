@@ -100,6 +100,26 @@ CREATE INDEX idx_converted_source_deleted ON converted(source, deleted);
 CREATE INDEX idx_converted_source_deleted_date ON converted(source, deleted, date);
 
 
+CREATE TABLE converted_meta (
+    id INTEGER PRIMARY KEY,
+    converted_id INTEGER,
+    oai_id TEXT UNIQUE,
+    date INTEGER,
+    source TEXT,
+    is_open_access INTEGER,
+    classification_level INT, -- 0 = https://id.kb.se/term/swepub/swedishlist/non-peer-reviewed, 1 = peer-reviewed (1 also means "is_swedishlist)
+    has_ssif_1 INTEGER,
+    FOREIGN KEY (id) REFERENCES converted(id) ON DELETE CASCADE
+);
+--CREATE INDEX idx_converted_meta_converted_id ON converted_meta(converted_id);
+CREATE INDEX idx_converted_meta_oai_id ON converted_meta(oai_id);
+CREATE INDEX idx_converted_meta_date ON converted_meta(date);
+CREATE INDEX idx_converted_meta_source ON converted_meta(source);
+CREATE INDEX idx_converted_meta_is_open_access ON converted_meta(is_open_access);
+CREATE INDEX idx_converted_meta_classification_level ON converted_meta(classification_level);
+CREATE INDEX idx_converted_meta_has_ssif_1 ON converted_meta(has_ssif_1);
+
+
 CREATE TABLE converted_ssif_1 (
     converted_id INTEGER,
     value INTEGER,
@@ -274,6 +294,13 @@ CREATE VIRTUAL TABLE search_fulltext USING FTS5 (
 );
 
 
+CREATE VIRTUAL TABLE search_converted USING FTS5 (
+    converted_id,
+    source,
+    flags
+);
+
+
 CREATE TABLE stats_audit_events (
     source TEXT,
     date INT,
@@ -351,6 +378,7 @@ BEGIN
             ) AND converted_id != OLD.id
         );
 
+    DELETE FROM converted_meta WHERE converted_meta.converted_id = OLD.id;
     DELETE FROM converted_audit_events WHERE converted_audit_events.converted_id = OLD.id;
     DELETE FROM converted_record_info WHERE converted_record_info.converted_id = OLD.id;
     DELETE FROM converted_ssif_1 WHERE converted_ssif_1.converted_id = OLD.id;

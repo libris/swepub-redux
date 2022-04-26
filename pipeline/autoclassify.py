@@ -428,12 +428,24 @@ def _find_and_add_subjects():
 
                         cursor.execute(
                             """
+                        UPDATE
+                            search_converted
+                        SET
+                            flags = flags || " auto_classify_enriched"
+                        WHERE
+                            converted_id = ?
+                        """,
+                            [int(rowid)],
+                        )
+
+                        cursor.execute(
+                            """
                         INSERT INTO converted_audit_events
                             (converted_id, name, code, result)
                         VALUES
                             (?, ?, ?, ?);
                         """,
-                            (rowid, "AutoclassifierAuditor", code, result),
+                            (int(rowid), "AutoclassifierAuditor", code, result),
                         )
                 connection.commit()
 

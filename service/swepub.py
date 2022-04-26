@@ -1017,81 +1017,54 @@ def process_get_export(source=None):
     if errors:
         _errors(errors)
 
-    converted, converted_record_info, converted_audit_events = Tables(
-        "converted", "converted_record_info", "converted_audit_events"
-    )
-    values = []
-    q = (
-        Query.from_(converted)
-        .where(converted.source == Parameter("?"))
-        .where(converted.deleted == 0)
-    )
+    flags = set()
+    for value in selected_flags.values():
+        for flag_name, flag_statuses in value.items():
+            for flag_status in flag_statuses:
+                flags.add(f"{flag_name}_{flag_status}")
 
+    converted, search_converted = Tables("converted", "search_converted")
+    values = []
+
+    q = (
+        Query
+        .from_(search_converted)
+        .where(
+            BasicCriterion(
+                Comparator.match,
+                search_converted["source"],
+                search_converted["source"].wrap_constant(Parameter("?")),
+            )
+        )
+    )
     values.append(source)
 
-    # We only need to join the converted_record_info table if a validation/enrichment/normalization flag
-    # was selected, *or* if no flags were selected at all
-    if any(
-        [
-            selected_flags["validation"],
-            selected_flags["enrichment"],
-            selected_flags["normalization"],
-        ]
-    ) or not any(selected_flags.values()):
-        q = q.left_join(converted_record_info).on(
-            converted.id == converted_record_info.converted_id
+    flags_query = " OR ".join(flags)
+    q = q.where(
+            BasicCriterion(
+                Comparator.match,
+                search_converted["flags"],
+                search_converted["flags"].wrap_constant(Parameter("?")),
+            )
         )
+    values.append(flags_query)
 
-    # ...and likewise for converted_audit_events
-    if (
-        selected_flags["audit"]
-        or not any(selected_flags.values())
-        or "auto_classify" in selected_flags["enrichment"]
-    ):
-        q = q.left_join(converted_audit_events).on(
-            converted.id == converted_audit_events.converted_id
-        )
-
+    converted_is_joined = False
     if g.from_yr and g.to_yr:
+        q = q.join(converted).on(search_converted.converted_id == converted.id)
+        converted_is_joined = True
         q = q.where((converted.date >= Parameter("?")) & (converted.date <= Parameter("?")))
         values.append([g.from_yr, g.to_yr])
 
-    # Specified flags should be OR'd together, so we build up a list of criteria and use
-    # pypika's Criterion.any.
-    criteria = []
-    for flag_type, flags in selected_flags.items():
-        for flag_name, flag_values in flags.items():
-            if flag_type in ["validation", "enrichment", "normalization"] and flag_name not in [
-                "auto_classify"
-            ]:
-                for flag_value in flag_values:
-                    criteria.append(
-                        (converted_record_info.field_name == Parameter("?"))
-                        & (converted_record_info[f"{flag_type}_status"] == Parameter("?"))
-                    )
-                    values.append([flag_name, flag_value])
-            if flag_type == "audit" or flag_name in ["auto_classify"]:
-                for flag_value in flag_values:
-                    criteria.append(
-                        (converted_audit_events.code == Parameter("?"))
-                        & (converted_audit_events.result == Parameter("?"))
-                    )
-                    # TODO: Fix horrible "valid"/"invalid" 0/1 confusion
-                    if flag_value == "valid" or (
-                        flag_name == "creator_count_check" and flag_value == "invalid"
-                    ):
-                        int_flag_value = 0
-                    else:
-                        int_flag_value = 1
-                    values.append([flag_name, int_flag_value])
-    q = q.where(Criterion.any(criteria))
+    q_total = q.select(fn.Count(search_converted.converted_id).distinct().as_("total"))
 
-    q_total = q.select(fn.Count(converted.oai_id).distinct().as_("total"))
+    if not converted_is_joined:
+        q = q.join(converted).on(search_converted.converted_id == converted.id)
 
     q = (
-        q.select(converted.oai_id)
+        q.select(converted.id)
         .distinct()
-        .select(converted.date, converted.data, converted.events)
+        .select(converted.date, converted.data, converted.events, converted.oai_id)
     )
 
     if limit:
@@ -1103,6 +1076,7 @@ def process_get_export(source=None):
     cur = get_db().cursor()
     cur.row_factory = dict_factory
     total_docs = cur.execute(str(q_total), list(flatten(values))).fetchone()["total"]
+    print(flags_query)
 
     def get_results():
         # Exports can be large and we don't want to load everything into memory, so we stream

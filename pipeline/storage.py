@@ -133,6 +133,26 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
             "SELECT id FROM converted WHERE oai_id = ?", [doc.record_id]
         ).fetchone()[0]
 
+        cur.execute(
+            """
+        INSERT INTO
+            converted_meta(id, oai_id, date, source, is_open_access, has_ssif_1, classification_level)
+        VALUES
+            (?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(id) DO UPDATE SET
+            id = excluded.id, oai_id = excluded.oai_id, date = excluded.date, source = excluded.source, is_open_access = excluded.is_open_access, has_ssif_1 = excluded.has_ssif_1, classification_level = excluded.classification_level
+        """,
+            (
+                converted_rowid,
+                doc.record_id,
+                doc.publication_year,
+                doc.source_org_master,
+                doc.open_access,
+                (len(doc.ssif_1_codes) > 0),
+                doc.level
+            ),
+        )
+
         for ssif_1 in doc.ssif_1_codes:
             cur.execute(
                 """
@@ -141,7 +161,13 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
                 (converted_rowid, ssif_1,)
             )
 
+        flags = set()
+
         for field, value in record_info.items():
+            flags.add(f"{field}_{value['validation_status']}")
+            flags.add(f"{field}_{value['enrichment_status']}")
+            flags.add(f"{field}_{value['normalization_status']}")
+
             cur.execute(
                 """
             INSERT INTO converted_record_info(
@@ -159,12 +185,30 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
 
         for name, events in audit_events.items():
             for event in events:
+                if event.get("code"):
+
+                    result = event["result"]
+                    if event["code"] == "creator_count_check":
+                        result = not result
+
+                    if result == False:
+                        status = "valid"
+                    else:
+                        status = "invalid"
+
+                    flags.add(f"{event['code']}_{status}")
+
                 cur.execute(
                     """
                 INSERT INTO converted_audit_events(converted_id, code, result, name) VALUES (?, ?, ?, ?)
                 """,
                     (converted_rowid, event.get("code", None), event.get("result", None), name),
                 )
+
+        cur.execute(
+            "INSERT INTO search_converted (converted_id, source, flags) VALUES (?, ?, ?)",
+            (converted_rowid, doc.source_org_master, " ".join(flags),)
+        )
 
         identifiers = []
         for title in converted["instanceOf"]["hasTitle"]:
