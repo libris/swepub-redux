@@ -227,7 +227,7 @@ def _generate_clusters():
             """
             ):
                 candidates = candidatelist_row[0].split("\n")
-                if len(candidates) > 1:
+                if len(candidates) > 1 and len(candidates) < 150:
                     batch.append(candidates)
 
                     if len(batch) >= 32:
