@@ -1022,38 +1022,15 @@ def process_get_export(source=None):
     )
     values = []
     q = (
-        Query.from_(converted)
-        .where(converted.source == Parameter("?"))
-        .where(converted.deleted == 0)
+        Query
+        .from_(converted)
+        .left_join(converted_record_info).on(converted.id == converted_record_info.converted_id)
+        .where(converted_record_info.source == Parameter("?"))
     )
-
     values.append(source)
 
-    # We only need to join the converted_record_info table if a validation/enrichment/normalization flag
-    # was selected, *or* if no flags were selected at all
-    if any(
-        [
-            selected_flags["validation"],
-            selected_flags["enrichment"],
-            selected_flags["normalization"],
-        ]
-    ) or not any(selected_flags.values()):
-        q = q.left_join(converted_record_info).on(
-            converted.id == converted_record_info.converted_id
-        )
-
-    # ...and likewise for converted_audit_events
-    if (
-        selected_flags["audit"]
-        or not any(selected_flags.values())
-        or "auto_classify" in selected_flags["enrichment"]
-    ):
-        q = q.left_join(converted_audit_events).on(
-            converted.id == converted_audit_events.converted_id
-        )
-
     if g.from_yr and g.to_yr:
-        q = q.where((converted.date >= Parameter("?")) & (converted.date <= Parameter("?")))
+        q = q.where((converted_record_info.date >= Parameter("?")) & (converted_record_info.date <= Parameter("?")))
         values.append([g.from_yr, g.to_yr])
 
     # Specified flags should be OR'd together, so we build up a list of criteria and use
@@ -1073,8 +1050,8 @@ def process_get_export(source=None):
             if flag_type == "audit" or flag_name in ["auto_classify"]:
                 for flag_value in flag_values:
                     criteria.append(
-                        (converted_audit_events.code == Parameter("?"))
-                        & (converted_audit_events.result == Parameter("?"))
+                        (converted_record_info.audit_code == Parameter("?"))
+                        & (converted_record_info.audit_result == Parameter("?"))
                     )
                     # TODO: Fix horrible "valid"/"invalid" 0/1 confusion
                     if flag_value == "valid" or (
@@ -1086,12 +1063,12 @@ def process_get_export(source=None):
                     values.append([flag_name, int_flag_value])
     q = q.where(Criterion.any(criteria))
 
-    q_total = q.select(fn.Count(converted.oai_id).distinct().as_("total"))
+    q_total = q.select(fn.Count(converted.id).distinct().as_("total"))
 
     q = (
-        q.select(converted.oai_id)
+        q.select(converted.id)
         .distinct()
-        .select(converted.date, converted.data, converted.events)
+        .select(converted.date, converted.data, converted.events, converted.oai_id)
     )
 
     if limit:

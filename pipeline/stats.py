@@ -52,24 +52,26 @@ def generate_processing_stats():
         # fix this at some point) should actually go into the _enricher_ category for API/stats purposes.
         for row in cursor.execute("""
             SELECT
-                converted_audit_events.code,
+                converted_record_info.audit_code,
                 converted.source,
                 converted.date,
-                SUM(CASE WHEN converted_audit_events.result == 1 Then 1 else 0 end) AS result_true,
-                SUM(CASE WHEN converted_audit_events.result == 0 Then 1 else 0 end) AS result_false
+                SUM(CASE WHEN converted_record_info.audit_result == 1 Then 1 else 0 end) AS result_true,
+                SUM(CASE WHEN converted_record_info.audit_result == 0 Then 1 else 0 end) AS result_false
             FROM
-                converted_audit_events
+                converted_record_info
             LEFT JOIN
-                converted ON converted_audit_events.converted_id=converted.id
+                converted ON converted_record_info.converted_id=converted.id
             WHERE
                 converted.deleted = 0
+            AND
+                converted_record_info.field_name IS NULL
             GROUP BY
-                converted.source, converted_audit_events.code, converted.date
+                converted.source, converted_record_info.audit_code, converted.date
             """):
-            if row['code'] == 'creator_count_check':
+            if row['audit_code'] == 'creator_count_check':
                 valid = row['result_true']
                 invalid = row['result_false']
-            elif row['code'] == 'auto_classify':
+            elif row['audit_code'] == 'auto_classify':
                 valid = row['result_true']
                 invalid = 0
             else:
@@ -82,7 +84,7 @@ def generate_processing_stats():
                 VALUES
                     (?, ?, ?, ?, ?)
                 """,
-                [row['source'], row['date'], row['code'], valid, invalid])
+                [row['source'], row['date'], row['audit_code'], valid, invalid])
 
         for row in cursor.execute("""
             SELECT
@@ -104,6 +106,8 @@ def generate_processing_stats():
                 converted ON converted_record_info.converted_id=converted.id
             WHERE
                 converted.deleted = 0
+            AND
+                converted_record_info.audit_code IS NULL
             GROUP BY
                 converted.source, converted_record_info.field_name, converted.date
         """):

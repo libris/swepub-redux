@@ -145,11 +145,13 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
             cur.execute(
                 """
             INSERT INTO converted_record_info(
-                converted_id, field_name, validation_status, enrichment_status, normalization_status
-            ) VALUES (?, ?, ?, ?, ?)
+                converted_id, source, date, field_name, validation_status, enrichment_status, normalization_status
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     converted_rowid,
+                    doc.source_org_master,
+                    doc.publication_year,
                     field,
                     value["validation_status"],
                     value["enrichment_status"],
@@ -161,9 +163,16 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
             for event in events:
                 cur.execute(
                     """
-                INSERT INTO converted_audit_events(converted_id, code, result, name) VALUES (?, ?, ?, ?)
+                INSERT INTO converted_record_info(converted_id, source, date, audit_code, audit_result, audit_name) VALUES (?, ?, ?, ?, ?, ?)
                 """,
-                    (converted_rowid, event.get("code", None), event.get("result", None), name),
+                    (
+                        converted_rowid,
+                        doc.source_org_master,
+                        doc.publication_year,
+                        event.get("code", None),
+                        event.get("result", None),
+                        name
+                    ),
                 )
 
         identifiers = []

@@ -387,7 +387,7 @@ def _find_and_add_subjects():
                         cursor.execute(
                             """
                         SELECT
-                            data, events
+                            data, events, source, date
                         FROM
                             converted
                         WHERE
@@ -398,6 +398,8 @@ def _find_and_add_subjects():
                         row = cursor.fetchone()
                         old_publication = Publication(json.loads(row[0]))
                         events = json.loads(row[1])
+                        source = row[2]
+                        date = row[3]
 
                         publication = Publication(json.loads(jsontext))
                         code = "auto_classify"
@@ -428,12 +430,12 @@ def _find_and_add_subjects():
 
                         cursor.execute(
                             """
-                        INSERT INTO converted_audit_events
-                            (converted_id, name, code, result)
+                        INSERT INTO converted_record_info
+                            (converted_id, source, date, audit_name, audit_code, audit_result)
                         VALUES
-                            (?, ?, ?, ?);
+                            (?, ?, ?, ?, ?, ?);
                         """,
-                            (rowid, "AutoclassifierAuditor", code, result),
+                            (rowid, source, date, "AutoclassifierAuditor", code, result),
                         )
                 connection.commit()
 
