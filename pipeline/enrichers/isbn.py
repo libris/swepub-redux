@@ -2,7 +2,7 @@ import re
 
 from stdnum.isbn import compact
 
-from pipeline.util import update_at_path, add_sibling_at_path, make_event, FieldMeta
+from pipeline.util import update_at_path, add_sibling_at_path, make_event, FieldMeta, Enrichment
 
 # flake8: noqa W504
 isbn_regex = re.compile(
@@ -33,7 +33,7 @@ def recover_isbn(body, field):
         if res[0] != isbn:
             update_at_path(body, path, res[0])
             field.value = res[0]
-            field.enrichment_status = "enriched"
+            field.enrichment_status = Enrichment.ENRICHED
             field.events.append(
                 make_event(
                     event_type="enrichment",
@@ -60,7 +60,7 @@ def recover_isbn(body, field):
                     FieldMeta(path=new_path, id_type=field.id_type, value=found_value)
                 )
 
-    if field.enrichment_status != "enriched":
-        field.enrichment_status = "unsuccessful"
+    if field.enrichment_status != Enrichment.ENRICHED:
+        field.enrichment_status = Enrichment.UNSUCCESSFUL
 
     return created_fields

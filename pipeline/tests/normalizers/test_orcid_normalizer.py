@@ -47,8 +47,6 @@ def _test_orcid(test_data, expected_result, expected_codes):
 
     field = FieldMeta(
         value=test_data,
-        normalization_status="unchanged",
-        validation_status="valid",
         path="instanceOf.contribution.[0].agent.identifiedBy.[0].value",
     )
 

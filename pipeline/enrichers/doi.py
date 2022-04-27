@@ -1,7 +1,7 @@
 import unicodedata
 import sys
 
-from pipeline.util import update_at_path, make_event
+from pipeline.util import update_at_path, make_event, Enrichment
 
 # See DOI validator in validator service for more info on these.
 INVALID_DOI_UNICODE_CATEGORIES = {"Cc", "Cf", "Zl", "Zp", "Zs"}
@@ -43,14 +43,14 @@ def recover_doi(body, field):
             )
         )
         field.value = doi
-        field.enrichment_status = "enriched"
+        field.enrichment_status = Enrichment.ENRICHED
 
     if doi.startswith(VALID_STARTS):
         return
     else:
         hit = doi.find(DOI_START)
         if hit != -1:
-            if field.enrichment_status == "enriched":
+            if field.enrichment_status == Enrichment.ENRICHED:
                 initial = field.value
             update_at_path(body, path, doi[hit:])
             field.events.append(
@@ -63,7 +63,7 @@ def recover_doi(body, field):
                 )
             )
             field.value = doi[hit:]
-            field.enrichment_status = "enriched"
+            field.enrichment_status = Enrichment.ENRICHED
 
-    if field.enrichment_status != "enriched":
-        field.enrichment_status = "unsuccessful"
+    if field.enrichment_status != Enrichment.ENRICHED:
+        field.enrichment_status = Enrichment.UNSUCCESSFUL

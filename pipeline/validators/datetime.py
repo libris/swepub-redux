@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from pipeline.validators.shared import validate_base_unicode
-from pipeline.util import make_event
+from pipeline.util import make_event, Validation, Enrichment
 
 
 def validate_format(dt):
@@ -31,13 +31,13 @@ def validate_date_time(field):
         field.events.append(
             make_event(event_type="validation", code=code, result="valid", value=field.value)
         )
-        field.validation_status = "valid"
+        field.validation_status = Validation.VALID
         if not field.is_enriched():
-            field.enrichment_status = "unchanged"
+            field.enrichment_status = Enrichment.UNCHANGED
     else:
         field.events.append(
             make_event(event_type="validation", code=code, result="invalid", value=field.value)
         )
-        field.validation_status = "invalid"
+        field.validation_status = Validation.INVALID
         if field.is_enriched():
-            field.enrichment_status = "unsuccessful"
+            field.enrichment_status = Enrichment.UNSUCCESSFUL

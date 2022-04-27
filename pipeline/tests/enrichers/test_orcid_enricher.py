@@ -94,8 +94,6 @@ def _test_orcid_enrichment(test_data, expected_result, expected_codes):
 
     field = FieldMeta(
         value=test_data,
-        validation_status="valid",
-        enrichment_status="pending",
         path="instanceOf.contribution.[0].agent.identifiedBy.[0].value",
     )
 
@@ -119,8 +117,6 @@ def _test_none_orcid_enrichment(test_data):
 
     field = FieldMeta(
         value=test_data,
-        validation_status="valid",
-        enrichment_status="pending",
         path="instanceOf.contribution.[0].agent.identifiedBy.[0].value",
     )
 

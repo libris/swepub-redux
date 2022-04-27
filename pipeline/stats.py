@@ -1,5 +1,5 @@
 from pipeline.storage import *
-
+from pipeline.util import Validation, Enrichment, Normalization
 
 def generate_processing_stats():
     with get_connection() as connection:
@@ -86,20 +86,20 @@ def generate_processing_stats():
                 """,
                 [row['source'], row['date'], row['audit_code'], valid, invalid])
 
-        for row in cursor.execute("""
+        for row in cursor.execute(f"""
             SELECT
                 converted_record_info.field_name,
                 converted.source,
                 converted.date,
-                SUM(CASE WHEN converted_record_info.validation_status == 'valid' Then 1 else 0 end) AS v_valid,
-                SUM(CASE WHEN converted_record_info.validation_status == 'invalid' Then 1 else 0 end) AS v_invalid,
+                SUM(CASE WHEN converted_record_info.validation_status == {Validation.VALID} Then 1 else 0 end) AS v_valid,
+                SUM(CASE WHEN converted_record_info.validation_status == {Validation.INVALID}  Then 1 else 0 end) AS v_invalid,
 
-                SUM(CASE WHEN converted_record_info.enrichment_status == 'enriched' Then 1 else 0 end) AS e_enriched,
-                SUM(CASE WHEN converted_record_info.enrichment_status == 'unchanged' Then 1 else 0 end) AS e_unchanged,
-                SUM(CASE WHEN converted_record_info.enrichment_status == 'unsuccessful' Then 1 else 0 end) AS e_unsuccessful,
+                SUM(CASE WHEN converted_record_info.enrichment_status == {Enrichment.ENRICHED} Then 1 else 0 end) AS e_enriched,
+                SUM(CASE WHEN converted_record_info.enrichment_status == {Enrichment.UNCHANGED}  Then 1 else 0 end) AS e_unchanged,
+                SUM(CASE WHEN converted_record_info.enrichment_status == {Enrichment.UNSUCCESSFUL}  Then 1 else 0 end) AS e_unsuccessful,
 
-                SUM(CASE WHEN converted_record_info.normalization_status == 'unchanged' Then 1 else 0 end) AS n_unchanged,
-                SUM(CASE WHEN converted_record_info.normalization_status == 'normalized' Then 1 else 0 end) AS n_normalized
+                SUM(CASE WHEN converted_record_info.normalization_status == {Normalization.UNCHANGED} Then 1 else 0 end) AS n_unchanged,
+                SUM(CASE WHEN converted_record_info.normalization_status == {Normalization.NORMALIZED} Then 1 else 0 end) AS n_normalized
             FROM
                 converted_record_info
             LEFT JOIN
