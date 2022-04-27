@@ -33,6 +33,7 @@ from service.utils.bibliometrics_csv import export as bibliometrics_csv_export
 from service.utils.classify import enrich_subject
 
 from pipeline.convert import ModsParser
+from pipeline.util import Enrichment, Normalization, Validation
 
 FILE_PATH = path.dirname(path.abspath(__file__))
 
@@ -1046,6 +1047,13 @@ def process_get_export(source=None):
                         (converted_record_info.field_name == Parameter("?"))
                         & (converted_record_info[f"{flag_type}_status"] == Parameter("?"))
                     )
+                    if flag_type == "enrichment":
+                        flag_value = int(Enrichment[flag_value.upper()])
+                    if flag_type == "normalization":
+                        flag_value = int(Normalization[flag_value.upper()])
+                    if flag_type == "validation":
+                        flag_value = int(Validation[flag_value.upper()])
+
                     values.append([flag_name, flag_value])
             if flag_type == "audit" or flag_name in ["auto_classify"]:
                 for flag_value in flag_values:

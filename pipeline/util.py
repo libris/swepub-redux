@@ -1,23 +1,42 @@
 from aenum import Enum
-from enum import IntEnum
 
 from difflib import SequenceMatcher
 from jsonpath_rw import parse
 
 
-class Validation(IntEnum):
+class Validation(Enum):
     INVALID = 0
     VALID = 1
     PENDING = 2
 
-class Enrichment(IntEnum):
+    def __str__(self):
+        return self.name.lower()
+
+    def __int__(self):
+        return self.value
+
+
+class Enrichment(Enum):
     UNCHANGED = 0
     ENRICHED = 1
     UNSUCCESSFUL = 2
 
-class Normalization(IntEnum):
+    def __str__(self):
+        return self.name.lower()
+
+    def __int__(self):
+        return self.value
+
+
+class Normalization(Enum):
     UNCHANGED = 0
     NORMALIZED = 1
+
+    def __str__(self):
+        return self.name.lower()
+
+    def __int__(self):
+        return self.value
 
 
 class Level(Enum):

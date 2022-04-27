@@ -91,15 +91,15 @@ def generate_processing_stats():
                 converted_record_info.field_name,
                 converted.source,
                 converted.date,
-                SUM(CASE WHEN converted_record_info.validation_status == {Validation.VALID} Then 1 else 0 end) AS v_valid,
-                SUM(CASE WHEN converted_record_info.validation_status == {Validation.INVALID}  Then 1 else 0 end) AS v_invalid,
+                SUM(CASE WHEN converted_record_info.validation_status == {int(Validation.VALID)} Then 1 else 0 end) AS v_valid,
+                SUM(CASE WHEN converted_record_info.validation_status == {int(Validation.INVALID)}  Then 1 else 0 end) AS v_invalid,
 
-                SUM(CASE WHEN converted_record_info.enrichment_status == {Enrichment.ENRICHED} Then 1 else 0 end) AS e_enriched,
-                SUM(CASE WHEN converted_record_info.enrichment_status == {Enrichment.UNCHANGED}  Then 1 else 0 end) AS e_unchanged,
-                SUM(CASE WHEN converted_record_info.enrichment_status == {Enrichment.UNSUCCESSFUL}  Then 1 else 0 end) AS e_unsuccessful,
+                SUM(CASE WHEN converted_record_info.enrichment_status == {int(Enrichment.ENRICHED)} Then 1 else 0 end) AS e_enriched,
+                SUM(CASE WHEN converted_record_info.enrichment_status == {int(Enrichment.UNCHANGED)}  Then 1 else 0 end) AS e_unchanged,
+                SUM(CASE WHEN converted_record_info.enrichment_status == {int(Enrichment.UNSUCCESSFUL)}  Then 1 else 0 end) AS e_unsuccessful,
 
-                SUM(CASE WHEN converted_record_info.normalization_status == {Normalization.UNCHANGED} Then 1 else 0 end) AS n_unchanged,
-                SUM(CASE WHEN converted_record_info.normalization_status == {Normalization.NORMALIZED} Then 1 else 0 end) AS n_normalized
+                SUM(CASE WHEN converted_record_info.normalization_status == {int(Normalization.UNCHANGED)} Then 1 else 0 end) AS n_unchanged,
+                SUM(CASE WHEN converted_record_info.normalization_status == {int(Normalization.NORMALIZED)} Then 1 else 0 end) AS n_normalized
             FROM
                 converted_record_info
             LEFT JOIN
