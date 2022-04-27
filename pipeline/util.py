@@ -5,13 +5,17 @@ from jsonpath_rw import parse
 
 
 class Level(Enum):
-    _init_ = 'value fullname'
+    _init_ = 'value string'
 
+    NONE = None, ""
     NONPEERREVIEWED = 0, "https://id.kb.se/term/swepub/swedishlist/non-peer-reviewed"
     PEERREVIEWED = 1, "https://id.kb.se/term/swepub/swedishlist/peer-reviewed"
 
     def __int__(self):
         return self.value
+
+    def __str__(self):
+        return self.string
 
 
 def chunker(seq, size):
