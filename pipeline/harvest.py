@@ -398,7 +398,7 @@ def _get_harvest_cache_manager(manager):
         with open(ID_CACHE_FILE, "rb") as f:
             previously_validated_ids = json.loads(f.read())
         log.info(
-            f"Cache populated with {len(previously_validated_ids)} previously validated IDs from {ID_CACHE_FILE}"
+            f"Cache populated with {len(previously_validated_ids['doi'])+len(previously_validated_ids['issn'])} previously validated IDs from {ID_CACHE_FILE}"
         )
     except FileNotFoundError:
         log.warning("ID cache file not found, starting fresh")
