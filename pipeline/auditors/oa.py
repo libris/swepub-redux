@@ -26,7 +26,7 @@ class OAAuditor(BaseAuditor):
 
     def _check_doab(self, publication, audit_events, harvest_cache):
         result = False
-        code = "add_doab"
+        code = "add_oa"
 
         identifiers = (
             publication.identifiedby_isbns
@@ -60,7 +60,7 @@ class OAAuditor(BaseAuditor):
 
     def _check_unpaywall(self, publication, audit_events, session):
         result = False
-        code = "add_unpaywall"
+        code = "add_oa"
 
         added_electroniclocators = []
         for doi in publication.identifiedby_dois:

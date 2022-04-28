@@ -105,7 +105,7 @@ def close_connection(_exception):
 
 def _errors(errors, status_code=400):
     resp = {"errors": errors, "status_code": status_code}
-    abort(jsonify(resp), status_code)
+    abort(make_response(jsonify(resp), status_code))
 
 
 def check_from_to(f):
@@ -940,10 +940,10 @@ def process_get_stats(source=None):
         # Autoclassified is a bit of a special case. It's technically an auditor but should here
         # be counted as an enricher. "valid" means "enriched"; we don't actually log "not enriched"
         # for the autoclassifier, so we just subtract the number of enriched from the total.
-        if row["label"] == "auto_classify":
-            result["enrichments"]["auto_classify"] = {}
-            result["enrichments"]["auto_classify"]["enriched"] = row["valid"]
-            result["enrichments"]["auto_classify"]["unchanged"] = result["total"] - row["valid"]
+        if row["label"] in ["auto_classify", "add_oa"]:
+            result["enrichments"][row["label"]] = {}
+            result["enrichments"][row["label"]]["enriched"] = row["valid"]
+            result["enrichments"][row["label"]]["unchanged"] = result["total"] - row["valid"]
             continue
         if row["label"] not in audit_labels_to_include:
             continue
@@ -1040,7 +1040,7 @@ def process_get_export(source=None):
     for flag_type, flags in selected_flags.items():
         for flag_name, flag_values in flags.items():
             if flag_type in ["validation", "enrichment", "normalization"] and flag_name not in [
-                "auto_classify"
+                "auto_classify", "add_oa"
             ]:
                 for flag_value in flag_values:
                     criteria.append(
@@ -1055,7 +1055,7 @@ def process_get_export(source=None):
                         flag_value = int(Validation[flag_value.upper()])
 
                     values.append([flag_name, flag_value])
-            if flag_type == "audit" or flag_name in ["auto_classify"]:
+            if flag_type == "audit" or flag_name in ["auto_classify", "add_oa"]:
                 for flag_value in flag_values:
                     criteria.append(
                         (converted_record_info.audit_code == Parameter("?"))

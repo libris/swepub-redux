@@ -71,7 +71,7 @@ def generate_processing_stats():
             if row['audit_code'] == 'creator_count_check':
                 valid = row['result_true']
                 invalid = row['result_false']
-            elif row['audit_code'] == 'auto_classify':
+            elif row['audit_code'] in ['auto_classify', 'add_oa']:
                 valid = row['result_true']
                 invalid = 0
             else:

@@ -110,6 +110,10 @@
       "title": "Autoklassning",
       "text": "Publikationen har autoklassificerats av Swepub enligt Standard för svensk indelning av forskningsämnen (SSIF, tidigare UKÄ) på 3-siffernivå. Autoklassningen är baserad på publikationens sammanfattning, titel och nyckelord."
     },
+    "enrichment_flags_add_oa": {
+      "title": "Öppen tillgång",
+      "text": "Publikationen har markerats med status om öppen tillgång utifrån information hämtad från de externa datakällorna Unpaywall och Directory of Open Access Books - DOAB."
+    },
     "harvest_overview": {
       "title": "Översikt",
       "text": "Översikten visar när hämtningen påbörjats och antalet poster som hämtats eller avvisats hittills. Därför kan antalet variera beroende på hur stor del av datamängden som bearbetats."
