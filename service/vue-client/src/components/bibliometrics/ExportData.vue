@@ -243,6 +243,27 @@ export default {
           group: 'publication',
         },
         {
+          key: 'openAccessPubVersion',
+          label: 'Öppen tillgång, publikationsversion',
+          selected: false,
+          component: 'TableDataLink',
+          group: 'publication',
+        },
+        {
+          key: 'DOAJ',
+          label: 'DOAJ',
+          selected: false,
+          component: 'TableDataBoolean',
+          group: 'publication',
+        },
+        {
+          key: 'autoclassified',
+          label: 'Autoklassificerad',
+          selected: false,
+          component: 'TableDataBoolean',
+          group: 'publication',
+        },
+        {
           key: 'publicationChannel',
           label: 'Publiceringskanal',
           selected: false,

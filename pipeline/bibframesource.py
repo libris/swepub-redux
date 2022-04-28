@@ -487,6 +487,25 @@ class BibframeSource:
                             return True
         return False
 
+    @property
+    def open_access_publication_version(self):
+        for electronic_locator in self.bibframe_master.get("electronicLocator", []):
+            for note in electronic_locator.get("hasNote", []):
+                if note.get("@id", "") in [
+                    "https://id.kb.se/term/swepub/Submitted",
+                    "https://id.kb.se/term/swepub/Accepted",
+                    "https://id.kb.se/term/swepub/Published"
+                ]:
+                    return note.get("@id")
+        return None
+
+    @property
+    def DOAJ(self):
+        for status in self.bibframe_master.get("instanceOf", {}).get("status", []):
+            if status.get("@id", "") == "https://id.kb.se/term/swepub/journal-is-in-doaj":
+                return False
+        return False
+
     def _is_embargoed(self):
         ua_policies = self.bibframe_master.get("usageAndAccessPolicy", [])
         for policy in ua_policies:
@@ -771,3 +790,12 @@ class BibframeSource:
                     uka_subject_codes.append(subject_code[0])
 
         return list(set(uka_subject_codes))
+
+
+    @property
+    def autoclassified(self):
+        for subject in self.bibframe_master.get("instanceOf", {}).get("subject", []):
+            for note in subject.get("hasNote", []):
+                if note.get("label", "") == "Autoclassified by Swepub":
+                    return True
+        return False

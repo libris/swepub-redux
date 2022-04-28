@@ -32,6 +32,7 @@ column_name_label_dict = {
     "scopus_id": "scopusId",
     "pubmed_id": "PMID",
     "open_access": "openAccess",
+    "open_access_publication_version": "openAccessPubVersion",
     "archive_URI": "archiveURI",
     "electronic_locator": "electronicLocator",
     "one_digit_topics": "oneDigitTopics",
@@ -44,6 +45,8 @@ column_name_label_dict = {
     "ISSN": "ISSN",
     "swedish_list": "swedishList",
     "series_title": "seriesTitle",
+    "autoclassified": "autoclassified",
+    "DOAJ": "DOAJ",
 }
 
 
