@@ -12,6 +12,7 @@ const DatastatusValidations = () => import('@/components/datastatus/Validations'
 const DatastatusSubjects = () => import('@/components/datastatus/Subjects');
 
 export default {
+  // eslint-disable-next-line
   name: 'datastatus',
   mixins: [ValidationMixin, FetchMixin],
   components: {

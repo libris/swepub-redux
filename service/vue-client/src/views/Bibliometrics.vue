@@ -5,6 +5,7 @@ const BibliometricsSearch = () => import('@/components/bibliometrics/Search');
 const DataDump = () => import('@/components/bibliometrics/DataDump');
 
 export default {
+  // eslint-disable-next-line
   name: 'bibliometrics',
   components: {
     TabMenu,

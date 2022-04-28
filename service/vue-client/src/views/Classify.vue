@@ -5,6 +5,7 @@ const ClassifyForm = () => import('@/components/classify/ClassifyForm');
 const ClassifyDocumentation = () => import('@/components/classify/Documentation');
 
 export default {
+  // eslint-disable-next-line
   name: 'classify',
   components: {
     ClassifyForm,

@@ -5,6 +5,7 @@ const DataQuality = () => import('@/components/process/DataQuality');
 const HarvestStatus = () => import('@/components/process/HarvestStatus');
 
 export default {
+  // eslint-disable-next-line
   name: 'process',
   components: {
     DataQuality,
