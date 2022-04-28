@@ -1,5 +1,6 @@
 import sqlite3
 import os
+from enum import Enum
 
 import orjson as json
 
@@ -100,6 +101,12 @@ def store_original(
     return original_rowid
 
 
+def serialize(obj):
+    if isinstance(obj, Enum):
+        return str(obj)
+    return obj.__dict__
+
+
 def store_converted(original_rowid, converted, audit_events, field_events, record_info, connection):
     try:
         cur = connection.cursor()
@@ -124,7 +131,7 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
                 doc.open_access,
                 (len(doc.ssif_1_codes) > 0),
                 doc.level,
-                json.dumps(converted_events, default=lambda o: o.__dict__),
+                json.dumps(converted_events, default=serialize) #default=lambda o: o.__dict__),
             ),
         )
 
@@ -145,15 +152,17 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
             cur.execute(
                 """
             INSERT INTO converted_record_info(
-                converted_id, field_name, validation_status, enrichment_status, normalization_status
-            ) VALUES (?, ?, ?, ?, ?)
+                converted_id, source, date, field_name, validation_status, enrichment_status, normalization_status
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
                 (
                     converted_rowid,
+                    doc.source_org_master,
+                    doc.publication_year,
                     field,
-                    value["validation_status"],
-                    value["enrichment_status"],
-                    value["normalization_status"],
+                    int(value["validation_status"]),
+                    int(value["enrichment_status"]),
+                    int(value["normalization_status"]),
                 ),
             )
 
@@ -161,9 +170,16 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
             for event in events:
                 cur.execute(
                     """
-                INSERT INTO converted_audit_events(converted_id, code, result, name) VALUES (?, ?, ?, ?)
+                INSERT INTO converted_record_info(converted_id, source, date, audit_code, audit_result, audit_name) VALUES (?, ?, ?, ?, ?, ?)
                 """,
-                    (converted_rowid, event.get("code", None), event.get("result", None), name),
+                    (
+                        converted_rowid,
+                        doc.source_org_master,
+                        doc.publication_year,
+                        event.get("code", None),
+                        event.get("result", None),
+                        name
+                    ),
                 )
 
         identifiers = []

@@ -60,9 +60,6 @@ def _test_isi_enrichment(test_data, expected_result, expected_codes):
 
     field = FieldMeta(
         value=test_data,
-        normalization_status="unchanged",
-        validation_status="valid",
-        enrichment_status="pending",
         path="identifiedBy.[0].value",
     )
 
@@ -81,9 +78,6 @@ def _test_none_isi_enrichment(test_data):
 
     field = FieldMeta(
         value=test_data,
-        normalization_status="unchanged",
-        validation_status="valid",
-        enrichment_status="pending",
         path="identifiedBy.[0].value",
     )
 

@@ -19,8 +19,6 @@ def _test_isi(test_data, expected_result, expected_codes):
 
     field = FieldMeta(
         value=test_data,
-        normalization_status="unchanged",
-        validation_status="valid",
         path="identifiedBy.[0].value",
     )
 

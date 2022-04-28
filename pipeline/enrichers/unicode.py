@@ -1,4 +1,4 @@
-from pipeline.util import update_at_path, make_event, unicode_translate
+from pipeline.util import update_at_path, make_event, unicode_translate, Enrichment
 
 
 def recover_unicode(body, field):
@@ -10,7 +10,7 @@ def recover_unicode(body, field):
                 event_type="enrichment", code="unicode", initial_value=field.value, value=translated
             )
         )
-        field.enrichment_status = "enriched"
+        field.enrichment_status = Enrichment.ENRICHED
 
-    if field.enrichment_status != "enriched":
-        field.enrichment_status = "unsuccessful"
+    if field.enrichment_status != Enrichment.ENRICHED:
+        field.enrichment_status = Enrichment.UNSUCCESSFUL

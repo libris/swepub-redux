@@ -4,7 +4,7 @@ from stdnum.issn import is_valid
 from stdnum.issn import format as issn_format
 
 from pipeline.validators.shared import remote_verification
-from pipeline.util import make_event
+from pipeline.util import make_event, Validation, Enrichment
 
 issn_regex = re.compile("[0-9]{4}-?[0-9]{3}[0-9xX]")
 
@@ -43,9 +43,9 @@ def validate_cache_or_remote(issn, session=None, harvest_cache=None):
 
 
 def validate_issn(field, session=None, harvest_cache=None):
-    if field.validation_status == "invalid" and field.enrichment_status in [
-        "unchanged",
-        "unsuccessful",
+    if field.validation_status == Validation.INVALID and field.enrichment_status in [
+        Enrichment.UNCHANGED,
+        Enrichment.UNSUCCESSFUL,
     ]:
         return
 
@@ -55,13 +55,13 @@ def validate_issn(field, session=None, harvest_cache=None):
             field.events.append(
                 make_event(event_type="validation", code=code, result="invalid", value=field.value)
             )
-            field.validation_status = "invalid"
+            field.validation_status = Validation.INVALID
             if field.is_enriched():
-                field.enrichment_status = "unsuccessful"
+                field.enrichment_status = Enrichment.UNSUCCESSFUL
             return
     field.events.append(
         make_event(event_type="validation", code=code, result="valid", value=field.value)
     )
-    field.validation_status = "valid"
+    field.validation_status = Validation.VALID
     if not field.is_enriched():
-        field.enrichment_status = "unchanged"
+        field.enrichment_status = Enrichment.UNCHANGED

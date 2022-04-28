@@ -42,24 +42,17 @@ CREATE INDEX idx_rejected_harvest_id ON rejected(harvest_id);
 
 -- This table is used to store log entries (validation/normalization errors etc.) for
 -- each publication
-CREATE TABLE converted_audit_events (
-    converted_id INTEGER,
-    name TEXT,
-    code TEXT,
-    result INTEGER,
-    FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
-);
-CREATE INDEX idx_converted_audit_events_converted_id ON converted_audit_events(converted_id);
-CREATE INDEX idx_converted_audit_events_code ON converted_audit_events(code);
-CREATE INDEX idx_converted_audit_events_code_result ON converted_audit_events(code, result);
-
-
 CREATE TABLE converted_record_info (
     converted_id INTEGER,
+    source TEXT,
+    date INTEGER,
     field_name TEXT,
-    validation_status TEXT,
-    enrichment_status TEXT,
-    normalization_status TEXT,
+    validation_status INTEGER,
+    enrichment_status INTEGER,
+    normalization_status INTEGER,
+    audit_name TEXT,
+    audit_code TEXT,
+    audit_result INTEGER,
     FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
 );
 CREATE INDEX idx_converted_record_info_converted_id ON converted_record_info(converted_id);
@@ -67,6 +60,12 @@ CREATE INDEX idx_converted_record_info_field_name ON converted_record_info(field
 CREATE INDEX idx_converted_record_info_validation_status ON converted_record_info(validation_status);
 CREATE INDEX idx_converted_record_info_enrichment_status ON converted_record_info(enrichment_status);
 CREATE INDEX idx_converted_record_info_normalization_status ON converted_record_info(normalization_status);
+CREATE INDEX idx_converted_record_info_source_field_name ON converted_record_info(source, field_name);
+CREATE INDEX idx_converted_record_info_source_date_field_name ON converted_record_info(source, date, field_name);
+CREATE INDEX idx_converted_record_info_audit_code ON converted_record_info(audit_code);
+CREATE INDEX idx_converted_record_info_source_audit_code ON converted_record_info(source, audit_code);
+CREATE INDEX idx_converted_record_info_source_date_audit_code ON converted_record_info(source, date, audit_code);
+
 
 -- After conversion, validation and normalization each publication is stored in this
 -- form, for later in use in deduplication.
@@ -351,7 +350,6 @@ BEGIN
             ) AND converted_id != OLD.id
         );
 
-    DELETE FROM converted_audit_events WHERE converted_audit_events.converted_id = OLD.id;
     DELETE FROM converted_record_info WHERE converted_record_info.converted_id = OLD.id;
     DELETE FROM converted_ssif_1 WHERE converted_ssif_1.converted_id = OLD.id;
     DELETE FROM clusteringidentifiers WHERE clusteringidentifiers.converted_id = OLD.id;

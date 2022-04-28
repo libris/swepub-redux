@@ -2,7 +2,7 @@ import re
 
 from pipeline.validators.shared import validate_base_unicode
 
-from pipeline.util import make_event
+from pipeline.util import make_event, Validation, Enrichment
 
 # flake8: noqa W504
 isi_regex = re.compile(
@@ -23,9 +23,9 @@ def validate_format(field):
 
 
 def validate_isi(field):
-    if field.validation_status == "invalid" and field.enrichment_status in [
-        "unchanged",
-        "unsuccessful",
+    if field.validation_status == Validation.INVALID and field.enrichment_status in [
+        Enrichment.UNCHANGED,
+        Enrichment.UNSUCCESSFUL,
     ]:
         return
 
@@ -35,6 +35,6 @@ def validate_isi(field):
             field.events.append(
                 make_event(event_type="validation", code=code, result="invalid", value=field.value)
             )
-            field.validation_status = "invalid"
+            field.validation_status = Validation.INVALID
             return
-    field.validation_status = "valid"
+    field.validation_status = Validation.VALID

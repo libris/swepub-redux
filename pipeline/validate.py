@@ -6,7 +6,7 @@ from os import path
 
 from pipeline.normalize import *
 
-from pipeline.util import get_at_path, remove_at_path, FieldMeta
+from pipeline.util import get_at_path, remove_at_path, FieldMeta, Enrichment, Validation, Normalization
 
 from pipeline.validators.datetime import validate_date_time
 from pipeline.validators.doi import validate_doi
@@ -87,18 +87,18 @@ def get_record_info(field_events):
             if not stats.get(field.id_type):
                 stats[field.id_type] = {"events": []}
 
-            if stats[field.id_type].get("validation_status", "") != "invalid":
+            if stats[field.id_type].get("validation_status", "") != Validation.INVALID:
                 stats[field.id_type]["validation_status"] = field.validation_status
 
             current_enrichment_status = stats[field.id_type].get("enrichment_status", "")
-            if current_enrichment_status != "unsuccessful":
+            if current_enrichment_status != Enrichment.UNSUCCESSFUL:
                 if not (
-                    current_enrichment_status == "enriched"
-                    and field.enrichment_status == "unchanged"
+                    current_enrichment_status == Enrichment.ENRICHED
+                    and field.enrichment_status == Enrichment.UNCHANGED
                 ):
                     stats[field.id_type]["enrichment_status"] = field.enrichment_status
 
-            if stats[field.id_type].get("normalization_status", "") != "normalized":
+            if stats[field.id_type].get("normalization_status", "") != Normalization.NORMALIZED:
                 stats[field.id_type]["normalization_status"] = field.normalization_status
 
             stats[field.id_type]["events"].extend(field.events)
@@ -108,7 +108,7 @@ def get_record_info(field_events):
 def validate_stuff(field_events, session, harvest_cache):
     for id_type in field_events.values():
         for field in id_type.values():
-            if field.validation_status != "valid":
+            if field.validation_status != Validation.VALID:
                 if field.id_type == "ISBN":
                     validate_isbn(field)
                 if field.id_type == "ISI":
@@ -128,7 +128,7 @@ def validate_stuff(field_events, session, harvest_cache):
                 if field.id_type == "UKA":
                     validate_uka(field)
                 if field.id_type == "free_text":
-                    field.validation_status = "valid"  # formerly "AcceptingValidator"
+                    field.validation_status = Validation.VALID  # formerly "AcceptingValidator"
 
 
 def enrich_stuff(body, field_events):
@@ -136,7 +136,7 @@ def enrich_stuff(body, field_events):
     for id_type in field_events.values():
         for field in id_type.values():
             added_stuff = []
-            if field.validation_status != "valid":
+            if field.validation_status != Validation.VALID:
                 if field.id_type == "ISBN":
                     added_stuff = recover_isbn(body, field)
                 if field.id_type == "ISI":
@@ -165,7 +165,7 @@ def normalize_stuff(body, field_events):
     for id_type in field_events.values():
         for field in id_type.values():
             # Unlike with validations/enrichments we now only look at *valid* fields
-            if field.validation_status == "valid":
+            if field.validation_status == Validation.VALID:
                 if field.id_type == "ISBN":
                     normalize_isbn(body, field)
                 if field.id_type == "ISI":
@@ -185,7 +185,7 @@ def move_incorrectlyIdentifiedBy(body, field_events):
     for id_type in field_events.values():
         for field in id_type.values():
             # For the _invalid_ fields, we (sometimes) want to add them under incorrectlyIdentifiedBy
-            if field.validation_status != 'valid' and field.id_type in ["DOI", "ISBN", "ISI", "ISSN"]:
+            if field.validation_status != Validation.VALID and field.id_type in ["DOI", "ISBN", "ISI", "ISSN"]:
 
                 # Schedule the path of the bad value for removal
                 pathsToRemove.append(field.path)
@@ -228,7 +228,7 @@ def move_incorrectlyIdentifiedBy(body, field_events):
 def censor_invalid_orcids(body, field_events):
     for id_type in field_events.values():
         for field in id_type.values():
-            if field.validation_status != "valid" and field.id_type == "ORCID":
+            if field.validation_status != Validation.VALID and field.id_type == "ORCID":
                 field.events.append(
                     make_event(
                         event_type="postprocessing",

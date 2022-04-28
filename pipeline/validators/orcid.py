@@ -3,7 +3,7 @@ import re
 from stdnum.iso7064.mod_11_2 import is_valid
 
 from pipeline.validators.shared import validate_base_unicode
-from pipeline.util import make_event
+from pipeline.util import make_event, Validation, Enrichment
 
 # flake8: noqa W504
 orcid_regex = re.compile(
@@ -56,9 +56,9 @@ def validate_checksum(orcid):
 
 
 def validate_orcid(field):
-    if field.validation_status == "invalid" and field.enrichment_status in [
-        "unchanged",
-        "unsuccessful",
+    if field.validation_status == Validation.INVALID and field.enrichment_status in [
+        Enrichment.UNCHANGED,
+        Enrichment.UNSUCCESSFUL,
     ]:
         return
 
@@ -68,10 +68,10 @@ def validate_orcid(field):
             field.events.append(
                 make_event(event_type="validation", code=code, result="invalid", value=field.value)
             )
-            field.validation_status = "invalid"
+            field.validation_status = Validation.INVALID
             if field.is_enriched():
-                field.enrichment_status = "unsuccessful"
+                field.enrichment_status = Enrichment.UNSUCCESSFUL
             return
-    field.validation_status = "valid"
+    field.validation_status = Validation.VALID
     if not field.is_enriched():
-        field.enrichment_status = "unchanged"
+        field.enrichment_status = Enrichment.UNCHANGED

@@ -4,7 +4,7 @@ import sys
 from urllib.parse import quote
 
 from pipeline.validators.shared import remote_verification
-from pipeline.util import make_event
+from pipeline.util import make_event, Validation, Enrichment
 
 # For more info about unicode categories see
 # https://www.fileformat.info/info/unicode/category/index.htm and
@@ -104,9 +104,9 @@ def validate_with_remote(doi, session, harvest_cache):
 
 
 def validate_doi(field, session, harvest_cache):
-    if field.validation_status == "invalid" and field.enrichment_status in [
-        "unchanged",
-        "unsuccessful",
+    if field.validation_status == Validation.INVALID and field.enrichment_status in [
+        Enrichment.UNCHANGED,
+        Enrichment.UNSUCCESSFUL,
     ]:
         return
 
@@ -121,9 +121,9 @@ def validate_doi(field, session, harvest_cache):
                     value=(new_value or field.value),
                 )
             )
-            field.validation_status = "invalid"
+            field.validation_status = Validation.INVALID
             if field.is_enriched():
-                field.enrichment_status = "unsuccessful"
+                field.enrichment_status = Enrichment.UNSUCCESSFUL
             return
     field.events.append(
         make_event(
@@ -131,6 +131,6 @@ def validate_doi(field, session, harvest_cache):
         )
     )
     field.value = new_value or field.value
-    field.validation_status = "valid"
+    field.validation_status = Validation.VALID
     if not field.is_enriched():
-        field.enrichment_status = "unchanged"
+        field.enrichment_status = Enrichment.UNCHANGED
