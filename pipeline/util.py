@@ -134,6 +134,13 @@ def get_at_path(root, path):
 # What is returned, a float within (0.0, 1.0), is then the length of that substring
 # (in words) divided by the length of the longest input string (in words).
 # Further: Words need not match exactly, a "short" edit distance is considered enough to match.
+# Further yet: Starting in the "middle" and working your way out in search of a shared string
+# is "cheating" in the sense the longest shared string might actually be in the beginning of
+# a and the end of b, which we will then miss. However: This does not matter _to us_ because
+# we are only interested in matchings that are more than a 50% match, and a shared substring
+# _cannot_ exceed 50% of the original string without also overlapping in the middle. This makes
+# the middle-out search "ok". And doing it this way is dramatically faster than traditional
+# shared substring algorithms.
 undesired_chars = dict.fromkeys(map(ord, '-–_,.;:’\'!?”“#\u00a0'), " ")
 def get_common_substring_factor(a, b, allowed_misses = 0):
     a = a.translate(undesired_chars).lower()
