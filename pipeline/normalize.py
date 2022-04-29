@@ -4,7 +4,7 @@ import re
 
 from stdnum.issn import format as issn_format
 
-from pipeline.util import update_at_path, make_event
+from pipeline.util import update_at_path, make_event, Normalization, Enrichment
 
 
 def normalize_issn(body, field):
@@ -23,7 +23,7 @@ def normalize_issn(body, field):
                 result="normalized",
             )
         )
-        field.normalization_status = "normalized"
+        field.normalization_status = Normalization.NORMALIZED
         field.value = new_value
 
 
@@ -43,7 +43,7 @@ def normalize_isbn(body, field):
                 result="normalized",
             )
         )
-        field.normalization_status = "normalized"
+        field.normalization_status = Normalization.NORMALIZED
         field.value = new_value
 
 
@@ -63,7 +63,7 @@ def normalize_isi(body, field):
                 result="normalized",
             )
         )
-        field.normalization_status = "normalized"
+        field.normalization_status = Normalization.NORMALIZED
         field.value = new_value
 
 
@@ -92,7 +92,7 @@ def normalize_orcid(body, field):
                 initial_value=orcid,
             )
         )
-        field.normalization_status = "normalized"
+        field.normalization_status = Normalization.NORMALIZED
         field.value = enriched_value
 
     # get_orcid_with_delimiters
@@ -115,7 +115,7 @@ def normalize_orcid(body, field):
                 initial_value=initial,
             )
         )
-        field.normalization_status = "normalized"
+        field.normalization_status = Normalization.NORMALIZED
         field.value = enriched
 
 
@@ -142,7 +142,7 @@ def normalize_doi(body, field):
                 initial_value=doi,
             )
         )
-        field.normalization_status = "normalized"
+        field.normalization_status = Normalization.NORMALIZED
         field.value = new_value
         enriched_value = new_value
 
@@ -164,7 +164,7 @@ def normalize_doi(body, field):
                 initial_value=doi,
             )
         )
-        field.normalization_status = "normalized"
+        field.normalization_status = Normalization.NORMALIZED
         field.value = enriched_value
 
 
@@ -186,7 +186,7 @@ class MLStripper(HTMLParser):
 def normalize_free_text(body, field):
     free_text = field.value
     path = field.path
-    field.enrichment_status = "unchanged"
+    field.enrichment_status = Enrichment.UNCHANGED
     # strip tags
     s = MLStripper()
     s.feed(unescape(free_text))
@@ -202,7 +202,7 @@ def normalize_free_text(body, field):
                 initial_value=free_text,
             )
         )
-        field.normalization_status = "normalized"
+        field.normalization_status = Normalization.NORMALIZED
         field.value = new_value
         free_text = new_value
 
@@ -224,5 +224,5 @@ def normalize_free_text(body, field):
                 value=new_value,
             )
         )
-        field.normalization_status = "normalized"
+        field.normalization_status = Normalization.NORMALIZED
         field.value = new_value

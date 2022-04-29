@@ -1,5 +1,5 @@
 import re
-from pipeline.util import update_at_path, unicode_translate, make_event
+from pipeline.util import update_at_path, unicode_translate, make_event, Enrichment
 
 # flake8: noqa W504
 orcid_regex = re.compile("(0000-?)" + "(000[1-3]-?)" + "([0-9]{4}-?)" + "([0-9]{3}-?[0-9xX])")
@@ -25,7 +25,7 @@ def recover_orcid(body, field):
                 result="enriched",
             )
         )
-        field.enrichment_status = "enriched"
+        field.enrichment_status = Enrichment.ENRICHED
         field.value = orcid
 
     if orcid_extend_regex.match(orcid):
@@ -41,7 +41,7 @@ def recover_orcid(body, field):
                 result="enriched",
             )
         )
-        field.enrichment_status = "enriched"
+        field.enrichment_status = Enrichment.ENRICHED
         field.value = orcid
 
     hit = orcid_regex.finditer(orcid)
@@ -58,8 +58,8 @@ def recover_orcid(body, field):
                 )
             )
             update_at_path(body, path, orcid_list[0])
-            field.enrichment_status = "enriched"
+            field.enrichment_status = Enrichment.ENRICHED
             field.value = orcid_list[0]
 
-    if field.enrichment_status != "enriched":
-        field.enrichment_status = "unsuccessful"
+    if field.enrichment_status != Enrichment.ENRICHED:
+        field.enrichment_status = Enrichment.UNSUCCESSFUL

@@ -33,6 +33,7 @@ from service.utils.bibliometrics_csv import export as bibliometrics_csv_export
 from service.utils.classify import enrich_subject
 
 from pipeline.convert import ModsParser
+from pipeline.util import Enrichment, Normalization, Validation
 
 FILE_PATH = path.dirname(path.abspath(__file__))
 
@@ -104,7 +105,7 @@ def close_connection(_exception):
 
 def _errors(errors, status_code=400):
     resp = {"errors": errors, "status_code": status_code}
-    abort(jsonify(resp), status_code)
+    abort(make_response(jsonify(resp), status_code))
 
 
 def check_from_to(f):
@@ -939,10 +940,10 @@ def process_get_stats(source=None):
         # Autoclassified is a bit of a special case. It's technically an auditor but should here
         # be counted as an enricher. "valid" means "enriched"; we don't actually log "not enriched"
         # for the autoclassifier, so we just subtract the number of enriched from the total.
-        if row["label"] == "auto_classify":
-            result["enrichments"]["auto_classify"] = {}
-            result["enrichments"]["auto_classify"]["enriched"] = row["valid"]
-            result["enrichments"]["auto_classify"]["unchanged"] = result["total"] - row["valid"]
+        if row["label"] in ["auto_classify", "add_oa"]:
+            result["enrichments"][row["label"]] = {}
+            result["enrichments"][row["label"]]["enriched"] = row["valid"]
+            result["enrichments"][row["label"]]["unchanged"] = result["total"] - row["valid"]
             continue
         if row["label"] not in audit_labels_to_include:
             continue
@@ -1022,38 +1023,15 @@ def process_get_export(source=None):
     )
     values = []
     q = (
-        Query.from_(converted)
-        .where(converted.source == Parameter("?"))
-        .where(converted.deleted == 0)
+        Query
+        .from_(converted)
+        .left_join(converted_record_info).on(converted.id == converted_record_info.converted_id)
+        .where(converted_record_info.source == Parameter("?"))
     )
-
     values.append(source)
 
-    # We only need to join the converted_record_info table if a validation/enrichment/normalization flag
-    # was selected, *or* if no flags were selected at all
-    if any(
-        [
-            selected_flags["validation"],
-            selected_flags["enrichment"],
-            selected_flags["normalization"],
-        ]
-    ) or not any(selected_flags.values()):
-        q = q.left_join(converted_record_info).on(
-            converted.id == converted_record_info.converted_id
-        )
-
-    # ...and likewise for converted_audit_events
-    if (
-        selected_flags["audit"]
-        or not any(selected_flags.values())
-        or "auto_classify" in selected_flags["enrichment"]
-    ):
-        q = q.left_join(converted_audit_events).on(
-            converted.id == converted_audit_events.converted_id
-        )
-
     if g.from_yr and g.to_yr:
-        q = q.where((converted.date >= Parameter("?")) & (converted.date <= Parameter("?")))
+        q = q.where((converted_record_info.date >= Parameter("?")) & (converted_record_info.date <= Parameter("?")))
         values.append([g.from_yr, g.to_yr])
 
     # Specified flags should be OR'd together, so we build up a list of criteria and use
@@ -1062,19 +1040,26 @@ def process_get_export(source=None):
     for flag_type, flags in selected_flags.items():
         for flag_name, flag_values in flags.items():
             if flag_type in ["validation", "enrichment", "normalization"] and flag_name not in [
-                "auto_classify"
+                "auto_classify", "add_oa"
             ]:
                 for flag_value in flag_values:
                     criteria.append(
                         (converted_record_info.field_name == Parameter("?"))
                         & (converted_record_info[f"{flag_type}_status"] == Parameter("?"))
                     )
+                    if flag_type == "enrichment":
+                        flag_value = int(Enrichment[flag_value.upper()])
+                    if flag_type == "normalization":
+                        flag_value = int(Normalization[flag_value.upper()])
+                    if flag_type == "validation":
+                        flag_value = int(Validation[flag_value.upper()])
+
                     values.append([flag_name, flag_value])
-            if flag_type == "audit" or flag_name in ["auto_classify"]:
+            if flag_type == "audit" or flag_name in ["auto_classify", "add_oa"]:
                 for flag_value in flag_values:
                     criteria.append(
-                        (converted_audit_events.code == Parameter("?"))
-                        & (converted_audit_events.result == Parameter("?"))
+                        (converted_record_info.audit_code == Parameter("?"))
+                        & (converted_record_info.audit_result == Parameter("?"))
                     )
                     # TODO: Fix horrible "valid"/"invalid" 0/1 confusion
                     if flag_value == "valid" or (
@@ -1086,12 +1071,12 @@ def process_get_export(source=None):
                     values.append([flag_name, int_flag_value])
     q = q.where(Criterion.any(criteria))
 
-    q_total = q.select(fn.Count(converted.oai_id).distinct().as_("total"))
+    q_total = q.select(fn.Count(converted.id).distinct().as_("total"))
 
     q = (
-        q.select(converted.oai_id)
+        q.select(converted.id)
         .distinct()
-        .select(converted.date, converted.data, converted.events)
+        .select(converted.date, converted.data, converted.events, converted.oai_id)
     )
 
     if limit:

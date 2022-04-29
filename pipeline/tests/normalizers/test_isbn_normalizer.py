@@ -31,8 +31,6 @@ def _test_isbn_normalizaion(test_data, expected_result, expected_codes):
 
     field = FieldMeta(
         value=test_data,
-        normalization_status="unchanged",
-        validation_status="valid",
         path="partOf.[0].identifiedBy.[0].value",
     )
 

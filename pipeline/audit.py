@@ -1,6 +1,6 @@
 from functools import reduce
 
-from pipeline.auditors.swedishlist import Level, SwedishListAuditor
+from pipeline.auditors.swedishlist import SwedishListAuditor
 from pipeline.auditors.creatorcount import CreatorCountAuditor
 from pipeline.auditors.uka import UKAAuditor
 from pipeline.auditors.contributor import ContributorAuditor

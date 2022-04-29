@@ -1,8 +1,9 @@
 import re
 from enum import Enum
 from datetime import date, datetime
-
 from dateutil.parser import parse as dateutil_parse
+
+from pipeline.util import Level
 
 
 CREATOR_FIELDS = [
@@ -69,11 +70,6 @@ def _add_id_by_code_to_person(person, agent, id_type, id_by_code_label):
                 break
     person.update({id_by_code_label: id_by_code})
     return person
-
-
-class Level(Enum):
-    PEERREVIEWED = "https://id.kb.se/term/swepub/swedishlist/peer-reviewed"
-    NONPEERREVIEWED = "https://id.kb.se/term/swepub/swedishlist/non-peer-reviewed"
 
 
 class BibframeSource:
@@ -491,6 +487,25 @@ class BibframeSource:
                             return True
         return False
 
+    @property
+    def open_access_publication_version(self):
+        for electronic_locator in self.bibframe_master.get("electronicLocator", []):
+            for note in electronic_locator.get("hasNote", []):
+                if note.get("@id", "") in [
+                    "https://id.kb.se/term/swepub/Submitted",
+                    "https://id.kb.se/term/swepub/Accepted",
+                    "https://id.kb.se/term/swepub/Published"
+                ]:
+                    return note.get("@id")
+        return None
+
+    @property
+    def DOAJ(self):
+        for status in self.bibframe_master.get("instanceOf", {}).get("status", []):
+            if status.get("@id", "") == "https://id.kb.se/term/swepub/journal-is-in-doaj":
+                return False
+        return False
+
     def _is_embargoed(self):
         ua_policies = self.bibframe_master.get("usageAndAccessPolicy", [])
         for policy in ua_policies:
@@ -747,13 +762,11 @@ class BibframeSource:
 
         for gform in self._bibframe_master["instanceOf"]["genreForm"]:
             # Peer-reviewed always trumps non-peer-reviewed
-            if "@id" in gform and gform["@id"] == Level.PEERREVIEWED.value:
-                # return Level.PEERREVIEWED
-                return 1
+            if "@id" in gform and gform["@id"] == str(Level.PEERREVIEWED):
+                return Level.PEERREVIEWED.value
 
-            if "@id" in gform and gform["@id"] == Level.NONPEERREVIEWED.value:
-                # return Level.NONPEERREVIEWED
-                return 0
+            if "@id" in gform and gform["@id"] == str(Level.NONPEERREVIEWED):
+                return Level.NONPEERREVIEWED.value
         return None
 
     @property
@@ -777,3 +790,12 @@ class BibframeSource:
                     uka_subject_codes.append(subject_code[0])
 
         return list(set(uka_subject_codes))
+
+
+    @property
+    def autoclassified(self):
+        for subject in self.bibframe_master.get("instanceOf", {}).get("subject", []):
+            for note in subject.get("hasNote", []):
+                if note.get("label", "") == "Autoclassified by Swepub":
+                    return True
+        return False

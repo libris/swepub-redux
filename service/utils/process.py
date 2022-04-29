@@ -22,7 +22,7 @@ DEFAULT_AUDITORS = [
     "CreatorCountAuditor",
     "UKAAuditor",
     "AutoclassifierAuditor",
-    # 'OAAuditor'
+    "OAAuditor",
 ]
 
 AUDIT_LABEL_MAP = {
@@ -32,7 +32,7 @@ AUDIT_LABEL_MAP = {
     "UKAAuditor": "UKA_comprehensive_check",
     "AutoclassifierAuditor": "auto_classify",
     "SwedishListAuditor": "swedish_list_check",
-    # 'OAAuditor': 'oa_check'
+    'OAAuditor': 'add_oa',
 }
 
 LABEL_AUDIT_MAP = dict()
@@ -202,9 +202,8 @@ def _get_flags(events, selected_flags):
     for auditor, checks in events["audit_events"].items():
         flag = _get_audit_flags(auditor, checks, selected_flags)
         if flag:
-            # TODO: Add OAAuditor
-            if auditor in ["AutoclassifierAuditor"]:
-                # auto_classify and oa_check go into enrichment flags
+            if auditor in ["AutoclassifierAuditor", "OAAuditor"]:
+                # auto_classify and add_oa go into enrichment flags
                 enrichment_flags.update(flag)
             else:
                 audit_flags.update(flag)
@@ -300,10 +299,9 @@ def _get_audit_flags(auditor, checks, selected_flags):
     selected_auditor_flags = selected_flags.get("audit").get(label, [])
     selected_auto_classify_flags = (
         selected_flags.get("enrichment").get(label, [])
-        if auditor == "AutoclassifierAuditor"
+        if auditor in ["AutoclassifierAuditor", "OAAuditor"]
         else []
     )
-    # selected_oa_check_flags = selected_flags.get("enrichment").get(label, []) if auditor == 'OAAuditor' else []
 
     choose_all = False
     if not has_selected_flags(selected_flags):
@@ -313,7 +311,7 @@ def _get_audit_flags(auditor, checks, selected_flags):
         not choose_all
         and not selected_auditor_flags
         and not selected_auto_classify_flags
-    ):  # and not selected_oa_check_flags:
+    ):
         return flag_result
 
     if auditor in DEFAULT_AUDITORS:
@@ -321,14 +319,9 @@ def _get_audit_flags(auditor, checks, selected_flags):
         result_value = None
         flag = {}
 
-        # TODO: Add OAAuditor
-        if auditor in ["AutoclassifierAuditor"]:
+        if auditor in ["AutoclassifierAuditor", "OAAuditor"]:
             # AutoClassifier and OAAuditor are returned separately as they will be moved into enrichment category
-            # if auditor == 'AutoClassifier':
             selected_flags = selected_auto_classify_flags
-            # else:
-            #    selected_flags = selected_oa_check_flags
-
             if step["result"]:
                 if "enriched" in selected_flags or choose_all:
                     result_value = "enriched"
@@ -340,7 +333,25 @@ def _get_audit_flags(auditor, checks, selected_flags):
                 if step.get("code"):
                     flag["code"] = step.get("code")
                 if step.get("value"):
-                    flag["new_value"] = step.get("value")
+                    if auditor == "OAAuditor":
+                        added_oa = []
+                        for oa_obj in step.get("value", []):
+                            oa_info = []
+                            if oa_obj.get("uri"):
+                                oa_info.append(oa_obj.get("uri"))
+                            if len(oa_obj.get("usageAndAccessPolicy", [])) > 0:
+                                if oa_obj.get("usageAndAccessPolicy")[0].get("@id"):
+                                    oa_info.append(oa_obj.get("usageAndAccessPolicy")[0].get("@id"))
+                            for meta in oa_obj.get("meta", []):
+                                for source_consulted in meta.get("sourceConsulted", []):
+                                    if source_consulted.get("uri"):
+                                        oa_info.append("Källa: " + source_consulted.get("uri"))
+                                        continue
+                            if oa_info:
+                                added_oa.append(" ".join(oa_info))
+                        flag["new_value"] = ", ".join(added_oa)
+                    else:
+                        flag["new_value"] = step.get("value")
                 if step.get("initial_value"):
                     flag["old_value"] = step.get("initial_value")
                 flag_result[label] = [flag]

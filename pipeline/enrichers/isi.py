@@ -1,5 +1,5 @@
 import re
-from pipeline.util import update_at_path, unicode_translate, make_event
+from pipeline.util import update_at_path, unicode_translate, make_event, Enrichment
 
 # flake8: noqa W504
 isi_regex = re.compile(
@@ -27,7 +27,7 @@ def recover_isi(body, field):
                 result="enriched",
             )
         )
-        field.enrichment_status = "enriched"
+        field.enrichment_status = Enrichment.ENRICHED
         field.value = isi
 
     hit = isi_regex.search(isi)
@@ -38,7 +38,7 @@ def recover_isi(body, field):
                 event_type="enrichment", code="recovery", value=hit.group(), initial_value=isi
             )
         )
-        field.enrichment_status = "enriched"
+        field.enrichment_status = Enrichment.ENRICHED
         field.value = hit.group()
 
     if len(isi) == 30 and isi[:15] == isi[15:]:
@@ -46,5 +46,5 @@ def recover_isi(body, field):
         field.events.append(
             make_event(event_type="enrichment", code="double", value=isi[:15], initial_value=isi)
         )
-        field.enrichment_status = "enriched"
+        field.enrichment_status = Enrichment.ENRICHED
         field.value = isi[:15]

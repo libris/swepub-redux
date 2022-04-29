@@ -1,5 +1,5 @@
 from pipeline.storage import *
-
+from pipeline.util import Validation, Enrichment, Normalization
 
 def generate_processing_stats():
     with get_connection() as connection:
@@ -52,24 +52,26 @@ def generate_processing_stats():
         # fix this at some point) should actually go into the _enricher_ category for API/stats purposes.
         for row in cursor.execute("""
             SELECT
-                converted_audit_events.code,
+                converted_record_info.audit_code,
                 converted.source,
                 converted.date,
-                SUM(CASE WHEN converted_audit_events.result == 1 Then 1 else 0 end) AS result_true,
-                SUM(CASE WHEN converted_audit_events.result == 0 Then 1 else 0 end) AS result_false
+                SUM(CASE WHEN converted_record_info.audit_result == 1 Then 1 else 0 end) AS result_true,
+                SUM(CASE WHEN converted_record_info.audit_result == 0 Then 1 else 0 end) AS result_false
             FROM
-                converted_audit_events
+                converted_record_info
             LEFT JOIN
-                converted ON converted_audit_events.converted_id=converted.id
+                converted ON converted_record_info.converted_id=converted.id
             WHERE
                 converted.deleted = 0
+            AND
+                converted_record_info.field_name IS NULL
             GROUP BY
-                converted.source, converted_audit_events.code, converted.date
+                converted.source, converted_record_info.audit_code, converted.date
             """):
-            if row['code'] == 'creator_count_check':
+            if row['audit_code'] == 'creator_count_check':
                 valid = row['result_true']
                 invalid = row['result_false']
-            elif row['code'] == 'auto_classify':
+            elif row['audit_code'] in ['auto_classify', 'add_oa']:
                 valid = row['result_true']
                 invalid = 0
             else:
@@ -82,28 +84,30 @@ def generate_processing_stats():
                 VALUES
                     (?, ?, ?, ?, ?)
                 """,
-                [row['source'], row['date'], row['code'], valid, invalid])
+                [row['source'], row['date'], row['audit_code'], valid, invalid])
 
-        for row in cursor.execute("""
+        for row in cursor.execute(f"""
             SELECT
                 converted_record_info.field_name,
                 converted.source,
                 converted.date,
-                SUM(CASE WHEN converted_record_info.validation_status == 'valid' Then 1 else 0 end) AS v_valid,
-                SUM(CASE WHEN converted_record_info.validation_status == 'invalid' Then 1 else 0 end) AS v_invalid,
+                SUM(CASE WHEN converted_record_info.validation_status == {int(Validation.VALID)} Then 1 else 0 end) AS v_valid,
+                SUM(CASE WHEN converted_record_info.validation_status == {int(Validation.INVALID)}  Then 1 else 0 end) AS v_invalid,
 
-                SUM(CASE WHEN converted_record_info.enrichment_status == 'enriched' Then 1 else 0 end) AS e_enriched,
-                SUM(CASE WHEN converted_record_info.enrichment_status == 'unchanged' Then 1 else 0 end) AS e_unchanged,
-                SUM(CASE WHEN converted_record_info.enrichment_status == 'unsuccessful' Then 1 else 0 end) AS e_unsuccessful,
+                SUM(CASE WHEN converted_record_info.enrichment_status == {int(Enrichment.ENRICHED)} Then 1 else 0 end) AS e_enriched,
+                SUM(CASE WHEN converted_record_info.enrichment_status == {int(Enrichment.UNCHANGED)}  Then 1 else 0 end) AS e_unchanged,
+                SUM(CASE WHEN converted_record_info.enrichment_status == {int(Enrichment.UNSUCCESSFUL)}  Then 1 else 0 end) AS e_unsuccessful,
 
-                SUM(CASE WHEN converted_record_info.normalization_status == 'unchanged' Then 1 else 0 end) AS n_unchanged,
-                SUM(CASE WHEN converted_record_info.normalization_status == 'normalized' Then 1 else 0 end) AS n_normalized
+                SUM(CASE WHEN converted_record_info.normalization_status == {int(Normalization.UNCHANGED)} Then 1 else 0 end) AS n_unchanged,
+                SUM(CASE WHEN converted_record_info.normalization_status == {int(Normalization.NORMALIZED)} Then 1 else 0 end) AS n_normalized
             FROM
                 converted_record_info
             LEFT JOIN
                 converted ON converted_record_info.converted_id=converted.id
             WHERE
                 converted.deleted = 0
+            AND
+                converted_record_info.audit_code IS NULL
             GROUP BY
                 converted.source, converted_record_info.field_name, converted.date
         """):

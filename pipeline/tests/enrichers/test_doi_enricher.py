@@ -66,8 +66,6 @@ def test_doi_enrich_valid_prefixes():
 
     field = FieldMeta(
         value=test_data,
-        normalization_status="unchanged",
-        validation_status="valid",
         path="partOf.[0].identifiedBy.[0].value",
     )
 
@@ -81,8 +79,6 @@ def test_doi_enrich_valid_prefixes():
 
     field = FieldMeta(
         value=test_data,
-        normalization_status="unchanged",
-        validation_status="valid",
         path="partOf.[0].identifiedBy.[0].value",
     )
 
@@ -96,8 +92,6 @@ def _test_doi_enrichment(test_data, expected_result, expected_codes):
 
     field = FieldMeta(
         value=test_data,
-        normalization_status="unchanged",
-        validation_status="valid",
         path="partOf.[0].identifiedBy.[0].value",
     )
 

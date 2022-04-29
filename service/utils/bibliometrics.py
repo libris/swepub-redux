@@ -36,9 +36,11 @@ def _build_hit(bibframe_record, fields):
     # maps chosen fields to BibframeSource properties
     field_property_dict = {
         "archiveURI": "archive_URI",
+        "autoclassified": "autoclassified",
         "contentMarking": "content_marking",
         "creatorCount": "creator_count",
         "creators": "creators",
+        "DOAJ": "DOAJ",
         "DOI": "DOI",
         "duplicateIds": "duplicate_ids",
         "electronicLocator": "electronic_locator",
@@ -48,6 +50,7 @@ def _build_hit(bibframe_record, fields):
         "keywords": "keywords",
         "languages": "languages",
         "openAccess": "open_access",
+        "openAccessPubVersion": "open_access_publication_version",
         "outputTypes": "output_types",
         "PMID": "PMID",
         "publicationChannel": "publication_channel",

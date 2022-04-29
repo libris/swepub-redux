@@ -1,8 +1,73 @@
-from difflib import SequenceMatcher
+from aenum import Enum
 
+from difflib import SequenceMatcher
 from jsonpath_rw import parse
 import re
 import Levenshtein
+
+
+class Validation(Enum):
+    INVALID = 0
+    VALID = 1
+    PENDING = 2
+
+    def __str__(self):
+        return self.name.lower()
+
+    def __int__(self):
+        return self.value
+
+
+class Enrichment(Enum):
+    UNCHANGED = 0
+    ENRICHED = 1
+    UNSUCCESSFUL = 2
+
+    def __str__(self):
+        return self.name.lower()
+
+    def __int__(self):
+        return self.value
+
+
+class Normalization(Enum):
+    UNCHANGED = 0
+    NORMALIZED = 1
+
+    def __str__(self):
+        return self.name.lower()
+
+    def __int__(self):
+        return self.value
+
+
+class Level(Enum):
+    _init_ = 'value string'
+
+    NONE = None, ""
+    NONPEERREVIEWED = 0, "https://id.kb.se/term/swepub/swedishlist/non-peer-reviewed"
+    PEERREVIEWED = 1, "https://id.kb.se/term/swepub/swedishlist/peer-reviewed"
+
+    def __int__(self):
+        return self.value
+
+    def __str__(self):
+        return self.string
+
+
+class FieldMeta:
+    def __init__(self, path="", id_type="", value=None, validation_status=Validation.PENDING, normalization_status=Normalization.UNCHANGED, enrichment_status=Enrichment.UNCHANGED):
+        self.id_type = id_type
+        self.path = path
+        self.initial_value = value
+        self.value = value
+        self.validation_status = validation_status
+        self.enrichment_status = enrichment_status
+        self.normalization_status = normalization_status
+        self.events = []
+
+    def is_enriched(self):
+        return self.enrichment_status == Enrichment.ENRICHED
 
 
 def chunker(seq, size):
@@ -152,21 +217,6 @@ def get_common_substring_factor(a, b, allowed_misses = 0):
             ia -= 1
     
     return count / len(b)
-
-
-class FieldMeta:
-    def __init__(self, path="", id_type="", value=None, validation_status="pending", normalization_status="unchanged", enrichment_status="unchanged"):
-        self.id_type = id_type
-        self.path = path
-        self.initial_value = value
-        self.value = value
-        self.validation_status = validation_status  # 'valid', 'invalid', 'error', 'pending'
-        self.enrichment_status = enrichment_status  # 'enriched', 'unchanged', 'unsuccessful', 'pending', 'error',
-        self.normalization_status = normalization_status  # 'unchanged', 'normalized'
-        self.events = []
-
-    def is_enriched(self):
-        return self.enrichment_status == 'enriched'
 
 
 class UnicodeAsciiTranslator:

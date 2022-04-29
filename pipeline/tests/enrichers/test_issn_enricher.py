@@ -1,4 +1,4 @@
-from pipeline.util import FieldMeta
+from pipeline.util import FieldMeta, Enrichment
 from pipeline.enrichers.issn import recover_issn
 from pipeline.enrichers.isbn import recover_isbn
 
@@ -87,15 +87,13 @@ def test_dual_issn():
 
     field = FieldMeta(
         value=test_data,
-        enrichment_status="pending",
-        validation_status="valid",
         path="partOf.[0].identifiedBy.[0].value",
     )
 
     created_fields = recover_issn(body, field)
 
     assert field.value == "0256-4718"
-    assert field.enrichment_status == "enriched"
+    assert field.enrichment_status == Enrichment.ENRICHED
 
     assert len(created_fields) == 1
     assert field.events[1]["code"] == "split"
@@ -107,8 +105,6 @@ def _test_issn_enrichment(enricher, test_data, expected_result, expected_codes):
 
     field = FieldMeta(
         value=test_data,
-        enrichment_status="pending",
-        validation_status="valid",
         path="partOf.[0].identifiedBy.[0].value",
     )
 
@@ -128,8 +124,6 @@ def _test_none_issn_enrichment(enricher, test_data):
 
     field = FieldMeta(
         value=test_data,
-        enrichment_status="pending",
-        validation_status="valid",
         path="partOf.[0].identifiedBy.[0].value",
     )
 

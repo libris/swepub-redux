@@ -67,6 +67,7 @@ export default {
     setHarvestParams() {
       this.$router.push({
         params: { source: this.source, service: 'status', subservice: null },
+      // eslint-disable-next-line
       }).then(() => this.$nextTick(() => this.$refs.harvestDivider.scrollIntoView({ behavior: 'smooth' })))
         .catch((err) => {
         // eslint-disable-next-line no-console

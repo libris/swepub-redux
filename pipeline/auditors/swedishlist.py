@@ -1,18 +1,13 @@
 import csv
-from enum import Enum
 from os import path
 
 from pipeline.auditors import BaseAuditor
+from pipeline.util import Level
 
 
 DEFAULT_FILE_PATH = path.join(
     path.dirname(path.abspath(__file__)), "../../resources/swedish_list.csv"
 )
-
-
-class Level(Enum):
-    PEERREVIEWED = "https://id.kb.se/term/swepub/swedishlist/peer-reviewed"
-    NONPEERREVIEWED = "https://id.kb.se/term/swepub/swedishlist/non-peer-reviewed"
 
 
 class SwedishListAuditor(BaseAuditor):
@@ -28,7 +23,7 @@ class SwedishListAuditor(BaseAuditor):
 
     def audit(self, publication, audit_events, _harvest_cache, _session):
         """Check and set the publication's level according to the Swedish List."""
-        level = None
+        level = Level.NONE
         year = publication.year
 
         # Publications with invalid year are considered not audited
@@ -39,7 +34,7 @@ class SwedishListAuditor(BaseAuditor):
                     if issn in self.list[year]:
                         new_level = self.list[year][issn]
                         # We try our best to find an audited level
-                        if new_level is not None:
+                        if new_level is not Level.NONE:
                             level = new_level
                         # If we find a peer-reviewed level, we stop looking
                         if level == Level.PEERREVIEWED:
@@ -82,16 +77,13 @@ class SwedishListAuditor(BaseAuditor):
         elif level == "0":
             return Level.NONPEERREVIEWED
         else:
-            return None
+            return Level.NONE
 
     @staticmethod
     def _add_audit_event(audit_events, level):
         name = SwedishListAuditor.__name__
         code = "set_publication_level"
-        result = "0"
-        if level:
-            result = level.value
-        audit_events.add_event(name, code, result)
+        audit_events.add_event(name, code, level.value)
         return audit_events
 
     @staticmethod

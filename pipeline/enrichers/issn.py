@@ -5,6 +5,7 @@ from pipeline.util import (
     unicode_translate,
     make_event,
     FieldMeta,
+    Enrichment
 )
 
 # flake8: noqa W504
@@ -41,7 +42,7 @@ def recover_issn(body, field):
                 result="enriched",
             )
         )
-        field.enrichment_status = "enriched"
+        field.enrichment_status = Enrichment.ENRICHED
         field.value = issn
 
     answ = issn_regex.findall(issn)
@@ -60,7 +61,7 @@ def recover_issn(body, field):
                 )
             )
             update_at_path(body, path, recovered[0])
-            field.enrichment_status = "enriched"
+            field.enrichment_status = Enrichment.ENRICHED
             field.value = recovered[0]
 
         if len(recovered) > 1:
@@ -79,6 +80,6 @@ def recover_issn(body, field):
                     FieldMeta(path=new_path, id_type=field.id_type, value=found_value)
                 )
 
-    if field.enrichment_status != "enriched":
-        field.enrichment_status = "unsuccessful"
+    if field.enrichment_status != Enrichment.ENRICHED:
+        field.enrichment_status = Enrichment.UNSUCCESSFUL
     return created_fields
