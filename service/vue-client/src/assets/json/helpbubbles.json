@@ -112,7 +112,7 @@
     },
     "enrichment_flags_add_oa": {
       "title": "Öppen tillgång",
-      "text": "Publikationen har markerats med status om öppen tillgång utifrån information hämtad från de externa datakällorna Unpaywall och Directory of Open Access Books - DOAB."
+      "text": "Publikationen har berikats med information om länk till fulltext, om fulltexten är öppet tillgänglig eller prenumerationsbaserad, om version av fulltexten och om publiceringskanalen för publikationen ingår i Directory of Open Access Journals (DOAJ). Berikningen sker med information från de externa datakällorna Unpaywall och Directory of Open Access Books (DOAB)."
     },
     "harvest_overview": {
       "title": "Översikt",
