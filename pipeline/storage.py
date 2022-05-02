@@ -100,8 +100,6 @@ def store_original(
     connection.commit()
     return original_rowid
 
-<<<<<<< HEAD
-=======
 
 def serialize(obj):
     if isinstance(obj, Enum):
@@ -109,7 +107,6 @@ def serialize(obj):
     return obj.__dict__
 
 
->>>>>>> main
 def store_converted(original_rowid, converted, audit_events, field_events, record_info, connection):
     try:
         cur = connection.cursor()
