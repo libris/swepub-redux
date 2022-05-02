@@ -36,6 +36,16 @@ def _has_same_sub_title(a, b):
     """True if publication has the same sub title"""
     return compare_text(get_sub_title(a), get_sub_title(b), STRING_MATCH_RATIO_SUB_TITLE)
 
+# Exepects a string containing one _word_ as input
+def is_numeral(a):
+    if a == "":
+        return False
+    latin_numbers = "IVXLCDM0123456789" # Latin and arabic numbers
+    for c in a:
+        if c not in latin_numbers:
+            return False
+    return True
+
 def _has_similar_combined_title(a, b):
     combined_a = get_combined_title(a)
     combined_b = get_combined_title(b)
@@ -45,6 +55,15 @@ def _has_similar_combined_title(a, b):
 
     if simliarity > 0.7:
         #print(f"{combined_a}\n{combined_b}\n\t{simliarity}")
+
+        # If the very last word of a is a number, require the same number at the end of b.
+        if " " in combined_a and " " in combined_b:
+            undesired_chars = dict.fromkeys(map(ord, '-–.!?'), "")
+            last_word_a = combined_a[(combined_a.rfind(" ")+1):].translate(undesired_chars).rstrip()
+            last_word_b = combined_b[(combined_b.rfind(" ")+1):].translate(undesired_chars).rstrip()
+            if is_numeral(last_word_a) or is_numeral(last_word_b):
+                if (last_word_a != last_word_b):
+                    return False
         return True
     return False
 
