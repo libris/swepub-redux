@@ -243,7 +243,7 @@ export default {
           group: 'publication',
         },
         /* TODO: add the parameters below when revamping frontend */
-        /*{
+        /* {
           key: 'openAccessPubVersion',
           label: 'Öppet tillgänglig version',
           selected: false,
