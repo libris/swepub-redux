@@ -211,7 +211,8 @@ class PublicationMerger:
         for identifier in candidate_indirectly_identifiedby_ids:
             if self._id_allowed_to_be_added(master_indirectly_identifiedby_ids, identifier):
                 master_indirectly_identifiedby_ids.append(identifier)
-        master.indirectly_identifiedby_ids = master_indirectly_identifiedby_ids
+        if master_indirectly_identifiedby_ids:
+            master.indirectly_identifiedby_ids = master_indirectly_identifiedby_ids
         return master
 
     @staticmethod
@@ -225,7 +226,8 @@ class PublicationMerger:
             else:
                 index = master_electronic_locators.index(e)
                 master_electronic_locators[index].add_notes(e.notes)
-        master.electronic_locators = master_electronic_locators
+        if master_electronic_locators:
+            master.electronic_locators = master_electronic_locators
         return master
 
     @staticmethod

@@ -373,7 +373,7 @@ class Publication:
         """Set the publication's level."""
         # Ensure that the publication is unmarked
         self._body = self._purge_markings(self.body)
-        if level is None:
+        if level is Level.NONE:
             return
 
         if 'instanceOf' not in self.body:
