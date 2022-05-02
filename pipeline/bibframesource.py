@@ -752,6 +752,26 @@ class BibframeSource:
         return None
 
     @property
+    def series(self):
+        _series = []
+        serials = self.bibframe_master.get("hasSeries", [])
+
+        for part_of in self.bibframe_master.get("partOf", []):
+            for serial in part_of.get("hasSeries", []):
+                serials.append(serial)
+
+        for serial in serials:
+            obj = {}
+            if serial.get("hasTitle", None):
+                obj["hasTitle"] = serial.get("hasTitle")
+            if serial.get("identifiedBy", None):
+                obj["identifiedBy"] = serial.get("identifiedBy")
+            if obj:
+                _series.append(obj)
+
+        return _series or None
+
+    @property
     def level(self):
         """Return the publication's level according to the Swedish List."""
         if (

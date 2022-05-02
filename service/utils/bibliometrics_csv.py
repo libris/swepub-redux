@@ -44,6 +44,7 @@ column_name_label_dict = {
     "publisher": "publisher",
     "ISSN": "ISSN",
     "swedish_list": "swedishList",
+    "series": "series",
     "series_title": "seriesTitle",
     "autoclassified": "autoclassified",
     "DOAJ": "DOAJ",

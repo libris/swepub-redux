@@ -61,6 +61,7 @@ def _build_hit(bibframe_record, fields):
         "publisher": "publisher",
         "recordId": "record_id",
         "scopusId": "scopus_id",
+        "series": "series",
         "seriesTitle": "series_title",
         "source": "source_org",
         "subjects": "uka_subjects",

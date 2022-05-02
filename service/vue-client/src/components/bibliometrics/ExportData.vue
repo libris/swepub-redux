@@ -242,9 +242,10 @@ export default {
           component: 'TableDataBoolean',
           group: 'publication',
         },
-        {
+        /* TODO: add the parameters below when revamping frontend */
+        /*{
           key: 'openAccessPubVersion',
-          label: 'Öppen tillgång, publikationsversion',
+          label: 'Öppet tillgänglig version',
           selected: false,
           component: 'TableDataLink',
           group: 'publication',
@@ -263,6 +264,14 @@ export default {
           component: 'TableDataBoolean',
           group: 'publication',
         },
+        {
+          key: 'series',
+          label: 'Serie',
+          selected: false,
+          component: 'TableDataList',
+          group: 'publication',
+        },
+        */
         {
           key: 'publicationChannel',
           label: 'Publiceringskanal',
