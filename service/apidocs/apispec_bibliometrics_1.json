@@ -4,6 +4,9 @@
       "Publication": {
         "description": "A representation of (a subset of the information in) a publication in Swepub.",
         "properties": {
+          "DOAJ": {
+            "type": "boolean"
+          },
           "DOI": {
             "items": {
               "description": "DOI identifier",
@@ -33,6 +36,9 @@
           "archiveURI": {
             "example": "http://example.com",
             "type": "string"
+          },
+          "autoclassified": {
+            "type": "boolean"
           },
           "contentMarking": {
             "example": "vet",
@@ -124,6 +130,9 @@
           "openAccess": {
             "type": "boolean"
           },
+          "openAccessPubVersion": {
+            "type": "boolean"
+          },
           "outputTypes": {
             "example": [
               "https://id.kb.se/term/swepub/publication/book"
@@ -157,6 +166,72 @@
           },
           "scopusId": {
             "type": "string"
+          },
+          "series": {
+            "items": {
+              "properties": {
+                "hasTitle": {
+                  "type": "array",
+                  "items": {
+                    "properties": {
+                      "@type": {
+                        "type": "string",
+                        "example": ["Title", "VariantTitle"]
+                      },
+                      "mainTitle": {
+                        "type": "string",
+                        "example": [
+                          "Guinea pigs and existentialism",
+                          "Transgressing the Boundaries"
+                        ]
+                      },
+                      "subTitle": {
+                        "type": "string",
+                        "example": [
+                          "the first 100 years",
+                          "Towards a Transformative Hermeneutics of Quantum Gravity"
+                        ]
+                      },
+                      "@partNumber": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  }
+                },
+                "identifiedBy": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "@type": {
+                        "type": "string",
+                        "example": [
+                          "ISBN",
+                          "ISSN"
+                        ]
+                      },
+                      "value": {
+                        "type": "string",
+                        "example": [
+                          "978-3-16-148410-0",
+                          "2049-3630"
+                        ]
+                      },
+                      "qualifier": {
+                        "type": "string",
+                        "example": [
+                          "ISBN",
+                          "ISSN",
+                          "eISSN"
+                        ]
+                      }
+                    }
+                  }
+                },
+              }
+            },
+            "type": "array"
           },
           "seriesTitle": {
             "type": "string"
