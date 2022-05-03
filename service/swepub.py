@@ -167,7 +167,7 @@ def bibliometrics_api():
             if len(gf.strip()) > 0
         ]
 
-        genreform_broader = [gfb.strip() for gfb in query_data.get("match-genreForm", []) if len(gfb.strip()) > 0]
+        genre_form_broader = [gfb.strip() for gfb in query_data.get("match-genreForm", []) if len(gfb.strip()) > 0]
 
         orgs = [o.strip() for o in query_data.get("org", []) if len(o.strip()) > 0]
         title = query_data.get("title", "").replace(",", " ")
@@ -251,8 +251,8 @@ def bibliometrics_api():
         "orcid": orcid,
         "given_name": given_name,
         "family_name": family_name,
-        "person_local_id": person_local_id,
-        "person_local_id_by": person_local_id_by,
+        "local_id": person_local_id,
+        "local_id_by": person_local_id_by,
     }.items():
         if value:
             q = q.where(search_creator[field_name] == Parameter("?"))
@@ -275,7 +275,6 @@ def bibliometrics_api():
 
     for param in [
         (search_doi, doi),
-        (search_genre_form, genre_form),
         (search_subject, subjects),
         (search_org, orgs),
     ]:
@@ -287,13 +286,22 @@ def bibliometrics_api():
             q = q.join(param[0]).on(search_single.finalized_id == param[0].finalized_id)
             values.append(param[1])
 
-    if genreform_broader:
+    if genre_form or genre_form_broader:
+        q = q.join(search_genre_form).on(search_single.finalized_id == search_genre_form.finalized_id)
+
+    if genre_form:
+        if isinstance(genre_form, list):
+            q = q.where(search_genre_form.value.isin([Parameter(", ".join(["?"] * len(genre_form)))]))
+        else:
+            q = q.where(search_genre_form.value == Parameter("?"))
+        values.append(genre_form)
+
+    if genre_form_broader:
         criteria = []
-        for _gf_b in genreform_broader:
+        for _gf_b in genre_form_broader:
             criteria.append(search_genre_form.value.like(Parameter("?")))
         q = q.where(Criterion.any(criteria))
-        q = q.join(search_genre_form).on(search_single.finalized_id == search_genre_form.finalized_id)
-        values.append(list(map(lambda x: f"{x}%", genreform_broader)))
+        values.append(list(map(lambda x: f"{x}%", genre_form_broader)))
 
     q_total = q.select(fn.Count("*").as_("total"))
     q = q.select(finalized.data)
