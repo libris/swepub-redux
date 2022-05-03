@@ -48,7 +48,7 @@ class OAAuditor(BaseAuditor):
             added, new_electronic_locator = publication.add_doab_download_uris(download_uris)
             if added:
                 result = True
-                added_electroniclocators.append(new_electronic_locator)
+                added_electroniclocators.extend(new_electronic_locator)
 
         if result:
             new_audit_events = self._add_audit_event(
@@ -72,7 +72,7 @@ class OAAuditor(BaseAuditor):
                     added, new_electronic_locator = publication.add_unpaywall_data(doi_object)
                     if added:
                         result = True
-                        added_electroniclocators.append(new_electronic_locator)
+                        added_electroniclocators.extend(new_electronic_locator)
             except Exception:
                 continue
                 # print(f"Failed fetching Unpaywall data for {doi}: {e}")
