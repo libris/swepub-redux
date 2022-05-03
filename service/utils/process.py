@@ -348,8 +348,8 @@ def _get_audit_flags(auditor, checks, selected_flags):
                                         oa_info.append("Källa: " + source_consulted.get("uri"))
                                         continue
                             if oa_info:
-                                added_oa.append(" ".join(oa_info))
-                        flag["new_value"] = ", ".join(added_oa)
+                                added_oa.append(oa_info)
+                        flag["new_value"] = added_oa
                     else:
                         flag["new_value"] = step.get("value")
                 if step.get("initial_value"):
