@@ -202,12 +202,14 @@ def move_incorrectlyIdentifiedBy(body, field_events):
                 else:
                     parent["incorrectlyIdentifiedBy"].append(incorrectlyIdentifiedByEntity)
                 
+                field.enrichment_status = Enrichment.ENRICHED
+
                 field.events.append(
                     make_event(
-                        event_type="postprocessing",
+                        event_type="enrichment",
                         code="moveIncorrectlyIdentifiedBy",
                         value=None,
-                        initial_value=None,
+                        initial_value=incorrectlyIdentifiedByEntity,
                         result=None,
                     )
                 )
@@ -222,16 +224,16 @@ def move_incorrectlyIdentifiedBy(body, field_events):
             remove_at_path(body, path, 1)
 
 
-
 # The point of this is that invalid ORCIDs often contain other sorts of personal information
 # Which we _do not_ want to have on file, or in the worst case even publicly displayed.
 def censor_invalid_orcids(body, field_events):
     for id_type in field_events.values():
         for field in id_type.values():
             if field.validation_status != Validation.VALID and field.id_type == "ORCID":
+                field.enrichment_status = Enrichment.ENRICHED
                 field.events.append(
                     make_event(
-                        event_type="postprocessing",
+                        event_type="enrichment",
                         code="censor",
                         value="[redacted]",
                         initial_value=field.value,
