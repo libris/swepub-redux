@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable max-len */
 import { mapGetters } from 'vuex';
 
 export default {
@@ -111,7 +112,32 @@ export default {
               </div>
               <div class="PreviewCard-flagValue">
                 <p class="heading capital">Berikade data</p>
-                <p>{{flag.new_value | joined }}</p>
+                <template v-if="flag.code === 'add_oa'">
+                  <div v-for="(added_oa, index) in flag.new_value"
+                            :key="`ul-add_oa-${index}`"
+                            class="links">
+                    <template v-for="(item, item_index) in added_oa">
+                      <template v-if="item.startsWith('http')">
+                        <a :key="`li-add_oa-${item_index}`"
+                            :href="item"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            :aria-label="`${item} Länk till fulltext, eller information om öppen tillgång-status`">
+                        <font-awesome-icon :icon="['fa', 'external-link-alt']"
+                            role="presentation"
+                            aria-hidden="true"/>
+                          {{ item }}
+                        </a>
+                      </template>
+                      <template v-else>
+                        {{ item }}
+                      </template>
+                    </template>
+                  </div>
+                </template>
+                <template v-else>
+                  <p>{{flag.new_value | joined }}</p>
+                </template>
               </div>
             </template>
           </div>
@@ -187,6 +213,11 @@ export default {
     &.audit {
       flex-basis: 100%;
       max-width: 100%;
+    }
+
+    & .links {
+      display: flex;
+      flex-direction: column;
     }
   }
 
