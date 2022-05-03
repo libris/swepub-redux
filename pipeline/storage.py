@@ -183,10 +183,24 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
                 )
 
         identifiers = []
+
+        # To loosely/speculatively "search" for simliar (but possibly misspelled) summaries/titles,
+        # add the vowels of the last N chars of the summary as a clustering identifier
+        vowels = "AaEeIiOoUuYyÅåÄäÖö"
+
         for title in converted["instanceOf"]["hasTitle"]:
             main_title = title.get("mainTitle")
             if main_title is not None and isinstance(main_title, str):
-                identifiers.append(main_title)  # TODO: STRIP AWAY WHITESPACE ETC
+                ending = main_title[-60:]
+                degraded = "".join([c for c in ending if c in vowels]).lower()
+                print(f"Maintitle added for dedup: {degraded}")
+                identifiers.append(degraded)
+            sub_title = title.get("subtitle")
+            if sub_title is not None and isinstance(sub_title, str):
+                ending = sub_title[-60:]
+                degraded = "".join([c for c in ending if c in vowels]).lower()
+                print(f"Subtitle added for dedup: {degraded}")
+                identifiers.append(degraded)
 
         for id_object in converted["identifiedBy"]:
             if id_object["@type"] != "Local":
@@ -194,14 +208,11 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
                 if identifier is not None and isinstance(identifier, str):
                     identifiers.append(identifier)
 
-        # To loosely/speculatively "search" for simliar (but possibly misspelled) summaries, add the
-        # vowels of the last N chars of the summary as a clustering identifier
-        vowels = "AaEeIiOoUuYyÅåÄäÖö"
         work = converted["instanceOf"]
         if "summary" in work:
             for summary in work["summary"]:
                 ending = summary["label"][-60:]
-                degraded = "".join([c for c in ending if c in vowels])
+                degraded = "".join([c for c in ending if c in vowels]).lower()
                 identifiers.append(degraded)
 
         for identifier in identifiers:
