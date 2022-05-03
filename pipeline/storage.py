@@ -189,17 +189,13 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
         vowels = "AaEeIiOoUuYyÅåÄäÖö"
 
         for title in converted["instanceOf"]["hasTitle"]:
-            main_title = title.get("mainTitle")
-            if main_title is not None and isinstance(main_title, str):
-                ending = main_title[-60:]
-                degraded = "".join([c for c in ending if c in vowels]).lower()
-                print(f"Maintitle added for dedup: {degraded}")
-                identifiers.append(degraded)
+            combined_title = title.get("mainTitle")
             sub_title = title.get("subtitle")
-            if sub_title is not None and isinstance(sub_title, str):
-                ending = sub_title[-60:]
+            if sub_title is not None and isinstance(sub_title, str) and isinstance(combined_title, str):
+                combined_title += sub_title
+            if combined_title is not None and isinstance(combined_title, str):
+                ending = combined_title[-60:]
                 degraded = "".join([c for c in ending if c in vowels]).lower()
-                print(f"Subtitle added for dedup: {degraded}")
                 identifiers.append(degraded)
 
         for id_object in converted["identifiedBy"]:
