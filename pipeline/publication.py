@@ -642,7 +642,7 @@ class Publication:
                 }
             ]
             self._body['electronicLocator'].append(new_electroniclocator)
-            return True, new_electroniclocator
+            return True, [new_electroniclocator]
 
         if doi_object['best_oa_location']['url'] not in self.electroniclocator_uris:
             new_electroniclocator['usageAndAccessPolicy'] = [
@@ -671,7 +671,7 @@ class Publication:
                 )
 
             self._body['electronicLocator'].append(new_electroniclocator)
-            return True, new_electroniclocator
+            return True, [new_electroniclocator]
         return False, None
 
     @property
