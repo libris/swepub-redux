@@ -187,29 +187,28 @@ def _is_close_enough(a_rowid, b_rowid):
         if _has_similar_combined_title(a, b) and has_same_ids(a, b):
             return True
 
-        # 3.
         if (
             _has_similar_combined_title(a, b)
-            and CONFERENCE_PAPER_GENREFORM not in genre_form(a)
-            and CONFERENCE_PAPER_GENREFORM not in genre_form(b)
+            #and CONFERENCE_PAPER_GENREFORM not in genre_form(a)
+            #and CONFERENCE_PAPER_GENREFORM not in genre_form(b)
             and _has_similar_summary(a, b)
             and _has_same_publication_date(a, b)
-            and _has_same_genre_form(a, b)
+            #and _has_same_genre_form(a, b)
         ):
             return True
 
         # 4.
-        if (
-            _has_similar_combined_title(a, b)
-            and (
-                CONFERENCE_PAPER_GENREFORM in genre_form(a)
-                or CONFERENCE_PAPER_GENREFORM in genre_form(b)
-            )
-            and _has_similar_summary(a, b)
-            and _has_same_publication_date(a, b)
-            and _has_similar_partof_main_title(a, b)
-        ):
-            return True
+        # if (
+        #     _has_similar_combined_title(a, b)
+        #     and (
+        #         CONFERENCE_PAPER_GENREFORM in genre_form(a)
+        #         or CONFERENCE_PAPER_GENREFORM in genre_form(b)
+        #     )
+        #     and _has_similar_summary(a, b)
+        #     and _has_same_publication_date(a, b)
+        #     and _has_similar_partof_main_title(a, b)
+        # ):
+        #     return True
 
     return False
 
