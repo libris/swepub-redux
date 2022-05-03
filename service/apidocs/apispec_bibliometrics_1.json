@@ -130,7 +130,7 @@
           "openAccess": {
             "type": "boolean"
           },
-          "openAccessPubVersion": {
+          "openAccessVersion": {
             "type": "boolean"
           },
           "outputTypes": {

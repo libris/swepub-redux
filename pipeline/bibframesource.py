@@ -488,7 +488,7 @@ class BibframeSource:
         return False
 
     @property
-    def open_access_publication_version(self):
+    def open_access_version(self):
         for electronic_locator in self.bibframe_master.get("electronicLocator", []):
             for note in electronic_locator.get("hasNote", []):
                 if note.get("@id", "") in [

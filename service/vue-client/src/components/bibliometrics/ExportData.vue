@@ -244,7 +244,7 @@ export default {
         },
         /* TODO: add the parameters below when revamping frontend */
         /* {
-          key: 'openAccessPubVersion',
+          key: 'openAccessVersion',
           label: 'Öppet tillgänglig version',
           selected: false,
           component: 'TableDataLink',

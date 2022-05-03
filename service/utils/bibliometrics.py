@@ -50,7 +50,7 @@ def _build_hit(bibframe_record, fields):
         "keywords": "keywords",
         "languages": "languages",
         "openAccess": "open_access",
-        "openAccessPubVersion": "open_access_publication_version",
+        "openAccessVersion": "open_access_version",
         "outputTypes": "output_types",
         "PMID": "PMID",
         "publicationChannel": "publication_channel",

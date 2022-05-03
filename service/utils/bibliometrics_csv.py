@@ -32,7 +32,7 @@ column_name_label_dict = {
     "scopus_id": "scopusId",
     "pubmed_id": "PMID",
     "open_access": "openAccess",
-    "open_access_publication_version": "openAccessPubVersion",
+    "open_access_version": "openAccessVersion",
     "archive_URI": "archiveURI",
     "electronic_locator": "electronicLocator",
     "one_digit_topics": "oneDigitTopics",
