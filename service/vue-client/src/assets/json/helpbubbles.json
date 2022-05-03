@@ -96,7 +96,7 @@
     },
     "enrichment_flags_ORCID": {
       "title": "ORCID",
-      "text": "ORCID har tvättats från övriga tecken. Ett saknat 0 har lagts till. Ogiltigt ORCID har flyttats till fältet för ogiltiga identifikatorer."
+      "text": "ORCID har tvättats från övriga tecken. Ett saknat 0 har lagts till. Ogiltigt ORCID har censurerats."
     },
     "enrichment_flags_UKA": {
       "title": "SSIF",
