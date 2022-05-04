@@ -200,6 +200,8 @@ def bibliometrics_api():
 
         swedish_list = query_data.get("swedishList")
         open_access = query_data.get("openAccess")
+        autoclassified = query_data.get("autoclassified")
+        doaj = query_data.get("DOAJ")
 
         orcid = query_data.get("creator", {}).get("ORCID")
         given_name = query_data.get("creator", {}).get("givenName")
@@ -239,6 +241,10 @@ def bibliometrics_api():
         q = q.where(search_single.swedish_list == 1)
     if open_access:
         q = q.where(search_single.open_access == 1)
+    if autoclassified:
+        q = q.where(search_single.autoclassified == 1)
+    if doaj:
+        q = q.where(search_single.doaj == 1)
     for field_name, value in {
         "content_marking": content_marking,
         "publication_status": publication_status,

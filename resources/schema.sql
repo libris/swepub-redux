@@ -200,6 +200,8 @@ CREATE TABLE search_single (
     publication_status TEXT,
     swedish_list INTEGER,
     open_access INTEGER,
+    autoclassified INTEGER,
+    doaj INTEGER,
     FOREIGN KEY (finalized_id) REFERENCES finalized(id) ON DELETE CASCADE
 );
 CREATE INDEX idx_search_single_finalized_id ON search_single(finalized_id);
@@ -208,6 +210,8 @@ CREATE INDEX idx_search_single_finalized_content_marking ON search_single(conten
 CREATE INDEX idx_search_single_publication_status ON search_single(publication_status);
 CREATE INDEX idx_search_single_swedish_list ON search_single(swedish_list);
 CREATE INDEX idx_search_single_open_access ON search_single(open_access);
+CREATE INDEX idx_search_single_autoclassified ON search_single(autoclassified);
+CREATE INDEX idx_search_single_doaj ON search_single(doaj);
 
 
 CREATE TABLE search_doi (

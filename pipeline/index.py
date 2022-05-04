@@ -19,9 +19,9 @@ def generate_search_tables():
             inner_cursor.execute(
                 """
                 INSERT INTO search_single(
-                finalized_id, year, content_marking, publication_status, swedish_list, open_access
+                finalized_id, year, content_marking, publication_status, swedish_list, open_access, autoclassified, doaj
                 ) VALUES(
-                ?, ?, ?, ?, ?, ?
+                ?, ?, ?, ?, ?, ?, ?, ?
                 )
                 """,
                 (
@@ -31,6 +31,8 @@ def generate_search_tables():
                     get_publication_status(doc),
                     doc.is_swedishlist,
                     doc.open_access,
+                    doc.autoclassified,
+                    doc.DOAJ
                 ),
             )
 

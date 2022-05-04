@@ -503,7 +503,7 @@ class BibframeSource:
     def DOAJ(self):
         for status in self.bibframe_master.get("instanceOf", {}).get("status", []):
             if status.get("@id", "") == "https://id.kb.se/term/swepub/journal-is-in-doaj":
-                return False
+                return True
         return False
 
     def _is_embargoed(self):

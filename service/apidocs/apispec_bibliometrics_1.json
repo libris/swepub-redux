@@ -309,10 +309,18 @@
             "application/json": {
               "schema": {
                 "properties": {
+                  "DOAJ": {
+                    "description": "Publication is part of DOAJ",
+                    "example": "true"
+                  },
                   "DOI": {
                     "description": "DOI identifier of publication",
                     "example": "https://doi.org/10.1080/03610926.2016.1275695",
                     "type": "string"
+                  },
+                  "autoclassified": {
+                    "description": "Publication has been autoclassified by Swepub",
+                    "example": "true"
                   },
                   "contentMarking": {
                     "description": "Permitted values are 'ref', 'vet' or 'pop'",
@@ -394,6 +402,10 @@
                       "type": "string"
                     },
                     "type": "array"
+                  },
+                  "openAccess": {
+                    "description": "Available as open access",
+                    "example": "true"
                   },
                   "org": {
                     "example": [
