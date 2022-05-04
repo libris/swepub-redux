@@ -2,7 +2,7 @@ import re
 
 from stdnum.isbn import compact
 
-from pipeline.util import update_at_path, add_sibling_at_path, make_event, FieldMeta, Enrichment
+from pipeline.util import update_at_path, add_sibling_at_path, make_event, FieldMeta, Enrichment, unicode_translate
 
 # flake8: noqa W504
 isbn_regex = re.compile(
@@ -15,9 +15,26 @@ isbn_regex = re.compile(
 
 
 def recover_isbn(body, field):
+    original = field.value
     isbn = field.value
     path = field.path
     created_fields = []
+
+    translated = unicode_translate(isbn)
+    if translated != isbn:
+        isbn = translated
+        update_at_path(body, path, isbn)
+        field.events.append(
+            make_event(
+                event_type="enrichment",
+                code="unicode",
+                value=isbn,
+                initial_value=original,
+                result="enriched",
+            )
+        )
+        field.enrichment_status = Enrichment.ENRICHED
+        field.value = isbn
 
     answ = isbn_regex.finditer(isbn)
     res = []
