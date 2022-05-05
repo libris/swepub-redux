@@ -51,10 +51,10 @@ def _has_similar_combined_title(a, b):
     combined_b = get_combined_title(b)
     if combined_a in known_poor_titles or combined_b in known_poor_titles:
         return False
-    simliarity = get_common_substring_factor(combined_a, combined_b)
+    similarity = get_common_substring_factor(combined_a, combined_b)
 
-    if simliarity > 0.7:
-        #print(f"{combined_a}\n{combined_b}\n\t{simliarity}")
+    if similarity > 0.7:
+        #print(f"{combined_a}\n{combined_b}\n\t{similarity}")
 
         # If the very last word of a is a number, require the same number at the end of b.
         if " " in combined_a and " " in combined_b:
@@ -78,10 +78,10 @@ def _has_similar_summary(a, b):
         return False
     if not summary_a:
         return True # Both a and b lack a summary? Guess they match then..
-    simliarity = get_common_substring_factor(summary_a, summary_b, 3)
+    similarity = get_common_substring_factor(summary_a, summary_b, 3)
 
-    if simliarity > 0.6:
-        #print(f"{summary_a}\n{summary_b}\n\t{simliarity}")
+    if similarity > 0.6:
+        #print(f"{summary_a}\n{summary_b}\n\t{similarity}")
         return True
     return False
 
@@ -106,9 +106,9 @@ def _has_similar_partof_main_title(a, b):
     if not part_title_a or not part_title_b:
         return False
     
-    simliarity = get_common_substring_factor(part_title_a, part_title_b)
-    if simliarity > 0.5:
-        #print(f"{part_title_a}\n{part_title_b}\n\t{simliarity}")
+    similarity = get_common_substring_factor(part_title_a, part_title_b)
+    if similarity > 0.5:
+        #print(f"{part_title_a}\n{part_title_b}\n\t{similarity}")
         return True
     return False
 
