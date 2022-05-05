@@ -336,16 +336,19 @@ def _get_audit_flags(auditor, checks, selected_flags):
                     if auditor == "OAAuditor":
                         added_oa = []
                         for oa_obj in step.get("value", []):
-                            oa_info = []
+                            oa_info = {}
                             if oa_obj.get("uri"):
-                                oa_info.append(oa_obj.get("uri"))
+                                oa_info["uri"] = oa_obj.get("uri")
                             if len(oa_obj.get("usageAndAccessPolicy", [])) > 0:
                                 if oa_obj.get("usageAndAccessPolicy")[0].get("@id"):
-                                    oa_info.append(oa_obj.get("usageAndAccessPolicy")[0].get("@id"))
+                                    oa_info["policy"] = oa_obj.get("usageAndAccessPolicy")[0].get("@id")
+                            if len(oa_obj.get("hasNote", [])) > 0:
+                                if oa_obj.get("hasNote")[0].get("@id"):
+                                    oa_info["uriVersion"] = oa_obj.get("hasNote")[0].get("@id")
                             for meta in oa_obj.get("meta", []):
                                 for source_consulted in meta.get("sourceConsulted", []):
                                     if source_consulted.get("uri"):
-                                        oa_info.append("Källa: " + source_consulted.get("uri"))
+                                        oa_info["uriSource"] = source_consulted.get("uri")
                                         continue
                             if oa_info:
                                 added_oa.append(oa_info)

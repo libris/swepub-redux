@@ -116,22 +116,17 @@ export default {
                   <div v-for="(added_oa, index) in flag.new_value"
                             :key="`ul-add_oa-${index}`"
                             class="links">
-                    <template v-for="(item, item_index) in added_oa">
-                      <template v-if="item.startsWith('http')">
-                        <a :key="`li-add_oa-${item_index}`"
-                            :href="item"
+                    <template v-for="(value, name) in added_oa">
+                      <span :key="`li-add_oa-${name}`">
+                        {{ name }}:
+                        <a
+                            :href="value"
                             target="_blank"
                             rel="noopener noreferrer"
-                            :aria-label="`${item} Länk till fulltext, eller information om öppen tillgång-status`">
-                        <font-awesome-icon :icon="['fa', 'external-link-alt']"
-                            role="presentation"
-                            aria-hidden="true"/>
-                          {{ item }}
+                            :aria-label="`${value} Länk till fulltext, eller information om öppen tillgång-status`">
+                          {{ value }}
                         </a>
-                      </template>
-                      <template v-else>
-                        {{ item }}
-                      </template>
+                      </span>
                     </template>
                   </div>
                 </template>
