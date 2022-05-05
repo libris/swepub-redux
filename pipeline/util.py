@@ -407,7 +407,18 @@ def get_ids(body, path, id_type):
         ids_array = body.get(path, [])
         for identifier in ids_array:
             if isinstance(identifier, dict) and identifier.get('@type') == id_type:
-                ids.append(identifier.get('value'))
+                # Special handling to clean ScopusID, because we don't (yet) validate/enrich it.
+                # A Scopus ID seems to be 10 or 11 digits. A Scopus _EID_ seems to be the prefix
+                # "2-s2.0-" followed by the Scopus ID. For comparison, we remove the prefix here. 
+                if id_type == "ScopusID":
+                    scopus_id = identifier.get("value", "")
+                    scopus_prefix = "2-s2.0-"
+                    if scopus_id.startswith(scopus_prefix):
+                        ids.append(scopus_id[len(scopus_prefix):])
+                    else:
+                        ids.append(scopus_id)
+                else:
+                    ids.append(identifier.get('value'))
         return [identifier for identifier in ids if identifier]
     else:
         if body.get(path):
