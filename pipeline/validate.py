@@ -207,7 +207,7 @@ def move_incorrectlyIdentifiedBy(body, field_events):
                 field.events.append(
                     make_event(
                         event_type="enrichment",
-                        code="moveIncorrectlyIdentifiedBy",
+                        code="incorrectlyIdentifiedBy",
                         value=None,
                         initial_value=incorrectlyIdentifiedByEntity,
                         result=None,
@@ -234,7 +234,7 @@ def censor_invalid_orcids(body, field_events):
                 field.events.append(
                     make_event(
                         event_type="enrichment",
-                        code="censor",
+                        code="removed",
                         value="[redacted]",
                         initial_value=field.value,
                         result=None,
