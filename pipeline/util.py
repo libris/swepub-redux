@@ -407,18 +407,7 @@ def get_ids(body, path, id_type):
         ids_array = body.get(path, [])
         for identifier in ids_array:
             if isinstance(identifier, dict) and identifier.get('@type') == id_type:
-                # Special handling to clean ScopusID, because we don't (yet) validate/enrich it.
-                # A Scopus ID seems to be 10 or 11 digits. A Scopus _EID_ seems to be the prefix
-                # "2-s2.0-" followed by the Scopus ID. For comparison, we remove the prefix here. 
-                if id_type == "ScopusID":
-                    scopus_id = identifier.get("value", "")
-                    scopus_prefix = "2-s2.0-"
-                    if scopus_id.startswith(scopus_prefix):
-                        ids.append(scopus_id[len(scopus_prefix):])
-                    else:
-                        ids.append(scopus_id)
-                else:
-                    ids.append(identifier.get('value'))
+                ids.append(identifier.get('value'))
         return [identifier for identifier in ids if identifier]
     else:
         if body.get(path):
@@ -452,13 +441,22 @@ def has_same_ids(a, b):
         return True
     if same_ids(get_identifiedby_ids(a, 'ISI'), get_identifiedby_ids(b, 'ISI')):
         return True
-    if same_ids(get_identifiedby_ids(a, 'ScopusID'), get_identifiedby_ids(b, 'ScopusID')):
+    if same_ids(clean_scopus_ids(get_identifiedby_ids(a, 'ScopusID')), clean_scopus_ids(get_identifiedby_ids(b, 'ScopusID'))):
         return True
     if same_ids(get_identifiedby_ids(a, 'ISBN'), get_identifiedby_ids(b, 'ISBN')):
         return True
     if same_ids(get_indirectly_identifiedby_ids(a, 'ISBN'), get_indirectly_identifiedby_ids(b, 'ISBN')):
         return True
     return False
+
+
+# Special handling to clean ScopusID, because we don't (yet) validate/enrich it.
+# A Scopus ID seems to be 10 or 11 digits. A Scopus _EID_ seems to be the prefix
+# "2-s2.0-" followed by the Scopus ID. For purposes of comparison, this function
+# removes the prefix.
+def clean_scopus_ids(scopus_ids):
+    prefix = "2-s2.0-"
+    return [s[len(prefix):] if s.startswith(prefix) else s for s in scopus_ids]
 
 
 def get_summary(body):
