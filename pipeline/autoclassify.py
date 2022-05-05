@@ -217,9 +217,11 @@ def _generate_occurrence_table():
             strings_to_scan = []
             for summary in converted.get("instanceOf", {}).get("summary", []):
                 strings_to_scan.append(summary.get("label", ""))
-            strings_to_scan += publication.keywords
-            strings_to_scan += publication.title or ""
-            strings_to_scan += publication.subtitle or ""
+            strings_to_scan.extend(publication.keywords)
+            if publication.title:
+                strings_to_scan.append(publication.title)
+            if publication.subtitle:
+                strings_to_scan.append(publication.subtitle)
 
             for string in strings_to_scan:
                 string = string.translate(undesired_binary_chars_table)
