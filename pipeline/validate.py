@@ -209,7 +209,7 @@ def move_incorrectlyIdentifiedBy(body, field_events):
                         event_type="enrichment",
                         code="incorrectlyIdentifiedBy",
                         value=None,
-                        initial_value=incorrectlyIdentifiedByEntity,
+                        initial_value=incorrectlyIdentifiedByEntity.get("value", ""),
                         result=None,
                     )
                 )
