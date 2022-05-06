@@ -64,6 +64,34 @@ def probably_same_name(a, b):
             return False
     return True
 
+def probably_same_affiliation_name(a, b):
+    undesired_name_separators = dict.fromkeys(map(ord, '-–_,.;:!?#\u00a0'), " ")
+    a = a.translate(undesired_name_separators).lower()
+    b = b.translate(undesired_name_separators).lower()
+    name_words_a = re.findall(r"\w+", a)
+    name_words_b = re.findall(r"\w+", b)
+
+    if len(name_words_a) == 0 or len(name_words_b) == 0:
+        return False
+
+    # Make sure a has fewer "words" than b so that a shorter name can match against a longer one.
+    # All parts of the shorter name must exist in the longer one.
+    if len(name_words_a) > len(name_words_b):
+        tmp = name_words_b
+        name_words_b = name_words_a
+        name_words_a = tmp
+
+    # Check name by name against all of the other names
+    for word_a in name_words_a:
+        has_equal = False
+        for word_b in name_words_b:
+            if Levenshtein.distance(word_a, word_b) < 3:
+                has_equal = True
+        if not has_equal:
+            return False
+    return True
+
+
 class PublicationMerger:
     def merge(self, publications):
         """Create a master publication by merging a list of publications."""
@@ -418,6 +446,26 @@ def _merge_contrib_identified_by(master_contrib_identified_bys, candidate_contri
 
 def _merge_contrib_affiliations(master_contrib_affiliations, canidate_contrib_affiliations):
     for candidate_contrib_affiliation in canidate_contrib_affiliations:
-        if candidate_contrib_affiliation not in master_contrib_affiliations:
-            master_contrib_affiliations.append(candidate_contrib_affiliation)
+
+        # Not a "fritextaffiliering": Should be handled as; add if not exact duplicate
+        if "identifiedBy" in candidate_contrib_affiliation:
+            if candidate_contrib_affiliation not in master_contrib_affiliations:
+                master_contrib_affiliations.append(candidate_contrib_affiliation)
+        else:
+            candidate_name = candidate_contrib_affiliation.get("name", "")
+            has_match = False
+            for master_contrib_affiliation in master_contrib_affiliations:
+                master_name = master_contrib_affiliation.get("name", "")
+                if probably_same_affiliation_name(candidate_name, master_name):
+                    has_match = True
+
+                    # We want as detailed names as possible, so if A and B match,
+                    # use whichever name was longer.
+                    if "identifiedBy" not in master_contrib_affiliation and len(candidate_name) > len(master_name):
+                        master_contrib_affiliation["name"] = candidate_name
+
+                    break
+            if not has_match:
+                master_contrib_affiliations.append(candidate_contrib_affiliation)
+
     return master_contrib_affiliations
