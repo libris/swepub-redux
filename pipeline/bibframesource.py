@@ -744,6 +744,9 @@ class BibframeSource:
     @property
     def series_title(self):
         serials = self.bibframe_master.get("hasSeries", [])
+        for part_of in self.bibframe_master.get("partOf", []):
+            for serial in part_of.get("hasSeries", []):
+                serials.append(serial)
         for serial in serials:
             titles = serial.get("hasTitle", [])
             for title in titles:
