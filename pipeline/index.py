@@ -1,7 +1,7 @@
 import orjson as json
 
 from pipeline.bibframesource import BibframeSource
-from pipeline.storage import get_connection
+from pipeline.storage import get_connection, checkpoint
 
 OUTPUT_TYPE_PREFIX = "https://id.kb.se/term/swepub/"
 
@@ -9,94 +9,101 @@ OUTPUT_TYPE_PREFIX = "https://id.kb.se/term/swepub/"
 def generate_search_tables():
     with get_connection() as connection:
         cursor = connection.cursor()
+        second_cursor = connection.cursor()
+        third_cursor = connection.cursor()
         counter = 0
-        for row in cursor.execute("SELECT id, cluster_id, data FROM finalized"):
-            inner_cursor = connection.cursor()
-            finalized_id = row[0]
-            cluster_id = row[1]
-            doc = BibframeSource(json.loads(row[2]))
+        total = cursor.execute("SELECT COUNT(*) FROM converted WHERE deleted = 0").fetchone()[0]
+        limit = 25000
 
-            inner_cursor.execute(
-                """
-                INSERT INTO search_single(
-                finalized_id, year, content_marking, publication_status, swedish_list, open_access, autoclassified, doaj
-                ) VALUES(
-                ?, ?, ?, ?, ?, ?, ?, ?
-                )
-                """,
-                (
-                    finalized_id,
-                    doc.publication_year,
-                    doc.content_marking,
-                    get_publication_status(doc),
-                    doc.is_swedishlist,
-                    doc.open_access,
-                    doc.autoclassified,
-                    doc.DOAJ
-                ),
-            )
+        for n in range(0, total//limit + 1):
+            # Necessary for WAL file not to grow too big
+            checkpoint()
+            for row in second_cursor.execute(f"SELECT id, cluster_id, data FROM finalized LIMIT {limit} OFFSET {limit*n}"):
+                finalized_id = row[0]
+                cluster_id = row[1]
+                doc = BibframeSource(json.loads(row[2]))
 
-            for doi in doc.DOI:
-                inner_cursor.execute(
-                    "INSERT INTO search_doi (finalized_id, value) VALUES (?, ?)",
-                    (finalized_id, doi),
-                )
-
-            for gf in doc.output_types:
-                if gf.startswith(OUTPUT_TYPE_PREFIX):
-                    gf_shortened = gf[len(OUTPUT_TYPE_PREFIX) :]
-                else:
-                    gf_shortened = gf
-                inner_cursor.execute(
-                    "INSERT INTO search_genre_form (finalized_id, value) VALUES (?, ?)",
-                    (finalized_id, gf_shortened),
-                )
-
-            for subject in [item for sublist in doc.uka_subjects.values() for item in sublist]:
-                inner_cursor.execute(
-                    "INSERT INTO search_subject (finalized_id, value) VALUES (?, ?)",
-                    (finalized_id, subject),
-                )
-
-            inner_cursor.execute(
-                "INSERT INTO search_fulltext (finalized_id, title, keywords) VALUES (?, ?, ?)",
-                (finalized_id, doc.title, " ".join(doc.keywords)),
-            )
-
-            for creator in doc.creators:
-                inner_cursor.execute(
+                third_cursor.execute(
                     """
-                    INSERT INTO search_creator(
-                    finalized_id, orcid, family_name, given_name, local_id, local_id_by
+                    INSERT INTO search_single(
+                    finalized_id, year, content_marking, publication_status, swedish_list, open_access, autoclassified, doaj
                     ) VALUES(
-                    ?, ?, ?, ?, ?, ?
+                    ?, ?, ?, ?, ?, ?, ?, ?
                     )
                     """,
                     (
                         finalized_id,
-                        creator.get("ORCID", None),
-                        creator.get("familyName", None),
-                        creator.get("givenName", None),
-                        creator.get("localId", None),
-                        creator.get("localIdBy", None),
+                        doc.publication_year,
+                        doc.content_marking,
+                        get_publication_status(doc),
+                        doc.is_swedishlist,
+                        doc.open_access,
+                        doc.autoclassified,
+                        doc.DOAJ
                     ),
                 )
 
-            # Get org code from candidate/duplicate publications. No need to go through the actual documents,
-            # because we've already put the code in the `converted` table.
-            inner_cursor.execute(
-                "SELECT co.source FROM converted co JOIN cluster cl ON co.id=cl.converted_id WHERE cl.cluster_id = ?",
-                (cluster_id,),
-            )
-            sources = inner_cursor.fetchall()
-            for source in set([item for sublist in sources for item in sublist]):
-                inner_cursor.execute(
-                    "INSERT INTO search_org (finalized_id, value) VALUES (?, ?)",
-                    (finalized_id, source),
+                for doi in doc.DOI:
+                    third_cursor.execute(
+                        "INSERT INTO search_doi (finalized_id, value) VALUES (?, ?)",
+                        (finalized_id, doi),
+                    )
+
+                for gf in doc.output_types:
+                    if gf.startswith(OUTPUT_TYPE_PREFIX):
+                        gf_shortened = gf[len(OUTPUT_TYPE_PREFIX) :]
+                    else:
+                        gf_shortened = gf
+                    third_cursor.execute(
+                        "INSERT INTO search_genre_form (finalized_id, value) VALUES (?, ?)",
+                        (finalized_id, gf_shortened),
+                    )
+
+                for subject in [item for sublist in doc.uka_subjects.values() for item in sublist]:
+                    third_cursor.execute(
+                        "INSERT INTO search_subject (finalized_id, value) VALUES (?, ?)",
+                        (finalized_id, subject),
+                    )
+
+                third_cursor.execute(
+                    "INSERT INTO search_fulltext (finalized_id, title, keywords) VALUES (?, ?, ?)",
+                    (finalized_id, doc.title, " ".join(doc.keywords)),
                 )
-            counter += 1
-            if counter % 5000 == 0:
-                connection.commit()
+
+                for creator in doc.creators:
+                    third_cursor.execute(
+                        """
+                        INSERT INTO search_creator(
+                        finalized_id, orcid, family_name, given_name, local_id, local_id_by
+                        ) VALUES(
+                        ?, ?, ?, ?, ?, ?
+                        )
+                        """,
+                        (
+                            finalized_id,
+                            creator.get("ORCID", None),
+                            creator.get("familyName", None),
+                            creator.get("givenName", None),
+                            creator.get("localId", None),
+                            creator.get("localIdBy", None),
+                        ),
+                    )
+
+                # Get org code from candidate/duplicate publications. No need to go through the actual documents,
+                # because we've already put the code in the `converted` table.
+                third_cursor.execute(
+                    "SELECT co.source FROM converted co JOIN cluster cl ON co.id=cl.converted_id WHERE cl.cluster_id = ?",
+                    (cluster_id,),
+                )
+                sources = third_cursor.fetchall()
+                for source in set([item for sublist in sources for item in sublist]):
+                    third_cursor.execute(
+                        "INSERT INTO search_org (finalized_id, value) VALUES (?, ?)",
+                        (finalized_id, source),
+                    )
+                counter += 1
+                if counter % 5000 == 0:
+                    connection.commit()
         connection.commit()
 
 
