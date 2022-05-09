@@ -18,6 +18,7 @@ from flask import (
     send_from_directory,
     render_template,
 )
+from flask_cors import CORS
 from lxml.etree import LxmlError
 from pypika import Query, Tables, Parameter, Table, Criterion
 from pypika.terms import BasicCriterion
@@ -81,6 +82,7 @@ DEFAULT_XSLT = "\n".join(
 
 # Note: static files should be served by Apache/nginx
 app = Flask(__name__, static_url_path="/app", static_folder="vue-client/dist")
+CORS(app)
 
 
 def get_db():

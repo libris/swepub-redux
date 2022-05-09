@@ -6,6 +6,7 @@ rfc3987==1.3.8
 requests==2.27.1
 python-dateutil==2.8.0
 Flask==2.0.2
+Flask-Cors==3.0.10
 PyPika==0.48.8
 lxml==4.7.1
 psutil==5.9.0
