@@ -833,7 +833,6 @@ def process_get_harvest_status_history(source):
     return result
 
 
-# TODO: 404, 500, ..
 @app.route("/api/v1/process/<harvest_id>/rejected")
 def process_get_rejected_publications(harvest_id):
     limit = request.args.get("limit")
@@ -848,6 +847,9 @@ def process_get_rejected_publications(harvest_id):
     total_rejections = cur.execute(
         "SELECT COUNT(*) AS total FROM rejected WHERE harvest_id = ?", (harvest_id,)
     ).fetchone()["total"]
+    if not total_rejections:
+        _errors(["Not found"], status_code=404)
+
     source = cur.execute(
         "SELECT source FROM harvest_history WHERE id = ? LIMIT 1", (harvest_id,)
     ).fetchone()["source"]
