@@ -383,11 +383,11 @@ def classify():
         _errors('Content-Type must be "application/json"')
 
     data = request.json
-    abstract = data.get("abstract", "")
+    abstract = str(data.get("abstract", ""))
     classes = data.get("classes", 5)
     level = data.get("level", 3)
-    title = data.get("title", "")
-    keywords = data.get("keywords", "")
+    title = str(data.get("title", ""))
+    keywords = str(data.get("keywords", ""))
 
     try:
         classes = int(classes)
