@@ -632,7 +632,12 @@ def auto_classify(incremental, incrementally_converted_rowids):
                 """,
                     (converted_rowid,),
                 )
-                row = cursor.fetchall()[0]  # Can only be one
+
+                rows = cursor.fetchall()
+                if len(rows) == 0: # A deleted record can't be loaded, so this can occurr.
+                    continue
+
+                row = rows[0]  # Can only be one
                 converted = json.loads(row[0])
 
                 if eligible_for_autoclassification(converted):
