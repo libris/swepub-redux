@@ -198,10 +198,10 @@ def bibliometrics_api():
             if not all(ps in ("published", "epub", "submitted") for ps in publication_status):
                 _errors(errors=[f"Invalid value for publication status."], status_code=400)
 
-        swedish_list = query_data.get("swedishList")
-        open_access = query_data.get("openAccess")
-        autoclassified = query_data.get("autoclassified")
-        doaj = query_data.get("DOAJ")
+        swedish_list = query_data.get("swedishList", None)
+        open_access = query_data.get("openAccess", None)
+        autoclassified = query_data.get("autoclassified", None)
+        doaj = query_data.get("DOAJ", None)
 
         orcid = query_data.get("creator", {}).get("ORCID")
         given_name = query_data.get("creator", {}).get("givenName")
@@ -237,14 +237,14 @@ def bibliometrics_api():
     if from_yr and to_yr:
         q = q.where((search_single.year >= Parameter("?")) & (search_single.year <= Parameter("?")))
         values.append([from_yr, to_yr])
-    if swedish_list:
-        q = q.where(search_single.swedish_list == 1)
-    if open_access:
-        q = q.where(search_single.open_access == 1)
-    if autoclassified:
-        q = q.where(search_single.autoclassified == 1)
-    if doaj:
-        q = q.where(search_single.doaj == 1)
+    if swedish_list is not None:
+        q = q.where(search_single.swedish_list == bool(swedish_list))
+    if open_access is not None:
+        q = q.where(search_single.open_access == bool(open_access))
+    if autoclassified is not None:
+        q = q.where(search_single.autoclassified == bool(autoclassified))
+    if doaj is not None:
+        q = q.where(search_single.doaj == bool(doaj))
     for field_name, value in {
         "content_marking": content_marking,
         "publication_status": publication_status,

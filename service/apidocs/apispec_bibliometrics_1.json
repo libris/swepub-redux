@@ -311,7 +311,8 @@
                 "properties": {
                   "DOAJ": {
                     "description": "Publication is part of DOAJ",
-                    "example": "true"
+                    "example": "true",
+                    "type": "boolean"
                   },
                   "DOI": {
                     "description": "DOI identifier of publication",
@@ -320,7 +321,8 @@
                   },
                   "autoclassified": {
                     "description": "Publication has been autoclassified by Swepub",
-                    "example": "true"
+                    "example": "true",
+                    "type": "boolean"
                   },
                   "contentMarking": {
                     "description": "Permitted values are 'ref', 'vet' or 'pop'",
@@ -405,7 +407,8 @@
                   },
                   "openAccess": {
                     "description": "Available as open access",
-                    "example": "true"
+                    "example": "true",
+                    "type": "boolean"
                   },
                   "org": {
                     "example": [
