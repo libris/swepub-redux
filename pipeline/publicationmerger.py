@@ -37,7 +37,7 @@ def equal_name_part(a, b):
         return True
 
     # Otherwise check edit distance
-    if Levenshtein.distance(a, b) < 4:
+    if Levenshtein.distance(a, b) < 3:
         return True
     return False
 
