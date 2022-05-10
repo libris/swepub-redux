@@ -72,8 +72,8 @@ export default {
         keywords: this.query.keywords || '',
         publicationStatus: this.asArr(this.query.publicationStatus) || [],
         contentMarking: this.asArr(this.query.contentMarking) || [],
-        swedishList: this.query.swedishList === 'true' || false,
-        openAccess: this.query.openAccess === 'true' || false,
+        swedishList: this.query.swedishList === 'true' || null,
+        openAccess: this.query.openAccess === 'true' || null,
       };
     },
     selectedAsFullPath() {
