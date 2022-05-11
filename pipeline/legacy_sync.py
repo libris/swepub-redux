@@ -4,6 +4,7 @@ from os import environ
 import json
 from datetime import datetime
 import dateutil.parser
+import sys
 
 import mysql.connector
 from lxml import etree as ET
@@ -118,8 +119,10 @@ def legacy_sync(hours=24):
         # Process records modified < `hours` ago. -1 = all records.
         if hours == -1:
             modified_since = 0
+            log.info("Syncing all records")
         else:
             modified_since = int(time.time()) - 60 * 60 * hours
+            log.info(f"Syncing records modified < {hours} hours ago")
 
         # We need to INSERT/UPDATE any records that have been modified since some time ago.
         # This is done by looking at the `modified` timestamp of everything in `converted`:
@@ -259,4 +262,11 @@ def legacy_sync(hours=24):
 
 # For debugging
 if __name__ == "__main__":
-    legacy_sync()
+    if len(sys.argv) == 2:
+        try:
+            legacy_sync(int(sys.argv[1]))
+        except ValueError:
+            log.error("Please specify an integer (number of hours, or -1 for all records)")
+            sys.exit(1)
+    else:
+        legacy_sync()
