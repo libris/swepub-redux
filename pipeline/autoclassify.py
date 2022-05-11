@@ -32,6 +32,10 @@ PUBLICATION_STATUS_PATH = parse(RAW_PUBLICATION_STATUS_PATH)
 undesired_binary_chars_table = dict.fromkeys(map(ord, '-–_'), None)
 undesired_unary_chars_table = dict.fromkeys(map(ord, ',.;:!?"\'@#$\u00a0'), ' ')
 
+known_bad_rare_words = {}
+with open(path.join(path.dirname(path.abspath(__file__)), "../resources/bad_rare_words.txt")) as f:
+    known_bad_rare_words = set(f.readlines())
+
 class Publication:
     def __init__(self, publication):
         self._publication = publication
@@ -288,7 +292,7 @@ def _select_rarest_words():
                     string = re.sub(r"[^a-zåäö ]+", "", string)
                     words = re.findall(r"\w+", string)
                     for word in words:
-                        if word == "" or len(word) < 3:
+                        if word == "" or len(word) < 5 or word in known_bad_rare_words:
                             continue
                         words_set.add(word.lower())
                 words = list(words_set)[0:150]
