@@ -285,7 +285,7 @@ def _select_rarest_words():
                     strings_to_scan.append(summary.get("label", ""))
                 strings_to_scan += publication.keywords
 
-                words_set = set()
+                words_counter = Counter()
                 for string in strings_to_scan:
                     string = string.translate(undesired_binary_chars_table)
                     string = string.translate(undesired_unary_chars_table)
@@ -295,9 +295,10 @@ def _select_rarest_words():
                     for word in words:
                         if word == "" or len(word) < 4 or word in known_bad_rare_words:
                             continue
-                        words_set.add(word.lower())
-                words = list(words_set)[0:150]
+                        words_counter.update([word])
+                
 
+                rare_words = []
                 for total_count_row in second_cursor.execute(
                     f"""
                 SELECT
@@ -305,16 +306,22 @@ def _select_rarest_words():
                 FROM
                     abstract_total_word_counts
                 WHERE
-                    word IN ({','.join('?'*len(words))})
+                    word IN ({','.join('?'*len(list(words_counter.keys())))})
                 ORDER BY
                     occurrences ASC
                 LIMIT
-                    20;
+                    40;
                 """,
-                    words,
+                    list(words_counter.keys()),
                 ):
-                    rare_word = total_count_row[0]
-                    # print(f"Writing rare word {rare_word} for id: {converted_rowid}")
+                    rare_words.append(total_count_row[0])
+                
+                # Sort rare_words, so that those words rare that are used many times
+                # (in this summary) come first
+                rare_words.sort(reverse=True, key=lambda w: words_counter[w])
+
+                for rare_word in rare_words[0:20]:
+                    # print(f"Writing rare word {rare_word}, used {words_counter[rare_word]} times in summary for id: {converted_rowid}")
                     third_cursor.execute(
                         """
                     INSERT INTO abstract_rarest_words(word, converted_id) VALUES(?, ?);
