@@ -309,7 +309,7 @@ def _select_rarest_words():
                 ORDER BY
                     occurrences ASC
                 LIMIT
-                    12;
+                    20;
                 """,
                     words,
                 ):
@@ -500,7 +500,7 @@ def find_subjects_for(converted_rowid, converted, cursor):
         # This is a vital tweaking point. How many _rare_ words do two abstracts need to share
         # in order to be considered on the same subject? 2 seems a balanced choice. 1 "works" too,
         # but may be a bit too aggressive (providing a bit too many false positive matches).
-        if len(candidate_matched_words) < 1:
+        if len(candidate_matched_words) < 2:
             continue
 
         # print(f"Matched {converted_rowid} with {candidate_rowid} based on shared rare words: {candidate_matched_words}")
@@ -515,7 +515,7 @@ def find_subjects_for(converted_rowid, converted, cursor):
                 continue
 
             publication_subjects.add(subject_id[:level])
-        score = 5 * len(candidate_matched_words) * len(candidate_matched_words)
+        score = pow(len(candidate_matched_words), 3.0)
         for sub in publication_subjects:
             subjects[sub] += score
 
