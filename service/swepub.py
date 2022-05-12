@@ -479,7 +479,7 @@ def classify():
                 continue
 
             publication_subjects.add(subject_id[:level])
-        score = 10 * len(candidate_matched_words)
+        score = 5 * len(candidate_matched_words) * len(candidate_matched_words)
         for sub in publication_subjects:
             subjects[sub] += score
 
