@@ -772,6 +772,7 @@ def process_get_harvest_status(source):
     ).fetchone()
 
     result = {
+        "harvest_id": row["id"],
         "rejected": row["rejected"],
         "successes": row["successes"],
         "source_code": source,
