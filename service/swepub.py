@@ -328,7 +328,7 @@ def bibliometrics_api():
     # Results are streamed to the client so we're not bothered by limits
     def get_results():
         if export_as_csv:
-            yield f"# Swepub bibliometric export. Query handled at {handled_at}. Query parameters: {request.args.to_dict()}\n"
+            yield f"# Swepub bibliometric export. Query handled at {handled_at}. Query parameters: {query_data}\n"
         else:
             yield f'{{"hits": ['
 
