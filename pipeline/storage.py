@@ -62,7 +62,14 @@ def store_original(
     harvest_id,
 ):
     cur = connection.cursor()
+    deleted_from_db = False
     if incremental:
+        # For bookkeeping purposes
+        if deleted:
+            for row in cur.execute("SELECT id FROM original WHERE oai_id = ?", (oai_id,)):
+                deleted_from_db = True
+                break
+
         cur.execute(
             "DELETE FROM original WHERE oai_id = ?",
             (oai_id,),
@@ -70,7 +77,7 @@ def store_original(
 
     if deleted:
         connection.commit()
-        return None
+        return None, deleted_from_db
 
     if not accepted:
         cur.execute(
@@ -98,7 +105,7 @@ def store_original(
         ).fetchone()[0]
 
     connection.commit()
-    return original_rowid
+    return original_rowid, deleted_from_db
 
 
 def serialize(obj):

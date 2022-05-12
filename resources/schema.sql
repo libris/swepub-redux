@@ -13,7 +13,9 @@ CREATE TABLE harvest_history (
     harvest_completed DATETIME,
     harvest_succeeded INT,
     successes INT,
-    rejected INT
+    rejected INT,
+    deleted INT,
+    failures INT
 );
 CREATE INDEX idx_harvest_history_source ON harvest_history (source);
 

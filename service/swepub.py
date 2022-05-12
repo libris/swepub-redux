@@ -762,7 +762,7 @@ def process_get_harvest_status(source):
 
     row = cur.execute(
         """
-    SELECT id, strftime('%Y-%m-%dT%H:%M:%SZ', harvest_start) AS start, strftime('%Y-%m-%dT%H:%M:%SZ', harvest_completed) AS completed, harvest_succeeded, successes, rejected
+    SELECT id, harvest_start AS start, harvest_completed AS completed, harvest_succeeded, successes, rejected, deleted, failures
     FROM harvest_history
     WHERE source = ?
     ORDER BY harvest_completed DESC
@@ -770,20 +770,31 @@ def process_get_harvest_status(source):
     """,
         (source,),
     ).fetchone()
+    if not row:
+        _errors(["Not Found"], status_code=404)
 
+    # Some of these properties are no longer relevant after the redux rewrite,
+    # and are only present here for legacy reasons
     result = {
+        "deleted_so_far": row["deleted"],
+        "failures": row["failures"],
         "harvest_id": row["id"],
+        "harvest_retries": 0,
+        "indexed_so_far": row["successes"],
+        "prevented": 0,
         "rejected": row["rejected"],
-        "successes": row["successes"],
         "source_code": source,
         "source_name": INFO_API_SOURCE_ORG_MAPPING[source]["name"],
         "start_timestamp": row["start"],
+        "successes": row["successes"],
     }
 
     if row["harvest_succeeded"]:
         result["completed_timestamp"] = row["completed"]
+        result["failed_sets"] = 0
     else:
         result["failed_timestamp"] = row["completed"]
+        result["failed_sets"] = 1
     return result
 
 

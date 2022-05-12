@@ -124,7 +124,7 @@ def harvest(source):
 
     start_time = time.time()
     harvest_id = str(uuid.uuid4())
-    harvest_cache["meta"][harvest_id] = [0, 0]  # for keeping track of records accepted / rejected
+    harvest_cache["meta"][harvest_id] = [0, 0, 0]  # for keeping track of records accepted/rejected/deleted
     harvest_succeeded = True
 
     with get_connection() as con:
@@ -141,6 +141,8 @@ def harvest(source):
 
     harvest_start = datetime.now(timezone.utc)
     record_count = 0
+    num_deleted_without_persistent = 0
+    num_failed = 0
 
     for source_set in source["sets"]:
         record_iterator = RecordIterator(source["code"], source_set, fromtime, None)
@@ -174,6 +176,8 @@ def harvest(source):
                             executor.submit(func, batch)
                             batch = []
                         record_count += 1
+                    else:
+                        num_failed += 1
                 func = partial(
                     threaded_handle_harvested, source["code"], source_set["subset"], harvest_id
                 )
@@ -200,6 +204,15 @@ def harvest(source):
                         # (2020-05-22) or 32766 for SQLite versions after 3.32.0."). So, we do it by chunks.
                         try:
                             for group in chunker(obsolete_ids, 100):
+                                # Keep track of number of actually deleted records for stat purposes
+                                num_deleted_without_persistent += cur.execute(
+                                    f"""
+                                SELECT COUNT(*) AS total FROM original
+                                WHERE oai_id IN ({','.join('?'*len(group))})
+                                """,
+                                    group,
+                                ).fetchone()["total"]
+
                                 cur.execute(
                                     f"""
                                 DELETE FROM
@@ -221,7 +234,8 @@ def harvest(source):
             harvest_cache["meta"]["sources_failed"].append(source["code"])
             harvest_succeeded = False
 
-    num_accepted, num_rejected = harvest_cache["meta"][harvest_id]
+    num_accepted, num_rejected, num_deleted = harvest_cache["meta"][harvest_id]
+    num_deleted += num_deleted_without_persistent
     with get_connection() as con:
         cur = con.cursor()
         lock.acquire()
@@ -239,13 +253,15 @@ def harvest(source):
             UPDATE
                 harvest_history
             SET
-                harvest_completed = ?, successes = ?, rejected = ?, harvest_succeeded = ?
+                harvest_completed = ?, successes = ?, rejected = ?, deleted = ?, failures = ?, harvest_succeeded = ?
             WHERE
                 id = ?""",
                 (
                     datetime.now(timezone.utc).isoformat(),
                     num_accepted,
                     num_rejected,
+                    num_deleted,
+                    num_failed,
                     harvest_succeeded,
                     harvest_id,
                 ),
@@ -271,6 +287,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, batch):
     converted_rowids = []
     num_accepted = 0
     num_rejected = 0
+    num_deleted = 0
     with requests.Session() as session:
         for record in batch:
             xml = record.xml
@@ -292,7 +309,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, batch):
             lock.acquire()
             try:
                 with get_connection() as connection:
-                    original_rowid = store_original(
+                    original_rowid, deleted_from_db = store_original(
                         record.oai_id,
                         record.deleted,
                         xml,
@@ -304,6 +321,8 @@ def threaded_handle_harvested(source, source_subset, harvest_id, batch):
                         min_level_errors,
                         harvest_id,
                     )
+                    if deleted_from_db:
+                        num_deleted += 1
                     if accepted:
                         converted_rowid = store_converted(
                             original_rowid,
@@ -326,6 +345,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, batch):
     harvest_cache["meta"][harvest_id] = [
         harvest_cache["meta"][harvest_id][0] + num_accepted,
         harvest_cache["meta"][harvest_id][1] + num_rejected,
+        harvest_cache["meta"][harvest_id][2] + num_deleted,
     ]
 
 
