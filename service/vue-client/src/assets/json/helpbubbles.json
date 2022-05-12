@@ -154,7 +154,7 @@
     },
     "keywords": {
       "title": "Nyckelord",
-      "text": "Ämnesord från de levererande organisationerna, för mer specificerad beskrivning. Det gäller särskilt om ämnet inte täcks i forskningsämnen enligt Standard för svensk indelning av forskningsämnen (SSIF). Om du anger flera ämnesord, lägg in ett komma mellan varje. Sökningen är exakt och gör även skillnad på gemener och versaler."
+      "text": "Ämnesord från de levererande organisationerna, för mer specificerad beskrivning. Det gäller särskilt om ämnet inte täcks i forskningsämnen enligt Standard för svensk indelning av forskningsämnen (SSIF). Om du anger flera ämnesord, lägg in ett komma mellan varje."
     },
     "output": {
       "title": "Outputtyp",
