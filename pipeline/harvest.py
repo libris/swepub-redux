@@ -323,7 +323,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, batch):
                     )
                     if deleted_from_db:
                         num_deleted += 1
-                    if accepted:
+                    if accepted and original_rowid:
                         converted_rowid = store_converted(
                             original_rowid,
                             audited.body,

@@ -92,17 +92,15 @@ def store_original(
         original(source, source_subset, data, accepted, oai_id)
     VALUES
         (?, ?, ?, ?, ?)
-    ON CONFLICT(oai_id) DO UPDATE SET
-        source=excluded.source, source_subset=excluded.source_subset, data=excluded.data, accepted=excluded.accepted, oai_id=excluded.oai_id
+    ON CONFLICT(oai_id) DO NOTHING
     """,
         (source, source_subset, original, accepted, oai_id),
     ).lastrowid
 
-    # ...and in the rare case that it does happen, we don't get a lastrowid, so we have to fetch it separately:
+    # ...and in the rare case that it does happen, we skip this record
     if not original_rowid:
-        original_rowid = cur.execute(
-            "SELECT id FROM original WHERE oai_id = ?", [oai_id]
-        ).fetchone()[0]
+        connection.commit()
+        return None, False
 
     connection.commit()
     return original_rowid, deleted_from_db
