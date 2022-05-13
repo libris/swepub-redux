@@ -200,6 +200,19 @@ class BibframeSource:
                 return publication.get("date")
         return None
 
+    # Some records have a publication "year" of e.g. 2020-03-25, which is accepted,
+    # but for some purposes we need just the year.
+    @property
+    def publication_just_the_year(self):
+        publications = self.bibframe_master.get("publication", [])
+        for publication in publications:
+            if publication.get("@type", "").lower() == "publication":
+                try:
+                    return int(publication.get("date")[:4])
+                except ValueError:
+                    return publication.get("date")[:4]
+        return None
+
     @property
     def output_types(self):
         genre_forms = self.bibframe_master.get("instanceOf", {}).get("genreForm")

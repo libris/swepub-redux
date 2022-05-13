@@ -33,7 +33,7 @@ def generate_search_tables():
                     """,
                     (
                         finalized_id,
-                        doc.publication_year,
+                        doc.publication_just_the_year,
                         doc.content_marking,
                         get_publication_status(doc),
                         doc.is_swedishlist,

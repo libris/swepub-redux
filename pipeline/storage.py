@@ -133,7 +133,7 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
                 json.dumps(converted),
                 original_rowid,
                 doc.record_id,
-                doc.publication_year,
+                doc.publication_just_the_year,
                 doc.source_org_master,
                 doc.open_access,
                 (len(doc.ssif_1_codes) > 0),
@@ -165,7 +165,7 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
                 (
                     converted_rowid,
                     doc.source_org_master,
-                    doc.publication_year,
+                    doc.publication_just_the_year,
                     field,
                     int(value["validation_status"]),
                     int(value["enrichment_status"]),
@@ -182,7 +182,7 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
                     (
                         converted_rowid,
                         doc.source_org_master,
-                        doc.publication_year,
+                        doc.publication_just_the_year,
                         event.get("code", None),
                         event.get("result", None),
                         name
