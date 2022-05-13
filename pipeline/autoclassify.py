@@ -286,6 +286,7 @@ def _select_rarest_words():
                 strings_to_scan += publication.keywords
 
                 words_counter = Counter()
+                number_of_words = 0
                 for string in strings_to_scan:
                     string = string.translate(undesired_binary_chars_table)
                     string = string.translate(undesired_unary_chars_table)
@@ -296,6 +297,9 @@ def _select_rarest_words():
                         if word == "" or len(word) < 4 or word in known_bad_rare_words:
                             continue
                         words_counter.update([word])
+                        number_of_words += 1
+                        if number_of_words > 300:
+                            break
                 
 
                 rare_words = []
