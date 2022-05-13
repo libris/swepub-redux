@@ -209,8 +209,8 @@ class BibframeSource:
             if publication.get("@type", "").lower() == "publication":
                 try:
                     return int(publication.get("date")[:4])
-                except ValueError:
-                    return publication.get("date")[:4]
+                except Exception:
+                    return publication.get("date")
         return None
 
     @property
