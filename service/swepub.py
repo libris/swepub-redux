@@ -467,7 +467,7 @@ def classify():
         # This is a vital tweaking point. How many _rare_ words do two abstracts need to share
         # in order to be considered on the same subject? 2 seems a balanced choice. 1 "works" too,
         # but may be a bit too aggressive (providing a bit too many false positive matches).
-        if len(candidate_matched_words) < 1:
+        if len(candidate_matched_words) < 2:
             continue
 
         for subject in candidate.get("instanceOf", {}).get("subject", []):
