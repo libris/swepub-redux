@@ -211,7 +211,7 @@ def harvest(source):
                                 WHERE oai_id IN ({','.join('?'*len(group))})
                                 """,
                                     group,
-                                ).fetchone()["total"]
+                                ).fetchone()[0]
 
                                 cur.execute(
                                     f"""
