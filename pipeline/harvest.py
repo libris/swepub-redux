@@ -549,6 +549,8 @@ if __name__ == "__main__":
     elif not getenv("SWEPUB_SOURCE_FILE", None):
         environ["SWEPUB_SOURCE_FILE"] = DEFAULT_SWEPUB_SOURCE_FILE
 
+    log.info(f"SWEPUB_ENV is {environ['SWEPUB_ENV']}")
+
     sources = load(open(environ["SWEPUB_SOURCE_FILE"]))
 
     # The Unpaywall mirror is not accessible from the public Internet, so for local testing one might want to avoid it
