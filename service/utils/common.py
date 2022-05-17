@@ -153,7 +153,7 @@ def get_base_url(request):
         port = str(parsed_from_request.port)
     netloc = f"{host}:{port}"
 
-    if (proto == "https" and port != "443") or (proto == "http" and port != 80):
+    if proto == "http" and port != 80:
         return f"{proto}://{host}:{port}", (proto, host, port, path, netloc)
     return f"{proto}://{host}", (proto, host, port, path, netloc)
 
