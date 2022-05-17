@@ -26,7 +26,7 @@ def dump_deduplicated(year=None):
         where_sql = ""
         params = []
         if year:
-            where_sql = " AND search_single.year = ? "
+            where_sql = " WHERE search_single.year = ? "
             params = [year]
 
         for row in cur.execute(f"""
@@ -40,12 +40,13 @@ def dump_deduplicated(year=None):
                 finalized ON cluster.cluster_id = finalized.cluster_id
             LEFT JOIN
                 search_single ON search_single.finalized_id = finalized.id
-            WHERE
-                deleted = 0
             {where_sql}
             GROUP BY
                 cluster.cluster_id
         """, params):
+
+            if not row.get("finalized_data"):
+                continue
 
             finalized = orjson.loads(row["finalized_data"])
             # TODO: Don't store the following in the actual document

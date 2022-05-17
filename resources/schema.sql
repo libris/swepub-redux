@@ -208,6 +208,7 @@ CREATE TABLE search_single (
 );
 CREATE INDEX idx_search_single_finalized_id ON search_single(finalized_id);
 CREATE INDEX idx_search_single_finalized_year ON search_single(year);
+CREATE INDEX idx_search_single_finalized_id_year ON search_single(finalized_id, year);
 CREATE INDEX idx_search_single_finalized_content_marking ON search_single(content_marking);
 CREATE INDEX idx_search_single_publication_status ON search_single(publication_status);
 CREATE INDEX idx_search_single_swedish_list ON search_single(swedish_list);
