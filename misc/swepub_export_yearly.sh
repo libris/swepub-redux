@@ -24,9 +24,13 @@ for year in $(seq 2012 "${cur_year}"); do
 	echo "$(date --utc +%Y-%m-%dT%H:%M:00Z) - INFO: Preparing export for ${year}"
 	for table in duplicated deduplicated; do
 		path_no_suffix="${dump_dir}/yearly_${year}-swepub-${table}"
-		python3 -m pipeline.export --year "${year}" "${table}" | zip -q > "${path_no_suffix}.zip"
-		printf "@ -\n@=%s.jsonl\n" "yearly_${year}-swepub-${table}" | zipnote -w "${path_no_suffix}.zip"
-		sha256sum "${path_no_suffix}.zip" | awk '{print $1}' > "${path_no_suffix}.zip.sha256"
-		md5sum "${path_no_suffix}.zip" | awk '{print $1}' > "${path_no_suffix}.zip.md5" 
+		python3 -m pipeline.export --year "${year}" "${table}" | zip -q > "${path_no_suffix}.zip-tmp"
+		printf "@ -\n@=%s.jsonl\n" "yearly_${year}-swepub-${table}" | zipnote -w "${path_no_suffix}.zip-tmp"
+		sha256sum "${path_no_suffix}.zip-tmp" | awk '{print $1}' > "${path_no_suffix}.zip-tmp.sha256"
+		md5sum "${path_no_suffix}.zip-tmp" | awk '{print $1}' > "${path_no_suffix}.zip-tmp.md5"
+
+		mv "${path_no_suffix}.zip-tmp" "${path_no_suffix}.zip"
+		mv "${path_no_suffix}.zip-tmp.sha256" "${path_no_suffix}.zip.sha256"
+		mv "${path_no_suffix}.zip-tmp.md5" "${path_no_suffix}.zip.md5"
 	done
 done
