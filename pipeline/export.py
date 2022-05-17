@@ -26,7 +26,7 @@ def dump_deduplicated(year=None):
         where_sql = ""
         params = []
         if year:
-            where_sql = " WHERE search_single.year = ? "
+            where_sql = " AND search_single.year = ? "
             params = [year]
 
         for row in cur.execute(f"""
@@ -40,6 +40,8 @@ def dump_deduplicated(year=None):
                 finalized ON cluster.cluster_id = finalized.cluster_id
             LEFT JOIN
                 search_single ON search_single.finalized_id = finalized.id
+            WHERE
+                deleted = 0
             {where_sql}
             GROUP BY
                 cluster.cluster_id
@@ -51,7 +53,7 @@ def dump_deduplicated(year=None):
             finalized.pop("_publication_orgs", None)
 
             publications = []
-            for raw_publication in row["converted_data"].splitlines():
+            for raw_publication in row["converted_data"].split('\n'):
                 publications.append(orjson.loads(raw_publication))
 
             result = {
@@ -71,13 +73,14 @@ def dump_duplicated(year=None):
         where_sql = ""
         params = []
         if year:
-            where_sql = " WHERE date = ? "
+            where_sql = " AND date = ? "
             params = [year]
 
-        for row in cur.execute(f"SELECT data FROM converted {where_sql}", params):
+        for row in cur.execute(f"SELECT data FROM converted WHERE deleted = 0 {where_sql}", params):
             # TODO: should be able to simply print row["data"].decode("utf-8");
             # however, the type is sometimes str, sometimes bytes -- investigare why.
-            print(json.dumps(orjson.loads(row["data"])))
+            if row.get("data"):
+                print(json.dumps(orjson.loads(row["data"])))
 
 
 if __name__ == "__main__":
