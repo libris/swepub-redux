@@ -357,8 +357,11 @@ def bibliometrics_api():
     return app.response_class(stream_with_context(get_results()), mimetype=export_mimetype)
 
 
-@app.route("/api/v1/bibliometrics/publications/<record_id>", methods=["GET"])
+@app.route("/api/v1/bibliometrics/publications/<path:record_id>", methods=["GET"])
 def bibliometrics_get_record(record_id):
+    if record_id is None:
+        _errors(['Missing parameter: "record_id"'], status_code=400)
+
     cur = get_db().cursor()
     row = cur.execute("SELECT data FROM finalized WHERE oai_id = ?", [record_id]).fetchone()
     if not row:
