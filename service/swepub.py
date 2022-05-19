@@ -1193,7 +1193,7 @@ def process_get_export(source=None):
 # ╚═╝     ╚═╝╚═╝╚══════╝ ╚═════╝╚═╝
 
 
-@app.route("/api/v1/apidocs", methods=["GET"])
+@app.route("/api/v1/apidocs", methods=["GET"], strict_slashes=False)
 def api_docs():
     return send_from_directory(app.root_path, "apidocs/index.html")
 
@@ -1203,7 +1203,7 @@ def custom_static(filename):
     return send_from_directory(app.root_path + "/apidocs/", filename)
 
 
-@app.route("/xsleditor", methods=["GET", "POST"])
+@app.route("/xsleditor", methods=["GET", "POST"], strict_slashes=False)
 def xsl_editor():
     if request.method == "POST":
         xslt = request.form.get("xslt", "")
