@@ -138,14 +138,6 @@ class PublicationMerger:
         """If same contributions exist in both keep masters unless candidate has kb.se affiliation and master do not
         Otherwise add candidate contributions
         """
-
-        # print(f"Contribution summary: \n\tcandidate:", end = "")
-        # for contrib in list(candidate.contributions):
-        #     print(f"{contrib.agent_name}; ", end = "")
-        # print(f"\n\tunion:", end = "")
-        # for contrib in list(master.contributions):
-        #     print(f"{contrib.agent_name}; ", end = "")
-        # print("")
         
         for candidate_contrib in list(candidate.contributions):
             candidate_contrib_name = candidate_contrib.agent_name
@@ -175,12 +167,9 @@ class PublicationMerger:
                 
             # If this contribution does _not_ exist in master (it is "new")
             if not exists_in_master:
-                # print(f"ADDING {candidate_contrib.agent_name} to master")
                 tmp = list(master.contributions)
                 tmp.append(candidate_contrib)
                 master.contributions = tmp
-                # for contrib in master.contributions:
-                #     print(f"  master.contributions after additions: {contrib.agent_name}")
         
         return master
 

@@ -27,15 +27,6 @@ known_poor_titles = {"Introduction", "Inledning", "Indledning", "Editorial", "FÃ
 "Aktuellt", "Letter to the Editor", "recension", "Discussion", "Slutord", "Note", "Invited",
 "Comment on"}
 
-def _has_same_main_title(a, b):
-    """True if publication has the same main title"""
-    return compare_text(get_main_title(a), get_main_title(b), STRING_MATCH_RATIO_MAIN_TITLE)
-
-
-def _has_same_sub_title(a, b):
-    """True if publication has the same sub title"""
-    return compare_text(get_sub_title(a), get_sub_title(b), STRING_MATCH_RATIO_SUB_TITLE)
-
 # Exepects a string containing one _word_ as input
 def is_numeral(a):
     if a == "":
@@ -54,7 +45,6 @@ def _has_similar_combined_title(a, b):
     similarity = get_common_substring_factor(combined_a, combined_b)
 
     if similarity > 0.7:
-        #print(f"{combined_a}\n{combined_b}\n\t{similarity}")
 
         # If the very last word of a is a number, require the same number at the end of b.
         if " " in combined_a and " " in combined_b:
@@ -81,7 +71,6 @@ def _has_similar_summary(a, b):
     similarity = get_common_substring_factor(summary_a, summary_b, 3)
 
     if similarity > 0.6:
-        #print(f"{summary_a}\n{summary_b}\n\t{similarity}")
         return True
     return False
 
@@ -108,23 +97,7 @@ def _has_similar_partof_main_title(a, b):
     
     similarity = get_common_substring_factor(part_title_a, part_title_b)
     if similarity > 0.5:
-        #print(f"{part_title_a}\n{part_title_b}\n\t{similarity}")
         return True
-    return False
-
-
-def _has_same_partof_main_title(a, b):
-    """Returns True if partOf has the same main title"""
-    if part_of_with_title(a) and part_of_with_title(b):
-        return _has_same_main_title(part_of_with_title(a), part_of_with_title(b))
-    else:
-        return False
-
-
-def _has_same_genre_form(a, b):
-    """True if a and b have the same genreforms"""
-    if genre_form(a) and genre_form(b):
-        return set(genre_form(a)) == set(genre_form(b))
     return False
 
 
@@ -189,26 +162,10 @@ def _is_close_enough(a_rowid, b_rowid):
 
         if (
             _has_similar_combined_title(a, b)
-            #and CONFERENCE_PAPER_GENREFORM not in genre_form(a)
-            #and CONFERENCE_PAPER_GENREFORM not in genre_form(b)
             and _has_similar_summary(a, b)
             and _has_same_publication_date(a, b)
-            #and _has_same_genre_form(a, b)
         ):
             return True
-
-        # 4.
-        # if (
-        #     _has_similar_combined_title(a, b)
-        #     and (
-        #         CONFERENCE_PAPER_GENREFORM in genre_form(a)
-        #         or CONFERENCE_PAPER_GENREFORM in genre_form(b)
-        #     )
-        #     and _has_similar_summary(a, b)
-        #     and _has_same_publication_date(a, b)
-        #     and _has_similar_partof_main_title(a, b)
-        # ):
-        #     return True
 
     return False
 
@@ -339,15 +296,11 @@ def _join_overlapping_clusters(next_cluster_id):
                 while len(clusters) > 0:
                     cluster_b = clusters.pop()
 
-                    # print(f"  To be merged: {cluster_a} into {cluster_b}")
-
                     # Replace cluster_a and cluster_b with where ever their contents are now
                     while cluster_a in merged_into:
                         cluster_a = merged_into[cluster_a]
                     while cluster_b in merged_into:
                         cluster_b = merged_into[cluster_b]
-
-                    # print(f"  After following history: {cluster_a} into {cluster_b}")
 
                     if cluster_a == cluster_b:
                         continue
@@ -366,11 +319,7 @@ def _join_overlapping_clusters(next_cluster_id):
                     )
                     merged_into[cluster_a] = cluster_b
 
-                    # print(f"Merged cluster {cluster_a} into {cluster_b}")
-
                     cluster_a = cluster_b
-
-                # print("\n")
 
                 connection.commit()
 
