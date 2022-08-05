@@ -77,6 +77,8 @@ TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = [
     "stats_ssif_1",
 ]
 
+SWEPUB_USER_AGENT = getenv("SWEPUB_USER_AGENT", "https://github.com/libris/swepub-redux")
+
 
 # Wrap the harvest function just to easily log errors from subprocesses
 def harvest_wrapper(source):
@@ -145,7 +147,7 @@ def harvest(source):
     num_failed = 0
 
     for source_set in source["sets"]:
-        record_iterator = RecordIterator(source["code"], source_set, fromtime, None)
+        record_iterator = RecordIterator(source["code"], source_set, fromtime, None, SWEPUB_USER_AGENT)
         # For each set we put records into batches and let a number of workers handle these batches.
         try:
             with ProcessPoolExecutor(
@@ -351,7 +353,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, batch):
 
 def _get_source_ids(source_set):
     source_ids = set()
-    sickle_client = sickle.Sickle(source_set["url"], max_retries=8, timeout=90)
+    sickle_client = sickle.Sickle(source_set["url"], max_retries=8, timeout=90, headers={"User-Agent": SWEPUB_USER_AGENT})
     list_ids_params = {
         "metadataPrefix": source_set["metadata_prefix"],
         "ignore_deleted": False,
@@ -365,7 +367,7 @@ def _get_source_ids(source_set):
 
 
 def _get_has_persistent_deletes(source_set):
-    sickle_client = sickle.Sickle(source_set["url"], max_retries=8, timeout=90)
+    sickle_client = sickle.Sickle(source_set["url"], max_retries=8, timeout=90, headers={"User-Agent": SWEPUB_USER_AGENT})
     identify = sickle_client.Identify()
     return identify.deletedRecord == "persistent" or identify.deletedRecord == "transient"
 

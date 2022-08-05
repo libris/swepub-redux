@@ -23,13 +23,14 @@ RequestExceptions = (
 
 
 class RecordIterator:
-    def __init__(self, code, source_set, harvest_from, harvest_to):
+    def __init__(self, code, source_set, harvest_from, harvest_to, user_agent):
         self.set = source_set
         self.stylesheet = ModsStylesheet(code, self.set["url"])
         self.records = None
         self.publication_ids = set()
         self.harvest_from = harvest_from
         self.harvest_to = harvest_to
+        self.user_agent = user_agent
 
     def __iter__(self):
         return self
@@ -56,7 +57,7 @@ class RecordIterator:
         return self.records is not None
 
     def _get_records(self):
-        sickle_client = sickle.Sickle(self.set["url"], max_retries=8, timeout=90)
+        sickle_client = sickle.Sickle(self.set["url"], max_retries=8, timeout=90, headers={"User-Agent": self.user_agent})
         list_record_params = {
             "metadataPrefix": self.set["metadata_prefix"],
             "ignore_deleted": False
