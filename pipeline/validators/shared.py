@@ -1,4 +1,5 @@
 import rfc3987
+from os import getenv
 
 SWEPUB_USER_AGENT = getenv("SWEPUB_USER_AGENT", "https://github.com/libris/swepub-redux")
 
