@@ -161,6 +161,7 @@ class PublicationMerger:
                     master_contrib.identified_bys = _merge_contrib_identified_by(
                         master_contrib.identified_bys,
                         candidate_contrib.identified_bys,
+                        candidate_contrib.agent_type
                     )
                     exists_in_master = True
                     break
@@ -434,13 +435,13 @@ def has_affiliations(affiliations):
     return False
 
 
-def _merge_contrib_identified_by(master_contrib_identified_bys, candidate_contrib_identified_bys):
-    candidate_contrib_orcid_identified_bys = [
-        x for x in candidate_contrib_identified_bys if x.get("@type") == "ORCID"
+def _merge_contrib_identified_by(master_contrib_identified_bys, candidate_contrib_identified_bys, candidate_contrib_agent_type):
+    candidate_contrib_relevant_identified_bys = [
+        x for x in candidate_contrib_identified_bys if x.get("@type") == "ORCID" or (x.get("@type") == "Local" and candidate_contrib_agent_type == "Person")
     ]
-    for candidate_contrib_orcid_identified_by in candidate_contrib_orcid_identified_bys:
-        if candidate_contrib_orcid_identified_by not in master_contrib_identified_bys:
-            master_contrib_identified_bys.append(candidate_contrib_orcid_identified_by)
+    for candidate_contrib_relevant_identified_by in candidate_contrib_relevant_identified_bys:
+        if candidate_contrib_relevant_identified_by not in master_contrib_identified_bys:
+            master_contrib_identified_bys.append(candidate_contrib_relevant_identified_by)
     return master_contrib_identified_bys
 
 

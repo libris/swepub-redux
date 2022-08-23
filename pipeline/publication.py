@@ -790,6 +790,7 @@ class Contribution:
         self._agent_given_name = self.body.get('agent', {}).get('givenName', None)
         self._agent_name = self.body.get('agent', {}).get('name', None)
         self._agent_identified_by = self.body.get('agent', {}).get('identifiedBy', [])
+        self._agent_type = self.body.get('agent', {}).get('@type', None)
 
     def __eq__(self, other):
         """ Two contributions are equal if name or (given and family name) are the same """
@@ -832,6 +833,11 @@ class Contribution:
             return self._agent_name
         else:
             return safe_concat(self.agent_family_name, self.agent_given_name)
+
+    @property
+    def agent_type(self):
+        """Return agent type"""
+        return self._agent_type
 
     @property
     def affiliations(self):

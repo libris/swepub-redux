@@ -55,7 +55,7 @@
     ]
   },
   "dedup_ignore_id_qualifier": {
-    "code": "dedup_ignore_id_qualifier",
+    "code": "kth",
     "name": "TEST - dedup ignore id qualifier",
     "sets": [
       {
@@ -478,6 +478,17 @@
     "sets": [
       {
         "url": "http://localhost:8549/obsolete-test-listrecords",
+        "subset": "SwePub-kth",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "local_personid_from_candidate": {
+    "code": "kth",
+    "name": "TEST - local_personid_from_candidate",
+    "sets": [
+      {
+        "url": "http://localhost:8549/local_personid_from_candidate",
         "subset": "SwePub-kth",
         "metadata_prefix": "swepub_mods"
       }

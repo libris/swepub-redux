@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+  <responseDate>2022-08-23T11:51:20Z</responseDate>
+  <request verb="GetRecord" identifier="oai:DiVA.org:kth-255179" metadataPrefix="swepub_mods">https://kth.diva-portal.org/dice/oai</request>
+  <ListRecords>
+    <record>
+      <header>
+        <identifier>oai:DiVA.org:kth-255179</identifier>
+        <datestamp>2022-06-26T12:18:00Z</datestamp>
+        <setSpec>kth</setSpec>
+        <setSpec>article</setSpec>
+        <setSpec>refereed</setSpec>
+      </header>
+      <metadata>
+        <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" version="3.7" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+          <genre authority="diva" type="contentTypeCode">refereed</genre>
+          <genre authority="svep" type="contentType">ref</genre>
+          <genre authority="diva" type="contentType" lang="eng">Refereed</genre>
+          <genre authority="diva" type="contentType" lang="swe">Refereegranskat</genre>
+          <genre authority="diva" type="contentType" lang="nor">Fagfellevurdert</genre>
+          <genre authority="diva" type="publicationTypeCode">article</genre>
+          <genre authority="svep" type="publicationType">art</genre>
+          <genre authority="diva" type="publicationType" lang="eng">Article in journal</genre>
+          <genre authority="diva" type="publicationType" lang="swe">Artikel i tidskrift</genre>
+          <genre authority="diva" type="publicationType" lang="nor">Artikkel i tidsskrift</genre>
+          <genre authority="kev" type="publicationType" lang="eng">article</genre>
+          <name type="personal" authority="kth" xlink:href="crco66666">
+            <namePart type="family">Colliander</namePart>
+            <namePart type="given">Cristian</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+            <affiliation>Umea Univ, Dept Sociol, Inforsk, Umea, Sweden.;Umea Univ, Univ Lib, Umea, Sweden.</affiliation>
+            <description>orcid.org=0000-0003-0229-3099</description>
+          </name>
+          <name type="personal" authority="kth" xlink:href="u1w3qpyp">
+            <namePart type="family">Ahlgren</namePart>
+            <namePart type="given">Per</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+            <affiliation>KTH, Bibliometri</affiliation>
+            <affiliation>Uppsala Univ, Dept Stat, Uppsala, Sweden.</affiliation>
+            <description>orcid.org=0000-0003-0229-3073</description>
+            <description>diva-portal.org=authority-person:73029</description>
+          </name>
+          <name type="corporate" authority="kth" xlink:href="885103">
+            <namePart>KTH</namePart>
+            <namePart>Bibliotek</namePart>
+            <namePart>Bibliometri</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+            </role>
+          </name>
+          <titleInfo lang="eng">
+            <title>Comparison of publication-level approaches to ex-post citation normalization</title>
+          </titleInfo>
+          <language>
+            <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+          </language>
+          <originInfo>
+            <publisher>SPRINGER</publisher>
+            <dateIssued>2019</dateIssued>
+            <dateOther type="availableFrom">2019-09-04T12:15:00</dateOther>
+          </originInfo>
+          <physicalDescription>
+            <form authority="marcform">print</form>
+          </physicalDescription>
+          <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:kth:diva-255179</identifier>
+          <identifier type="doi">10.1007/s11192-019-03121-z</identifier>
+          <identifier type="isi">000471656400014</identifier>
+          <identifier type="scopus">2-s2.0-85066012563</identifier>
+          <typeOfResource>text</typeOfResource>
+          <subject lang="eng">
+            <topic>Algorithmically constructed classification system approach</topic>
+          </subject>
+          <subject lang="eng">
+            <topic>Citation impact</topic>
+          </subject>
+          <subject lang="eng">
+            <topic>Field normalization</topic>
+          </subject>
+          <subject lang="eng">
+            <topic>Item-oriented approach</topic>
+          </subject>
+          <subject lang="eng">
+            <topic>Research evaluation</topic>
+          </subject>
+          <subject lang="eng" authority="hsv" xlink:href="50805">
+            <topic>Social Sciences</topic>
+            <topic>Media and Communications</topic>
+            <topic>Information Studies</topic>
+          </subject>
+          <subject lang="swe" authority="hsv" xlink:href="50805">
+            <topic>Samhällsvetenskap</topic>
+            <topic>Medie- och kommunikationsvetenskap</topic>
+            <topic>Biblioteks- och informationsvetenskap</topic>
+          </subject>
+          <abstract lang="eng">&lt;p&gt;In this paper, we compare two sophisticated publication-level approaches to ex-post citation normalization: an item-oriented approach and an approach falling under the general algorithmically constructed classification system approach. Using articles published in core journals in Web of Science (SCIE, SSCI &amp;amp; A&amp;amp;HCI) during 2009 (n=955,639), we first examine, using the measure Proportion explained variation (PEV), to what extent the publication-level approaches can explain and correct for variation in the citation distribution that stems from subject matter heterogeneity. We then, for the subset of articles from life science and biomedicine (n=456,045), gauge the fairness of the normalization approaches with respect to their ability to identify highly cited articles when subject area is factored out. This is done by utilizing information from publication-level MeSH classifications to create high quality subject matter baselines and by using the measure Deviations from expectations (DE). The results show that the item-oriented approach had the best performance regarding PEV. For DE, only the most fine-grained clustering solution could compete with the item-oriented approach. However, the item-oriented approach performed better when cited references were heavily weighted in the similarity calculations.&lt;/p&gt;</abstract>
+          <note>&lt;p&gt;QC 20190904&lt;/p&gt;</note>
+          <relatedItem type="host">
+            <titleInfo>
+              <title>Scientometrics</title>
+            </titleInfo>
+            <identifier type="issn">0138-9130</identifier>
+            <identifier type="eissn">1588-2861</identifier>
+            <part>
+              <detail type="volume">
+                <number>120</number>
+              </detail>
+              <detail type="issue">
+                <number>1</number>
+              </detail>
+              <extent>
+                <start>283</start>
+                <end>300</end>
+              </extent>
+            </part>
+          </relatedItem>
+          <note type="publicationStatus" lang="eng">Published</note>
+          <recordInfo>
+            <recordOrigin>u13h9uqy</recordOrigin>
+            <recordContentSource>kth</recordContentSource>
+            <recordCreationDate>2019-09-04</recordCreationDate>
+            <recordChangeDate>2022-06-26</recordChangeDate>
+            <recordIdentifier>diva2:1348441</recordIdentifier>
+          </recordInfo>
+        </mods>
+      </metadata>
+    </record>
+    <record>
+      <header>
+        <identifier>oai:DiVA.org:uu-390087</identifier>
+        <datestamp>2019-08-05T09:17:00Z</datestamp>
+        <setSpec>uu</setSpec>
+        <setSpec>article</setSpec>
+        <setSpec>refereed</setSpec>
+      </header>
+      <metadata>
+        <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" version="3.7" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+          <genre authority="diva" type="contentTypeCode">refereed</genre>
+          <genre authority="svep" type="contentType">ref</genre>
+          <genre authority="diva" type="contentType" lang="eng">Refereed</genre>
+          <genre authority="diva" type="contentType" lang="swe">Refereegranskat</genre>
+          <genre authority="diva" type="contentType" lang="nor">Fagfellevurdert</genre>
+          <genre authority="diva" type="publicationTypeCode">article</genre>
+          <genre authority="svep" type="publicationType">art</genre>
+          <genre authority="diva" type="publicationType" lang="eng">Article in journal</genre>
+          <genre authority="diva" type="publicationType" lang="swe">Artikel i tidskrift</genre>
+          <genre authority="diva" type="publicationType" lang="nor">Artikkel i tidsskrift</genre>
+          <genre authority="kev" type="publicationType" lang="eng">article</genre>
+          <name type="personal">
+            <namePart type="family">Colliander</namePart>
+            <namePart type="given">Cristian</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+            <affiliation>Umea Univ, Dept Sociol, Inforsk, Umea, Sweden;Umea Univ, Univ Lib, Umea, Sweden</affiliation>
+          </name>
+          <name type="personal" authority="uu" xlink:href="perah342">
+            <namePart type="family">Ahlgren</namePart>
+            <namePart type="given">Per</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+            <affiliation>Uppsala universitet, Statistiska institutionen</affiliation>
+            <affiliation>KTH Royal Inst Technol, KTH Lib, Stockholm, Sweden</affiliation>
+            <description>diva-portal.org=authority-person:73029</description>
+          </name>
+          <name type="corporate" authority="uu" xlink:href="1431">
+            <namePart>Uppsala universitet</namePart>
+            <namePart>Humanistisk-samhällsvetenskapliga vetenskapsområdet</namePart>
+            <namePart>Samhällsvetenskapliga fakulteten</namePart>
+            <namePart>Statistiska institutionen</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+            </role>
+          </name>
+          <titleInfo lang="eng">
+            <title>Comparison of publication-level approaches to ex-post citation normalization</title>
+          </titleInfo>
+          <language>
+            <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+          </language>
+          <originInfo>
+            <publisher>SPRINGER</publisher>
+            <dateIssued>2019</dateIssued>
+            <dateOther type="availableFrom">2019-08-05T11:17:32</dateOther>
+          </originInfo>
+          <physicalDescription>
+            <form authority="marcform">electronic</form>
+          </physicalDescription>
+          <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:uu:diva-390087</identifier>
+          <identifier type="doi">10.1007/s11192-019-03121-z</identifier>
+          <identifier type="isi">000471656400014</identifier>
+          <location>
+            <url displayLabel="Fulltext" note="free">https://doi.org/10.1007/s11192-019-03121-z</url>
+          </location>
+          <typeOfResource>text</typeOfResource>
+          <subject lang="eng">
+            <topic>Algorithmically constructed classification system approach</topic>
+          </subject>
+          <subject lang="eng">
+            <topic>Citation impact</topic>
+          </subject>
+          <subject lang="eng">
+            <topic>Field normalization</topic>
+          </subject>
+          <subject lang="eng">
+            <topic>Item-oriented approach</topic>
+          </subject>
+          <subject lang="eng">
+            <topic>Research evaluation</topic>
+          </subject>
+          <subject lang="eng" authority="hsv" xlink:href="50805">
+            <topic>Social Sciences</topic>
+            <topic>Media and Communications</topic>
+            <topic>Information Studies</topic>
+          </subject>
+          <subject lang="swe" authority="hsv" xlink:href="50805">
+            <topic>Samhällsvetenskap</topic>
+            <topic>Medie- och kommunikationsvetenskap</topic>
+            <topic>Biblioteks- och informationsvetenskap</topic>
+          </subject>
+          <abstract lang="eng">&lt;p&gt;In this paper, we compare two sophisticated publication-level approaches to ex-post citation normalization: an item-oriented approach and an approach falling under the general algorithmically constructed classification system approach. Using articles published in core journals in Web of Science (SCIE, SSCI &amp;amp; A&amp;amp;HCI) during 2009 (n=955,639), we first examine, using the measure Proportion explained variation (PEV), to what extent the publication-level approaches can explain and correct for variation in the citation distribution that stems from subject matter heterogeneity. We then, for the subset of articles from life science and biomedicine (n=456,045), gauge the fairness of the normalization approaches with respect to their ability to identify highly cited articles when subject area is factored out. This is done by utilizing information from publication-level MeSH classifications to create high quality subject matter baselines and by using the measure Deviations from expectations (DE). The results show that the item-oriented approach had the best performance regarding PEV. For DE, only the most fine-grained clustering solution could compete with the item-oriented approach. However, the item-oriented approach performed better when cited references were heavily weighted in the similarity calculations.&lt;/p&gt;</abstract>
+          <relatedItem type="host">
+            <titleInfo>
+              <title>Scientometrics</title>
+            </titleInfo>
+            <identifier type="issn">0138-9130</identifier>
+            <identifier type="eissn">1588-2861</identifier>
+            <part>
+              <detail type="volume">
+                <number>120</number>
+              </detail>
+              <detail type="issue">
+                <number>1</number>
+              </detail>
+              <extent>
+                <start>283</start>
+                <end>300</end>
+              </extent>
+            </part>
+          </relatedItem>
+          <note type="publicationStatus" lang="eng">Published</note>
+          <location>
+            <url displayLabel="fulltext:print" note="free" access="raw object">http://uu.diva-portal.org/smash/get/diva2:1340381/FULLTEXT01.pdf</url>
+          </location>
+          <recordInfo>
+            <recordOrigin>antogiet</recordOrigin>
+            <recordContentSource>uu</recordContentSource>
+            <recordCreationDate>2019-08-05</recordCreationDate>
+            <recordChangeDate>2019-08-05</recordChangeDate>
+            <recordIdentifier>diva2:1340381</recordIdentifier>
+          </recordInfo>
+        </mods>
+      </metadata>
+    </record>
+    <record>
+      <header>
+        <identifier>oai:DiVA.org:umu-159084</identifier>
+        <datestamp>2019-07-12T09:11:00Z</datestamp>
+        <setSpec>umu</setSpec>
+        <setSpec>article</setSpec>
+        <setSpec>refereed</setSpec>
+      </header>
+      <metadata>
+        <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" version="3.7" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+          <genre authority="diva" type="contentTypeCode">refereed</genre>
+          <genre authority="svep" type="contentType">ref</genre>
+          <genre authority="diva" type="contentType" lang="eng">Refereed</genre>
+          <genre authority="diva" type="contentType" lang="swe">Refereegranskat</genre>
+          <genre authority="diva" type="contentType" lang="nor">Fagfellevurdert</genre>
+          <genre authority="diva" type="publicationTypeCode">article</genre>
+          <genre authority="svep" type="publicationType">art</genre>
+          <genre authority="diva" type="publicationType" lang="eng">Article in journal</genre>
+          <genre authority="diva" type="publicationType" lang="swe">Artikel i tidskrift</genre>
+          <genre authority="diva" type="publicationType" lang="nor">Artikkel i tidsskrift</genre>
+          <genre authority="kev" type="publicationType" lang="eng">article</genre>
+          <name type="personal" authority="umu" xlink:href="crco0001">
+            <namePart type="family">Colliander</namePart>
+            <namePart type="given">Cristian</namePart>
+            <namePart type="date">1980-</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+            <affiliation>Umeå universitet, Sociologiska institutionen</affiliation>
+            <affiliation>Umeå universitet, Umeå universitetsbibliotek (UB)</affiliation>
+            <affiliation>Inforsk</affiliation>
+            <description>orcid.org=0000-0002-7653-4004</description>
+            <description>diva-portal.org=authority-person:65316</description>
+          </name>
+          <name type="corporate">
+            <namePart>Inforsk</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">oth</roleTerm>
+            </role>
+            <description>Research Group</description>
+          </name>
+          <name type="personal">
+            <namePart type="family">Ahlgren</namePart>
+            <namePart type="given">Per</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+            <affiliation>Department of Statistics, Uppsala University, Uppsala, Sweden</affiliation>
+          </name>
+          <name type="corporate" authority="umu" xlink:href="850">
+            <namePart>Umeå universitet</namePart>
+            <namePart>Samhällsvetenskapliga fakulteten</namePart>
+            <namePart>Sociologiska institutionen</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+            </role>
+          </name>
+          <name type="corporate" authority="umu" xlink:href="4957">
+            <namePart>Umeå universitet</namePart>
+            <namePart>Umeå universitetsbibliotek (UB)</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+            </role>
+          </name>
+          <titleInfo lang="eng">
+            <title>Comparison of publication-level approaches to ex-post citation normalization</title>
+          </titleInfo>
+          <language>
+            <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+          </language>
+          <originInfo>
+            <publisher>Springer</publisher>
+            <dateIssued>2019</dateIssued>
+            <dateOther type="availableFrom">2019-05-17T10:57:00</dateOther>
+          </originInfo>
+          <physicalDescription>
+            <form authority="marcform">electronic</form>
+          </physicalDescription>
+          <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:umu:diva-159084</identifier>
+          <identifier type="doi">10.1007/s11192-019-03121-z</identifier>
+          <identifier type="isi">000471656400014</identifier>
+          <location>
+            <url displayLabel="Fulltext" note="free">https://doi.org/10.1007/s11192-019-03121-z</url>
+          </location>
+          <typeOfResource>text</typeOfResource>
+          <subject lang="eng">
+            <topic>Algorithmically constructed classification system approach</topic>
+          </subject>
+          <subject lang="eng">
+            <topic>Citation impact</topic>
+          </subject>
+          <subject lang="eng">
+            <topic>Field normalization</topic>
+          </subject>
+          <subject lang="eng">
+            <topic>Item-oriented approach</topic>
+          </subject>
+          <subject lang="eng">
+            <topic>Research evaluation</topic>
+          </subject>
+          <subject lang="eng" authority="hsv" xlink:href="50805">
+            <topic>Social Sciences</topic>
+            <topic>Media and Communications</topic>
+            <topic>Information Studies</topic>
+          </subject>
+          <subject lang="swe" authority="hsv" xlink:href="50805">
+            <topic>Samhällsvetenskap</topic>
+            <topic>Medie- och kommunikationsvetenskap</topic>
+            <topic>Biblioteks- och informationsvetenskap</topic>
+          </subject>
+          <abstract lang="eng">&lt;p&gt;In this paper, we compare two sophisticated publication-level approaches to ex-post citation normalization: an item-oriented approach and an approach falling under the general algorithmically constructed classification system approach. Using articles published in core journals in Web of Science (SCIE, SSCI &amp;amp; A&amp;amp;HCI) during 2009 (&lt;em&gt;n&lt;/em&gt;=955,639), we first examine, using the measure Proportion explained variation (PEV), to what extent the publication-level approaches can explain and correct for variation in the citation distribution that stems from subject matter heterogeneity. We then, for the subset of articles from life science and biomedicine (&lt;em&gt;n&lt;/em&gt;=456,045), gauge the fairness of the normalization approaches with respect to their ability to identify highly cited articles when subject area is factored out. This is done by utilizing information from publication-level MeSH classifications to create high quality subject matter baselines and by using the measure Deviations from expectations (DE). The results show that the item-oriented approach had the best performance regarding PEV. For DE, only the most fine-grained clustering solution could compete with the item-oriented approach. However, the item-oriented approach performed better when cited references were heavily weighted in the similarity calculations.&lt;/p&gt;</abstract>
+          <relatedItem type="host">
+            <titleInfo>
+              <title>Scientometrics</title>
+            </titleInfo>
+            <identifier type="issn">0138-9130</identifier>
+            <identifier type="eissn">1588-2861</identifier>
+            <part>
+              <detail type="volume">
+                <number>120</number>
+              </detail>
+              <detail type="issue">
+                <number>1</number>
+              </detail>
+              <extent>
+                <start>283</start>
+                <end>300</end>
+              </extent>
+            </part>
+          </relatedItem>
+          <note type="publicationStatus" lang="eng">Published</note>
+          <location>
+            <url displayLabel="fulltext:print" note="free" access="raw object">http://umu.diva-portal.org/smash/get/diva2:1316344/FULLTEXT01.pdf</url>
+          </location>
+          <recordInfo>
+            <recordOrigin>crco0001</recordOrigin>
+            <recordContentSource>umu</recordContentSource>
+            <recordCreationDate>2019-05-17</recordCreationDate>
+            <recordChangeDate>2019-07-12</recordChangeDate>
+            <recordIdentifier>diva2:1316344</recordIdentifier>
+          </recordInfo>
+        </mods>
+      </metadata>
+    </record>
+  </ListRecords>
+</OAI-PMH>
