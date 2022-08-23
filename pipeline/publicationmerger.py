@@ -392,7 +392,7 @@ class PublicationMerger:
             if allowed_id_temp == master_id:
                 if allowed_id_qualifier and "qualifier" not in master_id:
                     master_id["qualifier"] = allowed_id_qualifier
-                    return master_ids
+                return master_ids
 
         master_ids.append(allowed_id)
         return master_ids
