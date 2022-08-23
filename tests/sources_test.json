@@ -54,6 +54,17 @@
       }
     ]
   },
+  "dedup_ignore_id_qualifier": {
+    "code": "dedup_ignore_id_qualifier",
+    "name": "TEST - dedup ignore id qualifier",
+    "sets": [
+      {
+        "url": "http://localhost:8549/dedup_ignore_id_qualifier",
+        "subset": "SwePub-DEDUPS",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
   "mau": {
     "code": "mau",
     "name": "TEST - mau",

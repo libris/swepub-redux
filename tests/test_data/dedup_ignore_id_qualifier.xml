@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+    <responseDate>2019-01-08T11:33:06Z</responseDate>
+    <request verb="ListRecords" metadataPrefix="swepub_mods" set="SwePub-bth">http://bth.diva-portal.org/dice/oai</request>
+    <ListRecords>
+        <!-- DUPLICATES WITH SAME IDENTIFIER (BUT WITH QUALIFIER) -->
+        <!-- If two records have the same identifier, but one has a qualifier (displayLabel), the qualifier
+             should be ignored when comparing. Also:
+             - If master record has a qualifier but candidate doesn't, preserve master's qualifier in the deduplicated record.
+             - If master doesn't have a qualifier but candidate does, preserve candidate's qualifier.
+             - If both have a qualifier, preserve master's qualifier.
+             In this example, both have the identifier URI http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-162993, but one also has the displayLabel
+             attribute (= `qualifier` after conversion).
+        -->
+
+        <!-- Title1: The association between anxiety, traumatic stress, and obsessive-compulsive disorders and chronic inflammation -->
+        <!-- Title2: The association between anxiety, traumatic stress, and obsessive-compulsive disorders and chronic inflammation: A systematic review and meta-analysis -->
+        <!-- oai:DiVA.org:su-162993 -->
+        <!-- oai:prod.swepub.kib.ki.se:139570403 -->
+        <record>
+          <header xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <identifier>oai:DiVA.org:su-162993</identifier>
+            <datestamp>2018-12-12T14:38:00Z</datestamp>
+            <setSpec>su</setSpec>
+            <setSpec>article</setSpec>
+            <setSpec>refereed</setSpec>
+          </header>
+          <metadata>
+            <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.5" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd">
+              <name type="personal">
+                <namePart type="family">Renna</namePart>
+                <namePart type="given">Megan E.</namePart>
+                <role>
+                  <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                </role>
+              </name>
+              <name type="personal">
+                <namePart type="family">O'Toole</namePart>
+                <namePart type="given">Mia S.</namePart>
+                <role>
+                  <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                </role>
+                <description xsi:type="identifierDefinition" type="orcid">0000-0002-9155-8426</description>
+              </name>
+              <name type="personal">
+                <namePart type="family">Spaeth</namePart>
+                <namePart type="given">Phillip E.</namePart>
+                <role>
+                  <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                </role>
+              </name>
+              <name type="personal" authority="su" xlink:href="mleka">
+                <namePart type="family">Lekander</namePart>
+                <namePart type="given">Mats</namePart>
+                <role>
+                  <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                </role>
+                <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="su.se">Stockholms universitet</affiliation>
+                <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority" authority="su.se" valueURI="Stressforskningsinstitutet">Stressforskningsinstitutet</affiliation>
+                <affiliation>Karolinska Institutet, Sweden</affiliation>
+              </name>
+              <name type="personal">
+                <namePart type="family">Mennin</namePart>
+                <namePart type="given">Douglas S.</namePart>
+                <role>
+                  <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                </role>
+              </name>
+              <name type="corporate" authority="su" xlink:href="534">
+                <namePart>Stockholms universitet</namePart>
+                <namePart>Samh&#xE4;llsvetenskapliga fakulteten</namePart>
+                <namePart>Stressforskningsinstitutet</namePart>
+                <role>
+                  <roleTerm type="code" authority="marcrelator">org</roleTerm>
+                </role>
+              </name>
+              <titleInfo lang="eng">
+                <title>The association between anxiety, traumatic stress, and obsessive-compulsive disorders and chronic inflammation</title>
+                <subTitle>A systematic review and meta-analysis</subTitle>
+              </titleInfo>
+              <genre authority="svep" type="publicationType">art</genre>
+              <genre authority="svep" type="contentType">ref</genre>
+              <subject lang="eng" authority="uka.se" xlink:href="30215">
+                <topic>Medical and Health Sciences</topic>
+                <topic>Clinical Medicine</topic>
+                <topic>Psychiatry</topic>
+              </subject>
+              <subject lang="swe" authority="uka.se" xlink:href="30215">
+                <topic>Medicin och h&#xE4;lsovetenskap</topic>
+                <topic>Klinisk medicin</topic>
+                <topic>Psykiatri</topic>
+              </subject>
+              <subject lang="eng" authority="uka.se" xlink:href="501">
+                <topic>Social Sciences</topic>
+                <topic>Psychology</topic>
+              </subject>
+              <subject lang="swe" authority="uka.se" xlink:href="501">
+                <topic>Samh&#xE4;llsvetenskap</topic>
+                <topic>Psykologi</topic>
+              </subject>
+              <subject lang="eng">
+                <topic>anxiety disorders</topic>
+              </subject>
+              <subject lang="eng">
+                <topic>biological markers</topic>
+              </subject>
+              <subject lang="eng">
+                <topic>OCD</topic>
+              </subject>
+              <subject lang="eng">
+                <topic>PTSD</topic>
+              </subject>
+              <subject lang="eng">
+                <topic>SAD</topic>
+              </subject>
+              <originInfo>
+                <dateIssued>2018</dateIssued>
+              </originInfo>
+              <relatedItem type="host">
+                <titleInfo>
+                  <title>Depression and anxiety (Print)</title>
+                </titleInfo>
+                <identifier type="issn">1091-4269</identifier>
+                <identifier type="eissn">1520-6394</identifier>
+                <part>
+                  <detail type="volume">
+                    <number>35</number>
+                  </detail>
+                  <detail type="issue">
+                    <number>11</number>
+                  </detail>
+                  <extent>
+                    <start>1081</start>
+                    <end>1094</end>
+                  </extent>
+                </part>
+              </relatedItem>
+              <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-162993</identifier>
+              <identifier type="doi">10.1002/da.22790</identifier>
+              <language>
+                <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+              </language>
+              <abstract lang="eng">&lt;p&gt;Background Methods Anxiety is characterized by prolonged preparation for real or perceived threat. This may manifest both as psychological and physiological activation, ultimately leading to greater risk for poor health. Chronic inflammation may play an integral role in this relationship, given the influential role that it has in chronic illness. The aim of this meta-analysis is to examine levels of chronic inflammation, measured by inflammatory cytokines and C-reactive protein, in people with anxiety disorders, PTSD (posttraumatic stress disorder), or obsessive-compulsive disorder compared to healthy controls. Several moderating variables, including specific diagnosis and depression comorbidity, were also assessed. Seventy six full-text articles were screened for eligibility with 41 studies ultimately included in analysis. Results Conclusions Results demonstrated a significant overall difference between healthy controls (HCs) and people with anxiety disorders in pro-inflammatory cytokines (P = 0.013, Hedge's g = -0.39), which appears to be largely driven by interleukin-1 beta (IL-1 beta; P = 0.009, Hedge's g = -0.50), IL-6 (P &amp;lt; 0.001, Hedge's g = -0.93), and tumor necrosis factor-alpha (P = 0.030, Hedge's g = -0.56). Moderation analyses revealed a moderating effect of diagnosis (P = 0.050), as only individuals with PTSD demonstrated differences in inflammation between HCs (P = 0.004, Hedge's g = -0.68). These data demonstrate the association between inflammatory dysregulation and diagnoses associated with chronic, impactful, and severe anxiety and provides insight into the way that anxiety, and in particular PTSD, is related to certain inflammatory markers. In doing so, these findings may provide an initial step in disentangling the relationship between anxiety and basic health processes.&lt;/p&gt;</abstract>
+              <note type="creatorCount">5</note>
+              <physicalDescription>
+                <form authority="marcform">print</form>
+              </physicalDescription>
+              <note type="publicationStatus">Published</note>
+              <recordInfo>
+                <recordContentSource>su</recordContentSource>
+              </recordInfo>
+            </mods>
+          </metadata>
+        </record>
+        <record>
+          <header xmlns:exslt="http://exslt.org/common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <identifier>oai:prod.swepub.kib.ki.se:139570403</identifier>
+            <datestamp>2020-02-02T12:00:00Z</datestamp>
+          </header>
+          <metadata xmlns:exslt="http://exslt.org/common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <mods xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.loc.gov/mods/v3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-5.xsd" version="3.5">
+              <recordInfo>
+                <recordContentSource>ki</recordContentSource>
+              </recordInfo>
+              <titleInfo>
+                <title>The association between anxiety, traumatic stress, and obsessive-compulsive disorders and chronic inflammation: A systematic review and meta-analysis</title>
+              </titleInfo>
+              <originInfo>
+                <dateIssued>2018</dateIssued>
+              </originInfo>
+              <identifier type="uri">http://kipublications.ki.se/Default.aspx?queryparsed=id:139570403</identifier>
+              <language>
+                <languageTerm type="text">English</languageTerm>
+                <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+              </language>
+              <genre authority="svep" type="publicationType">art</genre>
+              <genre authority="svep" type="contentType">ref</genre>
+              <relatedItem type="host">
+                <titleInfo>
+                  <title>Depression and anxiety</title>
+                </titleInfo>
+                <identifier type="issn">1520-6394</identifier>
+                <part>
+                  <detail type="volume">
+                    <number>35</number>
+                  </detail>
+                  <detail type="issue">
+                    <number>11</number>
+                  </detail>
+                  <extent>
+                    <start>1081</start>
+                    <end>1094</end>
+                  </extent>
+                </part>
+              </relatedItem>
+              <identifier type="doi">10.1002/da.22790</identifier>
+              <identifier type="uri" displayLabel="fullText">http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-162993</identifier>
+              <identifier type="isi">000243367800004</identifier>
+              <identifier type="scopus">2-s2.0-33847168492</identifier>
+              <note type="creatorCount">5</note>
+              <note type="publicationStatus">Published</note>
+              <name authority="ki" type="personal">
+                <namePart type="given"> ME</namePart>
+                <namePart type="family">Renna</namePart>
+                <role>
+                  <roleTerm authority="marcrelator" type="code">aut</roleTerm>
+                </role>
+              </name>
+              <name authority="ki" type="personal">
+                <namePart type="given"> MS</namePart>
+                <namePart type="family">O'Toole</namePart>
+                <role>
+                  <roleTerm authority="marcrelator" type="code">aut</roleTerm>
+                </role>
+              </name>
+              <name authority="ki" type="personal">
+                <namePart type="given"> PE</namePart>
+                <namePart type="family">Spaeth</namePart>
+                <role>
+                  <roleTerm authority="marcrelator" type="code">aut</roleTerm>
+                </role>
+              </name>
+              <name authority="ki" type="personal" xlink:href="d89baecdce78f7fc76980e0abd37ba70">
+                <namePart type="given"> M</namePart>
+                <namePart type="family">Lekander</namePart>
+                <affiliation lang="swe" authority="kb.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="ki.se">Karolinska Institutet</affiliation>
+                <affiliation xmlns="" lang="swe" authority="ki.se" xsi:type="stringPlusLanguagePlusAuthority" valueURI="ki.se/cns">Department of Clinical Neuroscience</affiliation>
+                <role>
+                  <roleTerm authority="marcrelator" type="code">aut</roleTerm>
+                </role>
+              </name>
+              <name authority="ki" type="personal">
+                <namePart type="given"> DS</namePart>
+                <namePart type="family">Mennin</namePart>
+                <role>
+                  <roleTerm authority="marcrelator" type="code">aut</roleTerm>
+                </role>
+              </name>
+            </mods>
+          </metadata>
+        </record>
+    </ListRecords>
+</OAI-PMH>
