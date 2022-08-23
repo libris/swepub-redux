@@ -215,9 +215,10 @@ class PublicationMerger:
         """Merge identifiedbyIds if its ISSN/ISBN or URI and do not exist in master"""
         master_identifiedby_ids = master.identifiedby_ids
         candidate_identifiedby_ids = candidate.identifiedby_ids
+
         for identifier in candidate_identifiedby_ids:
-            if self._id_allowed_to_be_added(master_identifiedby_ids, identifier):
-                master_identifiedby_ids.append(identifier)
+            master_identifiedby_ids = self._possibly_append_id(master_identifiedby_ids, identifier)
+
         master.identifiedby_ids = master_identifiedby_ids
         return master
 
@@ -225,11 +226,11 @@ class PublicationMerger:
         """Merge indirectlyIdentifiedbyIds if its ISSN/ISBN or URI and do not exist in master"""
         master_indirectly_identifiedby_ids = master.indirectly_identifiedby_ids
         candidate_indirectly_identifiedby_ids = candidate.indirectly_identifiedby_ids
+
         for identifier in candidate_indirectly_identifiedby_ids:
-            if self._id_allowed_to_be_added(master_indirectly_identifiedby_ids, identifier):
-                master_indirectly_identifiedby_ids.append(identifier)
-        if master_indirectly_identifiedby_ids:
-            master.indirectly_identifiedby_ids = master_indirectly_identifiedby_ids
+            master_indirectly_identifiedby_ids = _possibly_append_id(master_indirectly_identifiedby_ids, identifier)
+
+        master.indirectly_identifiedby_ids = master_indirectly_identifiedby_ids
         return master
 
     @staticmethod
@@ -375,16 +376,26 @@ class PublicationMerger:
         )
 
     @staticmethod
-    def _id_allowed_to_be_added(master_ids, allowed_id):
-        """ID is allowed to be added if its ISSN/ISBN, URI or does not already exist in master_ids"""
+    def _possibly_append_id(master_ids, allowed_id):
+        """ID is allowed to be added if its ISSN/ISBN, URI or does not already exist in master_ids.
+        If ID has a qualifier but the existing ID in master_id doesn't have one, add the qualifier
+        from the candidate (allowed_id) to the master ID."""
         id_type = allowed_id["@type"]
-        # flake8: noqa W504
-        return allowed_id not in master_ids and (
-            id_type == "ISSN"
-            or id_type == "ISBN"
-            or id_type == "URI"
-            or len(list(filter(lambda x: (x["@type"] == id_type), master_ids))) == 0
-        )
+        if (id_type not in ["ISSN", "ISBN", "URI"]) and len(list(filter(lambda x: (x["@type"] == id_type), master_ids))) != 0:
+            return master_ids
+
+        allowed_id_temp = dict(allowed_id)
+        allowed_id_qualifier = allowed_id_temp.pop("qualifier", None)
+        # We need to ignore qualifier when comparing IDs, *but* if candidate has
+        # a qualifier and master doesn't, add qualifier from candidate to master
+        for master_id in master_ids:
+            if allowed_id_temp == master_id:
+                if allowed_id_qualifier and "qualifier" not in master_id:
+                    master_id["qualifier"] = allowed_id_qualifier
+                    return master_ids
+
+        master_ids.append(allowed_id)
+        return master_ids
 
 
 def _should_replace_affiliation(master_contrib, candidate_contrib):
