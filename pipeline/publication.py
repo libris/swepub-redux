@@ -246,6 +246,14 @@ class Publication:
         return False
 
     @property
+    def is_autoclassified(self):
+        for subject in self.subjects:
+            for note in subject.get("hasNote", []):
+                if note.get("label", "") == "Autoclassified by Swepub":
+                    return True
+        return False
+
+    @property
     def subject_codes(self):
         """Return a list of all subject identifiers."""
         return [subj['@id'] for subj in self.subjects if '@id' in subj]

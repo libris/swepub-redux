@@ -204,6 +204,20 @@ class PublicationMerger:
         """Merge subjects if code or prefLabel is new"""
         master_subjects = master.subjects
         candidate_subjects = candidate.subjects
+
+        master_is_classified = master.is_classified
+        master_is_autoclassified = master.is_autoclassified
+        candidate_is_classified = candidate.is_classified
+        candidate_is_autoclassified = candidate.is_autoclassified
+
+        # Get rid of autoclassifications if one of the publications is 1) not autoclassified,
+        # *and* 2) has level 3 subjects
+        if master_is_classified and candidate_is_autoclassified and not master_is_autoclassified:
+            candidate_subjects = self._remove_autoclassified(candidate_subjects)
+
+        if candidate_is_classified and master_is_autoclassified and not candidate_is_autoclassified:
+            master_subjects = self._remove_autoclassified(master_subjects)
+
         for cs in candidate_subjects:
             if not self._subject_preflabel_exist_in_master(
                 master_subjects, cs
@@ -211,6 +225,17 @@ class PublicationMerger:
                 master_subjects.append(cs)
         master.subjects = master_subjects
         return master
+
+    @staticmethod
+    def _has_autoclassification_note(subject):
+        for note in subject.get("hasNote", []):
+            if note.get("label", "") == "Autoclassified by Swepub":
+                return True
+        return False
+
+    @staticmethod
+    def _remove_autoclassified(subjects):
+        return list(filter(lambda d: not PublicationMerger._has_autoclassification_note(d), subjects))
 
     def _merge_identifiedby_ids(self, master, candidate):
         """Merge identifiedbyIds if its ISSN/ISBN or URI and do not exist in master"""
