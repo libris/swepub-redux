@@ -415,8 +415,10 @@ class PublicationMerger:
         # We need to ignore qualifier when comparing IDs, *but* if candidate has
         # a qualifier and master doesn't, add qualifier from candidate to master
         for master_id in master_ids:
-            if allowed_id_temp == master_id:
-                if allowed_id_qualifier and "qualifier" not in master_id:
+            master_id_temp = dict(master_id)
+            master_id_qualifier = master_id_temp.pop("qualifier", None)
+            if allowed_id_temp == master_id_temp:
+                if allowed_id_qualifier and not master_id_qualifier:
                     master_id["qualifier"] = allowed_id_qualifier
                 return master_ids
 
