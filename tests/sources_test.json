@@ -504,5 +504,16 @@
         "metadata_prefix": "swepub_mods"
       }
     ]
+  },
+  "orcid_from_another_record": {
+    "code": "kth",
+    "name": "TEST - orcid_from_another_record",
+    "sets": [
+      {
+        "url": "http://localhost:8549/orcid_from_another_record",
+        "subset": "SwePub-kth",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
   }
 }

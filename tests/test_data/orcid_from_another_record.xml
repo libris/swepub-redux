@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+  <responseDate>2022-08-23T11:51:20Z</responseDate>
+  <request verb="GetRecord" identifier="oai:DiVA.org:kth-255179" metadataPrefix="swepub_mods">https://kth.diva-portal.org/dice/oai</request>
+  <ListRecords>
+    <record xmlns="http://www.openarchives.org/OAI/2.0/">
+        <header xmlns="http://www.openarchives.org/OAI/2.0/">
+            <identifier xmlns="http://www.openarchives.org/OAI/2.0/">oai:DiVA.org:ths-8888</identifier>
+            <datestamp xmlns="http://www.openarchives.org/OAI/2.0/">2021-09-29T12:58:00Z</datestamp>
+            <setSpec xmlns="http://www.openarchives.org/OAI/2.0/">ths</setSpec>
+            <setSpec xmlns="http://www.openarchives.org/OAI/2.0/">chapter</setSpec>
+            <setSpec xmlns="http://www.openarchives.org/OAI/2.0/">science</setSpec>
+        </header>
+        <metadata xmlns="http://www.openarchives.org/OAI/2.0/">
+            <mods xmlns="http://www.loc.gov/mods/v3" schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd" version="3.7">
+                <recordInfo xmlns="http://www.loc.gov/mods/v3">
+                    <recordContentSource xmlns="http://www.loc.gov/mods/v3">ths</recordContentSource>
+                    <recordCreationDate xmlns="http://www.loc.gov/mods/v3">2021-09-29</recordCreationDate>
+                </recordInfo>
+                <identifier xmlns="http://www.loc.gov/mods/v3" type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:ths:diva-8888</identifier>
+                <titleInfo xmlns="http://www.loc.gov/mods/v3" lang="swe">
+                    <title xmlns="http://www.loc.gov/mods/v3">Test test test 1</title>
+                </titleInfo>
+                <abstract xmlns="http://www.loc.gov/mods/v3" lang="eng">Lorem ipsum foo bar</abstract>
+                <subject xmlns="http://www.loc.gov/mods/v3" lang="eng" authority="uka.se" href="60303">
+                    <topic xmlns="http://www.loc.gov/mods/v3">Humanities and the Arts</topic>
+                    <topic xmlns="http://www.loc.gov/mods/v3">Philosophy, Ethics and Religion</topic>
+                    <topic xmlns="http://www.loc.gov/mods/v3">Religious Studies</topic>
+                </subject>
+                <language xmlns="http://www.loc.gov/mods/v3">
+                    <languageTerm xmlns="http://www.loc.gov/mods/v3" authority="iso639-2b" type="code">swe</languageTerm>
+                </language>
+                <genre xmlns="http://www.loc.gov/mods/v3" authority="kb.se" type="outputType">publication/book-chapter</genre>
+                <genre xmlns="http://www.loc.gov/mods/v3" authority="svep" type="contentType">vet</genre>
+                <note xmlns="http://www.loc.gov/mods/v3" type="publicationStatus">Published</note>
+                <name xmlns="http://www.loc.gov/mods/v3" authority="ths" type="personal">
+                    <namePart xmlns="http://www.loc.gov/mods/v3" type="family">Ninja</namePart>
+                    <namePart xmlns="http://www.loc.gov/mods/v3" type="given">Kalle</namePart>
+                    <namePart xmlns="http://www.loc.gov/mods/v3" type="termsOfAddress">Högskolelektor</namePart>
+                    <namePart xmlns="http://www.loc.gov/mods/v3" type="date">1984-</namePart>
+                    <role xmlns="http://www.loc.gov/mods/v3">
+                        <roleTerm xmlns="http://www.loc.gov/mods/v3" authority="marcrelator" type="code">aut</roleTerm>
+                    </role>
+                    <affiliation xmlns="http://www.loc.gov/mods/v3">Enskilda Högskolan Stockholm, Avdelningen för religionsvetenskap och teologi</affiliation>
+                    <nameIdentifier xmlns="http://www.loc.gov/mods/v3" type="ths">kalle.ninja</nameIdentifier>
+                </name>
+                <note xmlns="http://www.loc.gov/mods/v3" type="creatorCount">1</note>
+                <originInfo xmlns="http://www.loc.gov/mods/v3">
+                    <dateIssued xmlns="http://www.loc.gov/mods/v3">2021</dateIssued>
+                    <publisher xmlns="http://www.loc.gov/mods/v3">Enskilda Högskolan Stockholm</publisher>
+                    <place xmlns="http://www.loc.gov/mods/v3">
+                        <placeTerm xmlns="http://www.loc.gov/mods/v3">Bromma</placeTerm>
+                    </place>
+                </originInfo>
+                <location xmlns="http://www.loc.gov/mods/v3">
+                    <url xmlns="http://www.loc.gov/mods/v3">https://example.com/foo.pdf</url>
+                </location>
+                <location xmlns="http://www.loc.gov/mods/v3">
+                    <url xmlns="http://www.loc.gov/mods/v3" access="raw object" usage="primary" displayLabel="fulltext:print">http://ths.diva-portal.org/smash/get/diva2:8979797897897897/FULLTEXT01.pdf</url>
+                </location>
+                <accessCondition xmlns="http://www.loc.gov/mods/v3">gratis</accessCondition>
+                <physicalDescription xmlns="http://www.loc.gov/mods/v3">
+                    <form xmlns="http://www.loc.gov/mods/v3" authority="marcform">electronic</form>
+                </physicalDescription>
+                <typeOfResource xmlns="http://www.loc.gov/mods/v3">text</typeOfResource>
+            </mods>
+        </metadata>
+    </record>
+    <record xmlns="http://www.openarchives.org/OAI/2.0/">
+        <header xmlns="http://www.openarchives.org/OAI/2.0/">
+            <identifier xmlns="http://www.openarchives.org/OAI/2.0/">oai:DiVA.org:ths-9999</identifier>
+            <datestamp xmlns="http://www.openarchives.org/OAI/2.0/">2021-09-29T12:58:00Z</datestamp>
+            <setSpec xmlns="http://www.openarchives.org/OAI/2.0/">ths</setSpec>
+            <setSpec xmlns="http://www.openarchives.org/OAI/2.0/">chapter</setSpec>
+            <setSpec xmlns="http://www.openarchives.org/OAI/2.0/">science</setSpec>
+        </header>
+        <metadata xmlns="http://www.openarchives.org/OAI/2.0/">
+            <mods xmlns="http://www.loc.gov/mods/v3" schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd" version="3.7">
+                <recordInfo xmlns="http://www.loc.gov/mods/v3">
+                    <recordContentSource xmlns="http://www.loc.gov/mods/v3">ths</recordContentSource>
+                    <recordCreationDate xmlns="http://www.loc.gov/mods/v3">2021-09-29</recordCreationDate>
+                </recordInfo>
+                <identifier xmlns="http://www.loc.gov/mods/v3" type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:ths:diva-9999</identifier>
+                <titleInfo xmlns="http://www.loc.gov/mods/v3" lang="swe">
+                    <title xmlns="http://www.loc.gov/mods/v3">Test foo bar baz</title>
+                    <subTitle xmlns="http://www.loc.gov/mods/v3">Hejsan hoppsan</subTitle>
+                </titleInfo>
+                <abstract xmlns="http://www.loc.gov/mods/v3" lang="eng">DKLdjsfklsdjfssdf</abstract>
+                <subject xmlns="http://www.loc.gov/mods/v3" lang="eng" authority="uka.se" href="60303">
+                    <topic xmlns="http://www.loc.gov/mods/v3">Humanities and the Arts</topic>
+                    <topic xmlns="http://www.loc.gov/mods/v3">Philosophy, Ethics and Religion</topic>
+                    <topic xmlns="http://www.loc.gov/mods/v3">Religious Studies</topic>
+                </subject>
+                <language xmlns="http://www.loc.gov/mods/v3">
+                    <languageTerm xmlns="http://www.loc.gov/mods/v3" authority="iso639-2b" type="code">swe</languageTerm>
+                </language>
+                <genre xmlns="http://www.loc.gov/mods/v3" authority="kb.se" type="outputType">publication/book-chapter</genre>
+                <genre xmlns="http://www.loc.gov/mods/v3" authority="svep" type="contentType">vet</genre>
+                <note xmlns="http://www.loc.gov/mods/v3" type="publicationStatus">Published</note>
+                <name xmlns="http://www.loc.gov/mods/v3" authority="ths" type="personal">
+                    <namePart xmlns="http://www.loc.gov/mods/v3" type="family">Ninja</namePart>
+                    <namePart xmlns="http://www.loc.gov/mods/v3" type="given">Kalle</namePart>
+                    <namePart xmlns="http://www.loc.gov/mods/v3" type="termsOfAddress">Högskolelektor</namePart>
+                    <namePart xmlns="http://www.loc.gov/mods/v3" type="date">1984-</namePart>
+                    <role xmlns="http://www.loc.gov/mods/v3">
+                        <roleTerm xmlns="http://www.loc.gov/mods/v3" authority="marcrelator" type="code">aut</roleTerm>
+                    </role>
+                    <affiliation xmlns="http://www.loc.gov/mods/v3">Enskilda Högskolan Stockholm, Avdelningen för religionsvetenskap och teologi</affiliation>
+                    <nameIdentifier xmlns="http://www.loc.gov/mods/v3" type="ths">kalle.ninja</nameIdentifier>
+                    <nameIdentifier xmlns="http://www.loc.gov/mods/v3" type="orcid">0000-0001-7334-9999</nameIdentifier>
+                </name>
+                <note xmlns="http://www.loc.gov/mods/v3" type="creatorCount">1</note>
+                <originInfo xmlns="http://www.loc.gov/mods/v3">
+                    <dateIssued xmlns="http://www.loc.gov/mods/v3">2021</dateIssued>
+                    <publisher xmlns="http://www.loc.gov/mods/v3">Enskilda Högskolan Stockholm</publisher>
+                    <place xmlns="http://www.loc.gov/mods/v3">
+                        <placeTerm xmlns="http://www.loc.gov/mods/v3">Bromma</placeTerm>
+                    </place>
+                </originInfo>
+                <relatedItem xmlns="http://www.loc.gov/mods/v3" type="series">
+                    <titleInfo xmlns="http://www.loc.gov/mods/v3">
+                        <title xmlns="http://www.loc.gov/mods/v3">Studia Theologica Holmiensia</title>
+                        <partNumber xmlns="http://www.loc.gov/mods/v3">34</partNumber>
+                    </titleInfo>
+                    <identifier xmlns="http://www.loc.gov/mods/v3" type="issn" displayLabel="ISSN">1401-1557</identifier>
+                </relatedItem>
+                <location xmlns="http://www.loc.gov/mods/v3">
+                    <url xmlns="http://www.loc.gov/mods/v3">https://example.com/weee</url>
+                </location>
+                <location xmlns="http://www.loc.gov/mods/v3">
+                    <url xmlns="http://www.loc.gov/mods/v3" access="raw object" usage="primary" displayLabel="fulltext:print">http://ths.diva-portal.org/smash/get/diva2:675767567567567/FULLTEXT01.pdf</url>
+                </location>
+                <accessCondition xmlns="http://www.loc.gov/mods/v3">gratis</accessCondition>
+                <physicalDescription xmlns="http://www.loc.gov/mods/v3">
+                    <form xmlns="http://www.loc.gov/mods/v3" authority="marcform">electronic</form>
+                </physicalDescription>
+                <typeOfResource xmlns="http://www.loc.gov/mods/v3">text</typeOfResource>
+            </mods>
+        </metadata>
+    </record>
+  </ListRecords>
+</OAI-PMH>

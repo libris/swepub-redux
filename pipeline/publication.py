@@ -867,6 +867,19 @@ class Contribution:
         """ Sets identifiedBy values """
         self._body['agent']['identifiedBy'] = identified_bys
 
+    @property
+    def orcid(self):
+        for id_by in self.identified_bys:
+            if id_by.get("@type") == "ORCID":
+                return id_by
+        return None
+
+    @property
+    def local_id(self):
+        for id_by in self.identified_bys:
+            if id_by.get("@type") == "Local":
+                return id_by
+        return None
 
 def safe_concat(first, second, separator=' '):
     if first and second:

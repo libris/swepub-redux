@@ -105,7 +105,7 @@ def get_record_info(field_events):
     return stats
 
 
-def validate_stuff(field_events, session, harvest_cache):
+def validate_stuff(field_events, session, harvest_cache, body):
     for id_type in field_events.values():
         for field in id_type.values():
             if field.validation_status != Validation.VALID:
@@ -114,7 +114,7 @@ def validate_stuff(field_events, session, harvest_cache):
                 if field.id_type == "ISI":
                     validate_isi(field)
                 if field.id_type == "ORCID":
-                    validate_orcid(field)
+                    validate_orcid(field, body, harvest_cache)
                 if field.id_type == "ISSN":
                     validate_issn(field, session, harvest_cache)
                 if field.id_type == "DOI":
@@ -273,10 +273,10 @@ def validate(body, harvest_cache, session):
                     str(match.full_path), id_type, match.value
                 )
 
-    validate_stuff(field_events, session, harvest_cache)
+    validate_stuff(field_events, session, harvest_cache, body)
     enrich_stuff(body, field_events)
     # Second validation pass to see if enrichments made some values valid
-    validate_stuff(field_events, session, harvest_cache)
+    validate_stuff(field_events, session, harvest_cache, body)
     normalize_stuff(body, field_events)
     # Beware, after this point all field_event paths must be considered potentially corrupt,
     # as moving things around places them at new paths!

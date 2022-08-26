@@ -7,6 +7,7 @@ from pipeline.auditors.contributor import ContributorAuditor
 from pipeline.auditors.issn import ISSNAuditor
 from pipeline.auditors.subjects import SubjectsAuditor
 from pipeline.auditors.oa import OAAuditor
+from pipeline.auditors.orcid import ORCIDAuditor
 from pipeline.publication import Publication
 
 AUDITORS = [
@@ -17,6 +18,7 @@ AUDITORS = [
     ISSNAuditor(),
     SubjectsAuditor(),
     OAAuditor(),
+    ORCIDAuditor(),
 ]
 
 auditors = AUDITORS

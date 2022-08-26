@@ -57,6 +57,7 @@ DOAB_CACHE_FILE = path.join(FILE_PATH, "../cache/doab.json")
 DOAB_CACHE_TIME = 604800
 
 ID_CACHE_FILE = path.join(FILE_PATH, "../cache/id_cache.json")
+LOCALID_ORCID_CACHE_FILE = path.join(FILE_PATH, "../cache/localid_orcid_cache.json")
 KNOWN_ISSN_FILE = path.join(FILE_PATH, "../resources/known_valid_issn.txt")
 KNOWN_DOI_FILE = path.join(FILE_PATH, "../resources/known_valid_doi.txt")
 
@@ -427,6 +428,18 @@ def _get_harvest_cache_manager(manager):
     except Exception as e:
         log.warning(f"Failed loading ID cache file, starting fresh (error: {e})")
 
+    previously_found_localid_to_orcid = {}
+    try:
+        with open(LOCALID_ORCID_CACHE_FILE, "rb") as f:
+            previously_found_localid_to_orcid = json.loads(f.read())
+        log.info(
+            f"Cache populated with {len(previously_found_localid_to_orcid)} LocalID->ORCID from {LOCALID_ORCID_CACHE_FILE}"
+        )
+    except FileNotFoundError:
+        log.warning("LocalID->ORCID cache file not found, starting fresh")
+    except Exception as e:
+        log.warning(f"Failed loading LocalID->ORCID cache file, starting fresh (error: {e})")
+
     # If we have files with known ISSN/DOI numbers, use them to populate the cache
     known_issn = {}
     known_doi = {}
@@ -456,6 +469,8 @@ def _get_harvest_cache_manager(manager):
     issn_new = manager.dict(dict.fromkeys(issn_not_in_static, 1))
     issn_static = manager.dict(known_issn)
     harvest_meta = manager.dict({})
+    localid_to_orcid = manager.dict(previously_found_localid_to_orcid)
+    localid_without_orcid = manager.dict({})
     doab = manager.dict(_load_doab())
 
     return manager.dict(
@@ -466,6 +481,8 @@ def _get_harvest_cache_manager(manager):
             "issn_static": issn_static,
             "meta": harvest_meta,
             "doab": doab,
+            "localid_to_orcid": localid_to_orcid,
+            "localid_without_orcid": localid_without_orcid,
         }
     )
 
@@ -658,6 +675,11 @@ if __name__ == "__main__":
         diff = round(t1 - t0, 2)
         log.info(f"Phase 1 (harvesting) ran for {diff} seconds")
 
+
+        # TODO:
+        # enrich_even_more(harvest_cache)
+
+
         t0 = t1
         auto_classify(incremental, added_converted_rowids.keys())
         t1 = time.time()
@@ -703,7 +725,7 @@ if __name__ == "__main__":
         log.info(f'Sources harvested: {" ".join(harvest_cache["meta"]["sources_succeeded"])}')
         if harvest_cache["meta"]["sources_failed"]:
             log.warning(f'Sources failed: {" ".join(harvest_cache["meta"]["sources_failed"])}')
-        # Save ISSN/DOI cache for use next time
+        # Save ISSN/DOI and LocalID->ORCID cache for use next time
         try:
             log.info(
                 f'Saving {len(harvest_cache["issn_new"]) + len(harvest_cache["doi_new"])} cached IDs to {ID_CACHE_FILE}'
@@ -719,3 +741,14 @@ if __name__ == "__main__":
                 )
         except Exception as e:
             log.warning(f"Failed saving harvest ID cache to {ID_CACHE_FILE}: {e}")
+
+        try:
+            log.info(
+                f'Saving {len(harvest_cache["localid_to_orcid"])} cached LocalID->ORCID to {LOCALID_ORCID_CACHE_FILE}'
+            )
+            with open(LOCALID_ORCID_CACHE_FILE, "wb") as f:
+                f.write(
+                    json.dumps(dict(harvest_cache["localid_to_orcid"]))
+                )
+        except Exception as e:
+            log.warning(f"Failed saving LocalID->ORCID cache to {LOCALID_ORCID_CACHE_FILE}: {e}")
