@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import orjson
 from functools import wraps
 from os import path, getenv
 
@@ -333,14 +334,19 @@ def bibliometrics_api():
             yield f'{{"hits": ['
 
         total = 0
+        output = ""
         for row in cur.execute(str(q), list(flatten(values))):
             (result, build_errors) = bibliometrics.build_result(row, fields)
             if export_as_csv:
-                yield bibliometrics_csv_export(result, fields, csv_flavor, total)
+                output = f"{output}{bibliometrics_csv_export(result, fields, csv_flavor, total)}"
             else:
                 maybe_comma = "," if total > 0 else ""
-                yield maybe_comma + json.dumps(result)
+                output = f"{output}{maybe_comma}{json.dumps(result)}"
             total += 1
+            if total % 256 == 0:
+                yield output
+                output = ""
+        yield output
 
         if not export_as_csv:
             yield "],"
@@ -1130,31 +1136,37 @@ def process_get_export(source=None):
             yield f"# Swepub data processing export. Query handled at {handled_at}. Query parameters: {request.args.to_dict()}\n"
         else:
             yield f'{{"code": "{source}",' f'"hits": ['
-        count = 0
+        total = 0
+        output = ""
         for row in cur.execute(str(q), list(flatten(values))):
             flask_url = url_for("process_get_original_publication", record_id=row["oai_id"])
             base_url, _parts = get_base_url(request)
             mods_url = f"{base_url}{flask_url}"
             export_result = build_export_result(
-                json.loads(row["data"]),
-                json.loads(row["events"]),
+                orjson.loads(row["data"]),
+                orjson.loads(row["events"]),
                 selected_flags,
                 row["oai_id"],
                 mods_url,
             )
 
             if export_as_csv:
-                yield process_csv_export(
+                csv_result = process_csv_export(
                     export_result,
                     csv_flavor,
                     request.args.to_dict(),
                     handled_at,
                     total_docs,
                 )
+                output = f"{output}{csv_result}"
             else:
-                maybe_comma = "," if count > 0 else ""
-                yield maybe_comma + json.dumps(export_result)
-            count += 1
+                maybe_comma = "," if total > 0 else ""
+                output = f"{output}{maybe_comma}{json.dumps(export_result)}"
+            total += 1
+            if total % 256 == 0:
+                yield output
+                output = ""
+        yield output
         if not export_as_csv:
             yield "],"
             if g.from_yr and g.to_yr:
