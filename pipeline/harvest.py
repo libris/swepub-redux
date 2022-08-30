@@ -39,6 +39,7 @@ from pipeline.oai import RecordIterator
 from pipeline.validate import validate, should_be_rejected
 from pipeline.audit import audit
 from pipeline.legacy_sync import legacy_sync
+from pipeline.enrich_again import enrich_again
 
 # To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..
 from pipeline.swepublog import logger as log
@@ -671,14 +672,12 @@ if __name__ == "__main__":
                 executor.submit(harvest_wrapper, source)
             executor.shutdown(wait=True)
 
+        # TODO:
+        enrich_again(harvest_cache)
+
         t1 = time.time()
         diff = round(t1 - t0, 2)
         log.info(f"Phase 1 (harvesting) ran for {diff} seconds")
-
-
-        # TODO:
-        # enrich_even_more(harvest_cache)
-
 
         t0 = t1
         auto_classify(incremental, added_converted_rowids.keys())

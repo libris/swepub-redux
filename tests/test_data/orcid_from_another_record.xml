@@ -63,6 +63,19 @@
                     <form xmlns="http://www.loc.gov/mods/v3" authority="marcform">electronic</form>
                 </physicalDescription>
                 <typeOfResource xmlns="http://www.loc.gov/mods/v3">text</typeOfResource>
+                <relatedItem type="host">
+                    <titleInfo>
+                        <title>Biotechnology for Biofuels</title>
+                    </titleInfo>
+                    <part>
+                        <detail type="volume">
+                            <number>6</number>
+                        </detail>
+                        <detail type="issue">
+                            <number>2</number>
+                        </detail>
+                    </part>
+                </relatedItem>
             </mods>
         </metadata>
     </record>
@@ -107,7 +120,7 @@
                     </role>
                     <affiliation xmlns="http://www.loc.gov/mods/v3">Enskilda Högskolan Stockholm, Avdelningen för religionsvetenskap och teologi</affiliation>
                     <nameIdentifier xmlns="http://www.loc.gov/mods/v3" type="ths">kalle.ninja</nameIdentifier>
-                    <nameIdentifier xmlns="http://www.loc.gov/mods/v3" type="orcid">0000-0001-7334-9999</nameIdentifier>
+                    <nameIdentifier xmlns="http://www.loc.gov/mods/v3" type="orcid">0000-0001-7865-3480</nameIdentifier>
                 </name>
                 <note xmlns="http://www.loc.gov/mods/v3" type="creatorCount">1</note>
                 <originInfo xmlns="http://www.loc.gov/mods/v3">
@@ -135,6 +148,19 @@
                     <form xmlns="http://www.loc.gov/mods/v3" authority="marcform">electronic</form>
                 </physicalDescription>
                 <typeOfResource xmlns="http://www.loc.gov/mods/v3">text</typeOfResource>
+                <relatedItem type="host">
+                    <titleInfo>
+                        <title>Biotechnology for Biofuels</title>
+                    </titleInfo>
+                    <part>
+                        <detail type="volume">
+                            <number>6</number>
+                        </detail>
+                        <detail type="issue">
+                            <number>2</number>
+                        </detail>
+                    </part>
+                </relatedItem>
             </mods>
         </metadata>
     </record>
