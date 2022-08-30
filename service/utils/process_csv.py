@@ -47,13 +47,13 @@ def export(hit, flavor="csv", query=None, handled_at=None, total=0):
                 if "old_value" in flag:
                     ov = flag["old_value"]
                     if type(ov) == list:
-                        row["old_value"] = list_to_string_delim.join(ov)
+                        row["old_value"] = list_to_string_delim.join([str(item) for item in ov])
                     else:
                         row["old_value"] = ov
                 if "new_value" in flag:
                     nv = flag["new_value"]
                     if type(nv) == list:
-                        row["new_value"] = list_to_string_delim.join(nv)
+                        row["new_value"] = list_to_string_delim.join([str(item) for item in nv])
                     else:
                         row["new_value"] = nv
                 rows.append(row)
