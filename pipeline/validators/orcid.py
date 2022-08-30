@@ -1,5 +1,4 @@
 import re
-import time
 
 from stdnum.iso7064.mod_11_2 import is_valid
 
@@ -83,8 +82,8 @@ def validate_orcid(field, body, harvest_cache):
     for id_by in parent_value:
         if id_by.get("@type") == "Local" and id_by.get("value") and id_by.get("source", {}).get("code"):
             cache_key = f"{id_by.get('source').get('code')}_{id_by.get('value')}"
-            harvest_cache["localid_to_orcid"][cache_key] = [field.value, int(time.time())]
-            print("Added", id_by.get("value"), "to cache for", [field.value, time.time()])
+            harvest_cache["localid_to_orcid"][cache_key] = field.value
+            print("Added", id_by.get("value"), "to cache for", field.value)
             break
 
     field.validation_status = Validation.VALID

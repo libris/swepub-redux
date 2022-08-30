@@ -13,11 +13,15 @@ class ORCIDAuditor(BaseAuditor):
         self.name = ORCIDAuditor.__name__
 
     def audit(self, publication, audit_events, harvest_cache, _session):
-        for contribution in publication.contributions:
+        for idx, contribution in enumerate(publication.contributions):
             if contribution.local_id and not contribution.orcid:
+                print("contrib", idx, contribution.body)
                 cache_key = f"{contribution.local_id.get('source').get('code')}_{contribution.local_id.get('value')}"
+
+                agent_path = f"instanceOf.contribution.[{idx}].agent.identifiedBy"
+
                 cache_list = harvest_cache["localid_without_orcid"].get(cache_key, [])
-                cache_list.append(publication.id)
+                cache_list.append([publication.id, agent_path])
                 harvest_cache["localid_without_orcid"][cache_key] = cache_list
         return publication, audit_events
 

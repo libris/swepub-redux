@@ -81,6 +81,7 @@ def update_at_path(root, path, new_value):
     #print(f"Replacing {parent_object[key]} with {new_value} at {path}")
     parent_object[key] = new_value
 
+
 # Remove the value at path and clear any (now) empty containing structures for that value.
 # _additionally_ clean min_prune_levels above it (even it they're not empty).
 def remove_at_path(root, path, min_prune_level):
@@ -122,6 +123,12 @@ def add_sibling_at_path(root, path, type, value):
     # Figure out and return the path for the new sibling (surely there is a better
     # way to do this...)
     return f"{base_path}.[{len(found[0].value) - 1}].value"
+
+
+def append_at_path(root, path, type, new_value):
+    found = parse(path).find(root)
+    found[0].value.append({"@type": type, "value": new_value})
+    return f"{path}.[{len(found[0].value) - 1}].value"
 
 
 def get_at_path(root, path):
