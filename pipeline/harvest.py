@@ -57,8 +57,11 @@ DOAB_CACHE_FILE = path.join(FILE_PATH, "../cache/doab.json")
 DOAB_CACHE_TIME = 604800
 
 ID_CACHE_FILE = path.join(FILE_PATH, "../cache/id_cache.json")
+LOCALID_ORCID_CACHE_FILE = path.join(FILE_PATH, "../cache/localid_orcid_cache.json")
+KNOWN_LOCALID_TO_ORCID_FILE = path.join(FILE_PATH, "../resources/known_localid_to_orcid.json")
 KNOWN_ISSN_FILE = path.join(FILE_PATH, "../resources/known_valid_issn.txt")
 KNOWN_DOI_FILE = path.join(FILE_PATH, "../resources/known_valid_doi.txt")
+
 
 DEFAULT_SWEPUB_SOURCE_FILE = path.join(FILE_PATH, "../resources/sources.json")
 TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = [
@@ -300,7 +303,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, batch):
                 if accepted:
                     num_accepted += 1
                     converted = convert(xml)
-                    (field_events, record_info) = validate(converted, harvest_cache, session)
+                    (field_events, record_info) = validate(converted, harvest_cache, session, source)
                     (audited, audit_events) = audit(converted, harvest_cache, session)
                 elif not record.deleted:
                     num_rejected += 1
@@ -427,6 +430,18 @@ def _get_harvest_cache_manager(manager):
     except Exception as e:
         log.warning(f"Failed loading ID cache file, starting fresh (error: {e})")
 
+    previously_found_localid_to_orcid = {}
+    try:
+        with open(LOCALID_ORCID_CACHE_FILE, "rb") as f:
+            previously_found_localid_to_orcid = json.loads(f.read())
+        log.info(
+            f"Cache populated with {len(previously_found_localid_to_orcid)} LocalID->ORCID from {LOCALID_ORCID_CACHE_FILE}"
+        )
+    except FileNotFoundError:
+        log.warning("LocalID->ORCID cache file not found, starting fresh")
+    except Exception as e:
+        log.warning(f"Failed loading LocalID->ORCID cache file, starting fresh (error: {e})")
+
     # If we have files with known ISSN/DOI numbers, use them to populate the cache
     known_issn = {}
     known_doi = {}
@@ -445,6 +460,17 @@ def _get_harvest_cache_manager(manager):
             )
     except Exception as e:
         log.warning(f"Failed loading ISSN/DOI files: {e}")
+
+    known_localid_to_orcid = {}
+    try:
+        with open(KNOWN_LOCALID_TO_ORCID_FILE, "rb") as f:
+            known_localid_to_orcid = json.loads(f.read())
+            log.info(
+                f"Cache populated with {len(known_localid_to_orcid)} LocalID->ORCID from {KNOWN_LOCALID_TO_ORCID_FILE}"
+            )
+    except Exception as e:
+        log.warning(f"Failed loading static LocalID->ORCID file: {e}")
+
     # Stuff seen during requests to external sources should be saved for future use,
     # but we don't want to waste time saving ISSN/DOIs already known from the 'static' files,
     # hence separating "stuff learned during harvest" from "stuff learned from static files".
@@ -456,6 +482,8 @@ def _get_harvest_cache_manager(manager):
     issn_new = manager.dict(dict.fromkeys(issn_not_in_static, 1))
     issn_static = manager.dict(known_issn)
     harvest_meta = manager.dict({})
+    localid_to_orcid_new = manager.dict(previously_found_localid_to_orcid)
+    localid_to_orcid_static = manager.dict(known_localid_to_orcid)
     doab = manager.dict(_load_doab())
 
     return manager.dict(
@@ -466,6 +494,8 @@ def _get_harvest_cache_manager(manager):
             "issn_static": issn_static,
             "meta": harvest_meta,
             "doab": doab,
+            "localid_to_orcid_new": localid_to_orcid_new,
+            "localid_to_orcid_static": localid_to_orcid_static
         }
     )
 
@@ -703,7 +733,7 @@ if __name__ == "__main__":
         log.info(f'Sources harvested: {" ".join(harvest_cache["meta"]["sources_succeeded"])}')
         if harvest_cache["meta"]["sources_failed"]:
             log.warning(f'Sources failed: {" ".join(harvest_cache["meta"]["sources_failed"])}')
-        # Save ISSN/DOI cache for use next time
+        # Save ISSN/DOI and LocalID->ORCID cache for use next time
         try:
             log.info(
                 f'Saving {len(harvest_cache["issn_new"]) + len(harvest_cache["doi_new"])} cached IDs to {ID_CACHE_FILE}'
@@ -719,3 +749,15 @@ if __name__ == "__main__":
                 )
         except Exception as e:
             log.warning(f"Failed saving harvest ID cache to {ID_CACHE_FILE}: {e}")
+
+
+        try:
+            log.info(
+                f'Saving {len(harvest_cache["localid_to_orcid_new"])} cached LocalID->ORCID to {LOCALID_ORCID_CACHE_FILE}'
+            )
+            with open(LOCALID_ORCID_CACHE_FILE, "wb") as f:
+                f.write(
+                    json.dumps(dict(harvest_cache["localid_to_orcid_new"]))
+                )
+        except Exception as e:
+            log.warning(f"Failed saving LocalID->ORCID cache to {LOCALID_ORCID_CACHE_FILE}: {e}")

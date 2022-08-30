@@ -24,6 +24,7 @@ from pipeline.enrichers.isi import recover_isi
 from pipeline.enrichers.orcid import recover_orcid
 from pipeline.enrichers.doi import recover_doi
 from pipeline.enrichers.unicode import recover_unicode
+from pipeline.enrichers.localid import recover_orcid_from_localid
 
 MINIMUM_LEVEL_FILTER = et.XSLT(
     et.parse(path.join(path.dirname(path.abspath(__file__)), "../resources/minimumlevelfilter.xsl"))
@@ -34,6 +35,7 @@ PATHS = {
     "DOI": ('identifiedBy[?(@.@type=="DOI")].value',),
     "ISI": ('identifiedBy[?(@.@type=="ISI")].value',),
     "ORCID": ('instanceOf.contribution.[*].agent.identifiedBy[?(@.@type=="ORCID")].value',),
+    "LocalID": ('instanceOf.contribution.[*].agent.identifiedBy[?(@.@type=="Local")]',),
     "publication_year": ('publication[?(@.@type=="Publication")].date',),
     "creator_count": ('instanceOf.[*].hasNote[?(@.@type=="CreatorCount")].label',),
     "ISBN": (
@@ -105,7 +107,7 @@ def get_record_info(field_events):
     return stats
 
 
-def validate_stuff(field_events, session, harvest_cache):
+def validate_stuff(field_events, session, harvest_cache, body, source):
     for id_type in field_events.values():
         for field in id_type.values():
             if field.validation_status != Validation.VALID:
@@ -114,7 +116,7 @@ def validate_stuff(field_events, session, harvest_cache):
                 if field.id_type == "ISI":
                     validate_isi(field)
                 if field.id_type == "ORCID":
-                    validate_orcid(field)
+                    validate_orcid(field, body, harvest_cache, source)
                 if field.id_type == "ISSN":
                     validate_issn(field, session, harvest_cache)
                 if field.id_type == "DOI":
@@ -161,6 +163,23 @@ def enrich_stuff(body, field_events):
             field_events[id_type][field.path] = field
 
 
+def enrich_stuff_a_little_more(body, field_events, harvest_cache, source):
+    created_fields = {}
+    for id_type in field_events.values():
+        for field in id_type.values():
+            added_stuff = []
+            if field.id_type == "LocalID":
+                added_stuff = recover_orcid_from_localid(body, field, harvest_cache, source)
+
+            if added_stuff:
+                if field.id_type not in created_fields:
+                    created_fields[field.id_type] = []
+                created_fields[field.id_type].extend(added_stuff)
+    for id_type, fields in created_fields.items():
+        for field in fields:
+            field_events[id_type][field.path] = field
+
+
 def normalize_stuff(body, field_events):
     for id_type in field_events.values():
         for field in id_type.values():
@@ -170,7 +189,7 @@ def normalize_stuff(body, field_events):
                     normalize_isbn(body, field)
                 if field.id_type == "ISI":
                     normalize_isi(body, field)
-                if field.id_type == "ORCID":
+                if field.id_type == "ORCID" or field.id_type == "LocalID":
                     normalize_orcid(body, field)
                 if field.id_type == "ISSN":
                     normalize_issn(body, field)
@@ -259,7 +278,7 @@ def get_clean_events(field_events):
     return events_only
 
 
-def validate(body, harvest_cache, session):
+def validate(body, harvest_cache, session, source):
     field_events = {}
     # For each path, create a FieldMeta object that we'll use during all
     # enrichments/validations/normalizations to keep some necessary state
@@ -273,10 +292,11 @@ def validate(body, harvest_cache, session):
                     str(match.full_path), id_type, match.value
                 )
 
-    validate_stuff(field_events, session, harvest_cache)
+    validate_stuff(field_events, session, harvest_cache, body, source)
     enrich_stuff(body, field_events)
     # Second validation pass to see if enrichments made some values valid
-    validate_stuff(field_events, session, harvest_cache)
+    validate_stuff(field_events, session, harvest_cache, body, source)
+    enrich_stuff_a_little_more(body, field_events, harvest_cache, source)
     normalize_stuff(body, field_events)
     # Beware, after this point all field_event paths must be considered potentially corrupt,
     # as moving things around places them at new paths!
