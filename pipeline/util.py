@@ -138,7 +138,7 @@ def append_at_path(root, path, type, new_value):
 
 
 def get_localid_cache_key(id_by, source):
-    return hashlib.sha256(f"{source}_{id_by.get('source').get('code')}_{id_by.get('value')}".encode("utf-8")).hexdigest()[:32]
+    return hashlib.sha256(f"{source}_{id_by.get('source', {}).get('code')}_{id_by.get('value')}".encode("utf-8")).hexdigest()[:32]
 
 
 # This is a heuristic, not an exact algorithm.

@@ -38,5 +38,9 @@
   "add_oa": {
     "swe": "Öppen tillgång",
     "en": "Open access"
+  },
+  "LocalID": {
+    "swe": "ORCID matchat med lokalt ID",
+    "en": "ORCID matched with local ID"
   }
 }

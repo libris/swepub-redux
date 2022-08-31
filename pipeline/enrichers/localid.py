@@ -10,6 +10,9 @@ def recover_orcid_from_localid(body, field, harvest_cache, source):
             # This agent already has an ORCID so nothing to do
             return
 
+    if not isinstance(field.value, dict) or not field.value.get("source", {}).get("code") or not field.value.get("value"):
+        return
+
     cache_key = get_localid_cache_key(field.value, source)
     cache_result = harvest_cache["localid_to_orcid_static"].get(cache_key) or harvest_cache["localid_to_orcid_new"].get(cache_key)
     if cache_result:
@@ -20,14 +23,12 @@ def recover_orcid_from_localid(body, field, harvest_cache, source):
                 event_type="enrichment",
                 code="add_orcid_from_localid",
                 value=orcid,
-                initial_value=source_id,
+                initial_value=f"{source_id}, {field.value.get('value')}",
                 result="enriched",
             )
         )
         created_fields.append(
             FieldMeta(path=new_path, id_type=field.id_type, value=orcid, validation_status=Validation.VALID)
         )
-
-    field.enrichment_status = Enrichment.ENRICHED
-
-    return created_fields
+        field.enrichment_status = Enrichment.ENRICHED
+        return created_fields
