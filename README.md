@@ -141,9 +141,9 @@ python3 -m misc.fetch_records uniarts ths # Saves to ./_xml by default; -h for o
 # Start OAI-PMH server in the background or in another terminal
 python3 -m misc.oai_pmh_server # See -h for options
 
-# Now harvest:
+# Now harvest (--local-server defaults to http://localhost:8383/oai)
 python3 -m pipeline.harvest -f uniarts ths --local-server
-# --local-server defaults to http://localhost:8383/oai
+```
 
 This "OAI-PMH server" supports only the very bare minimum for `pipeline.harvest` to work
 in (non-incremental mode). Remember that if you run `misc.fetch_records` again, you need
