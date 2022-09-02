@@ -17,8 +17,9 @@ RESULTS_PER_QUERY = 100
 
 # Given a directory a directory structure created by `fetch_records.py`, this is
 # the _very bare minimum_ necessary to make (non-incremental) harvesting with pipeline.harvest work.
-@app.route("/oai/<divaornot>/<source>", methods=["GET"])
-def oai(divaornot, source):
+@app.route("/oai/diva/<source>", methods=["GET"])
+@app.route("/oai/foo/<source>", methods=["GET"])
+def oai(source):
     global data
     global files
 
