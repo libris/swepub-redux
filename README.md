@@ -122,3 +122,29 @@ Now you should be able to harvest it:
 # export SWEPUB_SOURCE_FILE=tests/sources_test.json
 python3 -m pipeline.harvest -f foobar
 ```
+
+
+## Working with local XML files
+
+To quickly test changes without having to hit real OAI-PMH servers over and over,
+you can download the XML files locally and start a local OAI-PMH server from which
+you can harvest.
+
+
+```bash
+# Make sure you're in the virtualenv created above
+
+# Harvest to disk
+python3 -m misc.fetch_records uniarts ths # Saves to ./_xml by default; -h for options
+# _or_, to fetch all sources: python3 -m misc.fetch_records
+
+# Start OAI-PMH server in the background or in another terminal
+python3 -m misc.oai_pmh_server # See -h for options
+
+# Now harvest:
+python3 -m pipeline.harvest -f uniarts ths --local-server
+# --local-server defaults to http://localhost:8383/oai
+
+This "OAI-PMH server" supports only the very bare minimum for `pipeline.harvest` to work
+in (non-incremental mode). Remember that if you run `misc.fetch_records` again, you need
+to restart `misc.oai_pmh_server` for it to pick up the changes.

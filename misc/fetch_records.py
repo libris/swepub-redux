@@ -9,7 +9,8 @@ import time
 
 from concurrent.futures import ProcessPoolExecutor
 import sys
-from pipeline.oai import RecordIterator
+
+from pipeline import sickle
 from pipeline.swepublog import logger as log
 
 DEFAULT_SWEPUB_ENV = os.getenv("SWEPUB_ENV", "DEV")  # or QA, PROD
@@ -24,23 +25,27 @@ def fetch(source):
     start_time = time.time()
     count = 0
     for source_set in source["sets"]:
-        path = Path(
-            f"{os.getenv('SWEPUB_FETCH_OUTPUT_DIRECTORY')}/{source['code']}/{source_set['metadata_prefix']}"
-        )
+        path = Path(f"{os.getenv('SWEPUB_FETCH_OUTPUT_DIRECTORY')}/{source['code']}")
         path.mkdir(mode=0o755, parents=True, exist_ok=True)
         harvest_info = f'{source_set["url"]} ({source_set["subset"]}, {source_set["metadata_prefix"]})'
         log.info(f"[{source['code']}]\t START fetch: {harvest_info}")
-        record_iterator = RecordIterator(
-            source["code"], source_set, None, None, SWEPUB_USER_AGENT
-        )
+
+        sickle_client = sickle.Sickle(source_set["url"], max_retries=8, timeout=90, headers={"User-Agent": SWEPUB_USER_AGENT})
+        list_record_params = {
+            "metadataPrefix": source_set["metadata_prefix"],
+            "ignore_deleted": False
+        }
+        if source_set["subset"]:
+            list_record_params["set"] = source_set["subset"]
+
+        records = sickle_client.ListRecords(**list_record_params)
 
         try:
-            for record in record_iterator:
-                if record.is_successful():
-                    file_path = path / f"{sanitize_filename(record.oai_id)}.xml"
-                    with file_path.open("w") as f:
-                        f.write(record.xml)
-                    count += 1
+            for record in records:
+                file_path = path / f"{sanitize_filename(record.header.identifier)}.xml"
+                with file_path.open("w") as f:
+                    f.write(record.raw)
+                count += 1
         except Exception as e:
             log.info(f"[{source['code']}]\t FAILED fetch, error: {e}")
             return
@@ -72,8 +77,8 @@ def handle_args():
         help="Source(s) to process (if not specified, everything in the source will be processed).",
     )
     parser.add_argument(
-        "-o",
-        "--output-directory",
+        "-d",
+        "--directory",
         default="./_xml",
         help="Directory to write results to.",
     )
@@ -99,7 +104,7 @@ if __name__ == "__main__":
     elif not os.getenv("SWEPUB_SOURCE_FILE", None):
         os.environ["SWEPUB_SOURCE_FILE"] = DEFAULT_SWEPUB_SOURCE_FILE
 
-    os.environ["SWEPUB_FETCH_OUTPUT_DIRECTORY"] = args.output_directory
+    os.environ["SWEPUB_FETCH_OUTPUT_DIRECTORY"] = args.directory
 
     log.info(f"SWEPUB_ENV is {os.environ['SWEPUB_ENV']}")
 
