@@ -91,7 +91,7 @@ def init(xml_path):
     ]
     files = {}
     for directory in directories:
-        files[directory.name] = [file for file in directory.glob("*") if file.is_file()]
+        files[directory.name] = [file for file in directory.glob("*.xml") if file.is_file()]
 
 
 if __name__ == "__main__":
