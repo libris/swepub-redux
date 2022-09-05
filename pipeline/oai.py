@@ -23,7 +23,7 @@ RequestExceptions = (
 
 
 class RecordIterator:
-    def __init__(self, code, source_set, harvest_from, harvest_to, user_agent):
+    def __init__(self, code, source_set, harvest_from, harvest_to, user_agent, should_transform=True):
         self.set = source_set
         self.stylesheet = ModsStylesheet(code, self.set["url"])
         self.records = None
@@ -31,6 +31,7 @@ class RecordIterator:
         self.harvest_from = harvest_from
         self.harvest_to = harvest_to
         self.user_agent = user_agent
+        self.should_transform = should_transform
 
     def __iter__(self):
         return self
@@ -75,8 +76,10 @@ class RecordIterator:
         #print(f"next record: {record.header.identifier}") # status="deleted"
         root = ET.fromstring(record.header.raw)
         deleted = "status" in root.attrib and root.attrib["status"] == "deleted"
-        transformed_record = self.stylesheet.apply(record.raw)
-        return Record(record.header.identifier, deleted, transformed_record)
+        if self.should_transform:
+            return Record(record.header.identifier, deleted, self.stylesheet.apply(record.raw))
+        else:
+            return Record(record.header.identifier, deleted, record.raw)
 
 
 class Record:
