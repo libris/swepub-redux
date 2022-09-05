@@ -150,6 +150,11 @@ def harvest(source):
     num_failed = 0
 
     for source_set in source["sets"]:
+        if environ.get("SWEPUB_LOCAL_SERVER"):
+            if "diva" in source_set["url"]:
+                source_set["url"] = f"{environ.get('SWEPUB_LOCAL_SERVER')}/diva/{source['code']}"
+            else:
+                source_set["url"] = f"{environ.get('SWEPUB_LOCAL_SERVER')}/foo/{source['code']}"
         record_iterator = RecordIterator(source["code"], source_set, fromtime, None, SWEPUB_USER_AGENT)
         # For each set we put records into batches and let a number of workers handle these batches.
         try:
@@ -556,6 +561,13 @@ def handle_args():
         default="",
         help="Source(s) to process (if not specified, everything in sources.json will be processed, e.g. uniarts ths mdh",
     )
+    parser.add_argument(
+        "--local-server",
+        nargs="?",
+        default=None,
+        const="http://localhost:8383/oai",
+        help="Replace source URLs with ones pointing to local OAI-PMH test server (see misc/oai_pmh_server.py), e.g. http://localhost:8383/oai"
+    )
 
     return parser.parse_args()
 
@@ -588,6 +600,9 @@ if __name__ == "__main__":
     # The Unpaywall mirror is not accessible from the public Internet, so for local testing one might want to avoid it
     if args.skip_unpaywall:
         environ["SWEPUB_SKIP_UNPAYWALL"] = "1"
+
+    if args.local_server:
+        environ["SWEPUB_LOCAL_SERVER"] = args.local_server
 
     incremental = False
     if args.update:

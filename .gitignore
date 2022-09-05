@@ -10,3 +10,4 @@ service/vue-client/dist/
 id_cache.json
 issn.txt
 cache/
+_xml/
