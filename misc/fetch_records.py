@@ -9,8 +9,9 @@ import time
 
 from concurrent.futures import ProcessPoolExecutor
 import sys
+import traceback
 
-from pipeline import sickle
+from pipeline.oai import RecordIterator
 from pipeline.swepublog import logger as log
 
 DEFAULT_SWEPUB_ENV = os.getenv("SWEPUB_ENV", "DEV")  # or QA, PROD
@@ -30,24 +31,19 @@ def fetch(source):
         harvest_info = f'{source_set["url"]} ({source_set["subset"]}, {source_set["metadata_prefix"]})'
         log.info(f"[{source['code']}]\t START fetch: {harvest_info}")
 
-        sickle_client = sickle.Sickle(source_set["url"], max_retries=8, timeout=90, headers={"User-Agent": SWEPUB_USER_AGENT})
-        list_record_params = {
-            "metadataPrefix": source_set["metadata_prefix"],
-            "ignore_deleted": False
-        }
-        if source_set["subset"]:
-            list_record_params["set"] = source_set["subset"]
-
-        records = sickle_client.ListRecords(**list_record_params)
+        record_iterator = RecordIterator(source["code"], source_set, None, None,
+                                         SWEPUB_USER_AGENT, False)
 
         try:
-            for record in records:
-                file_path = path / f"{sanitize_filename(record.header.identifier)}.xml"
-                with file_path.open("w") as f:
-                    f.write(record.raw)
-                count += 1
+            for record in record_iterator:
+                if record.is_successful():
+                    file_path = path / f"{sanitize_filename(record.oai_id)}.xml"
+                    with file_path.open("w") as f:
+                        f.write(record.xml)
+                    count += 1
         except Exception as e:
             log.info(f"[{source['code']}]\t FAILED fetch, error: {e}")
+            log.warning(traceback.format_exc())
             return
     finish_time = time.time()
     log.info(
