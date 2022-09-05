@@ -298,6 +298,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, batch):
     num_accepted = 0
     num_rejected = 0
     num_deleted = 0
+    cached_paths = {}
     with requests.Session() as session:
         for record in batch:
             xml = record.xml
@@ -308,7 +309,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, batch):
                 if accepted:
                     num_accepted += 1
                     converted = convert(xml)
-                    (field_events, record_info) = validate(converted, harvest_cache, session, source)
+                    (field_events, record_info) = validate(converted, harvest_cache, session, source, cached_paths)
                     (audited, audit_events) = audit(converted, harvest_cache, session)
                 elif not record.deleted:
                     num_rejected += 1

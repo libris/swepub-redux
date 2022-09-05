@@ -163,13 +163,13 @@ def enrich_stuff(body, field_events):
             field_events[id_type][field.path] = field
 
 
-def enrich_stuff_a_little_more(body, field_events, harvest_cache, source):
+def enrich_stuff_a_little_more(body, field_events, harvest_cache, source, cached_paths):
     created_fields = {}
     for id_type in field_events.values():
         for field in id_type.values():
             added_stuff = []
             if field.id_type == "LocalID":
-                added_stuff = recover_orcid_from_localid(body, field, harvest_cache, source)
+                added_stuff = recover_orcid_from_localid(body, field, harvest_cache, source, cached_paths)
 
             if added_stuff:
                 if field.id_type not in created_fields:
@@ -278,7 +278,7 @@ def get_clean_events(field_events):
     return events_only
 
 
-def validate(body, harvest_cache, session, source):
+def validate(body, harvest_cache, session, source, cached_paths):
     field_events = {}
     # For each path, create a FieldMeta object that we'll use during all
     # enrichments/validations/normalizations to keep some necessary state
@@ -296,7 +296,7 @@ def validate(body, harvest_cache, session, source):
     enrich_stuff(body, field_events)
     # Second validation pass to see if enrichments made some values valid
     validate_stuff(field_events, session, harvest_cache, body, source)
-    enrich_stuff_a_little_more(body, field_events, harvest_cache, source)
+    enrich_stuff_a_little_more(body, field_events, harvest_cache, source, cached_paths)
     normalize_stuff(body, field_events)
     # Beware, after this point all field_event paths must be considered potentially corrupt,
     # as moving things around places them at new paths!

@@ -131,6 +131,12 @@ def get_at_path(root, path):
     return parse(path).find(root)[0].value
 
 
+def get_at_precompiled_path(root, precompiled_path):
+    if precompiled_path == "":
+        return root
+    return precompiled_path.find(root)[0].value
+
+
 def append_at_path(root, path, type, new_value):
     found = parse(path).find(root)
     found[0].value.append({"@type": type, "value": new_value})

@@ -1,9 +1,17 @@
-from pipeline.util import FieldMeta, Enrichment, Validation, get_at_path, append_at_path, get_localid_cache_key, make_event
+from pipeline.util import FieldMeta, Enrichment, Validation, get_at_path, get_at_precompiled_path, append_at_path, get_localid_cache_key, make_event
+from jsonpath_rw import parse
 
-def recover_orcid_from_localid(body, field, harvest_cache, source):
+
+def recover_orcid_from_localid(body, field, harvest_cache, source, cached_paths):
     created_fields = []
     parent_path = field.path.rsplit(".", 1)[0]
-    all_ids_for_agent = get_at_path(body, parent_path)
+
+    compiled_parent_path = cached_paths.get(parent_path)
+    if not compiled_parent_path:
+        compiled_parent_path = parse(parent_path)
+        cached_paths[parent_path] = compiled_parent_path
+
+    all_ids_for_agent = get_at_precompiled_path(body, compiled_parent_path)
 
     for id_value in all_ids_for_agent:
         if id_value.get("@type") == "ORCID":
