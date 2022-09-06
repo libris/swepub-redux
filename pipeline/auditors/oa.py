@@ -17,7 +17,7 @@ class OAAuditor(BaseAuditor):
             publication, audit_events, harvest_cache
         )
 
-        if not result and not getenv("SWEPUB_SKIP_UNPAYWALL", False):
+        if not result and not getenv("SWEPUB_SKIP_UNPAYWALL") and not getenv("SWEPUB_SKIP_REMOTE"):
             publication, new_audit_events, result = self._check_unpaywall(
                 publication, audit_events, session
             )

@@ -19,6 +19,9 @@ def _is_valid_uri(url):
 
 
 def remote_verification(url, session):
+    if getenv("SWEPUB_SKIP_REMOTE"):
+        return False
+
     if not _is_valid_uri(url):
         return False
 
