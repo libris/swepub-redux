@@ -142,7 +142,7 @@ def enrich_stuff(body, field_events, cached_paths):
                 if field.id_type == "ISBN":
                     added_stuff = recover_isbn(body, field, cached_paths)
                 if field.id_type == "ISI":
-                    recover_isi(body, field)
+                    recover_isi(body, field, cached_paths)
                 if field.id_type == "ORCID":
                     recover_orcid(body, field, cached_paths)
                 if field.id_type == "ISSN":
