@@ -55,7 +55,7 @@ def validate_checksum(orcid):
         return False, "checksum"
 
 
-def validate_orcid(field, body, harvest_cache, source):
+def validate_orcid(field, body, harvest_cache, source, cached_paths):
     if field.validation_status == Validation.INVALID and field.enrichment_status in [
         Enrichment.UNCHANGED,
         Enrichment.UNSUCCESSFUL,
@@ -80,7 +80,7 @@ def validate_orcid(field, body, harvest_cache, source):
     # local ID->ORCID key->value in the cache so that we can later add ORCID in records where
     # we encounter the same local ID (but no ORCID)
     parent_path = field.path.rsplit(".", 2)[0]
-    parent_value = get_at_path(body, parent_path)
+    parent_value = get_at_path(body, parent_path, cached_paths)
     for id_by in parent_value:
         if id_by.get("@type") == "Local" and id_by.get("value") and id_by.get("source", {}).get("code"):
             cache_key = get_localid_cache_key(id_by, source)

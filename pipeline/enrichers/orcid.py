@@ -7,7 +7,7 @@ orcid_regex = re.compile("(0000-?)" + "(000[1-3]-?)" + "([0-9]{4}-?)" + "([0-9]{
 orcid_extend_regex = re.compile("000-?000[1-3]")
 
 
-def recover_orcid(body, field):
+def recover_orcid(body, field, cached_paths):
     path = field.path
     orcid = field.value
 
@@ -15,7 +15,7 @@ def recover_orcid(body, field):
     if translated != orcid:
         initial = orcid
         orcid = translated
-        update_at_path(body, path, orcid)
+        update_at_path(body, path, orcid, cached_paths)
         field.events.append(
             make_event(
                 event_type="enrichment",
@@ -31,7 +31,7 @@ def recover_orcid(body, field):
     if orcid_extend_regex.match(orcid):
         initial = orcid
         orcid = "0" + orcid
-        update_at_path(body, path, orcid)
+        update_at_path(body, path, orcid, cached_paths)
         field.events.append(
             make_event(
                 event_type="enrichment",
@@ -57,7 +57,7 @@ def recover_orcid(body, field):
                     result="enriched",
                 )
             )
-            update_at_path(body, path, orcid_list[0])
+            update_at_path(body, path, orcid_list[0], cached_paths)
             field.enrichment_status = Enrichment.ENRICHED
             field.value = orcid_list[0]
 

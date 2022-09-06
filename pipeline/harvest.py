@@ -42,7 +42,7 @@ from pipeline.legacy_sync import legacy_sync
 
 # To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..
 from pipeline.swepublog import logger as log
-from pipeline.util import chunker
+from pipeline.util import chunker, get_common_json_paths
 
 DEFAULT_SWEPUB_ENV = getenv("SWEPUB_ENV", "DEV")  # or QA, PROD
 FILE_PATH = path.dirname(path.abspath(__file__))
@@ -82,6 +82,7 @@ TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = [
 
 SWEPUB_USER_AGENT = getenv("SWEPUB_USER_AGENT", "https://github.com/libris/swepub-redux")
 
+cached_paths = get_common_json_paths()
 
 # Wrap the harvest function just to easily log errors from subprocesses
 def harvest_wrapper(source):
@@ -182,6 +183,7 @@ def harvest(source):
                                 source["code"],
                                 source_set["subset"],
                                 harvest_id,
+                                cached_paths,
                             )
                             executor.submit(func, batch)
                             batch = []
@@ -189,7 +191,7 @@ def harvest(source):
                     else:
                         num_failed += 1
                 func = partial(
-                    threaded_handle_harvested, source["code"], source_set["subset"], harvest_id
+                    threaded_handle_harvested, source["code"], source_set["subset"], harvest_id, cached_paths
                 )
                 executor.submit(func, batch)
                 executor.shutdown(wait=True)
@@ -293,12 +295,12 @@ def harvest(source):
     return harvest_succeeded
 
 
-def threaded_handle_harvested(source, source_subset, harvest_id, batch):
+def threaded_handle_harvested(source, source_subset, harvest_id, cached_paths, batch):
     converted_rowids = []
     num_accepted = 0
     num_rejected = 0
     num_deleted = 0
-    cached_paths = {}
+
     with requests.Session() as session:
         for record in batch:
             xml = record.xml

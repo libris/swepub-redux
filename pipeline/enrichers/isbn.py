@@ -14,7 +14,7 @@ isbn_regex = re.compile(
 )
 
 
-def recover_isbn(body, field):
+def recover_isbn(body, field, cached_paths):
     original = field.value
     isbn = field.value
     path = field.path
@@ -23,7 +23,7 @@ def recover_isbn(body, field):
     translated = unicode_translate(isbn)
     if translated != isbn:
         isbn = translated
-        update_at_path(body, path, isbn)
+        update_at_path(body, path, isbn, cached_paths)
         field.events.append(
             make_event(
                 event_type="enrichment",
@@ -48,7 +48,7 @@ def recover_isbn(body, field):
 
     if len(res) > 0:
         if res[0] != isbn:
-            update_at_path(body, path, res[0])
+            update_at_path(body, path, res[0], cached_paths)
             field.value = res[0]
             field.enrichment_status = Enrichment.ENRICHED
             field.events.append(
@@ -72,7 +72,7 @@ def recover_isbn(body, field):
                         result="enriched",
                     )
                 )
-                new_path = add_sibling_at_path(body, path, type="ISBN", value=found_value)
+                new_path = add_sibling_at_path(body, path, type="ISBN", value=found_value, cached_paths=cached_paths)
                 created_fields.append(
                     FieldMeta(path=new_path, id_type=field.id_type, value=found_value)
                 )
