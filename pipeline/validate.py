@@ -35,7 +35,7 @@ PATHS = {
     "DOI": ('identifiedBy[?(@.@type=="DOI")].value',),
     "ISI": ('identifiedBy[?(@.@type=="ISI")].value',),
     "ORCID": ('instanceOf.contribution.[*].agent.identifiedBy[?(@.@type=="ORCID")].value',),
-    "LocalID": ('instanceOf.contribution.[*].agent.identifiedBy[?(@.@type=="Local")]',),
+    "PersonID": ('instanceOf.contribution.[*].agent.identifiedBy[?(@.@type=="Local")]',),
     "publication_year": ('publication[?(@.@type=="Publication")].date',),
     "creator_count": ('instanceOf.[*].hasNote[?(@.@type=="CreatorCount")].label',),
     "ISBN": (
@@ -168,7 +168,7 @@ def enrich_stuff_a_little_more(body, field_events, harvest_cache, source, cached
     for id_type in field_events.values():
         for field in id_type.values():
             added_stuff = []
-            if field.id_type == "LocalID":
+            if field.id_type == "PersonID":
                 added_stuff = recover_orcid_from_localid(body, field, harvest_cache, source, cached_paths)
 
             if added_stuff:
@@ -189,7 +189,7 @@ def normalize_stuff(body, field_events, cached_paths):
                     normalize_isbn(body, field, cached_paths)
                 if field.id_type == "ISI":
                     normalize_isi(body, field, cached_paths)
-                if field.id_type == "ORCID" or field.id_type == "LocalID":
+                if field.id_type == "ORCID" or field.id_type == "PersonID":
                     normalize_orcid(body, field, cached_paths)
                 if field.id_type == "ISSN":
                     normalize_issn(body, field, cached_paths)

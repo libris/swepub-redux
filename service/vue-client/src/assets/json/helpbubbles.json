@@ -114,6 +114,10 @@
       "title": "Öppen tillgång",
       "text": "Publikationen har berikats med information om länk till fulltext, om fulltexten är öppet tillgänglig eller prenumerationsbaserad, om version av fulltexten och om publiceringskanalen för publikationen ingår i Directory of Open Access Journals (DOAJ). Berikningen sker med information från de externa datakällorna Unpaywall och Directory of Open Access Books (DOAB)."
     },
+    "enrichment_flags_PersonID": {
+      "title": "ORCID matchat med lokalt ID",
+      "text": "ORCID har lagts till om det förekommer i en annan post tillsammans med lokalt personID."
+    },
     "harvest_overview": {
       "title": "Översikt",
       "text": "Översikten visar när hämtningen påbörjats och antalet poster som hämtats eller avvisats hittills. Därför kan antalet variera beroende på hur stor del av datamängden som bearbetats."

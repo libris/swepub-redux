@@ -14,7 +14,7 @@ DEFAULT_FIELDS = [
     "creator_count",
     "free_text",
     "publication_year",
-    "LocalID",
+    "PersonID",
 ]
 
 DEFAULT_AUDITORS = [
