@@ -24,6 +24,8 @@ To run the pipeline and harvest a few sources do:
 $ python3 -m pipeline.harvest --update --skip-unpaywall mdh miun mau
 ```
 
+(`--skip-unpaywall` avoids hitting a non-public Unpaywall mirror; alternatively, you could set `SWEPUB_SKIP_REMOTE` which skips both Unpaywall and other remote services (e.g. shortdoi.org, issn.org).)
+
 Expect this to take a few minutes. If you don't specify source(s) you instead get the full production data which takes a lot longer (~8 hours). Sources must exist in `pipeline/sources.json`. If the database doesn't exist, it will be created; if it already exists, sources will be incrementally updated (harvesting records added/updated/deleted since the previous execution of `pipeline.harvest --update`).
 
 To forcibly create a new database, run `python3 -m pipeline.harvest --force` (or `-f`).
