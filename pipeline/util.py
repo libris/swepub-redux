@@ -161,7 +161,6 @@ def get_set_compiled_path(path, cached_paths):
 
 
 def get_common_json_paths():
-    log.info("Setting common json paths")
     # Pre-parse the most commonly used JSON paths
     paths_to_cache = [
         "hasSeries.[0].identifiedBy.[0]",
