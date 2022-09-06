@@ -24,7 +24,7 @@ DOI_START = "10."
 VALID_STARTS = (DOI_START, "https://doi.org/10.", "http://doi.org/10.")
 
 
-def recover_doi(body, field, cached_paths):
+def recover_doi(body, field, cached_paths={}):
     doi = field.value
     path = field.path
 

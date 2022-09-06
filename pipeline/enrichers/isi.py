@@ -11,7 +11,7 @@ isi_regex = re.compile(
 )
 
 
-def recover_isi(body, field, cached_paths):
+def recover_isi(body, field, cached_paths={}):
     original = field.value
     isi = field.value
     translated = unicode_translate(isi)

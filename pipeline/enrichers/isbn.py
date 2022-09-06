@@ -14,7 +14,7 @@ isbn_regex = re.compile(
 )
 
 
-def recover_isbn(body, field, cached_paths):
+def recover_isbn(body, field, cached_paths={}):
     original = field.value
     isbn = field.value
     path = field.path

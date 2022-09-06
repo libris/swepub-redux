@@ -23,7 +23,7 @@ issn_regex = re.compile(
 )
 
 
-def recover_issn(body, field, cached_paths):
+def recover_issn(body, field, cached_paths={}):
     issn = field.value
     path = field.path
     created_fields = []

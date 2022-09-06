@@ -7,7 +7,7 @@ orcid_regex = re.compile("(0000-?)" + "(000[1-3]-?)" + "([0-9]{4}-?)" + "([0-9]{
 orcid_extend_regex = re.compile("000-?000[1-3]")
 
 
-def recover_orcid(body, field, cached_paths):
+def recover_orcid(body, field, cached_paths={}):
     path = field.path
     orcid = field.value
 

@@ -7,7 +7,7 @@ from stdnum.issn import format as issn_format
 from pipeline.util import update_at_path, make_event, Normalization, Enrichment
 
 
-def normalize_issn(body, field, cached_paths):
+def normalize_issn(body, field, cached_paths={}):
     issn = field.value
     path = field.path
 
@@ -27,7 +27,7 @@ def normalize_issn(body, field, cached_paths):
         field.value = new_value
 
 
-def normalize_isbn(body, field, cached_paths):
+def normalize_isbn(body, field, cached_paths={}):
     isbn = field.value
     path = field.path
 
@@ -47,7 +47,7 @@ def normalize_isbn(body, field, cached_paths):
         field.value = new_value
 
 
-def normalize_isi(body, field, cached_paths):
+def normalize_isi(body, field, cached_paths={}):
     isi = field.value
     path = field.path
 
@@ -67,7 +67,7 @@ def normalize_isi(body, field, cached_paths):
         field.value = new_value
 
 
-def normalize_orcid(body, field, cached_paths):
+def normalize_orcid(body, field, cached_paths={}):
     HTTP_PREFIX = "http://orcid.org/"
     HTTPS_PREFIX = "https://orcid.org/"
     orcid = field.value
@@ -119,7 +119,7 @@ def normalize_orcid(body, field, cached_paths):
         field.value = enriched
 
 
-def normalize_doi(body, field, cached_paths):
+def normalize_doi(body, field, cached_paths={}):
     HTTPS_PREFIX = "https://doi.org/"
     DOI_PREFIX = "10."
     doi_prefix = re.compile(r"(https?://doi\.org/)?(10\..*)")
@@ -183,7 +183,7 @@ class MLStripper(HTMLParser):
         return "".join(self.fed)
 
 
-def normalize_free_text(body, field, cached_paths):
+def normalize_free_text(body, field, cached_paths={}):
     free_text = field.value
     path = field.path
     field.enrichment_status = Enrichment.UNCHANGED

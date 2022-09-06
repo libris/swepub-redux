@@ -2,7 +2,7 @@ from pipeline.util import FieldMeta, Enrichment, Validation, get_at_path, append
 from jsonpath_rw import parse
 
 
-def recover_orcid_from_localid(body, field, harvest_cache, source, cached_paths):
+def recover_orcid_from_localid(body, field, harvest_cache, source, cached_paths={}):
     created_fields = []
     parent_path = field.path.rsplit(".", 1)[0]
 

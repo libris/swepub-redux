@@ -55,7 +55,7 @@ def validate_checksum(orcid):
         return False, "checksum"
 
 
-def validate_orcid(field, body, harvest_cache, source, cached_paths):
+def validate_orcid(field, body, harvest_cache, source, cached_paths={}):
     if field.validation_status == Validation.INVALID and field.enrichment_status in [
         Enrichment.UNCHANGED,
         Enrichment.UNSUCCESSFUL,
