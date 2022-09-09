@@ -36,8 +36,19 @@ def equal_name_part(a, b):
     if len(b) == 1 and a[0] == b[0]:
         return True
 
+    # Longer names should be allowed a larger edit distance than short ones.
+    allowed_max_distance = 0
+    if min(len(a), len(b)) > 2:
+        allowed_max_distance = 1
+    if min(len(a), len(b)) > 4:
+        allowed_max_distance = 2
+    if min(len(a), len(b)) > 7:
+        allowed_max_distance = 3
+    if min(len(a), len(b)) > 14:
+        allowed_max_distance = 4
+
     # Otherwise check edit distance
-    if len(a) > 1 and len(b) > 1 and Levenshtein.distance(a, b) < 3:
+    if len(a) > 1 and len(b) > 1 and Levenshtein.distance(a, b) <= allowed_max_distance:
         return True
     return False
 
