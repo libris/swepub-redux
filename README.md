@@ -43,6 +43,15 @@ $ python3 -m pipeline.harvest --update uniarts
 
 (If you omit the source name, all sources' records will be purged and fully harvested.)
 
+For sources that keep track of deleted records, a much quicker way is:
+
+```bash
+$ python3 -m pipeline.harvest --reset-harvest-time uniarts
+$ python3 -m pipeline.harvest --reset-harvest-time uniarts
+```
+
+`--reset-harvest-time` removes the `last_harvest` entry for the specified source(s), meaning the next `--update` will trigger a full harvest.
+
 The resulting sqlite3 database has roughly the following structure (see storage.py for details):
 
 | Table | Description |

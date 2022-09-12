@@ -538,6 +538,11 @@ def handle_args():
         help="Updates sources incrementally. Creates database and harvests from the beginning if the database doesn't already exist.",
     )
     group.add_argument(
+        "--reset-harvest-time",
+        action="store_true",
+        help="Removes last_harvest entry for specified source(s) (or all sources), meaning next --update will trigger a full harvest.",
+    )
+    group.add_argument(
         "-p",
         "--purge",
         action="store_true",
@@ -649,6 +654,13 @@ if __name__ == "__main__":
                 cursor.execute("DELETE FROM last_harvest WHERE source = ?", [source["code"]])
             for table in TABLES_DELETED_ON_INCREMENTAL_OR_PURGE:
                 cursor.execute(f"DELETE FROM {table}")
+    elif args.reset_harvest_time:
+        log.info("Removing last_harvest time for " + " ".join([source["code"] for source in sources_to_process]))
+        with get_connection() as connection:
+            cursor = connection.cursor()
+            for source in sources_to_process:
+                cursor.execute("DELETE FROM last_harvest WHERE source = ?", [source["code"]])
+        sys.exit(0)
     else:
         # All harvest jobs have access to the same Manager-managed dictionaries
         manager = Manager()
