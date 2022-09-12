@@ -159,3 +159,9 @@ python3 -m pipeline.harvest -f uniarts ths --local-server
 This "OAI-PMH server" supports only the very bare minimum for `pipeline.harvest` to work
 in (non-incremental mode). Remember that if you run `misc.fetch_records` again, you need
 to restart `misc.oai_pmh_server` for it to pick up the changes.
+
+You can also download only specific records:
+
+```bash
+python3 -m misc.fetch_records oai:DiVA.org:uniarts-1146 oai:DiVA.org:lnu-108145
+```
