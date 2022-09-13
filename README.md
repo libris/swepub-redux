@@ -71,6 +71,8 @@ npm install --prefix service/vue-client/
 yarn --cwd service/vue-client/ build
 ```
 
+For development, you can run `yarn --cwd service/vue-client/ build --mode=development` instead; this lets you use e.g. Vue Devtools.
+
 To start the Swepub service (which provides the API and serves the static frontend files, if they exist):
 
 ```bash
