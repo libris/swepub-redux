@@ -102,7 +102,7 @@ export default {
     pushQuery() {
       let pathToPush = '';
       if (this.selectedAsFullPath === '/bibliometrics') {
-        pathToPush = '/bibliometrics?all=1';
+        pathToPush = '/bibliometrics?from=&to=';
       } else {
         pathToPush = this.selectedAsFullPath;
       }
