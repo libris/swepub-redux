@@ -391,7 +391,7 @@ def _load_doab():
         log.info(f"DOAB data still fresh enough (< {DOAB_CACHE_TIME} seconds), not refreshing")
         with open(DOAB_CACHE_FILE, "rb") as f:
             doab_data = json.loads(f.read())
-    else:
+    elif not environ.get("SWEPUB_SKIP_REMOTE"):
         try:
             log.info("Refreshing DOAB data")
             with closing(requests.get(SWEPUB_DOAB_URL, stream=True, timeout=30)) as r:
@@ -602,6 +602,9 @@ if __name__ == "__main__":
         environ["SWEPUB_SOURCE_FILE"] = DEFAULT_SWEPUB_SOURCE_FILE
 
     log.info(f"SWEPUB_ENV is {environ['SWEPUB_ENV']}")
+
+    if environ.get("SWEPUB_SKIP_REMOTE"):
+        log.info(f"SWEPUB_SKIP_REMOTE set, not refreshing DOAB or using remote services for validation/enrichment")
 
     sources = load(open(environ["SWEPUB_SOURCE_FILE"]))
 
