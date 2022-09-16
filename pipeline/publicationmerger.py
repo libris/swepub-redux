@@ -265,7 +265,7 @@ class PublicationMerger:
         candidate_indirectly_identifiedby_ids = candidate.indirectly_identifiedby_ids
 
         for identifier in candidate_indirectly_identifiedby_ids:
-            master_indirectly_identifiedby_ids = _possibly_append_id(master_indirectly_identifiedby_ids, identifier)
+            master_indirectly_identifiedby_ids = self._possibly_append_id(master_indirectly_identifiedby_ids, identifier)
 
         master.indirectly_identifiedby_ids = master_indirectly_identifiedby_ids
         return master
