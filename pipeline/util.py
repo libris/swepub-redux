@@ -416,49 +416,6 @@ def get_combined_title(body):
             return combined
     return ""
 
-def get_main_title(body):
-    """Return value of instanceOf.hasTitle[?(@.@type=="Title")].mainTitle if it exists and
-    there is no subtitle.
-    If a subtitle exist then the return value is split at the first colon and the first string
-    is returned,
-    i.e 'main:sub' returns main.
-    None otherwise """
-    has_title_array = body.get('instanceOf', {}).get('hasTitle', [])
-    main_title_raw = None
-    sub_title_raw = None
-    for h_t in has_title_array:
-        if isinstance(h_t, dict) and h_t.get('@type') == 'Title':
-            main_title_raw = h_t.get('mainTitle')
-            sub_title_raw = h_t.get('subtitle')
-            break
-    if not empty_string(sub_title_raw):
-        return main_title_raw
-    main_title, sub_title = split_title_subtitle_first_colon(main_title_raw)
-    if not empty_string(main_title):
-        return main_title
-    else:
-        return None
-
-
-def get_sub_title(body):
-    """Return value for instanceOf.hasTitle[?(@.@type=="Title")].subtitle if it exists,
-    if it does not exist then the value of instanceOf.hasTitle[?(@.@type=="Title")].mainTitle
-    is split at the first colon and the second string is returned, i.e 'main:sub' returns sub.
-    None otherwise """
-    sub_title_array = body.get('instanceOf', {}).get('hasTitle', [])
-    main_title_raw = None
-    for h_t in sub_title_array:
-        if isinstance(h_t, dict) and h_t.get('@type') == 'Title' and h_t.get('subtitle'):
-            return h_t.get('subtitle')
-        else:
-            main_title_raw = h_t.get('mainTitle')
-            break
-    main_title, sub_title = split_title_subtitle_first_colon(main_title_raw)
-    if not empty_string(sub_title):
-        return sub_title
-    else:
-        return None
-
 
 def get_part_of(body):
     """ Return array of PartOf objects from partOf """

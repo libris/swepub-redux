@@ -92,11 +92,43 @@ class Publication:
 
     @property
     def main_title(self):
-        return get_main_title(self.body)
+        """Return value of instanceOf.hasTitle[?(@.@type=="Title")].mainTitle if it exists and
+            there is no subtitle.
+            If a subtitle exist then the return value is split at the first colon and the first string
+            is returned,
+            i.e 'main:sub' returns main.
+            None otherwise """
+        has_title_array = self.body.get('instanceOf', {}).get('hasTitle', [])
+        main_title_raw = None
+        sub_title_raw = None
+        for h_t in has_title_array:
+            if isinstance(h_t, dict) and h_t.get('@type') == 'Title':
+                main_title_raw = h_t.get('mainTitle')
+                sub_title_raw = h_t.get('subtitle')
+                break
+        if not empty_string(sub_title_raw):
+            return main_title_raw
+        main_title, sub_title = split_title_subtitle_first_colon(main_title_raw)
+        if not empty_string(main_title):
+            return main_title
+        else:
+            return None
 
     @property
     def sub_title(self):
-        return get_sub_title(self.body)
+        sub_title_array = self.body.get('instanceOf', {}).get('hasTitle', [])
+        main_title_raw = None
+        for h_t in sub_title_array:
+            if isinstance(h_t, dict) and h_t.get('@type') == 'Title' and h_t.get('subtitle'):
+                return h_t.get('subtitle')
+            else:
+                main_title_raw = h_t.get('mainTitle')
+                break
+        main_title, sub_title = split_title_subtitle_first_colon(main_title_raw)
+        if not empty_string(sub_title):
+            return sub_title
+        else:
+            return None
 
     @property
     def language(self):
@@ -902,7 +934,12 @@ class HasSeries:
 
     @property
     def main_title(self):
-        return get_main_title(self.body)
+        """Return value for hasTitle[?(@.@type=="Title")].mainTitle, None if not exist """
+        main_title_array = self.body.get('hasTitle', [])
+        for m_t in main_title_array:
+            if isinstance(m_t, dict) and m_t.get('@type') == 'Title':
+                return m_t.get('mainTitle')
+        return None
 
     @property
     def issn(self):
@@ -1017,11 +1054,21 @@ class PartOf:
 
     @property
     def main_title(self):
-        return get_main_title(self.body)
+        """Return value for hasTitle[?(@.@type=="Title")].mainTitle, None if not exist """
+        main_title_array = self.body.get('hasTitle', [])
+        for m_t in main_title_array:
+            if isinstance(m_t, dict) and m_t.get('@type') == 'Title':
+                return m_t.get('mainTitle')
+        return None
 
     @property
     def sub_title(self):
-        return get_sub_title(self.body)
+        """Return value for hasTitle[?(@.@type=="Title")].subtitle, None if not exist """
+        main_title_array = self.body.get('hasTitle', [])
+        for m_t in main_title_array:
+            if isinstance(m_t, dict) and m_t.get('@type') == 'Title':
+                return m_t.get('subtitle')
+        return None
 
     @property
     def volume_number(self):
