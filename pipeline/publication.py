@@ -744,10 +744,6 @@ class Publication:
         self._body['partOf'] = [part.body for part in part_of]
 
     @property
-    def part_of_with_title(self):
-        return part_of_with_title(self.body)
-
-    @property
     def identifiedby_ids(self):
         """Return array of items in identifiedBy"""
         return self.get_identifiedby_ids()
@@ -787,13 +783,6 @@ class Publication:
     def has_same_summary(self, publication):
         """True if publication has the same summary"""
         return compare_text(self.summary, publication.summary, self.STRING_MATCH_RATIO_SUMMARY, MAX_LENGTH_STRING_TO_COMPARE)
-
-    def has_same_partof_main_title(self, publication):
-        """ Returns True if partOf has the same main title """
-        if self.part_of_with_title and publication.part_of_with_title:
-            return self.part_of_with_title.has_same_main_title(publication.part_of_with_title)
-        else:
-            return False
 
     def has_same_genre_form(self, publication):
         """True if publication has all the genreform the same"""

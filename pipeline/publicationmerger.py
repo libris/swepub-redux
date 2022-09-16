@@ -4,6 +4,7 @@ import re
 from collections import OrderedDict
 import Levenshtein
 
+from pipeline.swepublog import logger as log
 from pipeline.publication import Contribution, Publication
 
 

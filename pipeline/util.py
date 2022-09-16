@@ -401,6 +401,7 @@ def compare_text(master_text, candidate_text, match_ratio, max_length_string_to_
     sequence_matcher_ratio = sequence_matcher.quick_ratio()
     return sequence_matcher_ratio >= match_ratio
 
+
 def get_combined_title(body):
     """Return the main title with and subtitle appended."""
     has_title_array = body.get('instanceOf', {}).get('hasTitle', [])
@@ -426,15 +427,6 @@ def get_part_of(body):
             if isinstance(p, dict):
                 part_of.append(p)
     return part_of
-
-
-def part_of_with_title(body):
-    """ Return partOf object that has @type Title, None otherwise"""
-    _part_of_with_title = [p for p in get_part_of(body) if part_of_main_title(p)]
-    if len(_part_of_with_title) > 0:
-        return _part_of_with_title[0]
-    else:
-        return None
 
 
 def part_of_main_title(body):
