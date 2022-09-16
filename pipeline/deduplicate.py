@@ -103,7 +103,25 @@ def _has_compatible_doi_set(a, b):
     return False
 
 
-# Are publications 'a' and 'b' similiar enough to justify clustering them?
+def is_considered_similar_enough(a, b):
+    # 'a' and 'b' may not have different DOIs.
+    if not _has_compatible_doi_set(a, b):
+        return False
+
+    # A similar title and _one_ shared ID of some sort qualifies
+    if _has_similar_combined_title(a, b) and has_same_ids(a, b):
+        return True
+
+    if (
+            _has_similar_combined_title(a, b)
+            and _has_similar_summary(a, b)
+            and has_same_publication_date(a, b)
+    ):
+        return True
+    return False
+
+
+# Are publications 'a' and 'b' similar enough to justify clustering them?
 # 'a' and 'b' are row IDs into the 'converted' table.
 def _is_close_enough(a_rowid, b_rowid):
     with get_connection() as connection:
@@ -123,21 +141,7 @@ def _is_close_enough(a_rowid, b_rowid):
         a = json.loads(candidate_rows[0][0])
         b = json.loads(candidate_rows[1][0])
 
-        # 'a' and 'b' may not have different DOIs.
-        if not _has_compatible_doi_set(a, b):
-            return False
-
-        # A similar title and _one_ shared ID of some sort qualifies
-        if _has_similar_combined_title(a, b) and has_same_ids(a, b):
-            return True
-
-        if (
-            _has_similar_combined_title(a, b)
-            and _has_similar_summary(a, b)
-            and has_same_publication_date(a, b)
-        ):
-            return True
-    return False
+        return is_considered_similar_enough(a, b)
 
 
 # Generate clusters of publications, based on some shared piece of data
