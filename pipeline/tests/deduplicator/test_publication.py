@@ -3,7 +3,7 @@ from pipeline.publication import Publication
 from pipeline.publication import HasSeries
 from pipeline.publication import PartOfHasSeries
 from pipeline.publication import PartOf
-from pipeline.deduplicate import has_same_publication_date
+from pipeline.deduplicate import _has_same_publication_date
 from pipeline.util import empty_string, has_same_ids
 
 
@@ -115,8 +115,8 @@ def test_has_same_publication_date(master,
     assert master.publication_date == '2016-02-01'
     assert candidate2_different_title_and_same_pmid.publication_date == '2017'
     assert candidate4_same_title_summary_pub_date_but_different_ids.publication_date == '2016'
-    assert has_same_publication_date(master.body, candidate4_same_title_summary_pub_date_but_different_ids.body)
-    assert not has_same_publication_date(master.body, candidate2_different_title_and_same_pmid.body)
+    assert _has_same_publication_date(master.body, candidate4_same_title_summary_pub_date_but_different_ids.body)
+    assert not _has_same_publication_date(master.body, candidate2_different_title_and_same_pmid.body)
 
 
 def test_has_same_ids(master,

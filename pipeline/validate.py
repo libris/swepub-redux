@@ -65,10 +65,14 @@ PATHS = {
 PRECOMPILED_PATHS = {k: [parse(p) for p in v] for k, v in PATHS.items()}
 
 
+def _minimum_level_checker(raw_xml):
+    parsed_xml = et.parse(StringIO(raw_xml))
+    return MINIMUM_LEVEL_FILTER(parsed_xml)
+
+
 def should_be_rejected(raw_xml):
     error_list = []
-    parsed_xml = et.parse(StringIO(raw_xml))
-    errors = MINIMUM_LEVEL_FILTER(parsed_xml)
+    errors = _minimum_level_checker(raw_xml)
     if errors.getroot() is not None:
         for error in errors.getroot():
             error_list.append(error.text)

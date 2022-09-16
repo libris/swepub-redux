@@ -73,7 +73,7 @@ def _has_similar_summary(a, b):
     return False
 
 
-def has_same_publication_date(a, b):
+def _has_same_publication_date(a, b):
     """True if publication dates are the same by comparing the shortest date"""
     master_pub_date_str = get_publication_date(a)
     candidate_pub_date_str = get_publication_date(b)
@@ -115,7 +115,7 @@ def is_considered_similar_enough(a, b):
     if (
             _has_similar_combined_title(a, b)
             and _has_similar_summary(a, b)
-            and has_same_publication_date(a, b)
+            and _has_same_publication_date(a, b)
     ):
         return True
     return False
