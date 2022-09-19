@@ -233,6 +233,26 @@ def test_merge_identifiedby_ids(master, candidate1_same_title_and_same_doi):
     assert {'@type': 'URI', 'value': 'URI_2'} in merged_master.identifiedby_ids
 
 
+def test_merge_identifiedby_ids_qualifier():
+    master = Publication({
+        "identifiedBy": [
+            {"@type": "ISBN", "value": "9789144137605"},
+            {"@type": "URI", "value": "https://www.example.com/foobar"}
+        ]
+    })
+    candidate = Publication({
+        "identifiedBy": [
+            {"@type": "ISBN", "value": "9789144137605", "qualifier": "print"}
+        ]
+    })
+    merged_master = merger._merge_identifiedby_ids(master, candidate)
+    assert len(merged_master.identifiedby_ids) == 2
+    assert merged_master.identifiedby_ids == [
+        {"@type": "ISBN", "value": "9789144137605", "qualifier": "print"},
+        {"@type": "URI", "value": "https://www.example.com/foobar"}
+    ]
+
+
 def test_merge_indirectly_identifiedby_ids(master, candidate1_same_title_and_same_doi):
     merged_master = merger._merge_indirectly_identifiedby_ids(master, candidate1_same_title_and_same_doi)
     assert len(master.indirectly_identifiedby_ids) == 2
