@@ -99,6 +99,20 @@ def test_merge_contribution_affiliations_no_master_kb_affiliations():
     assert merged_contribution_kalle.affiliations == candidate_contribution_kalle.affiliations
 
 
+def test_merge_localid_from_candidate():
+    master_without_localid = _get_master_contribution_kalle_without_localid()
+    candidate_with_localid = _get_candidate_contribution_kalle_with_localid()
+
+    mocked_master_contributions = flexmock(contributions=[master_without_localid])
+    mocked_candidate_contributions = flexmock(contributions=[candidate_with_localid])
+    merged_master = merger._merge_contribution(mocked_master_contributions, mocked_candidate_contributions)
+    assert len(merged_master.contributions) == 1
+    assert merged_master.contributions[0].identified_bys == [
+        {'@type': 'ORCID', 'value': 'https://orcid.org/0000-0003-0229-9999'},
+        {'@type': 'Local', 'value': 'foobar', 'source': {'@type': 'Source', 'code': 'kth'}}
+    ]
+
+
 def test_merge_has_notes_publication_status_unchanged():
     published_publication = Publication(
         {'instanceOf': {'hasNote': [
@@ -964,4 +978,50 @@ def _get_candidate_contribution_kalle():
                 },
             ]
         },
+    )
+
+
+def _get_master_contribution_kalle_without_localid():
+    return Contribution(
+        {
+            "@type": "Contribution",
+            "agent": {
+                "@type": "Person",
+                "familyName": "Ninja",
+                "givenName": "Kalle",
+                "identifiedBy": [
+                    {
+                        "@type": "ORCID",
+                        "value": "https://orcid.org/0000-0003-0229-9999"
+                    }
+                ]
+            }
+        }
+    )
+
+
+def _get_candidate_contribution_kalle_with_localid():
+    return Contribution(
+        {
+            "@type": "Contribution",
+            "agent": {
+                "@type": "Person",
+                "familyName": "Ninja",
+                "givenName": "Kalle",
+                "identifiedBy": [
+                    {
+                        "@type": "Local",
+                        "value": "foobar",
+                        "source": {
+                            "@type": "Source",
+                            "code": "kth"
+                        }
+                    },
+                    {
+                        "@type": "ORCID",
+                        "value": "https://orcid.org/0000-0003-0229-9999"
+                    }
+                ]
+            }
+        }
     )
