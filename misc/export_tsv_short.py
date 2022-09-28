@@ -12,12 +12,12 @@ FILE_PATH = path.dirname(path.abspath(__file__))
 DEFAULT_SWEPUB_DB = path.join(FILE_PATH, "../swepub.sqlite3")
 
 
-def dump_tsv(target_language="en"):
+def dump_tsv(target_language="en", number_of_records=10000, max_level=3):
     with get_connection() as con:
         cur = con.cursor()
         cur.row_factory = dict_factory
 
-        for row in cur.execute(f"SELECT data FROM converted LIMIT 100000", []):
+        for row in cur.execute(f"SELECT data FROM finalized LIMIT {int(number_of_records)}", []):
             if row.get("data"):
                 finalized = orjson.loads(row["data"])
                 publication = Publication(finalized)
@@ -32,7 +32,8 @@ def dump_tsv(target_language="en"):
                 summary = summary.strip()
                 language = publication.language or ""
 
-                ukas = publication.ukas(skip_autoclassified=True)
+                ukas = list(filter(lambda x: len(x) <= int(max_level), publication.ukas(skip_autoclassified=True)))
+
                 # Skip records with no classification
                 if not ukas:
                     continue
@@ -56,8 +57,7 @@ def dump_tsv(target_language="en"):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 1:
-        print("Specify language code (en or sv)")
+    if len(sys.argv) != 4:
+        print("Specify language code (en or sv), number of records, and max classification level, e.g. en 10000 3")
         sys.exit(1)
-    dump_tsv(sys.argv[1])
-
+    dump_tsv(sys.argv[1], sys.argv[2], sys.argv[3])
