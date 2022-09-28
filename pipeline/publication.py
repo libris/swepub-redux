@@ -439,10 +439,14 @@ class Publication:
         publication['instanceOf']['genreForm'] = new_gforms
         return publication
 
-    def ukas(self):
+    def ukas(self, skip_autoclassified=False):
         """Return a unique list of all UKAs"""
         ukas = set()
         for uka in self.body.get('instanceOf', {}).get('subject', []):
+            if skip_autoclassified:
+                for note in uka.get("hasNote", []):
+                    if note.get("label", "") == "Autoclassified by Swepub":
+                        continue
             if isinstance(uka, dict) and uka.get("inScheme", {}).get("code", "") == "uka.se":
                 ukas.add(uka.get("code"))
         return list([uka for uka in ukas if uka])
