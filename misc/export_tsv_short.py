@@ -12,7 +12,7 @@ FILE_PATH = path.dirname(path.abspath(__file__))
 DEFAULT_SWEPUB_DB = path.join(FILE_PATH, "../swepub.sqlite3")
 
 
-def dump_tsv(target_language="en", number_of_records=10000, max_level=3):
+def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_level=5):
     with get_connection() as con:
         cur = con.cursor()
         cur.row_factory = dict_factory
@@ -22,9 +22,13 @@ def dump_tsv(target_language="en", number_of_records=10000, max_level=3):
                 finalized = orjson.loads(row["data"])
                 publication = Publication(finalized)
 
+                # Skip records with no 3 or 5 level classification
+                #if not publication.is_classified(skip_autoclassified=True):
+                #   continue
+
                 title = publication.main_title or ""
                 if publication.sub_title:
-                    title = f"{title}: {publication.sub_title}"
+                    title = f"{title} {publication.sub_title}"
                 title = title.strip()
                 #pub_ids = ";".join(finalized["_publication_ids"])
                 #org_ids = ";".join(list(set(finalized["_publication_orgs"])))
@@ -32,32 +36,59 @@ def dump_tsv(target_language="en", number_of_records=10000, max_level=3):
                 summary = summary.strip()
                 language = publication.language or ""
 
-                ukas = list(filter(lambda x: len(x) <= int(max_level), publication.ukas(skip_autoclassified=True)))
+                ukas = list(filter(lambda x: len(x) >= int(min_level) and len(x) <= int(max_level), publication.ukas(skip_autoclassified=True)))
 
                 # Skip records with no classification
                 if not ukas:
                     continue
+
                 ukas_str = " ".join([f"<https://id.kb.se/term/uka/{s}>" for s in ukas])
 
                 # Skip records with no abstract
-                if not summary:
-                    continue
+                #if not summary:
+                #    continue
 
                 # Skip records with very short "abstracts" as these abstracts are typically useless
                 # (e.g., "n/a", "Not available", ..)
+                #if len(summary) < 30:
+                #    continue
+
+                # Remove suspiciously short abstracts
                 if len(summary) < 30:
+                    summary = ""
+
+                #if (target_language == "en" and language != "eng") or (target_language == "sv" and language != "swe"):
+                #    continue
+
+                if target_language == "en":
+                    language_id = "https://id.kb.se/language/eng"
+                elif target_language == "sv":
+                    language_id = "https://id.kb.se/language/swe"
+
+                # Get non-UKA keywords in the target language
+                keywords = " ".join(publication.keywords(language=language_id))
+
+                title_and_summary = f"{title} {summary}"
+
+                #print(publication.subjects)
+
+                # Skip records with title not in target language
+                language_prediction_title = cld3.get_language(title_and_summary)
+                if language_prediction_title.language != target_language or not language_prediction_title.is_reliable:
                     continue
 
                 # Skip records with abstract not in target language
-                language_prediction = cld3.get_language(summary)
-                if language_prediction.language != target_language or not language_prediction.is_reliable:
+                language_prediction_abstract = cld3.get_language(title_and_summary)
+                if language_prediction_abstract.language != target_language or not language_prediction_abstract.is_reliable:
                     continue
 
-                print(f"{summary.strip()}\t{ukas_str}")
+                string_to_use = f"{title_and_summary} {keywords}"
+
+                print(f"{string_to_use.strip()}\t{ukas_str}")
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
-        print("Specify language code (en or sv), number of records, and max classification level, e.g. en 10000 3")
+    if len(sys.argv) != 5:
+        print("Specify language code (en or sv), number of records, and min and max classification level, e.g. en 10000 1 3")
         sys.exit(1)
-    dump_tsv(sys.argv[1], sys.argv[2], sys.argv[3])
+    dump_tsv(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])

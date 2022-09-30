@@ -285,6 +285,21 @@ class Publication:
                     return True
         return False
 
+    # language: e.g. https://id.kb.se/language/swe or https://id.kb.se/language/eng
+    def keywords(self, language=None):
+        subjects = self.subjects
+        keywords = []
+        for subj in subjects:
+            if language and subj.get("language", {}).get("@id", "") != language:
+                continue
+            if "inScheme" in subj and "code" in subj["inScheme"]:
+                code = subj["inScheme"]["code"]
+                if code == "hsv" or code == "uka.se":
+                    continue
+            if "prefLabel" in subj:
+                keywords.append(subj["prefLabel"])
+        return keywords
+
     @property
     def subject_codes(self):
         """Return a list of all subject identifiers."""
