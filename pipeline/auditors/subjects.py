@@ -60,12 +60,12 @@ class SubjectsAuditor(BaseAuditor):
         if self.subjects is None:
             self._load_subject_codes()
         subjects = publication.subjects
-        complimentary_subjects = self._get_complimentary_subjects(publication)
-        publication.subjects = subjects + complimentary_subjects
+        complementary_subjects = self._get_complementary_subjects(publication)
+        publication.subjects = subjects + complementary_subjects
 
         code = "expand_research_subjects"
         result = False
-        if len(complimentary_subjects) > 0:
+        if len(complementary_subjects) > 0:
             result = True
         new_audit_events = self._add_audit_event(audit_events, code, result)
         return publication, new_audit_events
@@ -73,8 +73,8 @@ class SubjectsAuditor(BaseAuditor):
     def _load_subject_codes(self):
         self.subjects = mappings
 
-    def _get_complimentary_subjects(self, publication):
-        """Find and add complimentary research subjects"""
+    def _get_complementary_subjects(self, publication):
+        """Find and add complementary research subjects"""
         missing_codes_swe = set()
         missing_codes_eng = set()
         found_codes = set()
