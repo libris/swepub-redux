@@ -32,33 +32,27 @@ def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_lev
                 title = title.strip()
                 #pub_ids = ";".join(finalized["_publication_ids"])
                 #org_ids = ";".join(list(set(finalized["_publication_orgs"])))
-                summary = publication.summary or ""
-                summary = summary.strip()
-                language = publication.language or ""
+                summary = (publication.summary or "")[:5000].strip()
+                # Remove suspiciously short abstracts (e.g. "N/A", "[no abstract]", ...)
+                if len(summary) < 30:
+                    summary = ""
+                #language = publication.language or ""
 
                 ukas = list(filter(lambda x: len(x) >= int(min_level) and len(x) <= int(max_level), publication.ukas(skip_autoclassified=True)))
-
                 # Skip records with no classification
                 if not ukas:
                     continue
 
-                ukas_str = " ".join([f"<https://id.kb.se/term/uka/{s}>" for s in ukas])
+                # If record has a subject like "305", ensure it also has "3"
+                expanded_ukas = set(ukas)
+                for uka in ukas:
+                    if len(uka) == 3:
+                        expanded_ukas.add(uka[:1])
+                    if len(uka) == 5:
+                        expanded_ukas.add(uka[:1])
+                        expanded_ukas.add(uka[:3])
 
-                # Skip records with no abstract
-                #if not summary:
-                #    continue
-
-                # Skip records with very short "abstracts" as these abstracts are typically useless
-                # (e.g., "n/a", "Not available", ..)
-                #if len(summary) < 30:
-                #    continue
-
-                # Remove suspiciously short abstracts
-                if len(summary) < 30:
-                    summary = ""
-
-                #if (target_language == "en" and language != "eng") or (target_language == "sv" and language != "swe"):
-                #    continue
+                ukas_str = " ".join([f"<https://id.kb.se/term/uka/{s}>" for s in expanded_ukas])
 
                 if target_language == "en":
                     language_id = "https://id.kb.se/language/eng"
@@ -74,12 +68,12 @@ def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_lev
 
                 # Skip records with title not in target language
                 language_prediction_title = cld3.get_language(title_and_summary)
-                if language_prediction_title.language != target_language or not language_prediction_title.is_reliable:
+                if not language_prediction_title or language_prediction_title.language != target_language or not language_prediction_title.is_reliable:
                     continue
 
                 # Skip records with abstract not in target language
                 language_prediction_abstract = cld3.get_language(title_and_summary)
-                if language_prediction_abstract.language != target_language or not language_prediction_abstract.is_reliable:
+                if not language_prediction_abstract or language_prediction_abstract.language != target_language or not language_prediction_abstract.is_reliable:
                     continue
 
                 string_to_use = f"{title_and_summary} {keywords}"
