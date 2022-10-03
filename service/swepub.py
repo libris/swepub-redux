@@ -1112,10 +1112,15 @@ def process_get_export(source=None):
 
     q_total = q.select(fn.Count(converted.id).distinct().as_("total"))
 
-    q = (
+    sub_q = (
         q.select(converted.id)
         .distinct()
-        .select(converted.date, converted.data, converted.events, converted.oai_id)
+    )
+
+    q = (
+        Query.from_(converted)
+        .select(converted.id, converted.date, converted.data, converted.events, converted.oai_id)
+        .where(converted.id.isin(sub_q))
     )
 
     if limit:
