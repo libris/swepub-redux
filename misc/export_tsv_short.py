@@ -7,6 +7,7 @@ import cld3
 
 from pipeline.storage import get_connection, dict_factory
 from pipeline.publication import Publication
+from pipeline.util import get_title_by_language, get_summary_by_language
 
 FILE_PATH = path.dirname(path.abspath(__file__))
 DEFAULT_SWEPUB_DB = path.join(FILE_PATH, "../swepub.sqlite3")
@@ -18,19 +19,17 @@ def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_lev
         cur.row_factory = dict_factory
 
         count = 0
-        for row in cur.execute(f"SELECT data FROM finalized", []):
+        for row in cur.execute(f"SELECT data FROM finalized ORDER BY RANDOM()", []):
             if row.get("data"):
                 finalized = orjson.loads(row["data"])
                 publication = Publication(finalized)
 
+                title = get_title_by_language(publication, target_language)
+
                 # Some records have summaries (abstracts) tagged with a language, most (?)
                 # do not. First try to get a language-specific summary. If that fails, try to
                 # get the untagged one.
-                summary = ""
-                if target_language == "en":
-                    summary = publication.get_english_summary()
-                if target_language == "sv":
-                    summary = publication.get_swedish_summary()
+                summary = get_summary_by_language(publication, target_language)
 
                 if not summary:
                     summary = publication.summary or ""
@@ -39,11 +38,6 @@ def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_lev
                 # Remove suspiciously short abstracts (e.g. "N/A", "[no abstract]", ...)
                 if len(summary) < 50:
                     summary = ""
-
-                title = publication.main_title or ""
-                if publication.sub_title:
-                    title = f"{title} {publication.sub_title}"
-                title = title.strip()
 
                 # Remove summary if summary not in target language. We check all summaries
                 # (even the language-tagged ones) because we don't trust input.
@@ -54,11 +48,6 @@ def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_lev
                 # Skip records with no 3 or 5 level classification
                 #if not publication.is_classified(skip_autoclassified=True):
                 #   continue
-
-                # Remove title if title not in target language
-                language_prediction_title = cld3.get_language(title)
-                if not language_prediction_title or language_prediction_title.language != target_language or not language_prediction_title.is_reliable:
-                    title = ""
 
                 # If we don't have a good summary nor a good title, skip the record
                 if len(summary) < 50 and len(title) < 40:
