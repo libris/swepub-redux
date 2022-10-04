@@ -140,6 +140,32 @@ class Publication:
         return get_summary(self.body)
 
     @property
+    def summaries(self):
+        """Return a list of all summaries."""
+        return self.body.get('instanceOf', {}).get('summary', [])
+
+    def get_english_summary(self):
+        """Get summary text in English if it exists."""
+        return self._get_lang_summary("eng")
+
+    def get_swedish_summary(self):
+        """Get summary text in Swedish if it exists."""
+        return self._get_lang_summary("swe")
+
+    def _get_lang_summary(self, lang):
+        """Get summary for specified language if it exists."""
+        for summary in self.summaries:
+            if "language" not in summary:
+                continue
+            if "code" not in summary["language"]:
+                continue
+            if summary["language"]["code"] != lang:
+                continue
+            if "label" in summary:
+                return summary["label"]
+        return None
+
+    @property
     def publication_date(self):
         return get_publication_date(self.body)
 
