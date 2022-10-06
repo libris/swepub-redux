@@ -47,6 +47,8 @@ from pipeline.util import chunker, get_common_json_paths
 DEFAULT_SWEPUB_ENV = getenv("SWEPUB_ENV", "DEV")  # or QA, PROD
 FILE_PATH = path.dirname(path.abspath(__file__))
 DEFAULT_SWEPUB_DB = path.join(FILE_PATH, "../swepub.sqlite3")
+DEFAULT_ANNIF_EN_URL = getenv("ANNIF_EN_URL", "http://127.0.0.1:8888/v1/projects/omikuji-parabel-en/suggest")
+DEFAULT_ANNIF_SV_URL = getenv("ANNIF_SV_URL", "http://127.0.0.1:8888/v1/projects/omikuji-parabel-sv/suggest")
 
 CACHE_DIR = path.join(FILE_PATH, "../cache/")
 
@@ -302,6 +304,9 @@ def threaded_handle_harvested(source, source_subset, harvest_id, cached_paths, b
     num_deleted = 0
 
     with requests.Session() as session:
+        adapter = requests.adapters.HTTPAdapter(max_retries=2)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
         for record in batch:
             xml = record.xml
             rejected, min_level_errors = should_be_rejected(xml)
@@ -605,6 +610,11 @@ if __name__ == "__main__":
 
     if environ.get("SWEPUB_SKIP_REMOTE"):
         log.info(f"SWEPUB_SKIP_REMOTE set, not refreshing DOAB or using remote services for validation/enrichment")
+
+    if not getenv("ANNIF_EN_URL"):
+        environ["ANNIF_EN_URL"] = DEFAULT_ANNIF_EN_URL
+    if not getenv("ANNIF_SV_URL"):
+        environ["ANNIF_SV_URL"] = DEFAULT_ANNIF_SV_URL
 
     sources = load(open(environ["SWEPUB_SOURCE_FILE"]))
 

@@ -344,6 +344,16 @@ class Publication:
         """ Sets array of subjects for instanceOf.subject """
         self._body['instanceOf']['subject'] = subjects
 
+    def add_subjects(self, subjects):
+        """Add a list of subjects to the publication.
+
+        Each subject is flagged with "Autoclassified by Swepub"."""
+        if "instanceOf" not in self._body:
+            self._body["instanceOf"] = {}
+        if "subject" not in self.body["instanceOf"]:
+            self._body["instanceOf"]["subject"] = []
+        self._body["instanceOf"]["subject"].extend(subjects)
+
     @property
     def creator_count(self):
         """Return creator count or None if missing."""
