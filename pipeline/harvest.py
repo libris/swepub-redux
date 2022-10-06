@@ -567,6 +567,7 @@ def handle_args():
         help="One of DEV, QA, PROD (default DEV). Overrides SWEPUB_ENV.",
     )
     parser.add_argument("--skip-unpaywall", action="store_true", help="Skip Unpaywall check")
+    parser.add_argument("--skip-autoclassifier", action="store_true", help="Skip autoclassify step")
     parser.add_argument("-s", "--source-file", default=None, help="Source file to use.")
     parser.add_argument(
         "source",
@@ -621,6 +622,9 @@ if __name__ == "__main__":
     # The Unpaywall mirror is not accessible from the public Internet, so for local testing one might want to avoid it
     if args.skip_unpaywall:
         environ["SWEPUB_SKIP_UNPAYWALL"] = "1"
+
+    if args.skip_autoclassifier:
+        environ["SWEPUB_SKIP_AUTOCLASSIFIER"] = "1"
 
     if args.local_server:
         environ["SWEPUB_LOCAL_SERVER"] = args.local_server
@@ -792,7 +796,6 @@ if __name__ == "__main__":
                 )
         except Exception as e:
             log.warning(f"Failed saving harvest ID cache to {ID_CACHE_FILE}: {e}")
-
 
         try:
             log.info(

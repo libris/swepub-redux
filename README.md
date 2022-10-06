@@ -14,17 +14,20 @@ $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
-(Note that at the moment only Python 3.7 and 3.8 have been used for this project, later versions may also work)
+(Note that at the moment only Python 3.7 and 3.8 have been used for this project, later versions may also work.)
+
+For automated subject classification we use [Annif](https://annif.org/). For the moment you can skip this; you'll
+need to run the pipeline below before you can set it up properly.
 
 ## Pipeline
 
 To run the pipeline and harvest a few sources do:
 
 ```bash
-$ python3 -m pipeline.harvest --update --skip-unpaywall mdh miun mau
+$ python3 -m pipeline.harvest --update --skip-unpaywall --skip-autoclassifier mdh miun mau
 ```
 
-(`--skip-unpaywall` avoids hitting a non-public Unpaywall mirror; alternatively, you could set `SWEPUB_SKIP_REMOTE` which skips both Unpaywall and other remote services (e.g. shortdoi.org, issn.org).)
+(`--skip-unpaywall` avoids hitting a non-public Unpaywall mirror; alternatively, you could set `SWEPUB_SKIP_REMOTE` which skips both Unpaywall and other remote services (e.g. shortdoi.org, issn.org). `--skip-autoclassifier` skips autoclassification; see the section about Annif below if you want to set it up.)
 
 Expect this to take a few minutes. If you don't specify source(s) you instead get the full production data which takes a lot longer (~8 hours). Sources must exist in `pipeline/sources.json`. If the database doesn't exist, it will be created; if it already exists, sources will be incrementally updated (harvesting records added/updated/deleted since the previous execution of `pipeline.harvest --update`).
 
@@ -82,6 +85,40 @@ python3 -m service.swepub
 
 Then visit http://localhost:5000. API docs are available on http://localhost:5000/api/v1/apidocs.
 
+
+## Annif: install and run
+Assuming that this repo is in `~/swepub-redux`:
+
+
+```bash
+# Still in the swepub-redux venv, and in the root directory (~/swepub-redux):
+# Create English and Swedish sets (use a higher value than 10000 for production)
+$ bash misc/create_tsv_sets.sh en 10000 1 5 ~/annif-input
+$ bash misc/create_tsv_sets.sh sv 10000 1 5 ~/annif-input
+$ exit # exit the swepub-redux venv
+
+# Install a _different_ Python virtual env just for Annif
+$ python3 -m venv ~/annif-venv
+# Activate it
+$ source ~/annif-venv/bin/activate
+# Install Annif and some necessary dependencies
+$ pip install annif annif[pycld3] annif[omikuji]
+# Create a directory for Annif (it'll store data there)
+mkdir ~/annif
+# cd into it
+cd ~/annif
+# Copy Annif configuration file from swepub-redux repo
+cp ~/swepub-redux/misc/annif/projects.cfg .
+# Load the uka vocabulary
+annif load-vocab uka ~/swepub-redux/resources/uka_terms.ttl
+# Train Annif
+annif train omikuji-parabel-en ~/annif-input/training_en.tsv
+annif train omikuji-parabel-sv ~/annif-input/training_sv.tsv
+# Start Annif development server on port 8888
+annif run -p 8888
+```
+
+Now you can try the pipeline again (without `--skip-autoclassifier`).
 
 ## Tests
 

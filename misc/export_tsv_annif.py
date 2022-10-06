@@ -13,13 +13,17 @@ DEFAULT_SWEPUB_DB = path.join(FILE_PATH, "../swepub.sqlite3")
 
 
 def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_level=5):
+    limit_sql = ""
+    if int(number_of_records) > 0:
+        limit_sql = f"LIMIT {int(number_of_records)}"
+
     with get_connection() as con:
         cur = con.cursor()
         cur.row_factory = dict_factory
 
         count = 0
         # for row in cur.execute(f"SELECT data FROM finalized ORDER BY RANDOM()", []):
-        for row in cur.execute(f"SELECT data FROM converted", []):
+        for row in cur.execute(f"SELECT data FROM converted {limit_sql}", []):
             if row.get("data"):
                 finalized = orjson.loads(row["data"])
                 publication = Publication(finalized)

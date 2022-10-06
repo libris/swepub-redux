@@ -5,19 +5,19 @@ set -e
 if [[ "$#" -lt 5 ]]; then
   echo "Usage: ${0} <language-code> <total> <min-level> <max-level> <output-dir> [suffix]"
   echo "  <language-code>: en or sv"
-  echo "  <total>: (maximum) number of records to get"
+  echo "  <total>: (maximum) number of records to get. 0 for unlimited."
   echo "  <min-level>: minimum classification level to include (1, 3 or 5)"
   echo "  <max-level>: maxmimum classification level to include (1, 3, or 5)"
-  echo "  <output-dir>: directory to write files to"
+  echo "  <output-dir>: directory to write files to (will be created if it doesn't exist)"
   echo "  [suffix]: added before .tsv (optional)" 
   echo ""
   echo "  e.g.:"
   echo "  ${0} en 10000 1 5 /tmp/test foo"
-  echo "  => /tmp/test/weea/training_en_foo.tsv"
+  echo "  => /tmp/test/training_en_foo.tsv"
   echo "     /tmp/test/validation_en_foo.tsv"
-  echo "     /tmp/testing_en_foo.tsv"
-  echo "     /tmp/training_and_validation_en_foo.tsv"
-  exit
+  echo "     /tmp/test/testing_en_foo.tsv"
+  echo "     /tmp/test/training_and_validation_en_foo.tsv"
+  exit 1
 fi
 
 LANG=${1}
