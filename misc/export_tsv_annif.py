@@ -1,4 +1,3 @@
-# Quick script for dumping records to tsv, adjust as necessary
 import sys
 from os import path
 
@@ -19,7 +18,8 @@ def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_lev
         cur.row_factory = dict_factory
 
         count = 0
-        for row in cur.execute(f"SELECT data FROM finalized ORDER BY RANDOM()", []):
+        # for row in cur.execute(f"SELECT data FROM finalized ORDER BY RANDOM()", []):
+        for row in cur.execute(f"SELECT data FROM converted", []):
             if row.get("data"):
                 finalized = orjson.loads(row["data"])
                 publication = Publication(finalized)
@@ -42,18 +42,27 @@ def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_lev
                 # Remove summary if summary not in target language. We check all summaries
                 # (even the language-tagged ones) because we don't trust input.
                 language_prediction_summary = cld3.get_language(summary)
-                if not language_prediction_summary or language_prediction_summary.language != target_language or not language_prediction_summary.is_reliable:
+                if (
+                    not language_prediction_summary
+                    or language_prediction_summary.language != target_language
+                    or not language_prediction_summary.is_reliable
+                ):
                     summary = ""
 
                 # Skip records with no 3 or 5 level classification
-                #if not publication.is_classified(skip_autoclassified=True):
+                # if not publication.is_classified(skip_autoclassified=True):
                 #   continue
 
                 # If we don't have a good summary nor a good title, skip the record
                 if len(summary) < 50 and len(title) < 40:
                     continue
 
-                ukas = list(filter(lambda x: len(x) >= int(min_level) and len(x) <= int(max_level), publication.ukas(skip_autoclassified=True)))
+                ukas = list(
+                    filter(
+                        lambda x: len(x) >= int(min_level) and len(x) <= int(max_level),
+                        publication.ukas(skip_autoclassified=True),
+                    )
+                )
                 # Skip records with no classification
                 if not ukas:
                     continue
@@ -66,7 +75,9 @@ def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_lev
                     if len(uka) == 5:
                         expanded_ukas.add(uka[:1])
                         expanded_ukas.add(uka[:3])
-                ukas_str = " ".join([f"<https://id.kb.se/term/uka/{s}>" for s in expanded_ukas])
+                ukas_str = " ".join(
+                    [f"<https://id.kb.se/term/uka/{s}>" for s in expanded_ukas]
+                )
 
                 # Get non-UKA keywords in the target language
                 if target_language == "en":
@@ -83,6 +94,8 @@ def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_lev
 
 if __name__ == "__main__":
     if len(sys.argv) != 5:
-        print("Specify language code (en or sv), number of records, and min and max classification level, e.g. en 10000 1 3")
+        print(
+            "Specify language code (en or sv), number of records, and min and max classification level, e.g. en 10000 1 3"
+        )
         sys.exit(1)
     dump_tsv(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
