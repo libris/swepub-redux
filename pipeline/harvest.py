@@ -21,7 +21,6 @@ import orjson as json
 import requests
 
 from pipeline import sickle
-from pipeline.autoclassify import auto_classify
 from pipeline.merge import merge
 from pipeline.convert import convert
 from pipeline.deduplicate import deduplicate
@@ -661,7 +660,7 @@ if __name__ == "__main__":
 
     harvest_cache = None
     t1 = None
-    # If we're purging we skip the harvesting and auto-classification phases but do the rest.
+    # If we're purging we skip the harvesting phase but do the rest.
     if args.purge:
         log.info("Purging " + " ".join([source["code"] for source in sources_to_process]))
         with get_connection() as connection:
@@ -735,35 +734,29 @@ if __name__ == "__main__":
         diff = round(t1 - t0, 2)
         log.info(f"Phase 1 (harvesting) ran for {diff} seconds")
 
-        t0 = t1
-        auto_classify(incremental, added_converted_rowids.keys())
-        t1 = time.time()
-        diff = round(t1 - t0, 2)
-        log.info(f"Phase 2 (auto-classification) ran for {diff} seconds")
-
     t0 = t1 if t1 else time.time()
     deduplicate()
     t1 = time.time()
     diff = round(t1 - t0, 2)
-    log.info(f"Phase 3 (deduplication) ran for {diff} seconds")
+    log.info(f"Phase 2 (deduplication) ran for {diff} seconds")
 
     t0 = t1
     merge()
     t1 = time.time()
     diff = round(t1 - t0, 2)
-    log.info(f"Phase 4 (merging) ran for {diff} seconds")
+    log.info(f"Phase 3 (merging) ran for {diff} seconds")
 
     t0 = t1
     generate_search_tables()
     t1 = time.time()
     diff = round(t1 - t0, 2)
-    log.info(f"Phase 5 (generate search tables) ran for {diff} seconds")
+    log.info(f"Phase 4 (generate search tables) ran for {diff} seconds")
 
     t0 = t1
     generate_processing_stats()
     t1 = time.time()
     diff = round(t1 - t0, 2)
-    log.info(f"Phase 6 (generate processing stats) ran for {diff} seconds")
+    log.info(f"Phase 5 (generate processing stats) ran for {diff} seconds")
 
     if environ.get("SWEPUB_LEGACY_SEARCH_DATABASE"):
         t0 = t1
@@ -774,7 +767,7 @@ if __name__ == "__main__":
             legacy_sync(-1)
         t1 = time.time()
         diff = round(t1 - t0, 2)
-        log.info(f"Phase 7 (legacy search sync) ran for {diff} seconds")
+        log.info(f"Phase 6 (legacy search sync) ran for {diff} seconds")
 
     if harvest_cache and not args.purge:
         log.info(f'Sources harvested: {" ".join(harvest_cache["meta"]["sources_succeeded"])}')
