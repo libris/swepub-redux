@@ -9,9 +9,9 @@ Swepub consists of two programs
 
 To set the system up (for local development), create a Python virtual env and install required Python packages:
 ```
-$ python3 -m venv venv
-$ source venv/bin/activate
-$ pip install -r requirements.txt
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 ```
 
 (Note that at the moment only Python 3.7 and 3.8 have been used for this project, later versions may also work.)
@@ -24,7 +24,7 @@ need to run the pipeline below before you can set it up properly.
 To run the pipeline and harvest a few sources do:
 
 ```bash
-$ python3 -m pipeline.harvest --update --skip-unpaywall --skip-autoclassifier mdh miun mau
+python3 -m pipeline.harvest --update --skip-unpaywall --skip-autoclassifier mdh miun mau
 ```
 
 (`--skip-unpaywall` avoids hitting a non-public Unpaywall mirror; alternatively, you could set `SWEPUB_SKIP_REMOTE` which skips both Unpaywall and other remote services (e.g. shortdoi.org, issn.org). `--skip-autoclassifier` skips autoclassification; see the section about Annif below if you want to set it up.)
@@ -40,8 +40,8 @@ There are no running "services", nor any global state. Each time the pipeline is
 You can `purge` (delete) one or more sources. In combination with a subsequent `update` command, this lets you completely remove a source and then harvest it fully, while keeping records from other sources in the database intact:
 
 ```bash
-$ python3 -m pipeline.harvest --purge uniarts
-$ python3 -m pipeline.harvest --update uniarts
+python3 -m pipeline.harvest --purge uniarts
+python3 -m pipeline.harvest --update uniarts
 ```
 
 (If you omit the source name, all sources' records will be purged and fully harvested.)
@@ -49,8 +49,8 @@ $ python3 -m pipeline.harvest --update uniarts
 For sources that keep track of deleted records, a much quicker way is:
 
 ```bash
-$ python3 -m pipeline.harvest --reset-harvest-time uniarts
-$ python3 -m pipeline.harvest --reset-harvest-time uniarts
+python3 -m pipeline.harvest --reset-harvest-time uniarts
+python3 -m pipeline.harvest --reset-harvest-time uniarts
 ```
 
 `--reset-harvest-time` removes the `last_harvest` entry for the specified source(s), meaning the next `--update` will trigger a full harvest.
@@ -92,30 +92,38 @@ Assuming that this repo is in `~/swepub-redux`:
 
 ```bash
 # Still in the swepub-redux venv, and in the root directory (~/swepub-redux):
-# Create English and Swedish sets (use a higher value than 10000 for production)
-$ bash misc/create_tsv_sets.sh en 10000 1 5 ~/annif-input
-$ bash misc/create_tsv_sets.sh sv 10000 1 5 ~/annif-input
-$ exit # exit the swepub-redux venv
+# Create English and Swedish sets (for production, use 0 (unlimited) instead of 10000)
+bash misc/create_tsv_sets.sh en 10000 3 5 ~/annif-input
+bash misc/create_tsv_sets.sh sv 10000 3 5 ~/annif-input
+exit # exit the swepub-redux venv
 
 # Install a _different_ Python virtual env just for Annif
-$ python3 -m venv ~/annif-venv
+mkdir -p ~/annif
+python3 -m venv ~/annif/annif-venv
 # Activate it
-$ source ~/annif-venv/bin/activate
+source ~/annif/annif-venv/bin/activate
+
 # Install Annif and some necessary dependencies
-$ pip install annif annif[pycld3] annif[omikuji]
+pip install -r ~/swepub-redux/misc/annif/requirements.txt
+
 # Create a directory for Annif (it'll store data there)
 mkdir ~/annif
 # cd into it
 cd ~/annif
+
 # Copy Annif configuration file from swepub-redux repo
 cp ~/swepub-redux/misc/annif/projects.cfg .
+
 # Load the uka vocabulary
 annif load-vocab uka ~/swepub-redux/resources/uka_terms.ttl
+
 # Train Annif
-annif train omikuji-parabel-en ~/annif-input/training_en.tsv
-annif train omikuji-parabel-sv ~/annif-input/training_sv.tsv
-# Start Annif development server on port 8888
-annif run -p 8888
+annif train swepub-en ~/annif-input/training_en.tsv
+annif train swepub-sv ~/annif-input/training_sv.tsv
+
+# Start Annif development server on port 8084
+annif run -p 8084
+# or (still with cwd = ~/annif): gunicorn "annif:create_app()" 
 ```
 
 Now you can try the pipeline again (without `--skip-autoclassifier`).

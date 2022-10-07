@@ -106,7 +106,7 @@ class AutoclassifierAuditor(BaseAuditor):
 
         try:
             r = session.post(
-                annif_url,
+                f"{annif_url}/suggest",
                 data={
                     "text": f"{title} {summary} {keywords}",
                     "limit": 5,

@@ -46,8 +46,8 @@ from pipeline.util import chunker, get_common_json_paths
 DEFAULT_SWEPUB_ENV = getenv("SWEPUB_ENV", "DEV")  # or QA, PROD
 FILE_PATH = path.dirname(path.abspath(__file__))
 DEFAULT_SWEPUB_DB = path.join(FILE_PATH, "../swepub.sqlite3")
-DEFAULT_ANNIF_EN_URL = getenv("ANNIF_EN_URL", "http://127.0.0.1:8888/v1/projects/omikuji-parabel-en/suggest")
-DEFAULT_ANNIF_SV_URL = getenv("ANNIF_SV_URL", "http://127.0.0.1:8888/v1/projects/omikuji-parabel-sv/suggest")
+DEFAULT_ANNIF_EN_URL = getenv("ANNIF_EN_URL", "http://127.0.0.1:8084/v1/projects/swepub-en")
+DEFAULT_ANNIF_SV_URL = getenv("ANNIF_SV_URL", "http://127.0.0.1:8084/v1/projects/swepub-sv")
 
 CACHE_DIR = path.join(FILE_PATH, "../cache/")
 
@@ -512,6 +512,13 @@ def _get_harvest_cache_manager(manager):
     )
 
 
+def _annif_health_check():
+    for url in [getenv("ANNIF_EN_URL"), getenv("ANNIF_SV_URL")]:
+        r = requests.get(url=url)
+        data = r.json()
+        assert data["is_trained"], f"Annif not trained for {url}"
+
+
 def init(l, c, a, lg, inc):
     global lock
     global harvest_cache
@@ -627,6 +634,18 @@ if __name__ == "__main__":
 
     if args.local_server:
         environ["SWEPUB_LOCAL_SERVER"] = args.local_server
+
+    # Annif health check
+    if getenv("SWEPUB_SKIP_AUTOCLASSIFIER"):
+        log.warning("Not using autoclassifier")
+    else:
+        try:
+            _annif_health_check()
+            log.info("Annif is available")
+        except Exception as e:
+            log.error(f"Annif misconfigured or not available and --skip-autoclassifier not specified")
+            log.error(traceback.format_exc())
+            sys.exit(0)
 
     incremental = False
     if args.update:

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -eux
 
 if [[ "$#" -lt 5 ]]; then
   echo "Usage: ${0} <language-code> <total> <min-level> <max-level> <output-dir> [suffix]"

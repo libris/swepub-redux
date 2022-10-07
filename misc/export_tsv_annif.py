@@ -1,5 +1,4 @@
 import sys
-from os import path
 
 import orjson
 import cld3
@@ -7,9 +6,6 @@ import cld3
 from pipeline.storage import get_connection, dict_factory
 from pipeline.publication import Publication
 from pipeline.util import get_title_by_language, get_summary_by_language
-
-FILE_PATH = path.dirname(path.abspath(__file__))
-DEFAULT_SWEPUB_DB = path.join(FILE_PATH, "../swepub.sqlite3")
 
 
 def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_level=5):
@@ -22,11 +18,28 @@ def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_lev
         cur.row_factory = dict_factory
 
         count = 0
-        # for row in cur.execute(f"SELECT data FROM finalized ORDER BY RANDOM()", []):
+        # We could do ORDER BY RANDOM() but it'd be very slow. Instead, for production,
+        # dump everything (number_of_records = 0) with create_tsv_sets.sh, which will
+        # run `shuf` after everything has been written. Then you can just get whatever
+        # number of lines you need.
         for row in cur.execute(f"SELECT data FROM converted {limit_sql}", []):
             if row.get("data"):
                 finalized = orjson.loads(row["data"])
                 publication = Publication(finalized)
+
+                # Get UKA codes, filtered by min/max level, and skip records with
+                # no classification in the desired levels. For example, with
+                # min_level 3 max_level 5, records with only 1-level classification
+                # would be skipped.
+                ukas = list(
+                    filter(
+                        lambda x: len(x) >= int(min_level) and len(x) <= int(max_level),
+                        publication.ukas(skip_autoclassified=True),
+                    )
+                )
+                # Skip records with no classification
+                if not ukas:
+                    continue
 
                 title = get_title_by_language(publication, target_language)
 
@@ -53,22 +66,8 @@ def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_lev
                 ):
                     summary = ""
 
-                # Skip records with no 3 or 5 level classification
-                # if not publication.is_classified(skip_autoclassified=True):
-                #   continue
-
                 # If we don't have a good summary nor a good title, skip the record
                 if len(summary) < 50 and len(title) < 40:
-                    continue
-
-                ukas = list(
-                    filter(
-                        lambda x: len(x) >= int(min_level) and len(x) <= int(max_level),
-                        publication.ukas(skip_autoclassified=True),
-                    )
-                )
-                # Skip records with no classification
-                if not ukas:
                     continue
 
                 # E.g. if record has a subject like "305", ensure it also has "3"
@@ -92,7 +91,7 @@ def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_lev
 
                 print(f"{title} {summary} {keywords}\t{ukas_str}")
                 count += 1
-                if count >= int(number_of_records):
+                if count >= int(number_of_records) and int(number_of_records) > 0:
                     break
 
 
