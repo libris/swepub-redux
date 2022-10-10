@@ -637,15 +637,15 @@ if __name__ == "__main__":
 
     # Annif health check
     if getenv("SWEPUB_SKIP_AUTOCLASSIFIER"):
-        log.warning("Not using autoclassifier")
+        log.warning("Autoclassifier manually disabled")
     else:
         try:
             _annif_health_check()
             log.info("Annif is available")
         except Exception as e:
-            log.error(f"Annif misconfigured or not available and --skip-autoclassifier not specified")
-            log.error(traceback.format_exc())
-            sys.exit(0)
+            log.warning(f"Annif misconfigured or not available; disabling autoclassifier")
+            log.warning(traceback.format_exc())
+            environ["SWEPUB_SKIP_AUTOCLASSIFIER"] = "1"
 
     incremental = False
     if args.update:
