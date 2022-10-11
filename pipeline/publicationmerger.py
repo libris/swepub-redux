@@ -131,6 +131,7 @@ class PublicationMerger:
             return master
         if master == candidate:
             return master
+
         master = self._merge_contribution(master, candidate)
         master = self._merge_has_notes(master, candidate)
         master = self._merge_genre_forms(master, candidate)
@@ -165,11 +166,11 @@ class PublicationMerger:
                     if _should_replace_affiliation(master_contrib, candidate_contrib):
                         master_contrib.affiliations = candidate_contrib.affiliations
                     else:
-                        master_contrib.affiliations = _merge_contrib_affiliations(
+                        _merge_contrib_affiliations(
                             master_contrib.affiliations,
                             candidate_contrib.affiliations,
                         )
-                    master_contrib.identified_bys = _merge_contrib_identified_by(
+                    _merge_contrib_identified_by(
                         master_contrib.identified_bys,
                         candidate_contrib.identified_bys,
                         candidate_contrib.agent_type
@@ -256,7 +257,8 @@ class PublicationMerger:
         for identifier in candidate_identifiedby_ids:
             master_identifiedby_ids = self._possibly_append_id(master_identifiedby_ids, identifier)
 
-        master.identifiedby_ids = master_identifiedby_ids
+        if master_identifiedby_ids:
+            master.identifiedby_ids = master_identifiedby_ids
         return master
 
     def _merge_indirectly_identifiedby_ids(self, master, candidate):
@@ -267,7 +269,8 @@ class PublicationMerger:
         for identifier in candidate_indirectly_identifiedby_ids:
             master_indirectly_identifiedby_ids = _possibly_append_id(master_indirectly_identifiedby_ids, identifier)
 
-        master.indirectly_identifiedby_ids = master_indirectly_identifiedby_ids
+        if master_indirectly_identifiedby_ids:
+            master.indirectly_identifiedby_ids = master_indirectly_identifiedby_ids
         return master
 
     @staticmethod
@@ -480,7 +483,6 @@ def _merge_contrib_identified_by(master_contrib_identified_bys, candidate_contri
     for candidate_contrib_relevant_identified_by in candidate_contrib_relevant_identified_bys:
         if candidate_contrib_relevant_identified_by not in master_contrib_identified_bys:
             master_contrib_identified_bys.append(candidate_contrib_relevant_identified_by)
-    return master_contrib_identified_bys
 
 
 def _merge_contrib_affiliations(master_contrib_affiliations, canidate_contrib_affiliations):
@@ -506,5 +508,3 @@ def _merge_contrib_affiliations(master_contrib_affiliations, canidate_contrib_af
                     break
             if not has_match:
                 master_contrib_affiliations.append(candidate_contrib_affiliation)
-
-    return master_contrib_affiliations
