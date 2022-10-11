@@ -643,9 +643,12 @@ if __name__ == "__main__":
             _annif_health_check()
             log.info("Annif is available")
         except Exception as e:
-            log.warning(f"Annif misconfigured or not available; disabling autoclassifier")
-            log.warning(traceback.format_exc())
-            environ["SWEPUB_SKIP_AUTOCLASSIFIER"] = "1"
+            if environ["SWEPUB_ENV"] in ["QA", "PROD"]:
+                log.error(f"Annif misconfigured or not available: {e}")
+                sys.exit(1)
+            else:
+                log.warning(f"Annif misconfigured or not available. Disabling autoclassifier: {e}")
+                environ["SWEPUB_SKIP_AUTOCLASSIFIER"] = "1"
 
     incremental = False
     if args.update:

@@ -118,8 +118,10 @@ cp ~/swepub-redux/misc/annif/projects.cfg .
 annif load-vocab uka ~/swepub-redux/resources/uka_terms.ttl
 
 # Train Annif
-annif train swepub-en ~/annif-input/training_en.tsv
-annif train swepub-sv ~/annif-input/training_sv.tsv
+annif train -j 0 swepub-en ~/annif-input/training_en.tsv
+annif train -j 0 swepub-sv ~/annif-input/training_sv.tsv
+# Also accepts .gz, and multiple files, e.g.:
+# annif train swepub-en ~/annif-input/training_en.tsv*.gz
 
 # Start Annif development server on port 8084
 annif run -p 8084
