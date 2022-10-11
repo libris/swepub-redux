@@ -142,7 +142,7 @@ export default {
                   </p>
                 </template>
                 <template v-else>
-                  <p>{{flag.code}} {{flag.new_value | joined }}</p>
+                  <p>{{flag.new_value | joined }}</p>
                 </template>
               </div>
             </template>

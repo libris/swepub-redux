@@ -28,6 +28,7 @@ cd swepub-annif
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+python3 -m nltk.downloader punkt
 annif run -p 8084 # starts the server
 # Instead of `annif run` (for development only), you could use gunicorn, e.g.:
 # gunicorn --workers 4 --threads 4 --worker-class gthread --bind 127.0.0.1:8084 "annif:create_app()"
