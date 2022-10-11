@@ -7,27 +7,60 @@ Swepub consists of two programs
 
 ## Setup
 
-To set the system up (for local development), create a Python virtual env and install required Python packages:
+To set the system up, clone this repo, create a Python virtual env and install required Python packages:
 ```
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-(Note that at the moment only Python 3.7 and 3.8 have been used for this project, later versions may also work.)
+(Note that at the moment only Python 3.7 and 3.8 have been used for this project. Later versions may also work.)
 
-For automated subject classification we use [Annif](https://annif.org/). For the moment you can skip this; you'll
-need to run the pipeline below before you can set it up properly.
+### Setup: Annif
+
+For automated subject classification we use [Annif](https://annif.org/). This is optional in the default DEV environment; if Annif is not detected, autoclassification will be disabled. To set it up:
+
+
+```
+# Make sure you're no longer in the swepub-redux directory
+git clone https://github.com/libris/swepub-annif.git
+cd swepub-annif
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+annif run -p 8084 # starts the server
+# Instead of `annif run` (for development only), you could use gunicorn, e.g.:
+# gunicorn --workers 4 --threads 4 --worker-class gthread --bind 127.0.0.1:8084 "annif:create_app()"
+# (...and put behind e.g. nginx in a production environment)
+```
+
+Visit http://localhost:8084 to try the Annif UI. You'll also find Swagger there.
+
+You can also test Annif from the command line, e.g.:
+
+```
+echo 'Cardiac troponin I in healthy Norwegian Forest Cat, Birman and domestic shorthair cats, and in cats with hypertrophic cardiomyopathy' | annif suggest swepub-en
+2022-10-11T13:10:35.736Z INFO [omikuji::model] Loading model from data/projects/swepub-en/omikuji-model...
+...
+<https://id.kb.se/term/uka/4> Agricultural and Veterinary sciences  0.8900570869445801
+<https://id.kb.se/term/uka/40303> Clinical Science  0.6352069973945618
+<https://id.kb.se/term/uka/403> Veterinary Science  0.4740253984928131
+<https://id.kb.se/term/uka/106> Biological Sciences (Medical to be 3 and Agricultural to be 4) 0.17030012607574463
+...
+```
+
+(This will be slow as the model has to be loaded each time you use `suggest`; normally you
+should use the REST API.)
 
 ## Pipeline
 
 To run the pipeline and harvest a few sources do:
 
 ```bash
-python3 -m pipeline.harvest --update --skip-unpaywall --skip-autoclassifier mdh miun mau
+python3 -m pipeline.harvest --update --skip-unpaywall mdh miun mau
 ```
 
-(`--skip-unpaywall` avoids hitting a non-public Unpaywall mirror; alternatively, you could set `SWEPUB_SKIP_REMOTE` which skips both Unpaywall and other remote services (e.g. shortdoi.org, issn.org). `--skip-autoclassifier` skips autoclassification; see the section about Annif below if you want to set it up.)
+(`--skip-unpaywall` avoids hitting a non-public Unpaywall mirror; alternatively, you could set `SWEPUB_SKIP_REMOTE` which skips both Unpaywall and other remote services (e.g. shortdoi.org, issn.org).)
 
 Expect this to take a few minutes. If you don't specify source(s) you instead get the full production data which takes a lot longer (~8 hours). Sources must exist in `pipeline/sources.json`. If the database doesn't exist, it will be created; if it already exists, sources will be incrementally updated (harvesting records added/updated/deleted since the previous execution of `pipeline.harvest --update`).
 
@@ -86,8 +119,12 @@ python3 -m service.swepub
 Then visit http://localhost:5000. API docs are available on http://localhost:5000/api/v1/apidocs.
 
 
-## Annif: install and run
-Assuming that this repo is in `~/swepub-redux`:
+## Training Annif
+This assumes you've already installed Annif (see "Setup: Annif") above and have it running with the pre-trained models from the [swepub-annif](https://github.com/libris/swepub-annif) repo. This section is about how to train Annif from scratch (i.e., to create what you see in the swepub-annif repo).
+
+
+### Generate input for Annif
+Assuming that the swepub-redux repo is `~/swepub-redux` and that the swepub-annif repo is `~/swepub-annif`:
 
 
 ```bash
@@ -97,38 +134,23 @@ bash misc/create_tsv_sets.sh en 10000 3 5 ~/annif-input
 bash misc/create_tsv_sets.sh sv 10000 3 5 ~/annif-input
 exit # exit the swepub-redux venv
 
-# Install a _different_ Python virtual env just for Annif
-mkdir -p ~/annif
-python3 -m venv ~/annif/annif-venv
-# Activate it
-source ~/annif/annif-venv/bin/activate
-
-# Install Annif and some necessary dependencies
-pip install -r ~/swepub-redux/misc/annif/requirements.txt
-
-# Create a directory for Annif (it'll store data there)
-mkdir ~/annif
-# cd into it
-cd ~/annif
-
-# Copy Annif configuration file from swepub-redux repo
-cp ~/swepub-redux/misc/annif/projects.cfg .
-
-# Load the uka vocabulary
-annif load-vocab uka ~/swepub-redux/resources/uka_terms.ttl
-
+### Train Annif
+cd ~/swepub-annif
+source venv/bin/activate
+# Load/update the uka vocabulary
+annif load-vocab uka uka_terms.ttl
 # Train Annif
 annif train -j 0 swepub-en ~/annif-input/training_en.tsv
 annif train -j 0 swepub-sv ~/annif-input/training_sv.tsv
 # Also accepts .gz, and multiple files, e.g.:
 # annif train swepub-en ~/annif-input/training_en.tsv*.gz
-
-# Start Annif development server on port 8084
-annif run -p 8084
-# or (still with cwd = ~/annif): gunicorn "annif:create_app()" 
 ```
 
-Now you can try the pipeline again (without `--skip-autoclassifier`).
+Training `swepub-en` can take more than an hour if your SQLite database contains
+the entirety of Swepub.
+
+Note that the `omikuji-train.txt` files are not necessary for running the API
+(especially the English one gets quite large).
 
 ## Tests
 
