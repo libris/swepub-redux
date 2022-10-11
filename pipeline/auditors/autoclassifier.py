@@ -102,8 +102,6 @@ class AutoclassifierAuditor(BaseAuditor):
             annif_url = getenv("ANNIF_EN_URL")
         keywords = " ".join(publication.keywords(language=language_id))
 
-        print(summary)
-
         try:
             r = session.post(
                 f"{annif_url}/suggest",
@@ -122,7 +120,7 @@ class AutoclassifierAuditor(BaseAuditor):
         if not suggestions:
             return publication, audit_events, False
 
-        print("SUGGESTIONS", suggestions)
+        #print("SUGGESTIONS", suggestions)
 
         # The suggestion API returns suggestions for level 1, 3 and 5 (as it should),
         # but for autoclassification we should only add level 3.
@@ -147,11 +145,11 @@ class AutoclassifierAuditor(BaseAuditor):
         for code in suggested_codes:
             expanded_suggested_codes.add(code[:1])
 
-        print("CURRENT", current_codes)
-        print("SUGGESTED", suggested_codes)
-        print("SUGGESTED EXPANDED", expanded_suggested_codes)
+        #print("CURRENT", current_codes)
+        #print("SUGGESTED", suggested_codes)
+        #print("SUGGESTED EXPANDED", expanded_suggested_codes)
         new_codes = expanded_suggested_codes - current_codes
-        print("NEW", new_codes)
+        #print("NEW", new_codes)
 
         if not new_codes:
             return publication, audit_events, False
@@ -165,14 +163,6 @@ class AutoclassifierAuditor(BaseAuditor):
         publication.add_subjects(classifications)
 
         value = publication.uka_swe_classification_list
-
-        print(initial_value)
-        print(value)
-
         audit_events.add_event(self.name, "auto_classify", True, initial_value, value)
-
-        print(audit_events)
-
-        print("\n-----------------------------\n")
 
         return publication, audit_events, True
