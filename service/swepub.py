@@ -3,6 +3,7 @@ import json
 import orjson
 from functools import wraps
 from os import path, getenv
+import requests
 
 from datetime import datetime
 import sqlite3
@@ -26,6 +27,7 @@ from pypika.terms import BasicCriterion
 from pypika import functions as fn
 from collections import Counter
 from tempfile import NamedTemporaryFile
+import cld3
 
 from service.utils import bibliometrics
 from service.utils.common import *
@@ -80,6 +82,9 @@ DEFAULT_XSLT = "\n".join(
         if x.strip(" \t\n\r")
     ]
 )
+
+ANNIF_EN_URL = getenv("ANNIF_EN_URL", "http://127.0.0.1:8084/v1/projects/swepub-en")
+ANNIF_SV_URL = getenv("ANNIF_SV_URL", "http://127.0.0.1:8084/v1/projects/swepub-sv")
 
 # Note: static files should be served by Apache/nginx
 app = Flask(__name__, static_url_path="/app", static_folder="vue-client/dist")
@@ -394,11 +399,11 @@ def classify():
         _errors('Content-Type must be "application/json"')
 
     data = request.json
-    abstract = str(data.get("abstract", ""))
+    abstract = str(data.get("abstract", ""))[:5000]
     classes = data.get("classes", 5)
     level = data.get("level", 3)
-    title = str(data.get("title", ""))
-    keywords = str(data.get("keywords", ""))
+    title = str(data.get("title", ""))[:1000]
+    keywords = str(data.get("keywords", ""))[:500]
 
     try:
         classes = int(classes)
@@ -410,95 +415,43 @@ def classify():
     if classes < 1:
         _errors("Parameter 'classes' must be larger than 0")
 
-    # NOTE! From here on the code is copied/adapted from pipeline's autoclassify.
+    annif_input = f"{title} {abstract} {keywords}"
 
-    # Extract individual words
-    words_set = set()
-    for string in [abstract, title, keywords]:
-        string = string.translate(undesired_binary_chars_table)
-        string = string.translate(undesired_unary_chars_table)
-        string = string.lower()
-        string = re.sub(r"[^a-zåäö ]+", "", string)
-        words = re.findall(r"\w+", string)
-        for word in words:
-            if word == "" or len(word) < 3:
+    language_prediction = cld3.get_language(annif_input) or ""
+    if language_prediction.language == "sv":
+        annif_url = ANNIF_SV_URL
+    else:
+        annif_url = ANNIF_EN_URL
+
+    try:
+        r = requests.post(
+                f"{annif_url}/suggest",
+                data={
+                    "text": annif_input,
+                    "limit": 20,
+                    "threshold": 0.1,
+                },
+            )
+        results = r.json()["results"]
+    except Exception as e:
+        _errors(["Classify backend unavailable"], status_code=500)
+
+    subjects = []
+    if len(results) > 0:
+        status = "match"
+        for d in results:
+            code = d["uri"].split("/")[-1]
+            if len(code) != level:
                 continue
-            words_set.add(word.lower())
-    words = list(words_set)[0:150]
-
-    # Out of the extracted words, determine which are the rarest ones
-    cur = get_db().cursor()
-    cur.row_factory = lambda cursor, row: row[0]
-    rare_words = cur.execute(
-        f"""
-        SELECT
-            word
-        FROM
-            abstract_total_word_counts
-        WHERE
-            word IN ({','.join('?'*len(words))})
-        ORDER BY
-            occurrences ASC
-        LIMIT
-            20
-    """,
-        words,
-    ).fetchall()
-
-    # Find publications sharing those rare words
-    subjects = Counter()
-    publication_subjects = set()
-
-    cur.row_factory = dict_factory
-    for candidate_row in cur.execute(
-        f"""
-        SELECT
-            converted.data, group_concat(abstract_rarest_words.word, '\n') AS rarest_words
-        FROM
-            abstract_rarest_words
-        LEFT JOIN
-            converted
-        ON
-            converted.id = abstract_rarest_words.converted_id
-        WHERE
-            abstract_rarest_words.word IN ({','.join('?'*len(rare_words))})
-        GROUP BY
-            abstract_rarest_words.converted_id
-        """,
-        rare_words,
-    ):
-
-        candidate = json.loads(candidate_row["data"])
-        candidate_matched_words = []
-        if isinstance(candidate_row["rarest_words"], str):
-            candidate_matched_words = candidate_row["rarest_words"].split("\n")
-
-        # This is a vital tweaking point. How many _rare_ words do two abstracts need to share
-        # in order to be considered on the same subject? 2 seems a balanced choice. 1 "works" too,
-        # but may be a bit too aggressive (providing a bit too many false positive matches).
-        if len(candidate_matched_words) < 2:
-            continue
-
-        for subject in candidate.get("instanceOf", {}).get("subject", []):
-            try:
-                authority, subject_id = subject["inScheme"]["code"], subject["code"]
-            except KeyError:
-                continue
-            if authority not in ("hsv", "uka.se") or len(subject_id) < level:
-                continue
-
-            publication_subjects.add(subject_id[:level])
-        score = pow(len(candidate_matched_words), 3.0)
-        for sub in publication_subjects:
-            subjects[sub] += score
-
-    subjects = subjects.most_common(classes)
-    status = "match" if len(subjects) > 0 else "no match"
+            subjects.append((code, round(d["score"], 2)))
+    else:
+        status = "no match"
+        subjects = []
 
     return {
         "abstract": abstract,
         "status": status,
-        "suggestions": enrich_subject(subjects, CATEGORIES),
+        "suggestions": enrich_subject(subjects[:5], CATEGORIES),
     }
 
 

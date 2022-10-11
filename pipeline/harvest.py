@@ -43,6 +43,8 @@ from pipeline.legacy_sync import legacy_sync
 from pipeline.swepublog import logger as log
 from pipeline.util import chunker, get_common_json_paths
 
+
+# TODO: Move configuration (some of which is shared with service/swepub.py) to a separate file
 DEFAULT_SWEPUB_ENV = getenv("SWEPUB_ENV", "DEV")  # or QA, PROD
 FILE_PATH = path.dirname(path.abspath(__file__))
 DEFAULT_SWEPUB_DB = path.join(FILE_PATH, "../swepub.sqlite3")
