@@ -18,42 +18,9 @@ pip install -r requirements.txt
 
 ### Setup: Annif
 
-For automated subject classification we use [Annif](https://annif.org/). This is optional in the default DEV environment; if Annif is not detected, autoclassification will be disabled. To set it up:
-
-
-```bash
-# Make sure you're no longer in the swepub-redux directory
-git clone https://github.com/libris/swepub-annif.git
-cd swepub-annif
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-python3 -m nltk.downloader punkt
-annif run -p 8084 # starts the server
-# Instead of `annif run` (for development only), you could use gunicorn, e.g.:
-# gunicorn --workers 4 --threads 4 --worker-class gthread --bind 127.0.0.1:8084 "annif:create_app()"
-# (...and put behind e.g. nginx in a production environment)
-```
-
-(For `pip install` to work you might need to install some dependencies, e.g. `protobuf-compiler` in Ubuntu.)
-
-Visit http://localhost:8084 to try the Annif UI. You'll also find Swagger there.
-
-You can also test Annif from the command line, e.g.:
-
-```bash
-echo 'Cardiac troponin I in healthy Norwegian Forest Cat, Birman and domestic shorthair cats, and in cats with hypertrophic cardiomyopathy' | annif suggest swepub-en
-2022-10-11T13:10:35.736Z INFO [omikuji::model] Loading model from data/projects/swepub-en/omikuji-model...
-...
-<https://id.kb.se/term/uka/4> Agricultural and Veterinary sciences  0.8900570869445801
-<https://id.kb.se/term/uka/40303> Clinical Science  0.6352069973945618
-<https://id.kb.se/term/uka/403> Veterinary Science  0.4740253984928131
-<https://id.kb.se/term/uka/106> Biological Sciences (Medical to be 3 and Agricultural to be 4) 0.17030012607574463
-...
-```
-
-(This will be slow as the model has to be loaded each time you use `suggest`; normally you
-should use the REST API.)
+For automated subject classification we use [Annif](https://annif.org/). This is optional in the default DEV environment;
+if Annif is not detected, autoclassification will be automatically disabled.
+To set it up, follow the instructions in https://github.com/libris/swepub-annif.
 
 ## Pipeline
 
@@ -122,8 +89,9 @@ python3 -m service.swepub
 Then visit http://localhost:5000. API docs are available on http://localhost:5000/api/v1/apidocs.
 
 
-## Training Annif
+## Training/updating Annif
 See https://github.com/libris/swepub-annif
+
 
 ## Tests
 
