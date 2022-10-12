@@ -140,6 +140,32 @@ class Publication:
         return get_summary(self.body)
 
     @property
+    def summaries(self):
+        """Return a list of all summaries."""
+        return self.body.get('instanceOf', {}).get('summary', [])
+
+    def get_english_summary(self):
+        """Get summary text in English if it exists."""
+        return self._get_lang_summary("eng")
+
+    def get_swedish_summary(self):
+        """Get summary text in Swedish if it exists."""
+        return self._get_lang_summary("swe")
+
+    def _get_lang_summary(self, lang):
+        """Get summary for specified language if it exists."""
+        for summary in self.summaries:
+            if "language" not in summary:
+                continue
+            if "code" not in summary["language"]:
+                continue
+            if summary["language"]["code"] != lang:
+                continue
+            if "label" in summary:
+                return summary["label"]
+        return None
+
+    @property
     def publication_date(self):
         return get_publication_date(self.body)
 
@@ -285,6 +311,21 @@ class Publication:
                     return True
         return False
 
+    # language: e.g. https://id.kb.se/language/swe or https://id.kb.se/language/eng
+    def keywords(self, language=None):
+        subjects = self.subjects
+        keywords = []
+        for subj in subjects:
+            if language and subj.get("language", {}).get("@id", "") != language:
+                continue
+            if "inScheme" in subj and "code" in subj["inScheme"]:
+                code = subj["inScheme"]["code"]
+                if code == "hsv" or code == "uka.se":
+                    continue
+            if "prefLabel" in subj:
+                keywords.append(subj["prefLabel"])
+        return keywords
+
     @property
     def subject_codes(self):
         """Return a list of all subject identifiers."""
@@ -302,6 +343,16 @@ class Publication:
     def subjects(self, subjects):
         """ Sets array of subjects for instanceOf.subject """
         self._body['instanceOf']['subject'] = subjects
+
+    def add_subjects(self, subjects):
+        """Add a list of subjects to the publication.
+
+        Each subject is flagged with "Autoclassified by Swepub"."""
+        if "instanceOf" not in self._body:
+            self._body["instanceOf"] = {}
+        if "subject" not in self.body["instanceOf"]:
+            self._body["instanceOf"]["subject"] = []
+        self._body["instanceOf"]["subject"].extend(subjects)
 
     @property
     def creator_count(self):
@@ -439,10 +490,14 @@ class Publication:
         publication['instanceOf']['genreForm'] = new_gforms
         return publication
 
-    def ukas(self):
+    def ukas(self, skip_autoclassified=False):
         """Return a unique list of all UKAs"""
         ukas = set()
         for uka in self.body.get('instanceOf', {}).get('subject', []):
+            if skip_autoclassified:
+                for note in uka.get("hasNote", []):
+                    if note.get("label", "") == "Autoclassified by Swepub":
+                        continue
             if isinstance(uka, dict) and uka.get("inScheme", {}).get("code", "") == "uka.se":
                 ukas.add(uka.get("code"))
         return list([uka for uka in ukas if uka])

@@ -7,21 +7,27 @@ Swepub consists of two programs
 
 ## Setup
 
-To set the system up (for local development), create a Python virtual env and install required Python packages:
-```
-$ python3 -m venv venv
-$ source venv/bin/activate
-$ pip install -r requirements.txt
+To set the system up, clone this repo, create a Python virtual env and install required Python packages:
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 ```
 
-(Note that at the moment only Python 3.7 and 3.8 have been used for this project, later versions may also work)
+(Note that at the moment only Python 3.7 and 3.8 have been used for this project. Later versions may also work.)
+
+### Setup: Annif
+
+For automated subject classification we use [Annif](https://annif.org/). This is optional in the default DEV environment;
+if Annif is not detected, autoclassification will be automatically disabled.
+To set it up, follow the instructions in https://github.com/libris/swepub-annif.
 
 ## Pipeline
 
 To run the pipeline and harvest a few sources do:
 
 ```bash
-$ python3 -m pipeline.harvest --update --skip-unpaywall mdh miun mau
+python3 -m pipeline.harvest --update --skip-unpaywall mdh miun mau
 ```
 
 (`--skip-unpaywall` avoids hitting a non-public Unpaywall mirror; alternatively, you could set `SWEPUB_SKIP_REMOTE` which skips both Unpaywall and other remote services (e.g. shortdoi.org, issn.org).)
@@ -37,8 +43,8 @@ There are no running "services", nor any global state. Each time the pipeline is
 You can `purge` (delete) one or more sources. In combination with a subsequent `update` command, this lets you completely remove a source and then harvest it fully, while keeping records from other sources in the database intact:
 
 ```bash
-$ python3 -m pipeline.harvest --purge uniarts
-$ python3 -m pipeline.harvest --update uniarts
+python3 -m pipeline.harvest --purge uniarts
+python3 -m pipeline.harvest --update uniarts
 ```
 
 (If you omit the source name, all sources' records will be purged and fully harvested.)
@@ -46,8 +52,8 @@ $ python3 -m pipeline.harvest --update uniarts
 For sources that keep track of deleted records, a much quicker way is:
 
 ```bash
-$ python3 -m pipeline.harvest --reset-harvest-time uniarts
-$ python3 -m pipeline.harvest --reset-harvest-time uniarts
+python3 -m pipeline.harvest --reset-harvest-time uniarts
+python3 -m pipeline.harvest --reset-harvest-time uniarts
 ```
 
 `--reset-harvest-time` removes the `last_harvest` entry for the specified source(s), meaning the next `--update` will trigger a full harvest.
@@ -81,6 +87,10 @@ python3 -m service.swepub
 ```
 
 Then visit http://localhost:5000. API docs are available on http://localhost:5000/api/v1/apidocs.
+
+
+## Training/updating Annif
+See https://github.com/libris/swepub-annif
 
 
 ## Tests

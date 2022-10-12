@@ -21,7 +21,6 @@ import orjson as json
 import requests
 
 from pipeline import sickle
-from pipeline.autoclassify import auto_classify
 from pipeline.merge import merge
 from pipeline.convert import convert
 from pipeline.deduplicate import deduplicate
@@ -44,9 +43,13 @@ from pipeline.legacy_sync import legacy_sync
 from pipeline.swepublog import logger as log
 from pipeline.util import chunker, get_common_json_paths
 
+
+# TODO: Move configuration (some of which is shared with service/swepub.py) to a separate file
 DEFAULT_SWEPUB_ENV = getenv("SWEPUB_ENV", "DEV")  # or QA, PROD
 FILE_PATH = path.dirname(path.abspath(__file__))
 DEFAULT_SWEPUB_DB = path.join(FILE_PATH, "../swepub.sqlite3")
+DEFAULT_ANNIF_EN_URL = getenv("ANNIF_EN_URL", "http://127.0.0.1:8083/v1/projects/swepub-en")
+DEFAULT_ANNIF_SV_URL = getenv("ANNIF_SV_URL", "http://127.0.0.1:8083/v1/projects/swepub-sv")
 
 CACHE_DIR = path.join(FILE_PATH, "../cache/")
 
@@ -302,6 +305,9 @@ def threaded_handle_harvested(source, source_subset, harvest_id, cached_paths, b
     num_deleted = 0
 
     with requests.Session() as session:
+        adapter = requests.adapters.HTTPAdapter(max_retries=2)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
         for record in batch:
             xml = record.xml
             rejected, min_level_errors = should_be_rejected(xml)
@@ -508,6 +514,13 @@ def _get_harvest_cache_manager(manager):
     )
 
 
+def _annif_health_check():
+    for url in [getenv("ANNIF_EN_URL"), getenv("ANNIF_SV_URL")]:
+        r = requests.get(url=url)
+        data = r.json()
+        assert data["is_trained"], f"Annif not trained for {url}"
+
+
 def init(l, c, a, lg, inc):
     global lock
     global harvest_cache
@@ -562,6 +575,7 @@ def handle_args():
         help="One of DEV, QA, PROD (default DEV). Overrides SWEPUB_ENV.",
     )
     parser.add_argument("--skip-unpaywall", action="store_true", help="Skip Unpaywall check")
+    parser.add_argument("--skip-autoclassifier", action="store_true", help="Skip autoclassify step")
     parser.add_argument("-s", "--source-file", default=None, help="Source file to use.")
     parser.add_argument(
         "source",
@@ -606,14 +620,37 @@ if __name__ == "__main__":
     if environ.get("SWEPUB_SKIP_REMOTE"):
         log.info(f"SWEPUB_SKIP_REMOTE set, not refreshing DOAB or using remote services for validation/enrichment")
 
+    if not getenv("ANNIF_EN_URL"):
+        environ["ANNIF_EN_URL"] = DEFAULT_ANNIF_EN_URL
+    if not getenv("ANNIF_SV_URL"):
+        environ["ANNIF_SV_URL"] = DEFAULT_ANNIF_SV_URL
+
     sources = load(open(environ["SWEPUB_SOURCE_FILE"]))
 
     # The Unpaywall mirror is not accessible from the public Internet, so for local testing one might want to avoid it
     if args.skip_unpaywall:
         environ["SWEPUB_SKIP_UNPAYWALL"] = "1"
 
+    if args.skip_autoclassifier:
+        environ["SWEPUB_SKIP_AUTOCLASSIFIER"] = "1"
+
     if args.local_server:
         environ["SWEPUB_LOCAL_SERVER"] = args.local_server
+
+    # Annif health check
+    if getenv("SWEPUB_SKIP_AUTOCLASSIFIER"):
+        log.warning("Autoclassifier manually disabled")
+    else:
+        try:
+            _annif_health_check()
+            log.info("Annif is available")
+        except Exception as e:
+            if environ["SWEPUB_ENV"] in ["QA", "PROD"]:
+                log.error(f"Annif misconfigured or not available: {e}")
+                sys.exit(1)
+            else:
+                log.warning(f"Annif misconfigured or not available. Disabling autoclassifier: {e}")
+                environ["SWEPUB_SKIP_AUTOCLASSIFIER"] = "1"
 
     incremental = False
     if args.update:
@@ -647,7 +684,7 @@ if __name__ == "__main__":
 
     harvest_cache = None
     t1 = None
-    # If we're purging we skip the harvesting and auto-classification phases but do the rest.
+    # If we're purging we skip the harvesting phase but do the rest.
     if args.purge:
         log.info("Purging " + " ".join([source["code"] for source in sources_to_process]))
         with get_connection() as connection:
@@ -721,35 +758,29 @@ if __name__ == "__main__":
         diff = round(t1 - t0, 2)
         log.info(f"Phase 1 (harvesting) ran for {diff} seconds")
 
-        t0 = t1
-        auto_classify(incremental, added_converted_rowids.keys())
-        t1 = time.time()
-        diff = round(t1 - t0, 2)
-        log.info(f"Phase 2 (auto-classification) ran for {diff} seconds")
-
     t0 = t1 if t1 else time.time()
     deduplicate()
     t1 = time.time()
     diff = round(t1 - t0, 2)
-    log.info(f"Phase 3 (deduplication) ran for {diff} seconds")
+    log.info(f"Phase 2 (deduplication) ran for {diff} seconds")
 
     t0 = t1
     merge()
     t1 = time.time()
     diff = round(t1 - t0, 2)
-    log.info(f"Phase 4 (merging) ran for {diff} seconds")
+    log.info(f"Phase 3 (merging) ran for {diff} seconds")
 
     t0 = t1
     generate_search_tables()
     t1 = time.time()
     diff = round(t1 - t0, 2)
-    log.info(f"Phase 5 (generate search tables) ran for {diff} seconds")
+    log.info(f"Phase 4 (generate search tables) ran for {diff} seconds")
 
     t0 = t1
     generate_processing_stats()
     t1 = time.time()
     diff = round(t1 - t0, 2)
-    log.info(f"Phase 6 (generate processing stats) ran for {diff} seconds")
+    log.info(f"Phase 5 (generate processing stats) ran for {diff} seconds")
 
     if environ.get("SWEPUB_LEGACY_SEARCH_DATABASE"):
         t0 = t1
@@ -760,7 +791,7 @@ if __name__ == "__main__":
             legacy_sync(-1)
         t1 = time.time()
         diff = round(t1 - t0, 2)
-        log.info(f"Phase 7 (legacy search sync) ran for {diff} seconds")
+        log.info(f"Phase 6 (legacy search sync) ran for {diff} seconds")
 
     if harvest_cache and not args.purge:
         log.info(f'Sources harvested: {" ".join(harvest_cache["meta"]["sources_succeeded"])}')
@@ -782,7 +813,6 @@ if __name__ == "__main__":
                 )
         except Exception as e:
             log.warning(f"Failed saving harvest ID cache to {ID_CACHE_FILE}: {e}")
-
 
         try:
             log.info(

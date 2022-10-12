@@ -5,6 +5,7 @@ from jsonpath_rw import parse
 import re
 import Levenshtein
 import hashlib
+import cld3
 
 from pipeline.swepublog import logger as log
 
@@ -538,3 +539,43 @@ def get_language(body):
         if isinstance(l, dict) and l.get('@type') == 'Language':
             return l.get('code')
     return None
+
+# language: e.g en or sv
+def get_title_by_language(publication, language):
+    # Some records have both a mainTitle and a variantTitle, with
+    # no language code; sometimes mainTitle is in English and variantTitle
+    # is in Swedish, and vice versa.
+    title = ""
+    for t in publication.body.get('instanceOf', {}).get('hasTitle', []):
+        whole_title = t.get("mainTitle", "").strip()
+        sub_title = t.get("subtitle", "").strip()
+        if sub_title:
+            whole_title = f"{whole_title} {sub_title}"
+        language_prediction_title = cld3.get_language(whole_title)
+        if not language_prediction_title or language_prediction_title.language != language or not language_prediction_title.is_reliable:
+            continue
+        title = whole_title
+        break
+    return title
+
+# language: e.g en or sv
+def get_summary_by_language(publication, language):
+    # Some records have summaries (abstracts) tagged with a language, most (?)
+    # do not. First try to get a language-specific summary. If that fails, try to
+    # get the untagged one.
+    summary = ""
+    if language == "en":
+        summary = publication.get_english_summary()
+    if language == "sv":
+        summary = publication.get_swedish_summary()
+
+    if not summary:
+        summary = publication.summary or ""
+
+    # Remove summary if summary not in target language. We check all summaries
+    # (even the language-tagged ones) because we don't trust input.
+    language_prediction_summary = cld3.get_language(summary)
+    if not language_prediction_summary or language_prediction_summary.language != language or not language_prediction_summary.is_reliable:
+        summary = ""
+
+    return summary
