@@ -123,37 +123,7 @@ Then visit http://localhost:5000. API docs are available on http://localhost:500
 
 
 ## Training Annif
-This assumes you've already installed Annif (see "Setup: Annif") above and have it running with the pre-trained models from the [swepub-annif](https://github.com/libris/swepub-annif) repo. This section is about how to train Annif from scratch (i.e., to create what you see in the swepub-annif repo).
-
-
-### Generate input for Annif
-Assuming that the swepub-redux repo is `~/swepub-redux` and that the swepub-annif repo is `~/swepub-annif`:
-
-
-```bash
-# Still in the swepub-redux venv, and in the root directory (~/swepub-redux):
-# Create English and Swedish sets (for production, use 0 (unlimited) instead of 10000)
-bash misc/create_tsv_sets.sh en 10000 3 5 ~/annif-input
-bash misc/create_tsv_sets.sh sv 10000 3 5 ~/annif-input
-exit # exit the swepub-redux venv
-
-### Train Annif
-cd ~/swepub-annif
-source venv/bin/activate
-# Load/update the uka vocabulary
-annif load-vocab uka uka_terms.ttl
-# Train Annif
-annif train -j 0 swepub-en ~/annif-input/training_en.tsv
-annif train -j 0 swepub-sv ~/annif-input/training_sv.tsv
-# Also accepts .gz, and multiple files, e.g.:
-# annif train swepub-en ~/annif-input/training_en.tsv*.gz
-```
-
-Training `swepub-en` can take more than an hour if your SQLite database contains
-the entirety of Swepub.
-
-Note that the `omikuji-train.txt` files are not necessary for running the API
-(especially the English one gets quite large).
+See https://github.com/libris/swepub-annif
 
 ## Tests
 
