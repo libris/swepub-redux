@@ -8,7 +8,7 @@ Swepub consists of two programs
 ## Setup
 
 To set the system up, clone this repo, create a Python virtual env and install required Python packages:
-```
+```bash
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -21,7 +21,7 @@ pip install -r requirements.txt
 For automated subject classification we use [Annif](https://annif.org/). This is optional in the default DEV environment; if Annif is not detected, autoclassification will be disabled. To set it up:
 
 
-```
+```bash
 # Make sure you're no longer in the swepub-redux directory
 git clone https://github.com/libris/swepub-annif.git
 cd swepub-annif
@@ -41,7 +41,7 @@ Visit http://localhost:8084 to try the Annif UI. You'll also find Swagger there.
 
 You can also test Annif from the command line, e.g.:
 
-```
+```bash
 echo 'Cardiac troponin I in healthy Norwegian Forest Cat, Birman and domestic shorthair cats, and in cats with hypertrophic cardiomyopathy' | annif suggest swepub-en
 2022-10-11T13:10:35.736Z INFO [omikuji::model] Loading model from data/projects/swepub-en/omikuji-model...
 ...
