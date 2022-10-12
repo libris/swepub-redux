@@ -438,15 +438,16 @@ def classify():
 
     subjects = []
     if len(results) > 0:
-        status = "match"
         for d in results:
             code = d["uri"].split("/")[-1]
             if len(code) != level:
                 continue
             subjects.append((code, round(d["score"], 2)))
+
+    if len(subjects) > 0:
+        status = "match"
     else:
         status = "no match"
-        subjects = []
 
     return {
         "abstract": abstract,

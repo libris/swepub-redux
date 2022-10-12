@@ -35,6 +35,8 @@ annif run -p 8084 # starts the server
 # (...and put behind e.g. nginx in a production environment)
 ```
 
+(For `pip install` to work you might need to install some dependencies, e.g. `protobuf-compiler` in Ubuntu.)
+
 Visit http://localhost:8084 to try the Annif UI. You'll also find Swagger there.
 
 You can also test Annif from the command line, e.g.:
