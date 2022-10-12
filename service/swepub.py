@@ -83,8 +83,8 @@ DEFAULT_XSLT = "\n".join(
     ]
 )
 
-ANNIF_EN_URL = getenv("ANNIF_EN_URL", "http://127.0.0.1:8084/v1/projects/swepub-en")
-ANNIF_SV_URL = getenv("ANNIF_SV_URL", "http://127.0.0.1:8084/v1/projects/swepub-sv")
+ANNIF_EN_URL = getenv("ANNIF_EN_URL", "http://127.0.0.1:8083/v1/projects/swepub-en")
+ANNIF_SV_URL = getenv("ANNIF_SV_URL", "http://127.0.0.1:8083/v1/projects/swepub-sv")
 
 # Note: static files should be served by Apache/nginx
 app = Flask(__name__, static_url_path="/app", static_folder="vue-client/dist")

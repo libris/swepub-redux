@@ -48,8 +48,8 @@ from pipeline.util import chunker, get_common_json_paths
 DEFAULT_SWEPUB_ENV = getenv("SWEPUB_ENV", "DEV")  # or QA, PROD
 FILE_PATH = path.dirname(path.abspath(__file__))
 DEFAULT_SWEPUB_DB = path.join(FILE_PATH, "../swepub.sqlite3")
-DEFAULT_ANNIF_EN_URL = getenv("ANNIF_EN_URL", "http://127.0.0.1:8084/v1/projects/swepub-en")
-DEFAULT_ANNIF_SV_URL = getenv("ANNIF_SV_URL", "http://127.0.0.1:8084/v1/projects/swepub-sv")
+DEFAULT_ANNIF_EN_URL = getenv("ANNIF_EN_URL", "http://127.0.0.1:8083/v1/projects/swepub-en")
+DEFAULT_ANNIF_SV_URL = getenv("ANNIF_SV_URL", "http://127.0.0.1:8083/v1/projects/swepub-sv")
 
 CACHE_DIR = path.join(FILE_PATH, "../cache/")
 
