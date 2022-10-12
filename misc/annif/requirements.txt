@@ -1,3 +1,0 @@
-annif==0.59.0
-annif[pycld3]==0.59.0
-annif[omikuji]==0.59.0
