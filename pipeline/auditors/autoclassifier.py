@@ -21,7 +21,7 @@ def _eligible_for_autoclassification(publication):
         return False
     # 2. Abstract is English or Swedish, with a length that's not suspiciously low
     summary = publication.summary or ""
-    if not summary or len(summary) < 50:
+    if not summary or len(summary) < 200:
         return False
     # 3. Publication status == (Published || None)
     if (
