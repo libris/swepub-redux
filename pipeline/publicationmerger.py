@@ -164,7 +164,7 @@ class PublicationMerger:
 
                 # If this contribution also exists in the master (it is "overlapping")
                 if probably_same_name(master_contrib_name, candidate_contrib_name):
-                    if _should_replace_name(master_contrib, candidate_contrib):
+                    if _should_replace_name_part(master_contrib, candidate_contrib):
                         master_contrib.update_name_part(candidate_contrib)
 
                     if _should_replace_affiliation(master_contrib, candidate_contrib):
@@ -480,7 +480,7 @@ def has_affiliations(affiliations):
     return False
 
 
-def _should_replace_name(master_contrib, candidate_contrib):
+def _should_replace_name_part(master_contrib, candidate_contrib):
     return _has_local_id(candidate_contrib) and not _has_local_id(master_contrib)
 
 
