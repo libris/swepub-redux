@@ -931,7 +931,8 @@ class Contribution:
     @affiliations.setter
     def affiliations(self, affiliations):
         """ Sets hasAffiliation values """
-        self._body['hasAffiliation'] = affiliations
+        if affiliations:
+            self._body['hasAffiliation'] = affiliations
 
     @property
     def identified_bys(self):
@@ -941,7 +942,8 @@ class Contribution:
     @identified_bys.setter
     def identified_bys(self, identified_bys):
         """ Sets identifiedBy values """
-        self._body['agent']['identifiedBy'] = identified_bys
+        if identified_bys:
+            self._body['agent']['identifiedBy'] = identified_bys
 
 
 def safe_concat(first, second, separator=' '):
