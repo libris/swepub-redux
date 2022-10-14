@@ -165,7 +165,7 @@ class PublicationMerger:
                 # If this contribution also exists in the master (it is "overlapping")
                 if probably_same_name(master_contrib_name, candidate_contrib_name):
                     if _should_replace_name(master_contrib, candidate_contrib):
-                        master_contrib.update_name(candidate_contrib.agent_given_name, candidate_contrib.agent_family_name)
+                        master_contrib.update_name_part(candidate_contrib)
 
                     if _should_replace_affiliation(master_contrib, candidate_contrib):
                         master_contrib.affiliations = candidate_contrib.affiliations
