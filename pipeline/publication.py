@@ -945,6 +945,17 @@ class Contribution:
         if identified_bys:
             self._body['agent']['identifiedBy'] = identified_bys
 
+    def update_name(self, new_given_name, new_family_name):
+        if new_given_name:
+            self._body['agent']['givenName'] = new_given_name
+        else:
+            self._body['agent'].pop('givenName', None)
+
+        if new_family_name:
+            self._body['agent']['familyName'] = new_family_name
+        else:
+            self._body['agent'].pop('familyName', None)
+
 
 def safe_concat(first, second, separator=' '):
     if first and second:
