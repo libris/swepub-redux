@@ -875,6 +875,7 @@ class Contribution:
         self._agent_name = self.body.get('agent', {}).get('name', None)
         self._agent_identified_by = self.body.get('agent', {}).get('identifiedBy', [])
         self._agent_type = self.body.get('agent', {}).get('@type', None)
+        self._agent = self.body.get('agent', {})
 
     def __eq__(self, other):
         """ Two contributions are equal if name or (given and family name) are the same """
@@ -897,6 +898,10 @@ class Contribution:
     def body(self):
         """Return raw body data"""
         return self._body
+
+    @property
+    def agent(self):
+        return self._agent
 
     @property
     def agent_family_name(self):
@@ -944,6 +949,13 @@ class Contribution:
         """ Sets identifiedBy values """
         if identified_bys:
             self._body['agent']['identifiedBy'] = identified_bys
+
+    def update_name_part(self, contrib):
+        for key in ["givenName", "familyName", "lifeSpan", "termsOfAddress"]:
+            if contrib.agent.get(key):
+                self._body["agent"][key] = contrib.agent[key]
+            else:
+                self._body["agent"].pop(key, None)
 
 
 def safe_concat(first, second, separator=' '):
