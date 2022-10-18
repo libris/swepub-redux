@@ -18,7 +18,7 @@
     },
     "result": {
       "title": "Resultat",
-      "text": "Förslagen på ämnesklassificering listas efter poäng (”värde”). Du får en sifferkombination (”kod”) och en rubrik (”benämning”) för varje forskningsämne(-sgrupp). Högst fem förslag visas. Det första resultatet matchar bäst den titel, nyckelord och/eller sammanfattning som den du har angett. Övriga redovisas om de har minst hälften så många poäng som det första. Om du ser meddelandet ”Ingen matchning” finns inte tillräckligt med dataunderlag för att föreslå en klassificering."
+      "text": "Förslagen på ämnesklassificering listas efter poäng (”värde”). Du får en sifferkombination (”kod”) och en rubrik (”benämning”) för varje forskningsämne(-sgrupp). Högst fem förslag visas. Det första resultatet matchar bäst den titel, nyckelord och/eller sammanfattning som den du har angett. Om du ser meddelandet ”Ingen matchning” finns inte tillräckligt med dataunderlag för att föreslå en klassificering."
     }
   },
   "Process": {
