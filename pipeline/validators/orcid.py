@@ -92,7 +92,7 @@ def validate_orcid(field, body, harvest_cache, source, cached_paths={}):
                 continue
             # Some orgs have broken local IDs, e.g. "n/a", "-", "?", etc. We skip those.
             id_by_value = f"{id_by.get('value')}".lower()
-            if len(id_by_value) < 3 or id_by_value in ["n/a", "PI000000"]:
+            if len(id_by_value) < 3 or id_by_value in ["n/a", "pi000000"]:
                 continue
 
             cache_key = get_localid_cache_key(id_by, person_name, source)
