@@ -167,55 +167,24 @@ def get_common_json_paths():
         "hasSeries.[0].identifiedBy.[0]",
         "identifiedBy.[0]",
         "identifiedBy.[1]",
-        "instanceOf.contribution.[0].agent.identifiedBy",
-        "instanceOf.contribution.[0].agent.identifiedBy.[0]",
-        "instanceOf.contribution.[0].agent.identifiedBy.[1]",
-        "instanceOf.contribution.[10].agent.identifiedBy",
-        "instanceOf.contribution.[11].agent.identifiedBy",
-        "instanceOf.contribution.[12].agent.identifiedBy",
-        "instanceOf.contribution.[13].agent.identifiedBy",
-        "instanceOf.contribution.[14].agent.identifiedBy",
-        "instanceOf.contribution.[1].agent.identifiedBy",
-        "instanceOf.contribution.[1].agent.identifiedBy.[0]",
-        "instanceOf.contribution.[1].agent.identifiedBy.[1]",
-        "instanceOf.contribution.[2].agent.identifiedBy",
-        "instanceOf.contribution.[2].agent.identifiedBy.[0]",
-        "instanceOf.contribution.[2].agent.identifiedBy.[1]",
-        "instanceOf.contribution.[3].agent.identifiedBy",
-        "instanceOf.contribution.[3].agent.identifiedBy.[0]",
-        "instanceOf.contribution.[3].agent.identifiedBy.[1]",
-        "instanceOf.contribution.[4].agent.identifiedBy",
-        "instanceOf.contribution.[4].agent.identifiedBy.[0]",
-        "instanceOf.contribution.[4].agent.identifiedBy.[1]",
-        "instanceOf.contribution.[5].agent.identifiedBy",
-        "instanceOf.contribution.[5].agent.identifiedBy.[0]",
-        "instanceOf.contribution.[5].agent.identifiedBy.[1]",
-        "instanceOf.contribution.[6].agent.identifiedBy",
-        "instanceOf.contribution.[6].agent.identifiedBy.[0]",
-        "instanceOf.contribution.[6].agent.identifiedBy.[1]",
-        "instanceOf.contribution.[7].agent.identifiedBy",
-        "instanceOf.contribution.[7].agent.identifiedBy.[0]",
-        "instanceOf.contribution.[7].agent.identifiedBy.[1]",
-        "instanceOf.contribution.[8].agent.identifiedBy",
-        "instanceOf.contribution.[8].agent.identifiedBy.[0]",
-        "instanceOf.contribution.[8].agent.identifiedBy.[1]",
-        "instanceOf.contribution.[9].agent.identifiedBy",
-        "instanceOf.contribution.[9].agent.identifiedBy.[0]",
-        "instanceOf.contribution.[9].agent.identifiedBy.[1]",
+        "instanceOf.hasNote.[0]",
+        "instanceOf.hasNote.[1]",
         "instanceOf.hasNote.[2]",
         "instanceOf.hasTitle.[0]",
         "instanceOf.summary.[0]",
         "instanceOf.summary.[1]",
-        "partOf.[0].identifiedBy",
-        "partOf.[0].identifiedBy.[0]",
-        "partOf.[0].identifiedBy.[1]",
-        "partOf.[1].identifiedBy.[0]",
-        "partOf.[1].identifiedBy.[1]",
-        "partOf.[2].identifiedBy.[0]",
-        "partOf.[2].identifiedBy.[1]",
-        "partOf.[3].identifiedBy.[0]",
-        "partOf.[4].identifiedBy.[0]",
+
     ]
+
+    for i in range(0, 11):
+        paths_to_cache.append(f"instanceOf.contribution.[{i}]")
+        paths_to_cache.append(f"instanceOf.contribution.[{i}].agent")
+        paths_to_cache.append(f"instanceOf.contribution.[{i}].agent.identifiedBy")
+        paths_to_cache.append(f"instanceOf.contribution.[{i}].agent.identifiedBy.[0]")
+        paths_to_cache.append(f"instanceOf.contribution.[{i}].agent.identifiedBy.[1]")
+        paths_to_cache.append(f"partOf.[{i}].identifiedBy")
+        paths_to_cache.append(f"partOf.[{i}].identifiedBy.[0]")
+        paths_to_cache.append(f"partOf.[{i}].identifiedBy.[1]")
     cached_paths = {}
 
     for path in paths_to_cache:
@@ -224,8 +193,8 @@ def get_common_json_paths():
     return cached_paths
 
 
-def get_localid_cache_key(id_by, source):
-    return hashlib.sha256(f"{source}_{id_by.get('source', {}).get('code')}_{id_by.get('value')}".encode("utf-8")).hexdigest()[:32]
+def get_localid_cache_key(id_by, person_name, source):
+    return hashlib.sha256(f"{source}_{id_by.get('source', {}).get('code')}_{id_by.get('value')}_{person_name}".encode("utf-8")).hexdigest()[:32]
 
 
 # This is a heuristic, not an exact algorithm.

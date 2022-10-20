@@ -10,11 +10,11 @@ def test_add_orcid_if_matching_localid():
         "value": "kalle.ninja",
         "source": {"@type": "Source", "code": "foo"},
     }
-    cache_key = get_localid_cache_key(test_data, source)
+    cache_key = get_localid_cache_key(test_data, "bar foo", source)
     cache_data = {cache_key: ["0000-0002-5892-9999", "oai:DiVA.org:foo-123"]}
 
     expected_addition = {"@type": "ORCID", "value": cache_data[cache_key][0]}
-    expected_body = {"instanceOf": {"contribution": [{"agent": {"identifiedBy": [test_data, expected_addition]}}]}}
+    expected_body = {"instanceOf": {"contribution": [{"agent": {"givenName": "foo", "familyName": "bar", "identifiedBy": [test_data, expected_addition]}}]}}
     expected_codes = ["add_orcid_from_localid"]
 
     _test_localid_enricher(cache_data, source, test_data, expected_body, expected_codes)
@@ -27,10 +27,10 @@ def test_dont_add_orcid_if_no_matching_localid():
         "value": "kalle.ninja",
         "source": {"@type": "Source", "code": "foo"},
     }
-    cache_key = get_localid_cache_key(test_data, "bar")
+    cache_key = get_localid_cache_key(test_data, "bar foo", "bar")
     cache_data = {cache_key: ["0000-0002-5892-9999", "oai:DiVA.org:foo-123"]}
 
-    expected_body = {"instanceOf": {"contribution": [{"agent": {"identifiedBy": [test_data]}}]}}
+    expected_body = {"instanceOf": {"contribution": [{"agent": {"givenName": "foo", "familyName": "bar", "identifiedBy": [test_data]}}]}}
     expected_codes = []
 
     _test_localid_enricher(cache_data, source, test_data, expected_body, expected_codes)
@@ -38,12 +38,12 @@ def test_dont_add_orcid_if_no_matching_localid():
 
 def _test_localid_enricher(cache_data, source, test_data, expected_body, expected_codes):
     harvest_cache = {"localid_to_orcid_static": {}, "localid_to_orcid_new": {}}
-    cache_key = get_localid_cache_key(test_data, source)
+    cache_key = get_localid_cache_key(test_data, "bar foo", source)
     harvest_cache["localid_to_orcid_static"] = cache_data
     field = FieldMeta(
         value=test_data, path="instanceOf.contribution.[0].agent.identifiedBy.[0]"
     )
-    body = {"instanceOf": {"contribution": [{"agent": {"identifiedBy": [test_data]}}]}}
+    body = {"instanceOf": {"contribution": [{"agent": {"givenName": "foo", "familyName": "bar", "identifiedBy": [test_data]}}]}}
 
     recover_orcid_from_localid(body, field, harvest_cache, source)
 

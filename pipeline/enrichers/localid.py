@@ -16,7 +16,13 @@ def recover_orcid_from_localid(body, field, harvest_cache, source, cached_paths=
     if not isinstance(field.value, dict) or not field.value.get("source", {}).get("code") or not field.value.get("value"):
         return
 
-    cache_key = get_localid_cache_key(field.value, source)
+    parent_path_2 = field.path.rsplit(".", 3)[0]
+    parent_path_2_value = get_at_path(body, parent_path_2, cached_paths)
+    person_name = f"{parent_path_2_value.get('agent', {}).get('familyName', '')} {parent_path_2_value.get('agent', {}).get('givenName', '')}".strip()
+    if not person_name:
+        return
+
+    cache_key = get_localid_cache_key(field.value, person_name, source)
     cache_result = harvest_cache["localid_to_orcid_static"].get(cache_key) or harvest_cache["localid_to_orcid_new"].get(cache_key)
     if cache_result:
         orcid, source_id = cache_result

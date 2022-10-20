@@ -79,11 +79,23 @@ def validate_orcid(field, body, harvest_cache, source, cached_paths={}):
     # At this point we have a valid ORCID. If the same agent also has a local ID, save the
     # local ID->ORCID key->value in the cache so that we can later add ORCID in records where
     # we encounter the same local ID (but no ORCID)
-    parent_path = field.path.rsplit(".", 2)[0]
+    parent_path = field.path.rsplit(".", 3)[0]
     parent_value = get_at_path(body, parent_path, cached_paths)
-    for id_by in parent_value:
+
+    if parent_value.get("@type", '') != "Person":
+        return
+
+    for id_by in parent_value.get("identifiedBy", []):
         if id_by.get("@type") == "Local" and id_by.get("value") and id_by.get("source", {}).get("code"):
-            cache_key = get_localid_cache_key(id_by, source)
+            person_name = f"{parent_value.get('familyName', '')} {parent_value.get('givenName', '')}".strip()
+            if not person_name:
+                continue
+            # Some orgs have broken local IDs, e.g. "n/a", "-", "?", etc. We skip those.
+            id_by_value = f"{id_by.get('value')}".lower()
+            if len(id_by_value) < 3 or id_by_value in ["n/a", "PI000000"]:
+                continue
+
+            cache_key = get_localid_cache_key(id_by, person_name, source)
             if not harvest_cache["localid_to_orcid_static"].get(cache_key):
                 harvest_cache["localid_to_orcid_new"][cache_key] = [field.value, body['@id']]
                 #print("Added", id_by.get("value"), body["@id"], "to cache for", field.value, "with cache key", cache_key)
