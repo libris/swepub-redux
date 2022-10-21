@@ -4,6 +4,10 @@ from difflib import SequenceMatcher
 from jsonpath_rw import parse
 import re
 import Levenshtein
+import hashlib
+import cld3
+
+from pipeline.swepublog import logger as log
 
 
 class Validation(Enum):
@@ -74,9 +78,12 @@ def chunker(seq, size):
     return (seq[pos:pos + size] for pos in range(0, len(seq), size))
 
 
-def update_at_path(root, path, new_value):
+def update_at_path(root, path, new_value, cached_paths=None):
     base_path, key = path.rsplit('.', 1)
-    found = parse(base_path).find(root)
+    if cached_paths is not None:
+        found = get_set_compiled_path(base_path, cached_paths).find(root)
+    else:
+        found = parse(base_path).find(root)
     parent_object = found[0].value
     #print(f"Replacing {parent_object[key]} with {new_value} at {path}")
     parent_object[key] = new_value
@@ -115,19 +122,80 @@ def remove_at_path(root, path, min_prune_level):
             del current[key]
         prune_level += 1
 
-def add_sibling_at_path(root, path, type, value):
+def add_sibling_at_path(root, path, type, value, cached_paths):
     base_path, _, _ = path.rsplit('.', 2)
-    found = parse(base_path).find(root)
+    if cached_paths is not None:
+        found = get_set_compiled_path(base_path, cached_paths).find(root)
+    else:
+        found = parse(base_path).find(root)
     found[0].value.append({"@type": type, "value": value})
     # Figure out and return the path for the new sibling (surely there is a better
     # way to do this...)
     return f"{base_path}.[{len(found[0].value) - 1}].value"
 
 
-def get_at_path(root, path):
+def get_at_path(root, path, cached_paths=None):
     if path == "":
         return root
-    return parse(path).find(root)[0].value
+    if cached_paths is not None:
+        found = get_set_compiled_path(path, cached_paths).find(root)[0].value
+    else:
+        found = parse(path).find(root)[0].value
+    return found
+
+
+def append_at_path(root, path, type, new_value, cached_paths=None):
+    if cached_paths is not None:
+        found = get_set_compiled_path(path, cached_paths).find(root)
+    else:
+        found = parse(path).find(root)
+    found[0].value.append({"@type": type, "value": new_value})
+    return f"{path}.[{len(found[0].value) - 1}].value"
+
+
+def get_set_compiled_path(path, cached_paths):
+    compiled_path = cached_paths.get(path)
+    if not compiled_path:
+        compiled_path = parse(path)
+        cached_paths[path] = compiled_path
+    return compiled_path
+
+
+def get_common_json_paths():
+    # Pre-parse the most commonly used JSON paths
+    paths_to_cache = [
+        "hasSeries.[0].identifiedBy.[0]",
+        "identifiedBy.[0]",
+        "identifiedBy.[1]",
+        "instanceOf.hasNote.[0]",
+        "instanceOf.hasNote.[1]",
+        "instanceOf.hasNote.[2]",
+        "instanceOf.hasTitle.[0]",
+        "instanceOf.summary.[0]",
+        "instanceOf.summary.[1]",
+
+    ]
+
+    for i in range(0, 11):
+        paths_to_cache.append(f"instanceOf.contribution.[{i}]")
+        paths_to_cache.append(f"instanceOf.contribution.[{i}].agent")
+        paths_to_cache.append(f"instanceOf.contribution.[{i}].agent.identifiedBy")
+        paths_to_cache.append(f"instanceOf.contribution.[{i}].agent.identifiedBy.[0]")
+        paths_to_cache.append(f"instanceOf.contribution.[{i}].agent.identifiedBy.[1]")
+        paths_to_cache.append(f"partOf.[{i}].identifiedBy")
+        paths_to_cache.append(f"partOf.[{i}].identifiedBy.[0]")
+        paths_to_cache.append(f"partOf.[{i}].identifiedBy.[1]")
+    cached_paths = {}
+
+    for path in paths_to_cache:
+        cached_paths[path] = parse(path)
+
+    return cached_paths
+
+
+def get_localid_cache_key(id_by, person_name, source):
+    return hashlib.sha256(f"{source}_{id_by.get('source', {}).get('code')}_{id_by.get('value')}_{person_name}".encode("utf-8")).hexdigest()[:32]
+
 
 # This is a heuristic, not an exact algorithm.
 # The idea is to first find the longest substring (loosely defined) shared between both a and b.
@@ -303,6 +371,7 @@ def compare_text(master_text, candidate_text, match_ratio, max_length_string_to_
     sequence_matcher_ratio = sequence_matcher.quick_ratio()
     return sequence_matcher_ratio >= match_ratio
 
+
 def get_combined_title(body):
     """Return the main title with and subtitle appended."""
     has_title_array = body.get('instanceOf', {}).get('hasTitle', [])
@@ -318,49 +387,6 @@ def get_combined_title(body):
             return combined
     return ""
 
-def get_main_title(body):
-    """Return value of instanceOf.hasTitle[?(@.@type=="Title")].mainTitle if it exists and
-    there is no subtitle.
-    If a subtitle exist then the return value is split at the first colon and the first string
-    is returned,
-    i.e 'main:sub' returns main.
-    None otherwise """
-    has_title_array = body.get('instanceOf', {}).get('hasTitle', [])
-    main_title_raw = None
-    sub_title_raw = None
-    for h_t in has_title_array:
-        if isinstance(h_t, dict) and h_t.get('@type') == 'Title':
-            main_title_raw = h_t.get('mainTitle')
-            sub_title_raw = h_t.get('subtitle')
-            break
-    if not empty_string(sub_title_raw):
-        return main_title_raw
-    main_title, sub_title = split_title_subtitle_first_colon(main_title_raw)
-    if not empty_string(main_title):
-        return main_title
-    else:
-        return None
-
-
-def get_sub_title(body):
-    """Return value for instanceOf.hasTitle[?(@.@type=="Title")].subtitle if it exists,
-    if it does not exist then the value of instanceOf.hasTitle[?(@.@type=="Title")].mainTitle
-    is split at the first colon and the second string is returned, i.e 'main:sub' returns sub.
-    None otherwise """
-    sub_title_array = body.get('instanceOf', {}).get('hasTitle', [])
-    main_title_raw = None
-    for h_t in sub_title_array:
-        if isinstance(h_t, dict) and h_t.get('@type') == 'Title' and h_t.get('subtitle'):
-            return h_t.get('subtitle')
-        else:
-            main_title_raw = h_t.get('mainTitle')
-            break
-    main_title, sub_title = split_title_subtitle_first_colon(main_title_raw)
-    if not empty_string(sub_title):
-        return sub_title
-    else:
-        return None
-
 
 def get_part_of(body):
     """ Return array of PartOf objects from partOf """
@@ -371,15 +397,6 @@ def get_part_of(body):
             if isinstance(p, dict):
                 part_of.append(p)
     return part_of
-
-
-def part_of_with_title(body):
-    """ Return partOf object that has @type Title, None otherwise"""
-    _part_of_with_title = [p for p in get_part_of(body) if part_of_main_title(p)]
-    if len(_part_of_with_title) > 0:
-        return _part_of_with_title[0]
-    else:
-        return None
 
 
 def part_of_main_title(body):
@@ -491,3 +508,43 @@ def get_language(body):
         if isinstance(l, dict) and l.get('@type') == 'Language':
             return l.get('code')
     return None
+
+# language: e.g en or sv
+def get_title_by_language(publication, language):
+    # Some records have both a mainTitle and a variantTitle, with
+    # no language code; sometimes mainTitle is in English and variantTitle
+    # is in Swedish, and vice versa.
+    title = ""
+    for t in publication.body.get('instanceOf', {}).get('hasTitle', []):
+        whole_title = t.get("mainTitle", "").strip()
+        sub_title = t.get("subtitle", "").strip()
+        if sub_title:
+            whole_title = f"{whole_title} {sub_title}"
+        language_prediction_title = cld3.get_language(whole_title)
+        if not language_prediction_title or language_prediction_title.language != language or not language_prediction_title.is_reliable:
+            continue
+        title = whole_title
+        break
+    return title
+
+# language: e.g en or sv
+def get_summary_by_language(publication, language):
+    # Some records have summaries (abstracts) tagged with a language, most (?)
+    # do not. First try to get a language-specific summary. If that fails, try to
+    # get the untagged one.
+    summary = ""
+    if language == "en":
+        summary = publication.get_english_summary()
+    if language == "sv":
+        summary = publication.get_swedish_summary()
+
+    if not summary:
+        summary = publication.summary or ""
+
+    # Remove summary if summary not in target language. We check all summaries
+    # (even the language-tagged ones) because we don't trust input.
+    language_prediction_summary = cld3.get_language(summary)
+    if not language_prediction_summary or language_prediction_summary.language != language or not language_prediction_summary.is_reliable:
+        summary = ""
+
+    return summary

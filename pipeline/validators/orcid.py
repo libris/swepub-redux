@@ -3,7 +3,7 @@ import re
 from stdnum.iso7064.mod_11_2 import is_valid
 
 from pipeline.validators.shared import validate_base_unicode
-from pipeline.util import make_event, Validation, Enrichment
+from pipeline.util import make_event, Validation, Enrichment, get_at_path, get_localid_cache_key
 
 # flake8: noqa W504
 orcid_regex = re.compile(
@@ -55,7 +55,7 @@ def validate_checksum(orcid):
         return False, "checksum"
 
 
-def validate_orcid(field):
+def validate_orcid(field, body, harvest_cache, source, cached_paths={}):
     if field.validation_status == Validation.INVALID and field.enrichment_status in [
         Enrichment.UNCHANGED,
         Enrichment.UNSUCCESSFUL,
@@ -75,3 +75,28 @@ def validate_orcid(field):
     field.validation_status = Validation.VALID
     if not field.is_enriched():
         field.enrichment_status = Enrichment.UNCHANGED
+
+    # At this point we have a valid ORCID. If the same agent also has a local ID, save the
+    # local ID->ORCID key->value in the cache so that we can later add ORCID in records where
+    # we encounter the same local ID (but no ORCID)
+    parent_path = field.path.rsplit(".", 3)[0]
+    parent_value = get_at_path(body, parent_path, cached_paths)
+
+    if parent_value.get("@type", '') != "Person":
+        return
+
+    for id_by in parent_value.get("identifiedBy", []):
+        if id_by.get("@type") == "Local" and id_by.get("value") and id_by.get("source", {}).get("code"):
+            person_name = f"{parent_value.get('familyName', '')} {parent_value.get('givenName', '')}".strip()
+            if not person_name:
+                continue
+            # Some orgs have broken local IDs, e.g. "n/a", "-", "?", etc. We skip those.
+            id_by_value = f"{id_by.get('value')}".lower()
+            if len(id_by_value) < 3 or id_by_value in ["n/a", "pi000000"]:
+                continue
+
+            cache_key = get_localid_cache_key(id_by, person_name, source)
+            if not harvest_cache["localid_to_orcid_static"].get(cache_key):
+                harvest_cache["localid_to_orcid_new"][cache_key] = [field.value, body['@id']]
+                #print("Added", id_by.get("value"), body["@id"], "to cache for", field.value, "with cache key", cache_key)
+            break

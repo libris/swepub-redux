@@ -24,7 +24,7 @@ DOI_START = "10."
 VALID_STARTS = (DOI_START, "https://doi.org/10.", "http://doi.org/10.")
 
 
-def recover_doi(body, field):
+def recover_doi(body, field, cached_paths={}):
     doi = field.value
     path = field.path
 
@@ -32,7 +32,7 @@ def recover_doi(body, field):
     translated = doi.translate(TRANSLATE_DICT)
     if translated != doi:
         doi = translated
-        update_at_path(body, path, doi)
+        update_at_path(body, path, doi, cached_paths)
         field.events.append(
             make_event(
                 event_type="enrichment",
@@ -52,7 +52,7 @@ def recover_doi(body, field):
         if hit != -1:
             if field.enrichment_status == Enrichment.ENRICHED:
                 initial = field.value
-            update_at_path(body, path, doi[hit:])
+            update_at_path(body, path, doi[hit:], cached_paths)
             field.events.append(
                 make_event(
                     event_type="enrichment",

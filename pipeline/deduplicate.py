@@ -27,7 +27,8 @@ known_poor_titles = {"Introduction", "Inledning", "Indledning", "Editorial", "FÃ
 "Aktuellt", "Letter to the Editor", "recension", "Discussion", "Slutord", "Note", "Invited",
 "Comment on"}
 
-# Exepects a string containing one _word_ as input
+
+# Expects a string containing one _word_ as input
 def is_numeral(a):
     if a == "":
         return False
@@ -37,6 +38,7 @@ def is_numeral(a):
             return False
     return True
 
+
 def _has_similar_combined_title(a, b):
     combined_a = get_combined_title(a)
     combined_b = get_combined_title(b)
@@ -45,7 +47,6 @@ def _has_similar_combined_title(a, b):
     similarity = get_common_substring_factor(combined_a, combined_b)
 
     if similarity > 0.7:
-
         # If the very last word of a is a number, require the same number at the end of b.
         if " " in combined_a and " " in combined_b:
             undesired_chars = dict.fromkeys(map(ord, '-â€“.!?'), "")
@@ -57,9 +58,6 @@ def _has_similar_combined_title(a, b):
         return True
     return False
 
-def _has_same_summary(a, b):
-    """True if publication has the same summary"""
-    return compare_text(get_summary(a), get_summary(b), STRING_MATCH_RATIO_SUMMARY)
 
 def _has_similar_summary(a, b):
     summary_a = get_summary(a)
@@ -71,32 +69,6 @@ def _has_similar_summary(a, b):
     similarity = get_common_substring_factor(summary_a, summary_b, 3)
 
     if similarity > 0.6:
-        return True
-    return False
-
-
-def _partof_has_same_main_title(partof_a, partof_b):
-    """True if part_of has the same main title"""
-    # partOf w/o main title should never match
-    if part_of_main_title(partof_a) is None and part_of_main_title(partof_b) is None:
-        return False
-    return compare_text(
-        part_of_main_title(partof_a), part_of_main_title(partof_b), STRING_MATCH_PARTOF_MAIN_TITLE
-    )
-
-
-def _has_similar_partof_main_title(a, b):
-    part_a = part_of_with_title(a)
-    part_b = part_of_with_title(b)
-    if not part_a or not part_b:
-        return False
-    part_title_a = part_of_main_title(part_a)
-    part_title_b = part_of_main_title(part_b)
-    if not part_title_a or not part_title_b:
-        return False
-    
-    similarity = get_common_substring_factor(part_title_a, part_title_b)
-    if similarity > 0.5:
         return True
     return False
 
@@ -131,7 +103,25 @@ def _has_compatible_doi_set(a, b):
     return False
 
 
-# Are publications 'a' and 'b' similiar enough to justify clustering them?
+def is_considered_similar_enough(a, b):
+    # 'a' and 'b' may not have different DOIs.
+    if not _has_compatible_doi_set(a, b):
+        return False
+
+    # A similar title and _one_ shared ID of some sort qualifies
+    if _has_similar_combined_title(a, b) and has_same_ids(a, b):
+        return True
+
+    if (
+            _has_similar_combined_title(a, b)
+            and _has_similar_summary(a, b)
+            and _has_same_publication_date(a, b)
+    ):
+        return True
+    return False
+
+
+# Are publications 'a' and 'b' similar enough to justify clustering them?
 # 'a' and 'b' are row IDs into the 'converted' table.
 def _is_close_enough(a_rowid, b_rowid):
     with get_connection() as connection:
@@ -151,23 +141,7 @@ def _is_close_enough(a_rowid, b_rowid):
         a = json.loads(candidate_rows[0][0])
         b = json.loads(candidate_rows[1][0])
 
-        # 'a' and 'b' may not have different DOIs.
-        if not _has_compatible_doi_set(a, b):
-            return False
-
-        
-        # A similar title and _one_ shared ID of some sort qualifies
-        if _has_similar_combined_title(a, b) and has_same_ids(a, b):
-            return True
-
-        if (
-            _has_similar_combined_title(a, b)
-            and _has_similar_summary(a, b)
-            and _has_same_publication_date(a, b)
-        ):
-            return True
-
-    return False
+        return is_considered_similar_enough(a, b)
 
 
 # Generate clusters of publications, based on some shared piece of data

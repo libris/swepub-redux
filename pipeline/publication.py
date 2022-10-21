@@ -92,11 +92,43 @@ class Publication:
 
     @property
     def main_title(self):
-        return get_main_title(self.body)
+        """Return value of instanceOf.hasTitle[?(@.@type=="Title")].mainTitle if it exists and
+            there is no subtitle.
+            If a subtitle exist then the return value is split at the first colon and the first string
+            is returned,
+            i.e 'main:sub' returns main.
+            None otherwise """
+        has_title_array = self.body.get('instanceOf', {}).get('hasTitle', [])
+        main_title_raw = None
+        sub_title_raw = None
+        for h_t in has_title_array:
+            if isinstance(h_t, dict) and h_t.get('@type') == 'Title':
+                main_title_raw = h_t.get('mainTitle')
+                sub_title_raw = h_t.get('subtitle')
+                break
+        if not empty_string(sub_title_raw):
+            return main_title_raw
+        main_title, sub_title = split_title_subtitle_first_colon(main_title_raw)
+        if not empty_string(main_title):
+            return main_title
+        else:
+            return None
 
     @property
     def sub_title(self):
-        return get_sub_title(self.body)
+        sub_title_array = self.body.get('instanceOf', {}).get('hasTitle', [])
+        main_title_raw = None
+        for h_t in sub_title_array:
+            if isinstance(h_t, dict) and h_t.get('@type') == 'Title' and h_t.get('subtitle'):
+                return h_t.get('subtitle')
+            else:
+                main_title_raw = h_t.get('mainTitle')
+                break
+        main_title, sub_title = split_title_subtitle_first_colon(main_title_raw)
+        if not empty_string(sub_title):
+            return sub_title
+        else:
+            return None
 
     @property
     def language(self):
@@ -106,6 +138,32 @@ class Publication:
     @property
     def summary(self):
         return get_summary(self.body)
+
+    @property
+    def summaries(self):
+        """Return a list of all summaries."""
+        return self.body.get('instanceOf', {}).get('summary', [])
+
+    def get_english_summary(self):
+        """Get summary text in English if it exists."""
+        return self._get_lang_summary("eng")
+
+    def get_swedish_summary(self):
+        """Get summary text in Swedish if it exists."""
+        return self._get_lang_summary("swe")
+
+    def _get_lang_summary(self, lang):
+        """Get summary for specified language if it exists."""
+        for summary in self.summaries:
+            if "language" not in summary:
+                continue
+            if "code" not in summary["language"]:
+                continue
+            if summary["language"]["code"] != lang:
+                continue
+            if "label" in summary:
+                return summary["label"]
+        return None
 
     @property
     def publication_date(self):
@@ -246,6 +304,29 @@ class Publication:
         return False
 
     @property
+    def is_autoclassified(self):
+        for subject in self.subjects:
+            for note in subject.get("hasNote", []):
+                if note.get("label", "") == "Autoclassified by Swepub":
+                    return True
+        return False
+
+    # language: e.g. https://id.kb.se/language/swe or https://id.kb.se/language/eng
+    def keywords(self, language=None):
+        subjects = self.subjects
+        keywords = []
+        for subj in subjects:
+            if language and subj.get("language", {}).get("@id", "") != language:
+                continue
+            if "inScheme" in subj and "code" in subj["inScheme"]:
+                code = subj["inScheme"]["code"]
+                if code == "hsv" or code == "uka.se":
+                    continue
+            if "prefLabel" in subj:
+                keywords.append(subj["prefLabel"])
+        return keywords
+
+    @property
     def subject_codes(self):
         """Return a list of all subject identifiers."""
         return [subj['@id'] for subj in self.subjects if '@id' in subj]
@@ -262,6 +343,16 @@ class Publication:
     def subjects(self, subjects):
         """ Sets array of subjects for instanceOf.subject """
         self._body['instanceOf']['subject'] = subjects
+
+    def add_subjects(self, subjects):
+        """Add a list of subjects to the publication.
+
+        Each subject is flagged with "Autoclassified by Swepub"."""
+        if "instanceOf" not in self._body:
+            self._body["instanceOf"] = {}
+        if "subject" not in self.body["instanceOf"]:
+            self._body["instanceOf"]["subject"] = []
+        self._body["instanceOf"]["subject"].extend(subjects)
 
     @property
     def creator_count(self):
@@ -399,10 +490,14 @@ class Publication:
         publication['instanceOf']['genreForm'] = new_gforms
         return publication
 
-    def ukas(self):
+    def ukas(self, skip_autoclassified=False):
         """Return a unique list of all UKAs"""
         ukas = set()
         for uka in self.body.get('instanceOf', {}).get('subject', []):
+            if skip_autoclassified:
+                for note in uka.get("hasNote", []):
+                    if note.get("label", "") == "Autoclassified by Swepub":
+                        continue
             if isinstance(uka, dict) and uka.get("inScheme", {}).get("code", "") == "uka.se":
                 ukas.add(uka.get("code"))
         return list([uka for uka in ukas if uka])
@@ -704,10 +799,6 @@ class Publication:
         self._body['partOf'] = [part.body for part in part_of]
 
     @property
-    def part_of_with_title(self):
-        return part_of_with_title(self.body)
-
-    @property
     def identifiedby_ids(self):
         """Return array of items in identifiedBy"""
         return self.get_identifiedby_ids()
@@ -748,13 +839,6 @@ class Publication:
         """True if publication has the same summary"""
         return compare_text(self.summary, publication.summary, self.STRING_MATCH_RATIO_SUMMARY, MAX_LENGTH_STRING_TO_COMPARE)
 
-    def has_same_partof_main_title(self, publication):
-        """ Returns True if partOf has the same main title """
-        if self.part_of_with_title and publication.part_of_with_title:
-            return self.part_of_with_title.has_same_main_title(publication.part_of_with_title)
-        else:
-            return False
-
     def has_same_genre_form(self, publication):
         """True if publication has all the genreform the same"""
         if self.genre_form and publication.genre_form:
@@ -790,6 +874,8 @@ class Contribution:
         self._agent_given_name = self.body.get('agent', {}).get('givenName', None)
         self._agent_name = self.body.get('agent', {}).get('name', None)
         self._agent_identified_by = self.body.get('agent', {}).get('identifiedBy', [])
+        self._agent_type = self.body.get('agent', {}).get('@type', None)
+        self._agent = self.body.get('agent', {})
 
     def __eq__(self, other):
         """ Two contributions are equal if name or (given and family name) are the same """
@@ -814,6 +900,10 @@ class Contribution:
         return self._body
 
     @property
+    def agent(self):
+        return self._agent
+
+    @property
     def agent_family_name(self):
         """Return value for agent.familyName, None if not exist """
         return self._agent_family_name
@@ -834,6 +924,11 @@ class Contribution:
             return safe_concat(self.agent_family_name, self.agent_given_name)
 
     @property
+    def agent_type(self):
+        """Return agent type"""
+        return self._agent_type
+
+    @property
     def affiliations(self):
         """ Return hasAffiliation values if exist, Empty list otherwise """
         return self.body.get('hasAffiliation', [])
@@ -841,7 +936,8 @@ class Contribution:
     @affiliations.setter
     def affiliations(self, affiliations):
         """ Sets hasAffiliation values """
-        self._body['hasAffiliation'] = affiliations
+        if affiliations:
+            self._body['hasAffiliation'] = affiliations
 
     @property
     def identified_bys(self):
@@ -851,7 +947,15 @@ class Contribution:
     @identified_bys.setter
     def identified_bys(self, identified_bys):
         """ Sets identifiedBy values """
-        self._body['agent']['identifiedBy'] = identified_bys
+        if identified_bys:
+            self._body['agent']['identifiedBy'] = identified_bys
+
+    def update_name_part(self, contrib):
+        for key in ["givenName", "familyName", "lifeSpan", "termsOfAddress"]:
+            if contrib.agent.get(key):
+                self._body["agent"][key] = contrib.agent[key]
+            else:
+                self._body["agent"].pop(key, None)
 
 
 def safe_concat(first, second, separator=' '):
@@ -888,7 +992,12 @@ class HasSeries:
 
     @property
     def main_title(self):
-        return get_main_title(self.body)
+        """Return value for hasTitle[?(@.@type=="Title")].mainTitle, None if not exist """
+        main_title_array = self.body.get('hasTitle', [])
+        for m_t in main_title_array:
+            if isinstance(m_t, dict) and m_t.get('@type') == 'Title':
+                return m_t.get('mainTitle')
+        return None
 
     @property
     def issn(self):
@@ -1003,11 +1112,21 @@ class PartOf:
 
     @property
     def main_title(self):
-        return get_main_title(self.body)
+        """Return value for hasTitle[?(@.@type=="Title")].mainTitle, None if not exist """
+        main_title_array = self.body.get('hasTitle', [])
+        for m_t in main_title_array:
+            if isinstance(m_t, dict) and m_t.get('@type') == 'Title':
+                return m_t.get('mainTitle')
+        return None
 
     @property
     def sub_title(self):
-        return get_sub_title(self.body)
+        """Return value for hasTitle[?(@.@type=="Title")].subtitle, None if not exist """
+        main_title_array = self.body.get('hasTitle', [])
+        for m_t in main_title_array:
+            if isinstance(m_t, dict) and m_t.get('@type') == 'Title':
+                return m_t.get('subtitle')
+        return None
 
     @property
     def volume_number(self):

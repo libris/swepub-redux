@@ -4,6 +4,7 @@ import re
 from collections import OrderedDict
 import Levenshtein
 
+from pipeline.swepublog import logger as log
 from pipeline.publication import Contribution, Publication
 
 
@@ -36,8 +37,19 @@ def equal_name_part(a, b):
     if len(b) == 1 and a[0] == b[0]:
         return True
 
+    # Longer names should be allowed a larger edit distance than short ones.
+    allowed_max_distance = 0
+    if min(len(a), len(b)) > 2:
+        allowed_max_distance = 1
+    if min(len(a), len(b)) > 4:
+        allowed_max_distance = 2
+    if min(len(a), len(b)) > 7:
+        allowed_max_distance = 3
+    if min(len(a), len(b)) > 14:
+        allowed_max_distance = 4
+
     # Otherwise check edit distance
-    if len(a) > 1 and len(b) > 1 and Levenshtein.distance(a, b) < 3:
+    if len(a) > 1 and len(b) > 1 and Levenshtein.distance(a, b) <= allowed_max_distance:
         return True
     return False
 
@@ -120,6 +132,7 @@ class PublicationMerger:
             return master
         if master == candidate:
             return master
+
         master = self._merge_contribution(master, candidate)
         master = self._merge_has_notes(master, candidate)
         master = self._merge_genre_forms(master, candidate)
@@ -151,6 +164,9 @@ class PublicationMerger:
 
                 # If this contribution also exists in the master (it is "overlapping")
                 if probably_same_name(master_contrib_name, candidate_contrib_name):
+                    if _should_replace_name_part(master_contrib, candidate_contrib):
+                        master_contrib.update_name_part(candidate_contrib)
+
                     if _should_replace_affiliation(master_contrib, candidate_contrib):
                         master_contrib.affiliations = candidate_contrib.affiliations
                     else:
@@ -161,6 +177,7 @@ class PublicationMerger:
                     master_contrib.identified_bys = _merge_contrib_identified_by(
                         master_contrib.identified_bys,
                         candidate_contrib.identified_bys,
+                        candidate_contrib.agent_type
                     )
                     exists_in_master = True
                     break
@@ -203,6 +220,20 @@ class PublicationMerger:
         """Merge subjects if code or prefLabel is new"""
         master_subjects = master.subjects
         candidate_subjects = candidate.subjects
+
+        master_is_classified = master.is_classified
+        master_is_autoclassified = master.is_autoclassified
+        candidate_is_classified = candidate.is_classified
+        candidate_is_autoclassified = candidate.is_autoclassified
+
+        # Get rid of autoclassifications if one of the publications is 1) not autoclassified,
+        # *and* 2) has level 3 subjects
+        if master_is_classified and candidate_is_autoclassified and not master_is_autoclassified:
+            candidate_subjects = self._remove_autoclassified(candidate_subjects)
+
+        if candidate_is_classified and master_is_autoclassified and not candidate_is_autoclassified:
+            master_subjects = self._remove_autoclassified(master_subjects)
+
         for cs in candidate_subjects:
             if not self._subject_preflabel_exist_in_master(
                 master_subjects, cs
@@ -211,23 +242,37 @@ class PublicationMerger:
         master.subjects = master_subjects
         return master
 
+    @staticmethod
+    def _has_autoclassification_note(subject):
+        for note in subject.get("hasNote", []):
+            if note.get("label", "") == "Autoclassified by Swepub":
+                return True
+        return False
+
+    @staticmethod
+    def _remove_autoclassified(subjects):
+        return list(filter(lambda d: not PublicationMerger._has_autoclassification_note(d), subjects))
+
     def _merge_identifiedby_ids(self, master, candidate):
         """Merge identifiedbyIds if its ISSN/ISBN or URI and do not exist in master"""
         master_identifiedby_ids = master.identifiedby_ids
         candidate_identifiedby_ids = candidate.identifiedby_ids
+
         for identifier in candidate_identifiedby_ids:
-            if self._id_allowed_to_be_added(master_identifiedby_ids, identifier):
-                master_identifiedby_ids.append(identifier)
-        master.identifiedby_ids = master_identifiedby_ids
+            master_identifiedby_ids = self._possibly_append_id(master_identifiedby_ids, identifier)
+
+        if master_identifiedby_ids:
+            master.identifiedby_ids = master_identifiedby_ids
         return master
 
     def _merge_indirectly_identifiedby_ids(self, master, candidate):
         """Merge indirectlyIdentifiedbyIds if its ISSN/ISBN or URI and do not exist in master"""
         master_indirectly_identifiedby_ids = master.indirectly_identifiedby_ids
         candidate_indirectly_identifiedby_ids = candidate.indirectly_identifiedby_ids
+
         for identifier in candidate_indirectly_identifiedby_ids:
-            if self._id_allowed_to_be_added(master_indirectly_identifiedby_ids, identifier):
-                master_indirectly_identifiedby_ids.append(identifier)
+            master_indirectly_identifiedby_ids = self._possibly_append_id(master_indirectly_identifiedby_ids, identifier)
+
         if master_indirectly_identifiedby_ids:
             master.indirectly_identifiedby_ids = master_indirectly_identifiedby_ids
         return master
@@ -375,16 +420,28 @@ class PublicationMerger:
         )
 
     @staticmethod
-    def _id_allowed_to_be_added(master_ids, allowed_id):
-        """ID is allowed to be added if its ISSN/ISBN, URI or does not already exist in master_ids"""
+    def _possibly_append_id(master_ids, allowed_id):
+        """ID is allowed to be added if its ISSN/ISBN, URI or does not already exist in master_ids.
+        If ID has a qualifier but the existing ID in master_id doesn't have one, add the qualifier
+        from the candidate (allowed_id) to the master ID."""
         id_type = allowed_id["@type"]
-        # flake8: noqa W504
-        return allowed_id not in master_ids and (
-            id_type == "ISSN"
-            or id_type == "ISBN"
-            or id_type == "URI"
-            or len(list(filter(lambda x: (x["@type"] == id_type), master_ids))) == 0
-        )
+        if (id_type not in ["ISSN", "ISBN", "URI"]) and len(list(filter(lambda x: (x["@type"] == id_type), master_ids))) != 0:
+            return master_ids
+
+        allowed_id_temp = dict(allowed_id)
+        allowed_id_qualifier = allowed_id_temp.pop("qualifier", None)
+        # We need to ignore qualifier when comparing IDs, *but* if candidate has
+        # a qualifier and master doesn't, add qualifier from candidate to master
+        for master_id in master_ids:
+            master_id_temp = dict(master_id)
+            master_id_qualifier = master_id_temp.pop("qualifier", None)
+            if allowed_id_temp == master_id_temp:
+                if allowed_id_qualifier and not master_id_qualifier:
+                    master_id["qualifier"] = allowed_id_qualifier
+                return master_ids
+
+        master_ids.append(allowed_id)
+        return master_ids
 
 
 def _should_replace_affiliation(master_contrib, candidate_contrib):
@@ -423,19 +480,29 @@ def has_affiliations(affiliations):
     return False
 
 
-def _merge_contrib_identified_by(master_contrib_identified_bys, candidate_contrib_identified_bys):
-    candidate_contrib_orcid_identified_bys = [
-        x for x in candidate_contrib_identified_bys if x.get("@type") == "ORCID"
+def _should_replace_name_part(master_contrib, candidate_contrib):
+    return _has_local_id(candidate_contrib) and not _has_local_id(master_contrib)
+
+
+def _has_local_id(contrib):
+    for id_by in contrib.identified_bys:
+        if id_by.get("@type") == "Local" and id_by.get("value") and id_by.get("source", {}).get("code"):
+            return True
+    return False
+
+
+def _merge_contrib_identified_by(master_contrib_identified_bys, candidate_contrib_identified_bys, candidate_contrib_agent_type):
+    candidate_contrib_relevant_identified_bys = [
+        x for x in candidate_contrib_identified_bys if x.get("@type") == "ORCID" or (x.get("@type") == "Local" and candidate_contrib_agent_type == "Person")
     ]
-    for candidate_contrib_orcid_identified_by in candidate_contrib_orcid_identified_bys:
-        if candidate_contrib_orcid_identified_by not in master_contrib_identified_bys:
-            master_contrib_identified_bys.append(candidate_contrib_orcid_identified_by)
+    for candidate_contrib_relevant_identified_by in candidate_contrib_relevant_identified_bys:
+        if candidate_contrib_relevant_identified_by not in master_contrib_identified_bys:
+            master_contrib_identified_bys.append(candidate_contrib_relevant_identified_by)
     return master_contrib_identified_bys
 
 
 def _merge_contrib_affiliations(master_contrib_affiliations, canidate_contrib_affiliations):
     for candidate_contrib_affiliation in canidate_contrib_affiliations:
-
         # Not a "fritextaffiliering": Should be handled as; add if not exact duplicate
         if "identifiedBy" in candidate_contrib_affiliation:
             if candidate_contrib_affiliation not in master_contrib_affiliations:
@@ -456,5 +523,4 @@ def _merge_contrib_affiliations(master_contrib_affiliations, canidate_contrib_af
                     break
             if not has_match:
                 master_contrib_affiliations.append(candidate_contrib_affiliation)
-
     return master_contrib_affiliations

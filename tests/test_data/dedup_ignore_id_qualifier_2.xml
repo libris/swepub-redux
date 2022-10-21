@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
+  <responseDate>2022-08-24T09:04:20Z</responseDate>
+  <request verb="GetRecord" identifier="oai:DiVA.org:su-202316" metadataPrefix="swepub_mods">http://su.diva-portal.org/dice/oai</request>
+  <ListRecords>
+    <!-- DUPLICATES WITH SAME IDENTIFIER (BUT WITH QUALIFIER) -->
+    <!-- If two records have the same identifier, but one has a qualifier (displayLabel), the qualifier
+         should be ignored when comparing. Also:
+         - If master record has a qualifier but candidate doesn't, preserve master's qualifier in the deduplicated record.
+         - If master doesn't have a qualifier but candidate does, preserve candidate's qualifier.
+         - If both have a qualifier, preserve master's qualifier.
+    -->
+    <record>
+      <header>
+        <identifier>oai:DiVA.org:su-202316</identifier>
+        <datestamp>2022-02-25T14:28:00Z</datestamp>
+        <setSpec>su</setSpec>
+        <setSpec>book</setSpec>
+        <setSpec>popular</setSpec>
+      </header>
+      <metadata>
+        <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" version="3.7" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+          <genre authority="diva" type="contentTypeCode">other</genre>
+          <genre authority="svep" type="contentType">pop</genre>
+          <genre authority="diva" type="contentType" lang="eng">Other (popular science, discussion, etc.)</genre>
+          <genre authority="diva" type="contentType" lang="swe">Övrig (populärvetenskap, debatt, mm)</genre>
+          <genre authority="diva" type="contentType" lang="nor">Annet (populærvitenskap, debatt, mm)</genre>
+          <genre authority="diva" type="publicationTypeCode">book</genre>
+          <genre authority="svep" type="publicationType">bok</genre>
+          <genre authority="diva" type="publicationType" lang="eng">Book</genre>
+          <genre authority="diva" type="publicationType" lang="swe">Bok</genre>
+          <genre authority="diva" type="publicationType" lang="nor">Bok</genre>
+          <genre authority="kev" type="publicationType" lang="eng">book</genre>
+          <name type="personal" authority="su" xlink:href="rafl9115">
+            <namePart type="family">Fleischer</namePart>
+            <namePart type="given">Rasmus</namePart>
+            <namePart type="date">1978-</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+            <affiliation>Stockholms universitet, Institutionen för ekonomisk historia och internationella relationer</affiliation>
+            <description>orcid.org=0000-0002-2107-4119</description>
+            <description>diva-portal.org=authority-person:87413</description>
+          </name>
+          <name type="personal">
+            <namePart type="family">Snickars</namePart>
+            <namePart type="given">Pelle</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+            <description>orcid.org=0000-0001-5122-1549</description>
+            <description>diva-portal.org=authority-person:92850</description>
+          </name>
+          <name type="corporate" authority="su" xlink:href="880001">
+            <namePart>Stockholms universitet</namePart>
+            <namePart>Samhällsvetenskapliga fakulteten</namePart>
+            <namePart>Institutionen för ekonomisk historia och internationella relationer</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+            </role>
+          </name>
+          <titleInfo lang="dan">
+            <title>Historien om Spotify</title>
+          </titleInfo>
+          <language>
+            <languageTerm type="code" authority="iso639-2b">dan</languageTerm>
+          </language>
+          <originInfo>
+            <place>
+              <placeTerm>København</placeTerm>
+            </place>
+            <publisher>Underskoven</publisher>
+            <dateIssued>2019</dateIssued>
+            <dateOther type="availableFrom">2022-02-22T12:12:12</dateOther>
+          </originInfo>
+          <physicalDescription>
+            <form authority="marcform">print</form>
+            <extent>187</extent>
+          </physicalDescription>
+          <identifier type="isbn" displayLabel="print">9788793610958</identifier>
+          <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:su:diva-202316</identifier>
+          <typeOfResource>text</typeOfResource>
+          <subject lang="swe">
+            <topic>spotify</topic>
+          </subject>
+          <subject lang="swe">
+            <topic>musik</topic>
+          </subject>
+          <subject lang="swe">
+            <topic>internet</topic>
+          </subject>
+          <subject lang="swe">
+            <topic>streaming</topic>
+          </subject>
+          <subject lang="swe">
+            <topic>startups</topic>
+          </subject>
+          <subject lang="eng" authority="hsv" xlink:href="50801">
+            <topic>Social Sciences</topic>
+            <topic>Media and Communications</topic>
+            <topic>Media Studies</topic>
+          </subject>
+          <subject lang="swe" authority="hsv" xlink:href="50801">
+            <topic>Samhällsvetenskap</topic>
+            <topic>Medie- och kommunikationsvetenskap</topic>
+            <topic>Medievetenskap</topic>
+          </subject>
+          <subject lang="swe" authority="su" xlink:href="1985">
+            <topic>ekonomisk historia</topic>
+            <genre>Research subject</genre>
+          </subject>
+          <subject lang="eng" authority="su" xlink:href="1985">
+            <topic>Economic History</topic>
+            <genre>Research subject</genre>
+          </subject>
+          <abstract lang="dan">&lt;p&gt;Svenske Spotify har grundlæggende ændret, hvordan mennesker over hele verden bruger og lytter til musik.Historien om Spotify fortæller historien, fra dengang stifterne Daniel Ek og Martin Lorentzon sad i bare underbukser og fandt på navnet, til det, som siden blev musik- og teknologiverdens absolutte midtpunkt. Den første version af Spotify var en slags pirattjeneste, siden har de største musikselskaber investeret milliarder i Spotify og styrer nu musikudbuddet gennem uigennemskuelige playlister. Dette er en fortælling om en virksomhed, som holder fast i en grundidé, gratis musik, men undervejs har begået fejl, brudt love, fået kritik, gået på retræte, kopieret andre, prøvet igen – og lykkedes. Trods Spotifys eventyrlige succes har virksomheden aldrig givet overskud. I stedet er stifterne blevet mere og mere afhængige af risikovillig kapital.&lt;/p&gt;</abstract>
+          <recordInfo>
+            <recordOrigin>rafl9115</recordOrigin>
+            <recordContentSource>su</recordContentSource>
+            <recordCreationDate>2022-02-22</recordCreationDate>
+            <recordChangeDate>2022-02-25</recordChangeDate>
+            <recordIdentifier>diva2:1639716</recordIdentifier>
+          </recordInfo>
+        </mods>
+      </metadata>
+    </record>
+    <record>
+      <header>
+        <identifier>oai:DiVA.org:umu-159682</identifier>
+        <datestamp>2019-06-20T13:55:00Z</datestamp>
+        <setSpec>umu</setSpec>
+        <setSpec>book</setSpec>
+        <setSpec>popular</setSpec>
+      </header>
+      <metadata>
+        <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" version="3.7" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+          <genre authority="diva" type="contentTypeCode">other</genre>
+          <genre authority="svep" type="contentType">pop</genre>
+          <genre authority="diva" type="contentType" lang="eng">Other (popular science, discussion, etc.)</genre>
+          <genre authority="diva" type="contentType" lang="swe">Övrig (populärvetenskap, debatt, mm)</genre>
+          <genre authority="diva" type="contentType" lang="nor">Annet (populærvitenskap, debatt, mm)</genre>
+          <genre authority="diva" type="publicationTypeCode">book</genre>
+          <genre authority="svep" type="publicationType">bok</genre>
+          <genre authority="diva" type="publicationType" lang="eng">Book</genre>
+          <genre authority="diva" type="publicationType" lang="swe">Bok</genre>
+          <genre authority="diva" type="publicationType" lang="nor">Bok</genre>
+          <genre authority="kev" type="publicationType" lang="eng">book</genre>
+          <name type="personal">
+            <namePart type="family">Fleischer</namePart>
+            <namePart type="given">Rasmus</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+          </name>
+          <name type="personal" authority="umu" xlink:href="pesn0005">
+            <namePart type="family">Pelle</namePart>
+            <namePart type="given">Snickars</namePart>
+            <namePart type="date">1971-</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+            </role>
+            <affiliation>Umeå universitet, Institutionen för kultur- och medievetenskaper</affiliation>
+          </name>
+          <name type="personal">
+            <namePart type="family">Høfring</namePart>
+            <namePart type="given">Randi Bjerre</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">trl</roleTerm>
+            </role>
+          </name>
+          <name type="corporate" authority="umu" xlink:href="821">
+            <namePart>Umeå universitet</namePart>
+            <namePart>Humanistiska fakulteten</namePart>
+            <namePart>Institutionen för kultur- och medievetenskaper</namePart>
+            <role>
+              <roleTerm type="code" authority="marcrelator">pbl</roleTerm>
+            </role>
+          </name>
+          <titleInfo lang="dan">
+            <title>Historien om Spotify</title>
+          </titleInfo>
+          <language>
+            <languageTerm type="code" authority="iso639-2b">dan</languageTerm>
+          </language>
+          <originInfo>
+            <publisher>Underskoven</publisher>
+            <dateIssued>2019</dateIssued>
+            <dateOther type="availableFrom">2019-06-03T15:49:00</dateOther>
+          </originInfo>
+          <physicalDescription>
+            <form authority="marcform">print</form>
+            <extent>186</extent>
+          </physicalDescription>
+          <identifier type="isbn" displayLabel="print">9788793610958</identifier>
+          <identifier type="uri">http://urn.kb.se/resolve?urn=urn:nbn:se:umu:diva-159682</identifier>
+          <typeOfResource>text</typeOfResource>
+          <subject lang="eng" authority="hsv" xlink:href="50801">
+            <topic>Social Sciences</topic>
+            <topic>Media and Communications</topic>
+            <topic>Media Studies</topic>
+          </subject>
+          <subject lang="swe" authority="hsv" xlink:href="50801">
+            <topic>Samhällsvetenskap</topic>
+            <topic>Medie- och kommunikationsvetenskap</topic>
+            <topic>Medievetenskap</topic>
+          </subject>
+          <abstract lang="dan">&lt;p&gt;Svenske Spotify har grundlæggende ændret, hvordan mennesker over hele verden bruger og lytter til musik.Historien om Spotify fortæller historien, fra dengang stifterne Daniel Ek og Martin Lorentzon sad i bare underbukser og fandt på navnet, til det, som siden blev musik- og teknologiverdens absolutte midtpunkt. Den første version af Spotify var en slags pirattjeneste, siden har de største musikselskaber investeret milliarder i Spotify og styrer nu musikudbuddet gennem uigennemskuelige playlister. Dette er en fortælling om en virksomhed, som holder fast i en grundidé, gratis musik, men undervejs har begået fejl, brudt love, fået kritik, gået på retræte, kopieret andre, prøvet igen – og lykkedes. Trods Spotifys eventyrlige succes har virksomheden aldrig givet overskud. I stedet er stifterne blevet mere og mere afhængige af risikovillig kapital.&lt;/p&gt;&lt;p&gt;&lt;/p&gt;</abstract>
+          <recordInfo>
+            <recordOrigin>pesn0005</recordOrigin>
+            <recordContentSource>umu</recordContentSource>
+            <recordCreationDate>2019-06-03</recordCreationDate>
+            <recordChangeDate>2019-06-20</recordChangeDate>
+            <recordIdentifier>diva2:1319912</recordIdentifier>
+          </recordInfo>
+        </mods>
+      </metadata>
+    </record>
+  </ListRecords>
+</OAI-PMH>

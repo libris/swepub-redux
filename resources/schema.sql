@@ -157,43 +157,6 @@ CREATE INDEX idx_finalized_oai_id ON finalized(oai_id);
 CREATE INDEX idx_finalized_cluster_id ON finalized(cluster_id);
 
 
--- To facilitate "auto classification", store (for each publication) the N rarest
--- words that occur in that publication's abstract.
---
--- The idea here, is that when you are to auto classify publication A, list the
--- rarest words in A's abstract. Then find all other publications (B, C, D) that
--- also contains one or more of those words (with an emphasis on more).
--- 
--- Hopefully B, D, and C are now "about the same sorts of things" as A, since they
--- share rare abstract words.
--- If any of B, C or D appear to have a "better" explicit subject than A, we try to
--- copy that subject to our own publication (A).
---
--- This is a temporary table, it should be dropped after AutoClassification
-CREATE TABLE abstract_rarest_words (
-    id INTEGER PRIMARY KEY,
-    word TEXT,
-    converted_id INTEGER,
-    FOREIGN KEY (converted_id) REFERENCES converted(id) ON DELETE CASCADE
-);
-CREATE INDEX idx_abstract_rarest_words ON abstract_rarest_words (word, converted_id);
-CREATE INDEX idx_abstract_rarest_words_id ON abstract_rarest_words (converted_id);
-
-
--- In order to calculate values (rarity) for the above table, we also need an answer
--- to the question:
---
--- How many times does 'word' occur inside abstracts of any of our publications?
---
--- This is a temporary table, it should be dropped after AutoClassification
-CREATE TABLE abstract_total_word_counts (
-    id INTEGER PRIMARY KEY,
-    word TEXT,
-    occurrences INTEGER
-);
-CREATE INDEX idx_abstract_total_word_counts ON abstract_total_word_counts (word, occurrences);
-
-
 CREATE TABLE search_single (
     id INTEGER PRIMARY KEY,
     finalized_id INTEGER,
@@ -361,5 +324,4 @@ BEGIN
     DELETE FROM converted_ssif_1 WHERE converted_ssif_1.converted_id = OLD.id;
     DELETE FROM clusteringidentifiers WHERE clusteringidentifiers.converted_id = OLD.id;
     DELETE FROM cluster WHERE cluster.converted_id = OLD.id;
-    DELETE FROM abstract_rarest_words WHERE abstract_rarest_words.converted_id = OLD.id;
 END;

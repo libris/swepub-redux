@@ -21,7 +21,6 @@ import orjson as json
 import requests
 
 from pipeline import sickle
-from pipeline.autoclassify import auto_classify
 from pipeline.merge import merge
 from pipeline.convert import convert
 from pipeline.deduplicate import deduplicate
@@ -42,11 +41,15 @@ from pipeline.legacy_sync import legacy_sync
 
 # To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..
 from pipeline.swepublog import logger as log
-from pipeline.util import chunker
+from pipeline.util import chunker, get_common_json_paths
 
+
+# TODO: Move configuration (some of which is shared with service/swepub.py) to a separate file
 DEFAULT_SWEPUB_ENV = getenv("SWEPUB_ENV", "DEV")  # or QA, PROD
 FILE_PATH = path.dirname(path.abspath(__file__))
 DEFAULT_SWEPUB_DB = path.join(FILE_PATH, "../swepub.sqlite3")
+DEFAULT_ANNIF_EN_URL = getenv("ANNIF_EN_URL", "http://127.0.0.1:8083/v1/projects/swepub-en")
+DEFAULT_ANNIF_SV_URL = getenv("ANNIF_SV_URL", "http://127.0.0.1:8083/v1/projects/swepub-sv")
 
 CACHE_DIR = path.join(FILE_PATH, "../cache/")
 
@@ -57,8 +60,11 @@ DOAB_CACHE_FILE = path.join(FILE_PATH, "../cache/doab.json")
 DOAB_CACHE_TIME = 604800
 
 ID_CACHE_FILE = path.join(FILE_PATH, "../cache/id_cache.json")
+LOCALID_ORCID_CACHE_FILE = path.join(FILE_PATH, "../cache/localid_orcid_cache.json")
+KNOWN_LOCALID_TO_ORCID_FILE = path.join(FILE_PATH, "../resources/known_localid_to_orcid.json")
 KNOWN_ISSN_FILE = path.join(FILE_PATH, "../resources/known_valid_issn.txt")
 KNOWN_DOI_FILE = path.join(FILE_PATH, "../resources/known_valid_doi.txt")
+
 
 DEFAULT_SWEPUB_SOURCE_FILE = path.join(FILE_PATH, "../resources/sources.json")
 TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = [
@@ -79,6 +85,7 @@ TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = [
 
 SWEPUB_USER_AGENT = getenv("SWEPUB_USER_AGENT", "https://github.com/libris/swepub-redux")
 
+cached_paths = get_common_json_paths()
 
 # Wrap the harvest function just to easily log errors from subprocesses
 def harvest_wrapper(source):
@@ -147,6 +154,11 @@ def harvest(source):
     num_failed = 0
 
     for source_set in source["sets"]:
+        if environ.get("SWEPUB_LOCAL_SERVER"):
+            if "diva" in source_set["url"]:
+                source_set["url"] = f"{environ.get('SWEPUB_LOCAL_SERVER')}/diva/{source['code']}"
+            else:
+                source_set["url"] = f"{environ.get('SWEPUB_LOCAL_SERVER')}/foo/{source['code']}"
         record_iterator = RecordIterator(source["code"], source_set, fromtime, None, SWEPUB_USER_AGENT)
         # For each set we put records into batches and let a number of workers handle these batches.
         try:
@@ -174,6 +186,7 @@ def harvest(source):
                                 source["code"],
                                 source_set["subset"],
                                 harvest_id,
+                                cached_paths,
                             )
                             executor.submit(func, batch)
                             batch = []
@@ -181,7 +194,7 @@ def harvest(source):
                     else:
                         num_failed += 1
                 func = partial(
-                    threaded_handle_harvested, source["code"], source_set["subset"], harvest_id
+                    threaded_handle_harvested, source["code"], source_set["subset"], harvest_id, cached_paths
                 )
                 executor.submit(func, batch)
                 executor.shutdown(wait=True)
@@ -285,12 +298,16 @@ def harvest(source):
     return harvest_succeeded
 
 
-def threaded_handle_harvested(source, source_subset, harvest_id, batch):
+def threaded_handle_harvested(source, source_subset, harvest_id, cached_paths, batch):
     converted_rowids = []
     num_accepted = 0
     num_rejected = 0
     num_deleted = 0
+
     with requests.Session() as session:
+        adapter = requests.adapters.HTTPAdapter(max_retries=2)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
         for record in batch:
             xml = record.xml
             rejected, min_level_errors = should_be_rejected(xml)
@@ -300,7 +317,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, batch):
                 if accepted:
                     num_accepted += 1
                     converted = convert(xml)
-                    (field_events, record_info) = validate(converted, harvest_cache, session)
+                    (field_events, record_info) = validate(converted, harvest_cache, session, source, cached_paths)
                     (audited, audit_events) = audit(converted, harvest_cache, session)
                 elif not record.deleted:
                     num_rejected += 1
@@ -380,7 +397,7 @@ def _load_doab():
         log.info(f"DOAB data still fresh enough (< {DOAB_CACHE_TIME} seconds), not refreshing")
         with open(DOAB_CACHE_FILE, "rb") as f:
             doab_data = json.loads(f.read())
-    else:
+    elif not environ.get("SWEPUB_SKIP_REMOTE"):
         try:
             log.info("Refreshing DOAB data")
             with closing(requests.get(SWEPUB_DOAB_URL, stream=True, timeout=30)) as r:
@@ -427,6 +444,18 @@ def _get_harvest_cache_manager(manager):
     except Exception as e:
         log.warning(f"Failed loading ID cache file, starting fresh (error: {e})")
 
+    previously_found_localid_to_orcid = {}
+    try:
+        with open(LOCALID_ORCID_CACHE_FILE, "rb") as f:
+            previously_found_localid_to_orcid = json.loads(f.read())
+        log.info(
+            f"Cache populated with {len(previously_found_localid_to_orcid)} LocalID->ORCID from {LOCALID_ORCID_CACHE_FILE}"
+        )
+    except FileNotFoundError:
+        log.warning("LocalID->ORCID cache file not found, starting fresh")
+    except Exception as e:
+        log.warning(f"Failed loading LocalID->ORCID cache file, starting fresh (error: {e})")
+
     # If we have files with known ISSN/DOI numbers, use them to populate the cache
     known_issn = {}
     known_doi = {}
@@ -445,6 +474,17 @@ def _get_harvest_cache_manager(manager):
             )
     except Exception as e:
         log.warning(f"Failed loading ISSN/DOI files: {e}")
+
+    known_localid_to_orcid = {}
+    try:
+        with open(KNOWN_LOCALID_TO_ORCID_FILE, "rb") as f:
+            known_localid_to_orcid = json.loads(f.read())
+            log.info(
+                f"Cache populated with {len(known_localid_to_orcid)} LocalID->ORCID from {KNOWN_LOCALID_TO_ORCID_FILE}"
+            )
+    except Exception as e:
+        log.warning(f"Failed loading static LocalID->ORCID file: {e}")
+
     # Stuff seen during requests to external sources should be saved for future use,
     # but we don't want to waste time saving ISSN/DOIs already known from the 'static' files,
     # hence separating "stuff learned during harvest" from "stuff learned from static files".
@@ -456,6 +496,8 @@ def _get_harvest_cache_manager(manager):
     issn_new = manager.dict(dict.fromkeys(issn_not_in_static, 1))
     issn_static = manager.dict(known_issn)
     harvest_meta = manager.dict({})
+    localid_to_orcid_new = manager.dict(previously_found_localid_to_orcid)
+    localid_to_orcid_static = manager.dict(known_localid_to_orcid)
     doab = manager.dict(_load_doab())
 
     return manager.dict(
@@ -466,8 +508,17 @@ def _get_harvest_cache_manager(manager):
             "issn_static": issn_static,
             "meta": harvest_meta,
             "doab": doab,
+            "localid_to_orcid_new": localid_to_orcid_new,
+            "localid_to_orcid_static": localid_to_orcid_static
         }
     )
+
+
+def _annif_health_check():
+    for url in [getenv("ANNIF_EN_URL"), getenv("ANNIF_SV_URL")]:
+        r = requests.get(url=url)
+        data = r.json()
+        assert data["is_trained"], f"Annif not trained for {url}"
 
 
 def init(l, c, a, lg, inc):
@@ -500,6 +551,11 @@ def handle_args():
         help="Updates sources incrementally. Creates database and harvests from the beginning if the database doesn't already exist.",
     )
     group.add_argument(
+        "--reset-harvest-time",
+        action="store_true",
+        help="Removes last_harvest entry for specified source(s) (or all sources), meaning next --update will trigger a full harvest.",
+    )
+    group.add_argument(
         "-p",
         "--purge",
         action="store_true",
@@ -519,12 +575,20 @@ def handle_args():
         help="One of DEV, QA, PROD (default DEV). Overrides SWEPUB_ENV.",
     )
     parser.add_argument("--skip-unpaywall", action="store_true", help="Skip Unpaywall check")
+    parser.add_argument("--skip-autoclassifier", action="store_true", help="Skip autoclassify step")
     parser.add_argument("-s", "--source-file", default=None, help="Source file to use.")
     parser.add_argument(
         "source",
         nargs="*",
         default="",
         help="Source(s) to process (if not specified, everything in sources.json will be processed, e.g. uniarts ths mdh",
+    )
+    parser.add_argument(
+        "--local-server",
+        nargs="?",
+        default=None,
+        const="http://localhost:8383/oai",
+        help="Replace source URLs with ones pointing to local OAI-PMH test server (see misc/oai_pmh_server.py), e.g. http://localhost:8383/oai"
     )
 
     return parser.parse_args()
@@ -553,11 +617,40 @@ if __name__ == "__main__":
 
     log.info(f"SWEPUB_ENV is {environ['SWEPUB_ENV']}")
 
+    if environ.get("SWEPUB_SKIP_REMOTE"):
+        log.info(f"SWEPUB_SKIP_REMOTE set, not refreshing DOAB or using remote services for validation/enrichment")
+
+    if not getenv("ANNIF_EN_URL"):
+        environ["ANNIF_EN_URL"] = DEFAULT_ANNIF_EN_URL
+    if not getenv("ANNIF_SV_URL"):
+        environ["ANNIF_SV_URL"] = DEFAULT_ANNIF_SV_URL
+
     sources = load(open(environ["SWEPUB_SOURCE_FILE"]))
 
     # The Unpaywall mirror is not accessible from the public Internet, so for local testing one might want to avoid it
     if args.skip_unpaywall:
         environ["SWEPUB_SKIP_UNPAYWALL"] = "1"
+
+    if args.skip_autoclassifier:
+        environ["SWEPUB_SKIP_AUTOCLASSIFIER"] = "1"
+
+    if args.local_server:
+        environ["SWEPUB_LOCAL_SERVER"] = args.local_server
+
+    # Annif health check
+    if getenv("SWEPUB_SKIP_AUTOCLASSIFIER"):
+        log.warning("Autoclassifier manually disabled")
+    else:
+        try:
+            _annif_health_check()
+            log.info("Annif is available")
+        except Exception as e:
+            if environ["SWEPUB_ENV"] in ["QA", "PROD"]:
+                log.error(f"Annif misconfigured or not available: {e}")
+                sys.exit(1)
+            else:
+                log.warning(f"Annif misconfigured or not available. Disabling autoclassifier: {e}")
+                environ["SWEPUB_SKIP_AUTOCLASSIFIER"] = "1"
 
     incremental = False
     if args.update:
@@ -591,7 +684,7 @@ if __name__ == "__main__":
 
     harvest_cache = None
     t1 = None
-    # If we're purging we skip the harvesting and auto-classification phases but do the rest.
+    # If we're purging we skip the harvesting phase but do the rest.
     if args.purge:
         log.info("Purging " + " ".join([source["code"] for source in sources_to_process]))
         with get_connection() as connection:
@@ -601,6 +694,13 @@ if __name__ == "__main__":
                 cursor.execute("DELETE FROM last_harvest WHERE source = ?", [source["code"]])
             for table in TABLES_DELETED_ON_INCREMENTAL_OR_PURGE:
                 cursor.execute(f"DELETE FROM {table}")
+    elif args.reset_harvest_time:
+        log.info("Removing last_harvest time for " + " ".join([source["code"] for source in sources_to_process]))
+        with get_connection() as connection:
+            cursor = connection.cursor()
+            for source in sources_to_process:
+                cursor.execute("DELETE FROM last_harvest WHERE source = ?", [source["code"]])
+        sys.exit(0)
     else:
         # All harvest jobs have access to the same Manager-managed dictionaries
         manager = Manager()
@@ -658,35 +758,29 @@ if __name__ == "__main__":
         diff = round(t1 - t0, 2)
         log.info(f"Phase 1 (harvesting) ran for {diff} seconds")
 
-        t0 = t1
-        auto_classify(incremental, added_converted_rowids.keys())
-        t1 = time.time()
-        diff = round(t1 - t0, 2)
-        log.info(f"Phase 2 (auto-classification) ran for {diff} seconds")
-
     t0 = t1 if t1 else time.time()
     deduplicate()
     t1 = time.time()
     diff = round(t1 - t0, 2)
-    log.info(f"Phase 3 (deduplication) ran for {diff} seconds")
+    log.info(f"Phase 2 (deduplication) ran for {diff} seconds")
 
     t0 = t1
     merge()
     t1 = time.time()
     diff = round(t1 - t0, 2)
-    log.info(f"Phase 4 (merging) ran for {diff} seconds")
+    log.info(f"Phase 3 (merging) ran for {diff} seconds")
 
     t0 = t1
     generate_search_tables()
     t1 = time.time()
     diff = round(t1 - t0, 2)
-    log.info(f"Phase 5 (generate search tables) ran for {diff} seconds")
+    log.info(f"Phase 4 (generate search tables) ran for {diff} seconds")
 
     t0 = t1
     generate_processing_stats()
     t1 = time.time()
     diff = round(t1 - t0, 2)
-    log.info(f"Phase 6 (generate processing stats) ran for {diff} seconds")
+    log.info(f"Phase 5 (generate processing stats) ran for {diff} seconds")
 
     if environ.get("SWEPUB_LEGACY_SEARCH_DATABASE"):
         t0 = t1
@@ -697,13 +791,13 @@ if __name__ == "__main__":
             legacy_sync(-1)
         t1 = time.time()
         diff = round(t1 - t0, 2)
-        log.info(f"Phase 7 (legacy search sync) ran for {diff} seconds")
+        log.info(f"Phase 6 (legacy search sync) ran for {diff} seconds")
 
     if harvest_cache and not args.purge:
         log.info(f'Sources harvested: {" ".join(harvest_cache["meta"]["sources_succeeded"])}')
         if harvest_cache["meta"]["sources_failed"]:
             log.warning(f'Sources failed: {" ".join(harvest_cache["meta"]["sources_failed"])}')
-        # Save ISSN/DOI cache for use next time
+        # Save ISSN/DOI and LocalID->ORCID cache for use next time
         try:
             log.info(
                 f'Saving {len(harvest_cache["issn_new"]) + len(harvest_cache["doi_new"])} cached IDs to {ID_CACHE_FILE}'
@@ -719,3 +813,14 @@ if __name__ == "__main__":
                 )
         except Exception as e:
             log.warning(f"Failed saving harvest ID cache to {ID_CACHE_FILE}: {e}")
+
+        try:
+            log.info(
+                f'Saving {len(harvest_cache["localid_to_orcid_new"])} cached LocalID->ORCID to {LOCALID_ORCID_CACHE_FILE}'
+            )
+            with open(LOCALID_ORCID_CACHE_FILE, "wb") as f:
+                f.write(
+                    json.dumps(dict(harvest_cache["localid_to_orcid_new"]))
+                )
+        except Exception as e:
+            log.warning(f"Failed saving LocalID->ORCID cache to {LOCALID_ORCID_CACHE_FILE}: {e}")

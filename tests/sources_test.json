@@ -54,6 +54,28 @@
       }
     ]
   },
+  "dedup_ignore_id_qualifier": {
+    "code": "kth",
+    "name": "TEST - dedup ignore id qualifier",
+    "sets": [
+      {
+        "url": "http://localhost:8549/dedup_ignore_id_qualifier",
+        "subset": "SwePub-DEDUPS",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "dedup_ignore_id_qualifier_2": {
+    "code": "kth",
+    "name": "TEST - dedup ignore id qualifier 2",
+    "sets": [
+      {
+        "url": "http://localhost:8549/dedup_ignore_id_qualifier_2",
+        "subset": "SwePub-DEDUPS",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
   "mau": {
     "code": "mau",
     "name": "TEST - mau",
@@ -467,6 +489,28 @@
     "sets": [
       {
         "url": "http://localhost:8549/obsolete-test-listrecords",
+        "subset": "SwePub-kth",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "local_personid_from_candidate": {
+    "code": "kth",
+    "name": "TEST - local_personid_from_candidate",
+    "sets": [
+      {
+        "url": "http://localhost:8549/local_personid_from_candidate",
+        "subset": "SwePub-kth",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
+  },
+  "orcid_from_another_record": {
+    "code": "kth",
+    "name": "TEST - orcid_from_another_record",
+    "sets": [
+      {
+        "url": "http://localhost:8549/orcid_from_another_record",
         "subset": "SwePub-kth",
         "metadata_prefix": "swepub_mods"
       }

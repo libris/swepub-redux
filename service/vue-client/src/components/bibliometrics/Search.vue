@@ -100,7 +100,13 @@ export default {
   },
   methods: {
     pushQuery() {
-      this.$router.push(this.selectedAsFullPath)
+      let pathToPush = '';
+      if (this.selectedAsFullPath === '/bibliometrics') {
+        pathToPush = '/bibliometrics?from=&to=';
+      } else {
+        pathToPush = this.selectedAsFullPath;
+      }
+      this.$router.push(pathToPush)
       // eslint-disable-next-line
         .catch(err => console.warn(err.message));
     },
