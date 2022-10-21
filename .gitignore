@@ -1,13 +1,13 @@
 *.pyc
 __pycache__/
 .idea/
-swepub.sqlite3
+swepub.sqlite3*
 venv/
-<<<<<<< HEAD
 node_modules/
 service/vue-client/dist/
 *.pkl
 id_cache.json
+localid_orcid_cache.json
 issn.txt
 cache/
 _xml/
