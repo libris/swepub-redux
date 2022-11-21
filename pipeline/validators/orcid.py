@@ -96,7 +96,7 @@ def validate_orcid(field, body, harvest_cache, source, cached_paths={}):
                 continue
 
             cache_key = get_localid_cache_key(id_by, person_name, source)
-            if not harvest_cache["localid_to_orcid_static"].get(cache_key):
-                harvest_cache["localid_to_orcid_new"][cache_key] = [field.value, body['@id']]
+            if not harvest_cache["localid_to_orcid"].get(cache_key):
+                harvest_cache["localid_to_orcid"][cache_key] = [field.value, body['@id']]
                 #print("Added", id_by.get("value"), body["@id"], "to cache for", field.value, "with cache key", cache_key)
             break
