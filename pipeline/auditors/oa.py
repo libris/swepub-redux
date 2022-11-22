@@ -12,7 +12,7 @@ class OAAuditor(BaseAuditor):
     def __init__(self):
         self.name = OAAuditor.__name__
 
-    def audit(self, publication, audit_events, harvest_cache, session):
+    def audit(self, publication, audit_events, harvest_cache, session, _harvest_id):
         publication, new_audit_events, result = self._check_doab(
             publication, audit_events, harvest_cache
         )

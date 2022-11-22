@@ -25,7 +25,14 @@ def recover_orcid_from_localid(body, field, harvest_cache, source, cached_paths=
     cache_key = get_localid_cache_key(field.value, person_name, source)
     cache_result = harvest_cache["localid_to_orcid"].get(cache_key)
     if cache_result:
-        orcid, source_id = cache_result
+        orcid = cache_result[0]
+        source_id = cache_result[1]
+
+        #localid_to_orcid_source = harvest_cache["localid_to_orcid_sources"].get(source_id)
+        #if localid_to_orcid_source:
+        #    localid_to_orcid_source["linked_oai_ids"] = list(set(localid_to_orcid_source["linked_oai_ids"] + [body["@id"]]))
+        #    harvest_cache["localid_to_orcid_sources"][source_id] = localid_to_orcid_source
+
         new_path = append_at_path(body, parent_path, type="ORCID", new_value=orcid, cached_paths=cached_paths)
         field.events.append(
             make_event(

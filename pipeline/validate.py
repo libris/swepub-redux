@@ -111,7 +111,7 @@ def get_record_info(field_events):
     return stats
 
 
-def validate_stuff(field_events, session, harvest_cache, body, source, cached_paths):
+def validate_stuff(field_events, session, harvest_cache, body, source, cached_paths, harvest_id):
     for id_type in field_events.values():
         for field in id_type.values():
             if field.validation_status != Validation.VALID:
@@ -120,7 +120,7 @@ def validate_stuff(field_events, session, harvest_cache, body, source, cached_pa
                 if field.id_type == "ISI":
                     validate_isi(field)
                 if field.id_type == "ORCID":
-                    validate_orcid(field, body, harvest_cache, source, cached_paths)
+                    validate_orcid(field, body, harvest_cache, source, harvest_id, cached_paths)
                 if field.id_type == "ISSN":
                     validate_issn(field, session, harvest_cache)
                 if field.id_type == "DOI":
@@ -282,7 +282,7 @@ def get_clean_events(field_events):
     return events_only
 
 
-def validate(body, harvest_cache, session, source, cached_paths):
+def validate(body, harvest_cache, session, source, cached_paths, harvest_id):
     field_events = {}
     # For each path, create a FieldMeta object that we'll use during all
     # enrichments/validations/normalizations to keep some necessary state
@@ -296,10 +296,10 @@ def validate(body, harvest_cache, session, source, cached_paths):
                     str(match.full_path), id_type, match.value
                 )
 
-    validate_stuff(field_events, session, harvest_cache, body, source, cached_paths)
+    validate_stuff(field_events, session, harvest_cache, body, source, cached_paths, harvest_id)
     enrich_stuff(body, field_events, cached_paths)
     # Second validation pass to see if enrichments made some values valid
-    validate_stuff(field_events, session, harvest_cache, body, source, cached_paths)
+    validate_stuff(field_events, session, harvest_cache, body, source, cached_paths, harvest_id)
     enrich_stuff_a_little_more(body, field_events, harvest_cache, source, cached_paths)
     normalize_stuff(body, field_events, cached_paths)
     # Beware, after this point all field_event paths must be considered potentially corrupt,

@@ -11,7 +11,7 @@ class UKAAuditor(BaseAuditor):
     def __init__(self):
         self.name = UKAAuditor.__name__
 
-    def audit(self, publication, audit_events, _harvest_cache, _session):
+    def audit(self, publication, audit_events, _harvest_cache, _session, _harvest_id):
         comprehensive = False
         ukas = publication.ukas()
         if self._only_1digits(ukas):

@@ -21,7 +21,7 @@ class SwedishListAuditor(BaseAuditor):
         else:
             self.list = list
 
-    def audit(self, publication, audit_events, _harvest_cache, _session):
+    def audit(self, publication, audit_events, _harvest_cache, _session, _harvest_id):
         """Check and set the publication's level according to the Swedish List."""
         level = Level.NONE
         year = publication.year

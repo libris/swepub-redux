@@ -8,6 +8,7 @@ from pipeline.auditors.issn import ISSNAuditor
 from pipeline.auditors.subjects import SubjectsAuditor
 from pipeline.auditors.oa import OAAuditor
 from pipeline.auditors.autoclassifier import AutoclassifierAuditor
+from pipeline.auditors.localid import LocalidAuditor
 from pipeline.publication import Publication
 
 AUDITORS = [
@@ -19,6 +20,7 @@ AUDITORS = [
     SubjectsAuditor(),
     OAAuditor(),
     AutoclassifierAuditor(),
+    LocalidAuditor(),
 ]
 
 auditors = AUDITORS
@@ -58,10 +60,10 @@ class AuditEvents:
         return None
 
 
-def audit(body, harvest_cache, session):
+def audit(body, harvest_cache, session, harvest_id):
     initial_val = (Publication(body), AuditEvents())
     (updated_publication, audit_events) = reduce(
-        lambda acc, auditor: auditor.audit(*acc, harvest_cache, session),
+        lambda acc, auditor: auditor.audit(*acc, harvest_cache, session, harvest_id),
         auditors,
         initial_val,
     )

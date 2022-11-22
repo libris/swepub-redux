@@ -7,7 +7,7 @@ class ISSNAuditor(BaseAuditor):
     def __init__(self):
         self.name = ISSNAuditor.__name__
 
-    def audit(self, publication, audit_events, _harvest_cache, _session):
+    def audit(self, publication, audit_events, _harvest_cache, _session, _harvest_id):
         code = "ISSN_missing_check"
         result = False
         if publication.is_article and publication.missing_issn_or_any_empty_issn:

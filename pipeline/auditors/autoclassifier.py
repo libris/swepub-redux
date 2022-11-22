@@ -61,7 +61,7 @@ class AutoclassifierAuditor(BaseAuditor):
     def __init__(self):
         self.name = AutoclassifierAuditor.__name__
 
-    def audit(self, publication, audit_events, _harvest_cache, session):
+    def audit(self, publication, audit_events, _harvest_cache, session, _harvest_id):
         # TODO: if SWEPUB_SKIP_AUTOCLASSIFIER, don't load this class at all
         if getenv("SWEPUB_SKIP_AUTOCLASSIFIER"):
             return publication, audit_events

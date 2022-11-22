@@ -55,7 +55,7 @@ def validate_checksum(orcid):
         return False, "checksum"
 
 
-def validate_orcid(field, body, harvest_cache, source, cached_paths={}):
+def validate_orcid(field, body, harvest_cache, source, harvest_id, cached_paths={}):
     if field.validation_status == Validation.INVALID and field.enrichment_status in [
         Enrichment.UNCHANGED,
         Enrichment.UNSUCCESSFUL,
@@ -96,7 +96,19 @@ def validate_orcid(field, body, harvest_cache, source, cached_paths={}):
                 continue
 
             cache_key = get_localid_cache_key(id_by, person_name, source)
-            if not harvest_cache["localid_to_orcid"].get(cache_key):
-                harvest_cache["localid_to_orcid"][cache_key] = [field.value, body['@id']]
-                #print("Added", id_by.get("value"), body["@id"], "to cache for", field.value, "with cache key", cache_key)
+            #if not harvest_cache["localid_to_orcid"].get(cache_key):
+            harvest_cache["localid_to_orcid"][cache_key] = [field.value, body['@id'], harvest_id]
+            #print("Added", id_by.get("value"), body["@id"], "to cache for", field.value, "with cache key", cache_key)
+
+            source_id_dict = harvest_cache["localid_to_orcid_sources"].get(body["@id"])
+            if source_id_dict:
+                print("found source id dict for", body["@id"])
+                source_id_dict["cache_keys"] = list(set(source_id_dict["cache_keys"] + [cache_key]))
+                harvest_cache["localid_to_orcid_sources"][body["@id"]] = source_id_dict
+            else:
+                harvest_cache["localid_to_orcid_sources"][body["@id"]] = {
+                    "source_org": source,
+                    "cache_keys": [cache_key],
+                    "linked_oai_ids": [],
+                }
             break
