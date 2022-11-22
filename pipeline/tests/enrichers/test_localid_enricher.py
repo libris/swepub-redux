@@ -37,9 +37,9 @@ def test_dont_add_orcid_if_no_matching_localid():
 
 
 def _test_localid_enricher(cache_data, source, test_data, expected_body, expected_codes):
-    harvest_cache = {"localid_to_orcid_static": {}, "localid_to_orcid_new": {}}
+    harvest_cache = {"localid_to_orcid": {}}
     cache_key = get_localid_cache_key(test_data, "bar foo", source)
-    harvest_cache["localid_to_orcid_static"] = cache_data
+    harvest_cache["localid_to_orcid"] = cache_data
     field = FieldMeta(
         value=test_data, path="instanceOf.contribution.[0].agent.identifiedBy.[0]"
     )
