@@ -23,7 +23,7 @@ def recover_orcid_from_localid(body, field, harvest_cache, source, cached_paths=
         return
 
     cache_key = get_localid_cache_key(field.value, person_name, source)
-    cache_result = harvest_cache["localid_to_orcid_static"].get(cache_key) or harvest_cache["localid_to_orcid_new"].get(cache_key)
+    cache_result = harvest_cache["localid_to_orcid"].get(cache_key)
     if cache_result:
         orcid, source_id = cache_result
         new_path = append_at_path(body, parent_path, type="ORCID", new_value=orcid, cached_paths=cached_paths)
