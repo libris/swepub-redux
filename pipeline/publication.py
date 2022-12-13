@@ -769,6 +769,88 @@ class Publication:
             return True, [new_electroniclocator]
         return False, None
 
+    def add_crossref_data(self, crossref):
+        """Enriches publication with Crossref data where applicable"""
+
+        modified_properties = []
+
+        # 1, 2, 3: Publication data (PublicationInformation)
+        if not self.publication_information:
+            self.publication_information = [{'@type': 'Publication'}]
+        pub_info = self.publication_information
+
+        if crossref.get("publisher") and not pub_info.body.get("agent", {}).get("label"):
+            pub_info.agent = {"@type": "Agent", "label": crossref.get("publisher")}
+            modified_properties.append("publisher")
+
+        if crossref.get("publisher-location") and not pub_info.body.get("place", {}).get("label"):
+            pub_info.place = {"@type": "Place", "label": crossref.get("publisher-location")}
+            modified_properties.append("publisher-location")
+
+        try:
+            if crossref.get("published-print") and not pub_info.date:
+                # https://github.com/CrossRef/rest-api-doc/blob/master/api_format.md#partial-date
+                pub_info.date = _date_from_crossref_date_parts(crossref["published-print"]["date-parts"], year_only=True)
+                modified_properties.append("published-print")
+        except Exception:
+            pass
+
+        # 4: provisionActivity
+        if crossref.get("published-online"):
+            if not self._body["provisionActivity"]:
+                self._body["provisionActivity"] = [{
+                    "@type": "OnlineAvailability",
+                    "date": _date_from_crossref_date_parts(crossref["published-online"])
+                }]
+                modified_properties.append("published-online")
+            else:
+                if not any(d.get("@type", "") == "OnlineAvailability" for d in self._body["provisionActivity"]):
+                    self._body["provisionActivity"].append({
+                        "@type": "OnlineAvailability",
+                        "date": _date_from_crossref_date_parts(crossref["published-online"])
+                    })
+                    modified_properties.append("published-online")
+
+        # 5: ISSN
+        # BEWARE! Crossref spec https://github.com/CrossRef/rest-api-doc/blob/master/api_format.md#issn-with-type
+        # has "One of eissn, pissn or lissn" but in actual data they use
+        # "electronic" and "print". Also unclear what lissn is.
+        new_issns = set()
+        for c_issn in crossref.get("issn-type", []):
+            if c_issn.get("value") not in self.issns and c_issn.get("type") in ["electronic", "print"]:
+                new_issns.add(c_issn)
+        if new_issns:
+            # TODO
+            pass
+
+        # 6: Summary
+
+        # 7: License
+
+        if modified_properties:
+            return True, modified_properties
+        return False, modified_properties
+
+    @staticmethod
+    def _date_from_crossref_date_parts(date_parts, year_only=False):
+        if year_only:
+            return date_parts[0][0]
+        return "-".join(f"{n}".zfill(2) for n in date_parts[0])
+
+    @staticmethod
+    def _add_crossref_source_consulted():
+        admin_meta = {
+            '@type': 'AdminMetadata',
+            'sourceConsulted': [
+                {
+                    '@type': 'SourceData',
+                    'label': 'Information om ÖT hämtad från Unpaywall.',
+                    'uri': 'https://unpaywall.org/',
+                    'date': datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc).isoformat()
+                }
+            ]
+        }
+
     @property
     def electronic_locators(self):
         """ Return array of ElectronicLocator objects from electronicLocator field """
@@ -1238,6 +1320,11 @@ class PublicationInformation:
     @property
     def date(self):
         return self.body.get('date')
+
+    @date.setter
+    def date(self, date):
+        """ Sets date from date string (YYYY) """
+        self._body['date'] = date
 
     @property
     def agent(self):
