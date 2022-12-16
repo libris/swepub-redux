@@ -1,5 +1,6 @@
 import re
 from os import getenv
+import traceback
 
 from pipeline.auditors import BaseAuditor
 
@@ -29,18 +30,19 @@ class CrossrefAuditor(BaseAuditor):
             try:
                 r = session.get(f"{CROSSREF_URL}{self._clean_identifier(doi)}", timeout=10)
                 if r.status_code == 200:
-                    print(f"Crossref match found for {publication.id}: {doi}")
-                    print(publication.publication_information.body)
+                    #print(f"Crossref match found for {publication.id}: {doi}")
+                    #print(publication.publication_information.body)
                     crossref = r.json()
                     added, modified_properties = publication.add_crossref_data(crossref)
                     if added:
                         result = True
-            except Exception:
+            except Exception as e:
+                print(f"Enrichment from Crossref failed for ID {self.id}: {e}")
+                print(traceback.format_exc())
                 continue
-                # print(f"Failed fetching Unpaywall data for {doi}: {e}")
 
         if result:
-            print(publication.publication_information.body)
+            #print(publication.publication_information.body)
             new_audit_events = self._add_audit_event(
                 audit_events, code, result, modified_properties
             )

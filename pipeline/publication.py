@@ -3,7 +3,9 @@ from pipeline.util import *
 import itertools
 import datetime
 from dateutil.parser import parse as parse_date
-import traceback
+
+import cld3
+from bs4 import BeautifulSoup
 
 """Max length in characters to compare text"""
 MAX_LENGTH_STRING_TO_COMPARE = 1000
@@ -773,95 +775,129 @@ class Publication:
     def add_crossref_data(self, crossref):
         """Enriches publication with Crossref data where applicable"""
         modified_properties = []
-        try:
-            # 1, 2, 3: Publication data (PublicationInformation)
-            if not self.publication_information:
-                self.publication_information = [{'@type': 'Publication'}]
-            pub_info = self.publication_information
-            pub_info_added = False
 
-            if crossref.get("publisher") and not pub_info.body.get("agent", {}).get("label"):
-                pub_info.agent = {"@type": "Agent", "label": crossref.get("publisher")}
-                modified_properties.append("publisher")
-                pub_info_added = True
+        # 1, 2, 3: Publication data (PublicationInformation)
+        if not self.publication_information:
+            self.publication_information = [{'@type': 'Publication'}]
+        pub_info = self.publication_information
+        pub_info_added = False
 
-            if crossref.get("publisher-location") and not pub_info.body.get("place", {}).get("label"):
-                pub_info.place = {"@type": "Place", "label": crossref.get("publisher-location")}
-                modified_properties.append("publisher-location")
-                pub_info_added = True
+        if crossref.get("publisher") and not pub_info.body.get("agent", {}).get("label"):
+            pub_info.agent = {"@type": "Agent", "label": crossref.get("publisher")}
+            modified_properties.append("publisher")
+            pub_info_added = True
 
-            if crossref.get("published-print") and not pub_info.date:
-                # https://github.com/CrossRef/rest-api-doc/blob/master/api_format.md#partial-date
-                pub_info.date = _date_from_crossref_date_parts(crossref["published-print"]["date-parts"], year_only=True)
-                modified_properties.append("published-print")
-                pub_info_added = True
+        if crossref.get("publisher-location") and not pub_info.body.get("place", {}).get("label"):
+            pub_info.place = {"@type": "Place", "label": crossref.get("publisher-location")}
+            modified_properties.append("publisher-location")
+            pub_info_added = True
 
-            if not pub_info._body.get("meta"):
-                pub_info._body["meta"] = []
-            pub_info._body["meta"].append(self._crossref_source_consulted())
+        if crossref.get("published-print") and not pub_info.date:
+            # https://github.com/CrossRef/rest-api-doc/blob/master/api_format.md#partial-date
+            pub_info.date = _date_from_crossref_date_parts(crossref["published-print"]["date-parts"], year_only=True)
+            modified_properties.append("published-print")
+            pub_info_added = True
 
-            # 4: provisionActivity
-            if crossref.get("published-online"):
-                if not self._body.get("provisionActivity"):
-                    self._body["provisionActivity"] = []
+        if not pub_info._body.get("meta"):
+            pub_info._body["meta"] = []
+        pub_info._body["meta"].append(self._crossref_source_consulted())
 
-                if not any(d.get("@type", "") == "OnlineAvailability" for d in self._body["provisionActivity"]):
-                    self._body["provisionActivity"].append({
-                        "@type": "OnlineAvailability",
-                        "date": self._date_from_crossref_date_parts(crossref["published-online"]["date-parts"]),
-                        "meta": [self._crossref_source_consulted()]
-                    })
-                    modified_properties.append("published-online")
+        # 4: provisionActivity
+        if crossref.get("published-online"):
+            if not self._body.get("provisionActivity"):
+                self._body["provisionActivity"] = []
 
-            # 5: ISSN
-            # BEWARE! Crossref spec https://github.com/CrossRef/rest-api-doc/blob/master/api_format.md#issn-with-type
-            # has "One of eissn, pissn or lissn" but in actual data they use
-            # "electronic" and "print". Also unclear what lissn is.
-            new_issns = []
-            print(crossref.get("issn-type", []))
-            print("existing issn", self.issns)
-            for c_issn in crossref.get("issn-type", []):
-                if c_issn.get("value") not in self.issns and c_issn.get("type") in ["electronic", "print"]:
-                    new_issns.append(c_issn)
-            if new_issns:
-                if not self._body.get("partOf"):
-                    self._body["partOf"] = []
-                new_part_of = {"@type": "Work"}
-                if crossref.get("container-title"):
-                    new_part_of["hasTitle"] = [{
-                        "@type": "Title",
-                        "mainTitle": crossref["container-title"][0]
-                    }]
-                new_part_of["identifiedBy"] = []
-                for new_issn in new_issns:
-                    if not new_issn.get("type") in ["print", "electronic"]:
-                        continue
-                    if new_issn["type"] == "print":
-                        new_issn_type = "ISSN"
-                    else:
-                        new_issn_type = "EISSN"
-                    new_part_of["identifiedBy"].append({
-                        "type": new_issn_type,
-                        "value": new_issn.get("value")
-                    })
-                if new_part_of["identifiedBy"]:
-                    new_part_of["meta"] = [self._crossref_source_consulted()]
-                    self._body["partOf"].append(new_part_of)
+            if not any(d.get("@type", "") == "OnlineAvailability" for d in self._body["provisionActivity"]):
+                self._body["provisionActivity"].append({
+                    "@type": "OnlineAvailability",
+                    "date": self._date_from_crossref_date_parts(crossref["published-online"]["date-parts"]),
+                    "meta": [self._crossref_source_consulted()]
+                })
+                modified_properties.append("published-online")
 
-            # 6: Summary
+        # 5: ISSN
+        # BEWARE! Crossref spec https://github.com/CrossRef/rest-api-doc/blob/master/api_format.md#issn-with-type
+        # has "One of eissn, pissn or lissn" but in actual data they use
+        # "electronic" and "print". Also unclear what lissn is.
+        new_issns = []
+        for c_issn in crossref.get("issn-type", []):
+            if c_issn.get("value") not in self.issns and c_issn.get("type") in ["electronic", "print"]:
+                new_issns.append(c_issn)
+        if new_issns:
+            if not self._body.get("partOf"):
+                self._body["partOf"] = []
+            new_part_of = {"@type": "Work"}
+            if crossref.get("container-title"):
+                new_part_of["hasTitle"] = [{
+                    "@type": "Title",
+                    "mainTitle": crossref["container-title"][0]
+                }]
+            new_part_of["identifiedBy"] = []
+            for new_issn in new_issns:
+                if not new_issn.get("type") in ["print", "electronic"]:
+                    continue
+                if new_issn["type"] == "print":
+                    new_issn_type = "ISSN"
+                else:
+                    new_issn_type = "EISSN"
+                new_part_of["identifiedBy"].append({
+                    "type": new_issn_type,
+                    "value": new_issn.get("value")
+                })
+            if new_part_of["identifiedBy"]:
+                new_part_of["meta"] = [self._crossref_source_consulted()]
+                self._body["partOf"].append(new_part_of)
+                modified_properties.append("issn-type")
 
-            # 7: License
+        # 6: Summary
+        # "Abstract as a JSON string or a JATS XML snippet encoded into a JSON string"
+        c_summary = crossref.get("abstract")
+        if c_summary and not self.summary:
+            new_summary_label = ""
+            # If we're dealing with JATS XML, do it one way...
+            if c_summary.startswith("<jats"):
+                soup = BeautifulSoup(c_summary, "lxml")
+                extracted_abstract = soup.find("jats:p").string
+                if extracted_abstract:
+                    new_summary_label = parsed_abstract
+            # Otherwise just strip any tags
+            else:
+                soup = BeautifulSoup(c_summary, "html.parser")
+                cleaned_abstract = soup.get_text()
+                if cleaned_abstract:
+                    new_summary_label = cleaned_abstract
+            if new_summary_label:
+                new_summary = {
+                    "@type": "Summary",
+                    "label": new_summary_label
+                }
+                # Now try to figure out the language
+                language_prediction = cld3.get_language(new_summary_label)
+                if language_prediction and language_prediction.is_reliable:
+                    if language_prediction.language == "en":
+                        new_summary["language"] = {
+                            "@type": "Language",
+                            "@id": "https://id.kb.se/language/eng",
+                            "code": "eng"
+                        }
+                    elif language_prediction.language == "sv":
+                        new_summary["language"] = {
+                            "@type": "Language",
+                            "@id": "https://id.kb.se/language/swe",
+                            "code": "swe"
+                        }
+                new_summary["meta"] = [self._crossref_source_consulted()]
+                self._body["instanceOf"]["summary"] = [new_summary]
+                modified_properties.append("abstract")
 
-            if modified_properties:
-                return True, modified_properties
-        except Exception as e:
-            print(f"Enrichment from Crossref failed for ID {self.id}: {e}")
-            print(traceback.format_exc())
+        # 7: License
+
+        if modified_properties:
+            return True, modified_properties
         return False, modified_properties
 
     @staticmethod
     def _date_from_crossref_date_parts(date_parts, year_only=False):
-        print(date_parts)
         if year_only:
             return date_parts[0][0]
         return "-".join(f"{n}".zfill(2) for n in date_parts[0])
