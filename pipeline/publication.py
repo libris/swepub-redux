@@ -864,7 +864,7 @@ class Publication:
                 # Get the text without tags
                 extracted_abstract = soup.get_text()
                 if extracted_abstract:
-                    new_summary_label = parsed_abstract
+                    new_summary_label = extracted_abstract
             # Otherwise just strip any tags
             else:
                 soup = BeautifulSoup(c_summary, "html.parser")
@@ -896,6 +896,40 @@ class Publication:
                 modified_properties.append("abstract")
 
         # 7: License
+        c_license = crossref.get("license")
+        if c_license:
+            for license in c_license:
+                # Crossref content-version and Swepub publication status must match.
+                # "vor" is equal to Swepub's Published.
+                # "am" is equal to Swepub's Accepted.
+                # If there is no publication status in the Swepub publication,
+                # it's treated as Published.
+                if (
+                    (
+                        license["content-version"] == "vor"
+                        and self.publication_status == "https://id.kb.se/term/swepub/Published"
+                    )
+                    or (
+                        license["content-version"] == "am"
+                        and self.publication_status == "https://id.kb.se/term/swepub/Accepted"
+                    )
+                    or (
+                        license["content-version"] == "vor"
+                        and not self.publication_status
+                    )
+                ):
+                    if not self._body.get("license"):
+                        self._body["license"] = []
+                    self._body["license"].append(
+                        {
+                            "@id": license["URL"],
+                            "@type": "License",
+                            "startDate": license["start"]["date-time"],
+                            "meta": [self._crossref_source_consulted()],
+                        }
+                    )
+                    modified_properties.append("license")
+                    continue
 
         if modified_properties:
             return True, modified_properties
