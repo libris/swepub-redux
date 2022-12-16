@@ -857,7 +857,12 @@ class Publication:
             # If we're dealing with JATS XML, do it one way...
             if c_summary.startswith("<jats"):
                 soup = BeautifulSoup(c_summary, "lxml")
-                extracted_abstract = soup.find("jats:p").string
+                # There can be multiple elements: <jats:title>, several <jats:p>, etc.
+                # Get rid of the title and its content (which is always (?) just
+                # "Abstract"), keep everything else.
+                soup.find("jats:title").extract()
+                # Get the text without tags
+                extracted_abstract = soup.get_text()
                 if extracted_abstract:
                     new_summary_label = parsed_abstract
             # Otherwise just strip any tags
