@@ -33,26 +33,28 @@ class CrossrefAuditor(BaseAuditor):
                     #print(f"Crossref match found for {publication.id}: {doi}")
                     #print(publication.publication_information.body)
                     crossref = r.json()
-                    added, modified_properties = publication.add_crossref_data(crossref)
-                    if added:
-                        result = True
+                    result, modified_properties = publication.add_crossref_data(crossref)
+                    if result:
+                        continue
             except Exception as e:
-                print(f"Enrichment from Crossref failed for ID {self.id}: {e}")
+                print(f"Enrichment from Crossref failed for ID {publication.id}: {e}")
                 print(traceback.format_exc())
                 continue
 
-        if result:
-            #print(publication.publication_information.body)
-            new_audit_events = self._add_audit_event(
-                audit_events, code, result, modified_properties
-            )
+        if result and modified_properties:
+            print(modified_properties)
+            for modified in modified_properties:
+                new_audit_events = self._add_audit_event(
+                    audit_events, f"{code}_{modified['type']}", result, modified["value"]
+                )
+            print(new_audit_events)
             return publication, new_audit_events, result
         else:
             return publication, audit_events, result
 
     def _clean_identifier(self, identifier):
         cleaned_identifier = identifier
-        # DOIs in DOAB and Unpaywall mirror are stored without the https?://doi.org/ prefix,
+        # DOIs in Crossref/Unpaywall mirrors are stored without the https?://doi.org/ prefix,
         # while DOIs in Swepub are (at this point) *with* prefix, so we remove any prefix before looking it up.
         if identifier.startswith(("http://doi.org/", "https://doi.org/")):
             cleaned_identifier = re.sub(self.doi_cleaner_regex, "", identifier)

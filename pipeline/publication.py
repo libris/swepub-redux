@@ -778,24 +778,24 @@ class Publication:
 
         # 1, 2, 3: Publication data (PublicationInformation)
         if not self.publication_information:
-            self.publication_information = [{'@type': 'Publication'}]
+            self._body["publication"] = [{'@type': 'Publication'}]
         pub_info = self.publication_information
         pub_info_added = False
 
         if crossref.get("publisher") and not pub_info.body.get("agent", {}).get("label"):
             pub_info.agent = {"@type": "Agent", "label": crossref.get("publisher")}
-            modified_properties.append("publisher")
+            modified_properties.append({"type": "publisher", value: crossref.get("publisher")})
             pub_info_added = True
 
         if crossref.get("publisher-location") and not pub_info.body.get("place", {}).get("label"):
             pub_info.place = {"@type": "Place", "label": crossref.get("publisher-location")}
-            modified_properties.append("publisher-location")
+            modified_properties.append({"type": "publisher-location", "value": crossref.get("publisher-location")})
             pub_info_added = True
 
         if crossref.get("published-print") and not pub_info.date:
             # https://github.com/CrossRef/rest-api-doc/blob/master/api_format.md#partial-date
             pub_info.date = _date_from_crossref_date_parts(crossref["published-print"]["date-parts"], year_only=True)
-            modified_properties.append("published-print")
+            modified_properties.append({"type": "published-print", "value": pub_info.date})
             pub_info_added = True
 
         if not pub_info._body.get("meta"):
@@ -808,12 +808,13 @@ class Publication:
                 self._body["provisionActivity"] = []
 
             if not any(d.get("@type", "") == "OnlineAvailability" for d in self._body["provisionActivity"]):
+                date_to_add = self._date_from_crossref_date_parts(crossref["published-online"]["date-parts"])
                 self._body["provisionActivity"].append({
                     "@type": "OnlineAvailability",
-                    "date": self._date_from_crossref_date_parts(crossref["published-online"]["date-parts"]),
+                    "date": date_to_add,
                     "meta": [self._crossref_source_consulted()]
                 })
-                modified_properties.append("published-online")
+                modified_properties.append({"type": "published-online", "value": date_to_add})
 
         # 5: ISSN
         # BEWARE! Crossref spec https://github.com/CrossRef/rest-api-doc/blob/master/api_format.md#issn-with-type
@@ -847,8 +848,7 @@ class Publication:
             if new_part_of["identifiedBy"]:
                 new_part_of["meta"] = [self._crossref_source_consulted()]
                 self._body["partOf"].append(new_part_of)
-                modified_properties.append("issn-type")
-
+                modified_properties.append({"type": "issn-type", "value": new_part_of})
         # 6: Summary
         # "Abstract as a JSON string or a JATS XML snippet encoded into a JSON string"
         c_summary = crossref.get("abstract")
@@ -860,7 +860,8 @@ class Publication:
                 # There can be multiple elements: <jats:title>, several <jats:p>, etc.
                 # Get rid of the title and its content (which is always (?) just
                 # "Abstract"), keep everything else.
-                soup.find("jats:title").extract()
+                if soup.find("jats:title"):
+                    soup.find("jats:title").extract()
                 # Get the text without tags
                 extracted_abstract = soup.get_text()
                 if extracted_abstract:
@@ -893,7 +894,7 @@ class Publication:
                         }
                 new_summary["meta"] = [self._crossref_source_consulted()]
                 self._body["instanceOf"]["summary"] = [new_summary]
-                modified_properties.append("abstract")
+                modified_properties.append({"type": "abstract", "value": new_summary})
 
         # 7: License
         c_license = crossref.get("license")
@@ -928,7 +929,7 @@ class Publication:
                             "meta": [self._crossref_source_consulted()],
                         }
                     )
-                    modified_properties.append("license")
+                    modified_properties.append({"type": "license", "value": license["URL"]})
                     continue
 
         if modified_properties:
