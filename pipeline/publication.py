@@ -784,7 +784,7 @@ class Publication:
 
         if crossref.get("publisher") and not pub_info.body.get("agent", {}).get("label"):
             pub_info.agent = {"@type": "Agent", "label": crossref.get("publisher")}
-            modified_properties.append({"name": "CrossrefAuditorPublisher", "code": "add_crossref_publisher", value: crossref.get("publisher")})
+            modified_properties.append({"name": "CrossrefAuditorPublisher", "code": "add_crossref_publisher", "value": crossref.get("publisher")})
             pub_info_added = True
 
         if crossref.get("publisher-location") and not pub_info.body.get("place", {}).get("label"):
