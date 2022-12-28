@@ -1,5 +1,5 @@
 from pipeline.storage import *
-from pipeline.util import Validation, Enrichment, Normalization
+from pipeline.util import Validation, Enrichment, Normalization, ENRICHING_AUDITORS_CODES
 
 def generate_processing_stats():
     with get_connection() as connection:
@@ -71,7 +71,7 @@ def generate_processing_stats():
             if row['audit_code'] == 'creator_count_check':
                 valid = row['result_true']
                 invalid = row['result_false']
-            elif row['audit_code'] in ['auto_classify', 'add_oa']:
+            elif row['audit_code'] in ENRICHING_AUDITORS_CODES:
                 valid = row['result_true']
                 invalid = 0
             else:

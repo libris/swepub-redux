@@ -9,6 +9,30 @@ import cld3
 
 from pipeline.swepublog import logger as log
 
+ENRICHING_AUDITORS = [
+    "AutoclassifierAuditor",
+    "OAAuditor",
+    "CrossrefAuditorPublisher",
+    "CrossrefAuditorPublisherLocation",
+    "CrossrefAuditorPublishedPrint",
+    "CrossrefAuditorProvisionActivity",
+    "CrossrefAuditorISSN",
+    "CrossrefAuditorSummary",
+    "CrossrefAuditorLicense",
+]
+
+ENRICHING_AUDITORS_CODES = [
+    "auto_classify",
+    "add_oa",
+    "add_crossref_publisher",
+    "add_crossref_publisher_location",
+    "add_crossref_published_print",
+    "add_crossref_published_online",
+    "add_crossref_issn_type",
+    "add_crossref_summary",
+    "add_crossref_license",
+]
+
 
 class Validation(Enum):
     INVALID = 0

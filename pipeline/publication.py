@@ -784,18 +784,18 @@ class Publication:
 
         if crossref.get("publisher") and not pub_info.body.get("agent", {}).get("label"):
             pub_info.agent = {"@type": "Agent", "label": crossref.get("publisher")}
-            modified_properties.append({"type": "publisher", value: crossref.get("publisher")})
+            modified_properties.append({"name": "CrossrefAuditorPublisher", "code": "add_crossref_publisher", value: crossref.get("publisher")})
             pub_info_added = True
 
         if crossref.get("publisher-location") and not pub_info.body.get("place", {}).get("label"):
             pub_info.place = {"@type": "Place", "label": crossref.get("publisher-location")}
-            modified_properties.append({"type": "publisher-location", "value": crossref.get("publisher-location")})
+            modified_properties.append({"name": "CrossrefAuditorPublisherLocation", "code": "add_crossref_publisher_location", "value": crossref.get("publisher-location")})
             pub_info_added = True
 
         if crossref.get("published-print") and not pub_info.date:
             # https://github.com/CrossRef/rest-api-doc/blob/master/api_format.md#partial-date
             pub_info.date = _date_from_crossref_date_parts(crossref["published-print"]["date-parts"], year_only=True)
-            modified_properties.append({"type": "published-print", "value": pub_info.date})
+            modified_properties.append({"name": "CrossrefAuditorPublishedPrint", "code": "add_crossref_published_print", "value": pub_info.date})
             pub_info_added = True
 
         if not pub_info._body.get("meta"):
@@ -814,7 +814,7 @@ class Publication:
                     "date": date_to_add,
                     "meta": [self._crossref_source_consulted()]
                 })
-                modified_properties.append({"type": "published-online", "value": date_to_add})
+                modified_properties.append({"name": "CrossrefAuditorProvisionActivity", "code": "add_crossref_published_online", "value": date_to_add})
 
         # 5: ISSN
         # BEWARE! Crossref spec https://github.com/CrossRef/rest-api-doc/blob/master/api_format.md#issn-with-type
@@ -848,7 +848,7 @@ class Publication:
             if new_part_of["identifiedBy"]:
                 new_part_of["meta"] = [self._crossref_source_consulted()]
                 self._body["partOf"].append(new_part_of)
-                modified_properties.append({"type": "issn-type", "value": new_part_of})
+                modified_properties.append({"name": "CrossrefAuditorISSN", "code": "add_crossref_issn_type", "value": new_part_of})
         # 6: Summary
         # "Abstract as a JSON string or a JATS XML snippet encoded into a JSON string"
         c_summary = crossref.get("abstract")
@@ -894,7 +894,7 @@ class Publication:
                         }
                 new_summary["meta"] = [self._crossref_source_consulted()]
                 self._body["instanceOf"]["summary"] = [new_summary]
-                modified_properties.append({"type": "abstract", "value": new_summary})
+                modified_properties.append({"name": "CrossrefAuditorSummary", "code": "add_crossref_summary", "value": new_summary})
 
         # 7: License
         c_license = crossref.get("license")
@@ -929,7 +929,7 @@ class Publication:
                             "meta": [self._crossref_source_consulted()],
                         }
                     )
-                    modified_properties.append({"type": "license", "value": license["URL"]})
+                    modified_properties.append({"name": "CrossrefAuditorLicense", "code": "add_crossref_license", "value": license["URL"]})
                     continue
 
         if modified_properties:

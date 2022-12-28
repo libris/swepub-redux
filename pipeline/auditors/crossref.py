@@ -45,7 +45,7 @@ class CrossrefAuditor(BaseAuditor):
             print(modified_properties)
             for modified in modified_properties:
                 new_audit_events = self._add_audit_event(
-                    audit_events, f"{code}_{modified['type']}", result, modified["value"]
+                    audit_events, modified["name"], modified["code"], result, modified["value"]
                 )
             print(new_audit_events)
             return publication, new_audit_events, result
@@ -60,6 +60,8 @@ class CrossrefAuditor(BaseAuditor):
             cleaned_identifier = re.sub(self.doi_cleaner_regex, "", identifier)
         return cleaned_identifier
 
-    def _add_audit_event(self, audit_events, code, result, value):
-        audit_events.add_event(self.name, code, result, value=value)
+    def _add_audit_event(self, audit_events, auditor_name, code, result, value):
+        # For legacy reasons (sigh) we need to each type of "audit" that this Auditor does
+        # needs to have its own "auditor name".
+        audit_events.add_event(auditor_name, code, result, value=value)
         return audit_events
