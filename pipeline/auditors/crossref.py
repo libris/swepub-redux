@@ -18,8 +18,8 @@ class CrossrefAuditor(BaseAuditor):
             publication, new_audit_events, result = self._check_crossref(
                 publication, audit_events, session
             )
-
-        return publication, new_audit_events
+            return publication, new_audit_events
+        return publication, audit_events
 
     def _check_crossref(self, publication, audit_events, session):
         result = False
@@ -42,12 +42,12 @@ class CrossrefAuditor(BaseAuditor):
                 continue
 
         if result and modified_properties:
-            print(modified_properties)
+            #print(modified_properties)
             for modified in modified_properties:
                 new_audit_events = self._add_audit_event(
                     audit_events, modified["name"], modified["code"], result, modified["value"]
                 )
-            print(new_audit_events)
+            #print(new_audit_events)
             return publication, new_audit_events, result
         else:
             return publication, audit_events, result

@@ -828,11 +828,14 @@ class Publication:
             if not self._body.get("partOf"):
                 self._body["partOf"] = []
             new_part_of = {"@type": "Work"}
+            crossref_container_title = ""
             if crossref.get("container-title"):
+                crossref_container_title = crossref["container-title"][0]
                 new_part_of["hasTitle"] = [{
                     "@type": "Title",
-                    "mainTitle": crossref["container-title"][0]
+                    "mainTitle": crossref_container_title
                 }]
+
             new_part_of["identifiedBy"] = []
             for new_issn in new_issns:
                 if not new_issn.get("type") in ["print", "electronic"]:
@@ -848,7 +851,11 @@ class Publication:
             if new_part_of["identifiedBy"]:
                 new_part_of["meta"] = [self._crossref_source_consulted()]
                 self._body["partOf"].append(new_part_of)
-                modified_properties.append({"name": "CrossrefAuditorISSN", "code": "add_crossref_issn_type", "value": new_part_of})
+                issn_event_log_value = ", ".join(map(lambda x: f"{x['value']} ({x['type']})", new_part_of["identifiedBy"]))
+                if new_part_of.get("hasTitle"):
+                    issn_event_log_value = f"{crossref_container_title}: {issn_event_log_value}"
+                modified_properties.append({"name": "CrossrefAuditorISSN", "code": "add_crossref_issn", "value": issn_event_log_value})
+
         # 6: Summary
         # "Abstract as a JSON string or a JATS XML snippet encoded into a JSON string"
         c_summary = crossref.get("abstract")
@@ -894,7 +901,7 @@ class Publication:
                         }
                 new_summary["meta"] = [self._crossref_source_consulted()]
                 self._body["instanceOf"]["summary"] = [new_summary]
-                modified_properties.append({"name": "CrossrefAuditorSummary", "code": "add_crossref_summary", "value": new_summary})
+                modified_properties.append({"name": "CrossrefAuditorSummary", "code": "add_crossref_summary", "value": new_summary_label})
 
         # 7: License
         c_license = crossref.get("license")

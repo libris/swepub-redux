@@ -28,7 +28,7 @@ ENRICHING_AUDITORS_CODES = [
     "add_crossref_publisher_location",
     "add_crossref_published_print",
     "add_crossref_published_online",
-    "add_crossref_issn_type",
+    "add_crossref_issn",
     "add_crossref_summary",
     "add_crossref_license",
 ]

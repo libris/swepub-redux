@@ -46,7 +46,7 @@ AUDIT_LABEL_MAP = {
     "CrossrefAuditorPublisherLocation": "add_crossref_publisher_location",
     "CrossrefAuditorPublishedPrint": "add_crossref_published_print",
     "CrossrefAuditorProvisionActivity": "add_crossref_published_online",
-    "CrossrefAuditorISSN": "add_crossref_issn_type",
+    "CrossrefAuditorISSN": "add_crossref_issn",
     "CrossrefAuditorSummary": "add_crossref_summary",
     "CrossrefAuditorLicense": "add_crossref_license",
 }
