@@ -68,6 +68,23 @@ CREATE INDEX idx_converted_record_info_audit_code ON converted_record_info(audit
 CREATE INDEX idx_converted_record_info_source_audit_code ON converted_record_info(source, audit_code);
 CREATE INDEX idx_converted_record_info_source_date_audit_code ON converted_record_info(source, date, audit_code);
 
+--
+CREATE TABLE localid_to_orcid (
+    id INTEGER PRIMARY KEY ,
+    source_oai_id TEXT,
+    hash TEXT UNIQUE,
+    orcid TEXT
+);
+CREATE INDEX idx_localid_to_orcid_source_oai_id ON localid_to_orcid(source_oai_id);
+CREATE INDEX idx_localid_to_orcid_source_hash ON localid_to_orcid(hash);
+
+
+CREATE TABLE enriched_from_other_record (
+    id INTEGER PRIMARY KEY,
+    enriched_oai_id TEXT,
+    source_oai_id TEXT,
+    UNIQUE(enriched_oai_id, source_oai_id) ON CONFLICT IGNORE
+);
 
 -- After conversion, validation and normalization each publication is stored in this
 -- form, for later in use in deduplication.
@@ -86,6 +103,7 @@ CREATE TABLE converted (
     events TEXT,
     modified INTEGER DEFAULT (strftime('%s', 'now')), -- seconds since epoch
     deleted INTEGER DEFAULT 0,-- bool
+    should_be_reprocessed INTEGER DEFAULT 0,
     FOREIGN KEY (original_id) REFERENCES original(id)
 );
 CREATE INDEX idx_converted_oai_id ON converted(oai_id);
@@ -97,6 +115,7 @@ CREATE INDEX idx_converted_has_ssif_1 ON converted(has_ssif_1);
 CREATE INDEX idx_converted_modified ON converted(modified);
 CREATE INDEX idx_converted_deleted ON converted(deleted);
 CREATE INDEX idx_converted_original_id ON converted(original_id);
+CREATE INDEX idx_converted_should_be_reprocessed ON converted(should_be_reprocessed);
 CREATE INDEX idx_converted_source_deleted ON converted(source, deleted);
 CREATE INDEX idx_converted_source_deleted_date ON converted(source, deleted, date);
 
@@ -324,4 +343,17 @@ BEGIN
     DELETE FROM converted_ssif_1 WHERE converted_ssif_1.converted_id = OLD.id;
     DELETE FROM clusteringidentifiers WHERE clusteringidentifiers.converted_id = OLD.id;
     DELETE FROM cluster WHERE cluster.converted_id = OLD.id;
+
+    -- When a record is deleted we need to re-process any record that was enriched
+    -- with data from the deleted record, and delete the "cached" enrichment data.
+    DELETE FROM localid_to_orcid WHERE localid_to_orcid.source_oai_id = OLD.oai_id;
+    UPDATE
+        converted
+    SET
+        should_be_reprocessed = 1
+    WHERE
+        oai_id in (
+            SELECT enriched_oai_id FROM enriched_from_other_record WHERE source_oai_id = OLD.oai_id
+        );
+
 END;

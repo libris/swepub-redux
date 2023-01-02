@@ -30,7 +30,7 @@ from pipeline.storage import (
     store_converted,
     get_connection,
     storage_exists,
-    get_sqlite_path,
+    get_sqlite_path, dict_factory,
 )
 from pipeline.index import generate_search_tables
 from pipeline.stats import generate_processing_stats
@@ -308,54 +308,56 @@ def threaded_handle_harvested(source, source_subset, harvest_id, cached_paths, b
         adapter = requests.adapters.HTTPAdapter(max_retries=2)
         session.mount('http://', adapter)
         session.mount('https://', adapter)
-        for record in batch:
-            xml = record.xml
-            rejected, min_level_errors = should_be_rejected(xml)
-            accepted = not rejected
+        with get_connection() as read_only_connection:
+            read_only_cursor = read_only_connection.cursor()
+            for record in batch:
+                xml = record.xml
+                rejected, min_level_errors = should_be_rejected(xml)
+                accepted = not rejected
 
-            try:
-                if accepted:
-                    num_accepted += 1
-                    converted = convert(xml)
-                    (field_events, record_info) = validate(converted, harvest_cache, session, source, cached_paths)
-                    (audited, audit_events) = audit(converted, harvest_cache, session)
-                elif not record.deleted:
-                    num_rejected += 1
-            except Exception as e:
-                log.warning(traceback.format_exc())
-                continue
+                try:
+                    if accepted:
+                        num_accepted += 1
+                        converted = convert(xml)
+                        (field_events, record_info) = validate(converted, harvest_cache, session, source, cached_paths, read_only_cursor)
+                        (audited, audit_events) = audit(converted, harvest_cache, session)
+                    elif not record.deleted:
+                        num_rejected += 1
+                except Exception as e:
+                    log.warning(traceback.format_exc())
+                    continue
 
-            lock.acquire()
-            try:
-                with get_connection() as connection:
-                    original_rowid, deleted_from_db = store_original(
-                        record.oai_id,
-                        record.deleted,
-                        xml,
-                        source,
-                        source_subset,
-                        accepted,
-                        connection,
-                        incremental,
-                        min_level_errors,
-                        harvest_id,
-                    )
-                    if deleted_from_db:
-                        num_deleted += 1
-                    if accepted and original_rowid:
-                        converted_rowid = store_converted(
-                            original_rowid,
-                            audited.body,
-                            audit_events.data,
-                            field_events,
-                            record_info,
+                lock.acquire()
+                try:
+                    with get_connection() as connection:
+                        original_rowid, deleted_from_db = store_original(
+                            record.oai_id,
+                            record.deleted,
+                            xml,
+                            source,
+                            source_subset,
+                            accepted,
                             connection,
+                            incremental,
+                            min_level_errors,
+                            harvest_id,
                         )
-                        converted_rowids.append(converted_rowid)
-            except Exception as e:
-                log.warning(traceback.format_exc())
-            finally:
-                lock.release()
+                        if deleted_from_db:
+                            num_deleted += 1
+                        if accepted and original_rowid:
+                            converted_rowid = store_converted(
+                                original_rowid,
+                                audited.body,
+                                audit_events.data,
+                                field_events,
+                                record_info,
+                                connection,
+                            )
+                            converted_rowids.append(converted_rowid)
+                except Exception as e:
+                    log.warning(traceback.format_exc())
+                finally:
+                    lock.release()
 
     if incremental:
         for rowid in converted_rowids:
@@ -444,30 +446,6 @@ def _get_harvest_cache_manager(manager):
     except Exception as e:
         log.warning(f"Failed loading ID cache file, starting fresh (error: {e})")
 
-    # First, see if we have a cached LocalID->ORCID file
-    previously_found_localid_to_orcid = {}
-    try:
-        with open(LOCALID_ORCID_CACHE_FILE, "rb") as f:
-            previously_found_localid_to_orcid = json.loads(f.read())
-        log.info(
-            f"Cache populated with {len(previously_found_localid_to_orcid)} LocalID->ORCID from {LOCALID_ORCID_CACHE_FILE}"
-        )
-    except FileNotFoundError:
-        log.warning("LocalID->ORCID cache file not found, starting from static file")
-    except Exception as e:
-        log.warning(f"Failed loading LocalID->ORCID cache file, starting from static file (error: {e})")
-
-    # ...and if we don't, create one and seed it using the static file from resources/
-    if not previously_found_localid_to_orcid:
-        try:
-            with open(KNOWN_LOCALID_TO_ORCID_FILE, "rb") as f:
-                previously_found_localid_to_orcid = json.loads(f.read())
-                log.info(
-                    f"Cache populated with {len(previously_found_localid_to_orcid)} LocalID->ORCID from {KNOWN_LOCALID_TO_ORCID_FILE}"
-                )
-        except Exception as e:
-            log.warning(f"Failed loading static LocalID->ORCID file: {e}")
-
     # If we have files with known ISSN/DOI numbers, use them to populate the cache
     known_issn = {}
     known_doi = {}
@@ -498,8 +476,10 @@ def _get_harvest_cache_manager(manager):
     issn_new = manager.dict(dict.fromkeys(issn_not_in_static, 1))
     issn_static = manager.dict(known_issn)
     harvest_meta = manager.dict({})
-    localid_to_orcid = manager.dict(previously_found_localid_to_orcid)
     doab = manager.dict(_load_doab())
+    localid_to_orcid = manager.dict({})
+    localid_without_orcid = manager.dict({})
+    enriched_from_other_record = manager.dict({})
 
     return manager.dict(
         {
@@ -510,6 +490,8 @@ def _get_harvest_cache_manager(manager):
             "meta": harvest_meta,
             "doab": doab,
             "localid_to_orcid": localid_to_orcid,
+            "localid_without_orcid": localid_without_orcid,
+            "enriched_from_other_record": enriched_from_other_record,
         }
     )
 
@@ -519,6 +501,77 @@ def _annif_health_check():
         r = requests.get(url=url)
         data = r.json()
         assert data["is_trained"], f"Annif not trained for {url}"
+
+
+def _add_localid_orcid_to_db(harvest_cache):
+    with get_connection() as connection:
+        cursor = connection.cursor()
+        for cache_key, value in harvest_cache["localid_to_orcid"].items():
+            cursor.execute("""
+                INSERT INTO localid_to_orcid(source_oai_id, hash, orcid)
+                VALUES(?, ?, ?)
+                ON CONFLICT(hash) DO NOTHING
+                """,
+                (value["oai_id"], cache_key, value["orcid"]),
+            )
+            print("Added to localid_to_orcid", cache_key, value)
+            #print(value)
+        connection.commit()
+
+    #possible_sources = set(harvest_cache["localid_to_orcid"].keys()) & set(harvest_cache["localid_without_orcid"].keys())
+    #for cache_key in possible_sources:
+
+
+def _calculate_oai_ids_to_reprocess():
+    with get_connection() as connection:
+        cursor = connection.cursor()
+        # At this point all records have been processed once. Now ensure that records where we can add
+        # an ORCID are marked for reprocessing.
+        for oai_id in set([harvest_cache["localid_without_orcid"][k] for k in harvest_cache["localid_to_orcid"].keys() if k in harvest_cache["localid_without_orcid"].keys()]):
+            cursor.execute("UPDATE converted SET should_be_reprocessed = 1 WHERE oai_id = ?", [oai_id])
+        connection.commit()
+
+
+def _add_link_between_source_and_enriched():
+    # Save-to-db the fact that a certain record has been enriched with data from one or more other records,
+    # so that when those "source" records are updated or deleted, the enriched record will be flagged
+    # for reprocessing (through an SQL trigger).
+    with get_connection() as connection:
+        cursor = connection.cursor()
+        for enriched_oai_id, source_oai_ids in harvest_cache["enriched_from_other_record"].items():
+            for source_oai_id in source_oai_ids:
+                cursor.execute("""
+                INSERT INTO enriched_from_other_record(enriched_oai_id, source_oai_id)
+                VALUES (?, ?)
+                ON CONFLICT DO NOTHING
+                """, [enriched_oai_id, source_oai_id])
+        connection.commit()
+
+
+def _reprocess_affected_records():
+    print("Reprocessing")
+    with get_connection() as connection, requests.Session() as session:
+        cursor = connection.cursor()
+        inner_cursor = connection.cursor()
+        adapter = requests.adapters.HTTPAdapter(max_retries=2)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+
+        cursor.row_factory = lambda cursor, row: row[0]
+        oai_ids_to_reprocess = cursor.execute("SELECT oai_id FROM converted WHERE should_be_reprocessed = 1").fetchall()
+        cursor.row_factory = dict_factory
+        for oai_id in oai_ids_to_reprocess:
+            try:
+                xml = cursor.execute("SELECT data FROM original WHERE oai_id = ?", [oai_id]).fetchone()["data"]
+                original_converted = cursor.execute("SELECT original_id, source FROM converted WHERE oai_id = ?", [oai_id]).fetchone()
+                converted = convert(xml)
+                (field_events, record_info) = validate(converted, harvest_cache, session, original_converted["source"], cached_paths, inner_cursor)
+                (audited, audit_events) = audit(converted, harvest_cache, session)
+                store_converted(original_converted["original_id"], audited.body, audit_events.data, field_events, record_info, connection)
+            except Exception as e:
+                log.warning(traceback.format_exc())
+                continue
+        connection.commit()
 
 
 def init(l, c, a, lg, inc):
@@ -758,6 +811,16 @@ if __name__ == "__main__":
         diff = round(t1 - t0, 2)
         log.info(f"Phase 1 (harvesting) ran for {diff} seconds")
 
+        t0 = t1
+        _add_localid_orcid_to_db(harvest_cache)
+        _calculate_oai_ids_to_reprocess()
+        _reprocess_affected_records()
+        _add_link_between_source_and_enriched()
+        t1 = time.time()
+        diff = round(t1 - t0, 2)
+        log.info(f"Phase 1a (localid-to-orcid-to-db + reprocessing affected records) ran for {diff} seconds")
+
+
     t0 = t1 if t1 else time.time()
     deduplicate()
     t1 = time.time()
@@ -797,7 +860,7 @@ if __name__ == "__main__":
         log.info(f'Sources harvested: {" ".join(harvest_cache["meta"]["sources_succeeded"])}')
         if harvest_cache["meta"]["sources_failed"]:
             log.warning(f'Sources failed: {" ".join(harvest_cache["meta"]["sources_failed"])}')
-        # Save ISSN/DOI and LocalID->ORCID cache for use next time
+        # Save ISSN/DOI cache for use next time
         try:
             log.info(
                 f'Saving {len(harvest_cache["issn_new"]) + len(harvest_cache["doi_new"])} cached IDs to {ID_CACHE_FILE}'
@@ -813,14 +876,3 @@ if __name__ == "__main__":
                 )
         except Exception as e:
             log.warning(f"Failed saving harvest ID cache to {ID_CACHE_FILE}: {e}")
-
-        try:
-            log.info(
-                f'Saving {len(harvest_cache["localid_to_orcid"])} cached LocalID->ORCID to {LOCALID_ORCID_CACHE_FILE}'
-            )
-            with open(LOCALID_ORCID_CACHE_FILE, "wb") as f:
-                f.write(
-                    json.dumps(dict(harvest_cache["localid_to_orcid"]))
-                )
-        except Exception as e:
-            log.warning(f"Failed saving LocalID->ORCID cache to {LOCALID_ORCID_CACHE_FILE}: {e}")

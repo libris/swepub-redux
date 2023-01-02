@@ -125,7 +125,7 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
         VALUES
             (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(oai_id) DO UPDATE SET
-            data = excluded.data, original_id = excluded.original_id, oai_id = excluded.oai_id, date = excluded.date, source = excluded.source, is_open_access = excluded.is_open_access, has_ssif_1 = excluded.has_ssif_1, classification_level = excluded.classification_level, events = excluded.events, deleted = 0
+            data = excluded.data, original_id = excluded.original_id, oai_id = excluded.oai_id, date = excluded.date, source = excluded.source, is_open_access = excluded.is_open_access, has_ssif_1 = excluded.has_ssif_1, classification_level = excluded.classification_level, events = excluded.events, deleted = 0, should_be_reprocessed = 0
         """,
             (
                 json.dumps(converted),
