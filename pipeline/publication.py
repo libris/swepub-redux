@@ -852,7 +852,7 @@ class Publication:
             if new_part_of["identifiedBy"]:
                 new_part_of["meta"] = [self._crossref_source_consulted()]
                 self._body["partOf"].append(new_part_of)
-                issn_event_log_value = ", ".join(map(lambda x: f"{x['value']} ({x['type']})", new_part_of["identifiedBy"]))
+                issn_event_log_value = ", ".join(map(lambda x: f"{x['value']} ({x['@type']})", new_part_of["identifiedBy"]))
                 if new_part_of.get("hasTitle"):
                     issn_event_log_value = f"{crossref_container_title}: {issn_event_log_value}"
                 modified_properties.append({"name": "CrossrefAuditorISSN", "code": "add_crossref_issn", "value": issn_event_log_value})
