@@ -81,9 +81,9 @@ CREATE INDEX idx_localid_to_orcid_source_hash ON localid_to_orcid(hash);
 
 CREATE TABLE enriched_from_other_record (
     id INTEGER PRIMARY KEY,
-    enriched_oai_id TEXT,
     source_oai_id TEXT,
-    UNIQUE(enriched_oai_id, source_oai_id) ON CONFLICT IGNORE
+    enriched_oai_id TEXT,
+    UNIQUE(source_oai_id, enriched_oai_id) ON CONFLICT IGNORE
 );
 
 -- After conversion, validation and normalization each publication is stored in this
@@ -355,5 +355,6 @@ BEGIN
         oai_id in (
             SELECT enriched_oai_id FROM enriched_from_other_record WHERE source_oai_id = OLD.oai_id
         );
+    DELETE FROM enriched_from_other_record WHERE source_oai_id = OLD.oai_id;
 
 END;

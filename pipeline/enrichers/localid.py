@@ -31,7 +31,7 @@ def recover_orcid_from_localid(body, field, harvest_cache, source, cached_paths=
         if result:
             orcid = result["orcid"]
             source_oai_id = result["source_oai_id"]
-            print(f"LocalID MATCH! source {source_oai_id}, enriched {body['@id']}")
+            print(f"LocalID MATCH! source {source_oai_id}, enriched {body['@id']}, {person_name}")
             new_path = append_at_path(body, parent_path, type="ORCID", new_value=orcid, cached_paths=cached_paths)
             field.events.append(
                 make_event(
