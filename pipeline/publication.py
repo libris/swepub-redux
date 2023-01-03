@@ -841,12 +841,13 @@ class Publication:
                 if not new_issn.get("type") in ["print", "electronic"]:
                     continue
                 if new_issn["type"] == "print":
-                    new_issn_type = "ISSN"
+                    new_issn_qualifier = "ISSN"
                 else:
-                    new_issn_type = "EISSN"
+                    new_issn_qualifier = "EISSN"
                 new_part_of["identifiedBy"].append({
-                    "type": new_issn_type,
-                    "value": new_issn.get("value")
+                    "@type": "ISSN",
+                    "value": new_issn.get("value"),
+                    "qualifier": new_issn_qualifier,
                 })
             if new_part_of["identifiedBy"]:
                 new_part_of["meta"] = [self._crossref_source_consulted()]
