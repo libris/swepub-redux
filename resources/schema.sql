@@ -68,23 +68,31 @@ CREATE INDEX idx_converted_record_info_audit_code ON converted_record_info(audit
 CREATE INDEX idx_converted_record_info_source_audit_code ON converted_record_info(source, audit_code);
 CREATE INDEX idx_converted_record_info_source_date_audit_code ON converted_record_info(source, date, audit_code);
 
---
+
+-- This table maps pairs of (source OAI ID, cache_key) to a certain ORCID
+-- to enrich records where a person has a local ID (generating the same cache key)
+-- but no ORCID.
 CREATE TABLE localid_to_orcid (
     id INTEGER PRIMARY KEY ,
     source_oai_id TEXT,
-    hash TEXT UNIQUE,
+    cache_key TEXT UNIQUE,
     orcid TEXT
 );
 CREATE INDEX idx_localid_to_orcid_source_oai_id ON localid_to_orcid(source_oai_id);
-CREATE INDEX idx_localid_to_orcid_source_hash ON localid_to_orcid(hash);
+CREATE INDEX idx_localid_to_orcid_source_cache_key ON localid_to_orcid(cache_key);
 
 
+-- If a record has been enriched with data sourced from another record, this relationship
+-- is kept track of here so that if the source record is updated/deleted, we can flag the
+-- enriched record for re-processing.
 CREATE TABLE enriched_from_other_record (
     id INTEGER PRIMARY KEY,
     source_oai_id TEXT,
     enriched_oai_id TEXT,
     UNIQUE(source_oai_id, enriched_oai_id) ON CONFLICT IGNORE
 );
+CREATE INDEX idx_enriched_from_other_record_source_oai_id ON enriched_from_other_record(source_oai_id);
+
 
 -- After conversion, validation and normalization each publication is stored in this
 -- form, for later in use in deduplication.

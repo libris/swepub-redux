@@ -508,18 +508,13 @@ def _add_localid_orcid_to_db(harvest_cache):
         cursor = connection.cursor()
         for cache_key, value in harvest_cache["localid_to_orcid"].items():
             cursor.execute("""
-                INSERT INTO localid_to_orcid(source_oai_id, hash, orcid)
+                INSERT INTO localid_to_orcid(source_oai_id, cache_key, orcid)
                 VALUES(?, ?, ?)
-                ON CONFLICT(hash) DO NOTHING
+                ON CONFLICT(cache_key) DO NOTHING
                 """,
                 (value["oai_id"], cache_key, value["orcid"]),
             )
-            print("Added to localid_to_orcid", cache_key, value)
-            #print(value)
         connection.commit()
-
-    #possible_sources = set(harvest_cache["localid_to_orcid"].keys()) & set(harvest_cache["localid_without_orcid"].keys())
-    #for cache_key in possible_sources:
 
 
 def _calculate_oai_ids_to_reprocess():
@@ -549,7 +544,6 @@ def _add_link_between_source_and_enriched():
 
 
 def _reprocess_affected_records():
-    print("Reprocessing")
     with get_connection() as connection, requests.Session() as session:
         cursor = connection.cursor()
         inner_cursor = connection.cursor()
@@ -560,6 +554,8 @@ def _reprocess_affected_records():
         cursor.row_factory = lambda cursor, row: row[0]
         oai_ids_to_reprocess = cursor.execute("SELECT oai_id FROM converted WHERE should_be_reprocessed = 1").fetchall()
         cursor.row_factory = dict_factory
+
+        log.info(f"Reprocessing {len(oai_ids_to_reprocess)} records")
         for oai_id in oai_ids_to_reprocess:
             try:
                 xml = cursor.execute("SELECT data FROM original WHERE oai_id = ?", [oai_id]).fetchone()["data"]
@@ -818,32 +814,32 @@ if __name__ == "__main__":
         _add_link_between_source_and_enriched()
         t1 = time.time()
         diff = round(t1 - t0, 2)
-        log.info(f"Phase 1a (localid-to-orcid-to-db + reprocessing affected records) ran for {diff} seconds")
+        log.info(f"Phase 2 (reprocessing affected records) ran for {diff} seconds")
 
 
     t0 = t1 if t1 else time.time()
     deduplicate()
     t1 = time.time()
     diff = round(t1 - t0, 2)
-    log.info(f"Phase 2 (deduplication) ran for {diff} seconds")
+    log.info(f"Phase 3 (deduplication) ran for {diff} seconds")
 
     t0 = t1
     merge()
     t1 = time.time()
     diff = round(t1 - t0, 2)
-    log.info(f"Phase 3 (merging) ran for {diff} seconds")
+    log.info(f"Phase 4 (merging) ran for {diff} seconds")
 
     t0 = t1
     generate_search_tables()
     t1 = time.time()
     diff = round(t1 - t0, 2)
-    log.info(f"Phase 4 (generate search tables) ran for {diff} seconds")
+    log.info(f"Phase 5 (generate search tables) ran for {diff} seconds")
 
     t0 = t1
     generate_processing_stats()
     t1 = time.time()
     diff = round(t1 - t0, 2)
-    log.info(f"Phase 5 (generate processing stats) ran for {diff} seconds")
+    log.info(f"Phase 6 (generate processing stats) ran for {diff} seconds")
 
     if environ.get("SWEPUB_LEGACY_SEARCH_DATABASE"):
         t0 = t1
@@ -854,7 +850,7 @@ if __name__ == "__main__":
             legacy_sync(-1)
         t1 = time.time()
         diff = round(t1 - t0, 2)
-        log.info(f"Phase 6 (legacy search sync) ran for {diff} seconds")
+        log.info(f"Phase 7 (legacy search sync) ran for {diff} seconds")
 
     if harvest_cache and not args.purge:
         log.info(f'Sources harvested: {" ".join(harvest_cache["meta"]["sources_succeeded"])}')

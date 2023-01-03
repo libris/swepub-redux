@@ -87,8 +87,8 @@ def validate_orcid(field, body, harvest_cache, source, cached_paths={}):
 
     for id_by in parent_value.get("identifiedBy", []):
         if id_by.get("@type") == "Local" and id_by.get("value") and id_by.get("source", {}).get("code"):
-            person_name = f"{parent_value.get('familyName', '')} {parent_value.get('givenName', '')}".strip()
-            if not person_name:
+            person_name = f"{parent_value.get('familyName', '')}{parent_value.get('givenName', '')}".strip()
+            if not person_name or len(person_name) < 4:
                 continue
             # Some orgs have broken local IDs, e.g. "n/a", "-", "?", etc. We skip those.
             id_by_value = f"{id_by.get('value')}".lower()

@@ -19,19 +19,19 @@ def recover_orcid_from_localid(body, field, harvest_cache, source, cached_paths=
 
     parent_path_2 = field.path.rsplit(".", 3)[0]
     parent_path_2_value = get_at_path(body, parent_path_2, cached_paths)
-    person_name = f"{parent_path_2_value.get('agent', {}).get('familyName', '')} {parent_path_2_value.get('agent', {}).get('givenName', '')}".strip()
-    if not person_name:
+    person_name = f"{parent_path_2_value.get('agent', {}).get('familyName', '')}{parent_path_2_value.get('agent', {}).get('givenName', '')}".strip()
+    if not person_name or len(person_name) < 4:
         return
 
     cache_key = get_localid_cache_key(field.value, person_name, source)
 
     if read_only_cursor:
         read_only_cursor.row_factory = dict_factory
-        result = read_only_cursor.execute("SELECT * FROM localid_to_orcid WHERE hash = ?", [cache_key]).fetchone()
+        result = read_only_cursor.execute("SELECT * FROM localid_to_orcid WHERE cache_key = ?", [cache_key]).fetchone()
         if result:
             orcid = result["orcid"]
             source_oai_id = result["source_oai_id"]
-            print(f"LocalID MATCH! source {source_oai_id}, enriched {body['@id']}, {person_name}")
+            #print(f"LocalID MATCH! source {source_oai_id}, enriched {body['@id']}, {person_name}")
             new_path = append_at_path(body, parent_path, type="ORCID", new_value=orcid, cached_paths=cached_paths)
             field.events.append(
                 make_event(
@@ -52,5 +52,5 @@ def recover_orcid_from_localid(body, field, harvest_cache, source, cached_paths=
             return created_fields
         # If no result, add it to the list of records with localID but no ORCID
         else:
-            print("Adding to localid_without_orcid", cache_key, body["@id"], person_name)
+            #print("Adding to localid_without_orcid", cache_key, body["@id"], person_name)
             harvest_cache["localid_without_orcid"][cache_key] = body["@id"]
