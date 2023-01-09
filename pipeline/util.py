@@ -6,6 +6,8 @@ import re
 import Levenshtein
 import hashlib
 import cld3
+from requests.packages.urllib3.util.retry import Retry
+from random import random
 
 from pipeline.swepublog import logger as log
 
@@ -572,3 +574,9 @@ def get_summary_by_language(publication, language):
         summary = ""
 
     return summary
+
+
+# https://stackoverflow.com/a/73665856
+class RandomisedRetry(Retry):
+    def get_backoff_time(self):
+        return random() * super().get_backoff_time()

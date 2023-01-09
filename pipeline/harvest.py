@@ -41,7 +41,7 @@ from pipeline.legacy_sync import legacy_sync
 
 # To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..
 from pipeline.swepublog import logger as log
-from pipeline.util import chunker, get_common_json_paths
+from pipeline.util import chunker, get_common_json_paths, RandomisedRetry
 
 
 # TODO: Move configuration (some of which is shared with service/swepub.py) to a separate file
@@ -305,7 +305,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, cached_paths, b
     num_deleted = 0
 
     with requests.Session() as session:
-        adapter = requests.adapters.HTTPAdapter(max_retries=2)
+        adapter = requests.adapters.HTTPAdapter(max_retries=RandomisedRetry(total=3, backoff_factor=2))
         session.mount('http://', adapter)
         session.mount('https://', adapter)
         for record in batch:
