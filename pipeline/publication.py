@@ -794,7 +794,7 @@ class Publication:
 
         if crossref.get("published-print") and not pub_info.date:
             # https://github.com/CrossRef/rest-api-doc/blob/master/api_format.md#partial-date
-            pub_info.date = _date_from_crossref_date_parts(crossref["published-print"]["date-parts"], year_only=True)
+            pub_info.date = self._date_from_crossref_date_parts(crossref["published-print"]["date-parts"], year_only=True)
             modified_properties.append({"name": "CrossrefAuditorPublishedPrint", "code": "add_crossref_published_print", "value": pub_info.date})
             pub_info_added = True
 
