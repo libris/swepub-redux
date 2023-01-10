@@ -849,13 +849,26 @@ class Publication:
                     "value": new_issn.get("value"),
                     "qualifier": new_issn_qualifier,
                 })
+
             if new_part_of["identifiedBy"]:
                 new_part_of["meta"] = [self._crossref_source_consulted()]
-                self._body["partOf"].append(new_part_of)
                 issn_event_log_value = ", ".join(map(lambda x: f"{x['value']} ({x['@type']})", new_part_of["identifiedBy"]))
                 if new_part_of.get("hasTitle"):
                     issn_event_log_value = f"{crossref_container_title}: {issn_event_log_value}"
                 modified_properties.append({"name": "CrossrefAuditorISSN", "code": "add_crossref_issn", "value": issn_event_log_value})
+
+                # Now check if there's an existing partOf we should add the new ISSNs to
+                found_matching_title = False
+                for part_of in self.part_of:
+                    if part_of.main_title and part_of.main_title.lower() == crossref_container_title.lower():
+                        found_matching_title = True
+                        part_of.add_issns(PartOf(new_part_of))
+                        break
+
+                # ...otherwise, add a new PartOf
+                if not found_matching_title:
+                    self._body["partOf"].append(new_part_of)
+
 
         # 6: Summary
         # "Abstract as a JSON string or a JATS XML snippet encoded into a JSON string"
@@ -1346,7 +1359,9 @@ class PartOf:
         return get_ids(self.body, 'identifiedBy', 'ISSN')
 
     def add_issns(self, part_of):
-        """ Adds ISSN from part_of if not already exist, if it does then adds 'qualifier' if not set """
+        """ Adds ISSN from part_of if not already exist, if it does then adds 'qualifier' if not set.
+        Also appends 'meta' from part_of.
+        """
         for new_issn in part_of.issns:
             new_issn_dict = _get_identified_by_dict(part_of.body, 'ISSN', new_issn)
             if new_issn in self.issns:
@@ -1358,6 +1373,10 @@ class PartOf:
                     self.body['identifiedBy'].append(new_issn_dict)
                 except KeyError:
                     self.body.update({'identifiedBy': [new_issn_dict]})
+            if part_of.body.get("meta"):
+                if not self.body.get("meta"):
+                    self.body["meta"] = []
+                self.body["meta"].append(part_of.body.get("meta"))
 
     @property
     def isbns(self):
