@@ -776,7 +776,31 @@ class Publication:
         """Enriches publication with Crossref data where applicable"""
         modified_properties = []
 
-        # 1, 2, 3: Publication data (PublicationInformation)
+        # Crossref metadata API JSON format:
+        # https://github.com/CrossRef/rest-api-doc/blob/master/api_format.md
+
+        # publisher => publication Publication / agent Agent label
+        # publisher-location => publication Publication / place Place label
+        # published-print => publication Publication date
+        self._add_crossref_pub_info(crossref, modified_properties)
+
+        # published-online => provisionActivity OnlineAvailability date
+        self._add_crossref_provision_activity(crossref, modified_properties)
+
+        # issn-type => partOf / identifiedBy ISSN value qualifier
+        self._add_crossref_issn(crossref, modified_properties)
+
+        # abstract => summary Summary label
+        self._add_crossref_summary(crossref, modified_properties)
+
+        # license => license License @id startDate
+        self._add_crossref_license(crossref, modified_properties)
+
+        if modified_properties:
+            return True, modified_properties
+        return False, modified_properties
+
+    def _add_crossref_pub_info(self, crossref, modified_properties):
         if not self.publication_information:
             self._body["publication"] = [{'@type': 'Publication'}]
         pub_info = self.publication_information
@@ -802,7 +826,7 @@ class Publication:
             pub_info._body["meta"] = []
         pub_info._body["meta"].append(self._crossref_source_consulted())
 
-        # 4: provisionActivity
+    def _add_crossref_provision_activity(self, crossref, modified_properties):
         if crossref.get("published-online"):
             if not self._body.get("provisionActivity"):
                 self._body["provisionActivity"] = []
@@ -816,7 +840,7 @@ class Publication:
                 })
                 modified_properties.append({"name": "CrossrefAuditorProvisionActivity", "code": "add_crossref_published_online", "value": date_to_add})
 
-        # 5: ISSN
+    def _add_crossref_issn(self, crossref, modified_properties):
         # BEWARE! Crossref spec https://github.com/CrossRef/rest-api-doc/blob/master/api_format.md#issn-with-type
         # has "One of eissn, pissn or lissn" but in actual data they use
         # "electronic" and "print". Also unclear what lissn is.
@@ -869,8 +893,7 @@ class Publication:
                 if not found_matching_title:
                     self._body["partOf"].append(new_part_of)
 
-
-        # 6: Summary
+    def _add_crossref_summary(self, crossref, modified_properties):
         # "Abstract as a JSON string or a JATS XML snippet encoded into a JSON string"
         c_summary = crossref.get("abstract")
         if c_summary and not self.summary:
@@ -917,7 +940,7 @@ class Publication:
                 self._body["instanceOf"]["summary"] = [new_summary]
                 modified_properties.append({"name": "CrossrefAuditorSummary", "code": "add_crossref_summary", "value": new_summary_label})
 
-        # 7: License
+    def _add_crossref_license(self, crossref, modified_properties):
         c_license = crossref.get("license")
         if c_license:
             for license in c_license:
@@ -952,10 +975,6 @@ class Publication:
                     )
                     modified_properties.append({"name": "CrossrefAuditorLicense", "code": "add_crossref_license", "value": license["URL"]})
                     continue
-
-        if modified_properties:
-            return True, modified_properties
-        return False, modified_properties
 
     @staticmethod
     def _date_from_crossref_date_parts(date_parts, year_only=False):
