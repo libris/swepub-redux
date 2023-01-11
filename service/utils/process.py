@@ -25,13 +25,13 @@ DEFAULT_AUDITORS = [
     "UKAAuditor",
     "AutoclassifierAuditor",
     "OAAuditor",
-    "CrossrefAuditorPublisher",
-    "CrossrefAuditorPublisherLocation",
-    "CrossrefAuditorPublishedPrint",
-    "CrossrefAuditorProvisionActivity",
-    "CrossrefAuditorISSN",
-    "CrossrefAuditorSummary",
-    "CrossrefAuditorLicense",
+    "PublisherAdditionAuditor",
+    "PublisherLocationAdditionAuditor",
+    "PublishedPrintAdditionAuditor",
+    "ProvisionActivityAdditionAuditor",
+    "ISSNAdditionAuditor",
+    "SummaryAdditionAuditor",
+    "LicenseAdditionAuditor",
 ]
 
 AUDIT_LABEL_MAP = {
@@ -42,13 +42,13 @@ AUDIT_LABEL_MAP = {
     "AutoclassifierAuditor": "auto_classify",
     "SwedishListAuditor": "swedish_list_check",
     "OAAuditor": "add_oa",
-    "CrossrefAuditorPublisher": "add_crossref_publisher",
-    "CrossrefAuditorPublisherLocation": "add_crossref_publisher_location",
-    "CrossrefAuditorPublishedPrint": "add_crossref_published_print",
-    "CrossrefAuditorProvisionActivity": "add_crossref_published_online",
-    "CrossrefAuditorISSN": "add_crossref_issn",
-    "CrossrefAuditorSummary": "add_crossref_summary",
-    "CrossrefAuditorLicense": "add_crossref_license",
+    "PublisherAdditionAuditor": "add_publisher",
+    "PublisherLocationAdditionAuditor": "add_publisher_location",
+    "PublishedPrintAdditionAuditor": "add_published_print",
+    "ProvisionActivityAdditionAuditor": "add_published_online",
+    "ISSNAdditionAuditor": "add_issn",
+    "SummaryAdditionAuditor": "add_summary",
+    "License": "add_license",
 }
 
 LABEL_AUDIT_MAP = dict()

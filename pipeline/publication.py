@@ -808,18 +808,18 @@ class Publication:
 
         if crossref.get("publisher") and not pub_info.body.get("agent", {}).get("label"):
             pub_info.agent = {"@type": "Agent", "label": crossref.get("publisher")}
-            modified_properties.append({"name": "CrossrefAuditorPublisher", "code": "add_crossref_publisher", "value": crossref.get("publisher")})
+            modified_properties.append({"name": "PublisherAdditionAuditor", "code": "add_publisher", "value": crossref.get("publisher")})
             pub_info_added = True
 
         if crossref.get("publisher-location") and not pub_info.body.get("place", {}).get("label"):
             pub_info.place = {"@type": "Place", "label": crossref.get("publisher-location")}
-            modified_properties.append({"name": "CrossrefAuditorPublisherLocation", "code": "add_crossref_publisher_location", "value": crossref.get("publisher-location")})
+            modified_properties.append({"name": "PublisherLocationAdditionAuditor", "code": "add_publisher_location", "value": crossref.get("publisher-location")})
             pub_info_added = True
 
         if crossref.get("published-print") and not pub_info.date:
             # https://github.com/CrossRef/rest-api-doc/blob/master/api_format.md#partial-date
             pub_info.date = self._date_from_crossref_date_parts(crossref["published-print"]["date-parts"], year_only=True)
-            modified_properties.append({"name": "CrossrefAuditorPublishedPrint", "code": "add_crossref_published_print", "value": pub_info.date})
+            modified_properties.append({"name": "PublishedPrintAdditionAuditor", "code": "add_published_print", "value": pub_info.date})
             pub_info_added = True
 
         if not pub_info._body.get("meta"):
@@ -838,7 +838,7 @@ class Publication:
                     "date": date_to_add,
                     "meta": [self._crossref_source_consulted()]
                 })
-                modified_properties.append({"name": "CrossrefAuditorProvisionActivity", "code": "add_crossref_published_online", "value": date_to_add})
+                modified_properties.append({"name": "ProvisionActivityAdditionAuditor", "code": "add_published_online", "value": date_to_add})
 
     def _add_crossref_issn(self, crossref, modified_properties):
         # BEWARE! Crossref spec https://github.com/CrossRef/rest-api-doc/blob/master/api_format.md#issn-with-type
@@ -879,7 +879,7 @@ class Publication:
                 issn_event_log_value = ", ".join(map(lambda x: f"{x['value']} ({x['@type']})", new_part_of["identifiedBy"]))
                 if new_part_of.get("hasTitle"):
                     issn_event_log_value = f"{crossref_container_title}: {issn_event_log_value}"
-                modified_properties.append({"name": "CrossrefAuditorISSN", "code": "add_crossref_issn", "value": issn_event_log_value})
+                modified_properties.append({"name": "ISSNAdditionAuditor", "code": "add_issn", "value": issn_event_log_value})
 
                 # Now check if there's an existing partOf we should add the new ISSNs to
                 found_matching_title = False
@@ -938,7 +938,7 @@ class Publication:
                         }
                 new_summary["meta"] = [self._crossref_source_consulted()]
                 self._body["instanceOf"]["summary"] = [new_summary]
-                modified_properties.append({"name": "CrossrefAuditorSummary", "code": "add_crossref_summary", "value": new_summary_label})
+                modified_properties.append({"name": "SummaryAdditionAuditor", "code": "add_summary", "value": new_summary_label})
 
     def _add_crossref_license(self, crossref, modified_properties):
         c_license = crossref.get("license")
@@ -973,7 +973,7 @@ class Publication:
                             "meta": [self._crossref_source_consulted()],
                         }
                     )
-                    modified_properties.append({"name": "CrossrefAuditorLicense", "code": "add_crossref_license", "value": license["URL"]})
+                    modified_properties.append({"name": "LicenseAdditionAuditor", "code": "add_license", "value": license["URL"]})
                     continue
 
     @staticmethod

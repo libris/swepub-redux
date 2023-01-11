@@ -14,25 +14,25 @@ from pipeline.swepublog import logger as log
 ENRICHING_AUDITORS = [
     "AutoclassifierAuditor",
     "OAAuditor",
-    "CrossrefAuditorPublisher",
-    "CrossrefAuditorPublisherLocation",
-    "CrossrefAuditorPublishedPrint",
-    "CrossrefAuditorProvisionActivity",
-    "CrossrefAuditorISSN",
-    "CrossrefAuditorSummary",
-    "CrossrefAuditorLicense",
+    "PublisherAdditionAuditor",
+    "PublisherLocationAdditionAuditor",
+    "PublishedPrintAdditionAuditor",
+    "ProvisionActivityAdditionAuditor",
+    "ISSNAdditionAuditor",
+    "SummaryAdditionAuditor",
+    "LicenseAdditionAuditor",
 ]
 
 ENRICHING_AUDITORS_CODES = [
     "auto_classify",
     "add_oa",
-    "add_crossref_publisher",
-    "add_crossref_publisher_location",
-    "add_crossref_published_print",
-    "add_crossref_published_online",
-    "add_crossref_issn",
-    "add_crossref_summary",
-    "add_crossref_license",
+    "add_publisher",
+    "add_publisher_location",
+    "add_published_print",
+    "add_published_online",
+    "add_issn",
+    "add_summary",
+    "add_license",
 ]
 
 
