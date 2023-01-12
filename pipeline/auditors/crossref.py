@@ -31,7 +31,6 @@ class CrossrefAuditor(BaseAuditor):
                 r = session.get(f"{CROSSREF_URL}{self._clean_identifier(doi)}", timeout=10)
                 if r.status_code == 200:
                     #print(f"Crossref match found for {publication.id}: {doi}")
-                    #print(publication.publication_information.body)
                     crossref = r.json()
                     result, modified_properties = publication.add_crossref_data(crossref)
                     if result:
@@ -42,12 +41,10 @@ class CrossrefAuditor(BaseAuditor):
                 continue
 
         if result and modified_properties:
-            #print(modified_properties)
             for modified in modified_properties:
                 new_audit_events = self._add_audit_event(
                     audit_events, modified["name"], modified["code"], result, modified["value"]
                 )
-            #print(new_audit_events)
             return publication, new_audit_events, result
         else:
             return publication, audit_events, result
@@ -55,7 +52,8 @@ class CrossrefAuditor(BaseAuditor):
     def _clean_identifier(self, identifier):
         cleaned_identifier = identifier
         # DOIs in Crossref/Unpaywall mirrors are stored without the https?://doi.org/ prefix,
-        # while DOIs in Swepub are (at this point) *with* prefix, so we remove any prefix before looking it up.
+        # while DOIs in Swepub are (at this point) *with* prefix, so we remove any prefix
+        # before looking it up.
         if identifier.startswith(("http://doi.org/", "https://doi.org/")):
             cleaned_identifier = re.sub(self.doi_cleaner_regex, "", identifier)
         return cleaned_identifier

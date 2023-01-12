@@ -804,23 +804,19 @@ class Publication:
         if not self.publication_information:
             self._body["publication"] = [{'@type': 'Publication'}]
         pub_info = self.publication_information
-        pub_info_added = False
 
         if crossref.get("publisher") and not pub_info.body.get("agent", {}).get("label"):
             pub_info.agent = {"@type": "Agent", "label": crossref.get("publisher")}
             modified_properties.append({"name": "PublisherAdditionAuditor", "code": "add_publisher", "value": crossref.get("publisher")})
-            pub_info_added = True
 
         if crossref.get("publisher-location") and not pub_info.body.get("place", {}).get("label"):
             pub_info.place = {"@type": "Place", "label": crossref.get("publisher-location")}
             modified_properties.append({"name": "PublisherLocationAdditionAuditor", "code": "add_publisher_location", "value": crossref.get("publisher-location")})
-            pub_info_added = True
 
         if crossref.get("published-print") and not pub_info.date:
             # https://github.com/CrossRef/rest-api-doc/blob/master/api_format.md#partial-date
             pub_info.date = self._date_from_crossref_date_parts(crossref["published-print"]["date-parts"], year_only=True)
             modified_properties.append({"name": "PublishedPrintAdditionAuditor", "code": "add_published_print", "value": pub_info.date})
-            pub_info_added = True
 
         if not pub_info._body.get("meta"):
             pub_info._body["meta"] = []
