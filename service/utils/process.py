@@ -48,7 +48,7 @@ AUDIT_LABEL_MAP = {
     "ProvisionActivityAdditionAuditor": "add_published_online",
     "ISSNAdditionAuditor": "add_issn",
     "SummaryAdditionAuditor": "add_summary",
-    "License": "add_license",
+    "LicenseAdditionAuditor": "add_license",
 }
 
 LABEL_AUDIT_MAP = dict()
