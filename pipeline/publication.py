@@ -979,7 +979,7 @@ class Publication:
     @staticmethod
     def _date_from_crossref_date_parts(date_parts, year_only=False):
         if year_only:
-            return date_parts[0][0]
+            return str(date_parts[0][0])
         return "-".join(f"{n}".zfill(2) for n in date_parts[0])
 
     @staticmethod
