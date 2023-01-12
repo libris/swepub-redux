@@ -6,8 +6,34 @@ import re
 import Levenshtein
 import hashlib
 import cld3
+from requests.packages.urllib3.util.retry import Retry
+from random import random
 
 from pipeline.swepublog import logger as log
+
+ENRICHING_AUDITORS = [
+    "AutoclassifierAuditor",
+    "OAAuditor",
+    "PublisherAdditionAuditor",
+    "PublisherLocationAdditionAuditor",
+    "PublishedPrintAdditionAuditor",
+    "ProvisionActivityAdditionAuditor",
+    "ISSNAdditionAuditor",
+    "SummaryAdditionAuditor",
+    "LicenseAdditionAuditor",
+]
+
+ENRICHING_AUDITORS_CODES = [
+    "auto_classify",
+    "add_oa",
+    "add_publisher",
+    "add_publisher_location",
+    "add_published_print",
+    "add_published_online",
+    "add_issn",
+    "add_summary",
+    "add_license",
+]
 
 
 class Validation(Enum):
@@ -548,3 +574,9 @@ def get_summary_by_language(publication, language):
         summary = ""
 
     return summary
+
+
+# https://stackoverflow.com/a/73665856
+class RandomisedRetry(Retry):
+    def get_backoff_time(self):
+        return random() * super().get_backoff_time()
