@@ -881,20 +881,20 @@ class Publication:
                     issn_event_log_value = f"{crossref_container_title}: {issn_event_log_value}"
                 modified_properties.append({"name": "ISSNAdditionAuditor", "code": "add_issn", "value": issn_event_log_value})
 
-                # Now check if there's an existing partOf we should add the new ISSNs to
-                found_matching_title = False
+                # Now check if there's an existing partOf or partOf.hasSeries that
+                # we should add the new ISSN(s) to
                 if crossref_container_title:
-                    for part_of in self.part_of:
-                        if part_of.main_title:
-                            similarity = get_common_substring_factor(self._get_title_for_comparison(part_of.main_title), self._get_title_for_comparison(crossref_container_title))
-                            if similarity > 0.6:
-                                found_matching_title = True
-                                part_of.add_issns(PartOf(new_part_of))
-                                break
+                    for outer_part_of in self.part_of:
+                        for part_of in [outer_part_of] + outer_part_of.has_series:
+                            if part_of.main_title:
+                                similarity = get_common_substring_factor(self._get_title_for_comparison(part_of.main_title), self._get_title_for_comparison(crossref_container_title))
+                                if similarity > 0.6:
+                                    found_matching_title = True
+                                    part_of.add_issns(PartOf(new_part_of))
+                                    return
 
                 # ...otherwise, add a new PartOf
-                if not found_matching_title:
-                    self._body["partOf"].append(new_part_of)
+                self._body["partOf"].append(new_part_of)
 
     @staticmethod
     def _get_title_for_comparison(s):
@@ -1251,6 +1251,31 @@ class HasSeries:
                 return i.get('partNumber')
         return None
 
+    @property
+    def issns(self):
+        """Return values for identifiedBy[?(@.@type=="ISSN")].value, Empty array if not exist """
+        return get_ids(self.body, 'identifiedBy', 'ISSN')
+
+    def add_issns(self, part_of):
+        """ Adds ISSN from part_of if not already exist, if it does then adds 'qualifier' if not set.
+        Also appends 'meta' from part_of.
+        """
+        for new_issn in part_of.issns:
+            new_issn_dict = _get_identified_by_dict(part_of.body, 'ISSN', new_issn)
+            if new_issn in self.issns:
+                self_issns_dict = _get_identified_by_dict(self.body, 'ISSN', new_issn)
+                if new_issn_dict.get('qualifier') and not self_issns_dict.get('qualifier'):
+                    self_issns_dict.update({'qualifier': new_issn_dict.get('qualifier')})
+            else:
+                try:
+                    self.body['identifiedBy'].append(new_issn_dict)
+                except KeyError:
+                    self.body.update({'identifiedBy': [new_issn_dict]})
+        if part_of.body.get("meta"):
+            if not self.body.get("meta"):
+                self.body["meta"] = []
+            self.body["meta"].append(part_of.body.get("meta"))
+
     def has_same_main_title(self, has_series):
         """True if part_of has the same main title"""
         return compare_text(self.main_title, has_series.main_title, self.STRING_MATCH_HASSERIES_MAIN_TITLE)
@@ -1399,10 +1424,10 @@ class PartOf:
                     self.body['identifiedBy'].append(new_issn_dict)
                 except KeyError:
                     self.body.update({'identifiedBy': [new_issn_dict]})
-            if part_of.body.get("meta"):
-                if not self.body.get("meta"):
-                    self.body["meta"] = []
-                self.body["meta"].append(part_of.body.get("meta"))
+        if part_of.body.get("meta"):
+            if not self.body.get("meta"):
+                self.body["meta"] = []
+            self.body["meta"].append(part_of.body.get("meta"))
 
     @property
     def isbns(self):
