@@ -3,9 +3,12 @@ from pipeline.util import *
 import itertools
 import datetime
 from dateutil.parser import parse as parse_date
+from html import unescape
 
 import cld3
 from bs4 import BeautifulSoup
+from unidecode import unidecode
+
 
 """Max length in characters to compare text"""
 MAX_LENGTH_STRING_TO_COMPARE = 1000
@@ -43,6 +46,7 @@ ARTICLE_TYPES = [
     "https://id.kb.se/term/swepub/journal-issue",
 ]
 
+NO_PARENS_REGEX = re.compile(r"\([^()]*\)")
 
 class Publication:
     """Abstract publication format and API to access its properties """
@@ -850,7 +854,7 @@ class Publication:
             new_part_of = {"@type": "Work"}
             crossref_container_title = ""
             if crossref.get("container-title"):
-                crossref_container_title = crossref["container-title"][0]
+                crossref_container_title = unescape(crossref["container-title"][0])
                 new_part_of["hasTitle"] = [{
                     "@type": "Title",
                     "mainTitle": crossref_container_title
@@ -858,14 +862,16 @@ class Publication:
 
             new_part_of["identifiedBy"] = []
             for new_issn in new_issns:
-                if not new_issn.get("type") in ["print", "electronic"]:
+                if not new_issn.get("type") in ["print", "electronic", "eissn", "pissn"]:
                     continue
                 new_id_by = {
                     "@type": "ISSN",
-                    "value": new_issn.get("value")
+                    "value": new_issn.get("value"),
                 }
-                if new_issn["type"] == "electronic":
-                    new_id_by["qualifier"] = "EISSN"
+                if new_issn["type"] in ["electronic", "eissn"]:
+                    new_id_by["qualifier"] = "electronic"
+                elif new_issn["type"] in ["print", "pissn"]:
+                    new_id_by["qualifier"] = "print"
                 new_part_of["identifiedBy"].append(new_id_by)
 
             if new_part_of["identifiedBy"]:
@@ -877,15 +883,22 @@ class Publication:
 
                 # Now check if there's an existing partOf we should add the new ISSNs to
                 found_matching_title = False
-                for part_of in self.part_of:
-                    if part_of.main_title and part_of.main_title.lower() == crossref_container_title.lower():
-                        found_matching_title = True
-                        part_of.add_issns(PartOf(new_part_of))
-                        break
+                if crossref_container_title:
+                    for part_of in self.part_of:
+                        if part_of.main_title:
+                            similarity = get_common_substring_factor(self._get_title_for_comparison(part_of.main_title), self._get_title_for_comparison(crossref_container_title))
+                            if similarity > 0.6:
+                                found_matching_title = True
+                                part_of.add_issns(PartOf(new_part_of))
+                                break
 
                 # ...otherwise, add a new PartOf
                 if not found_matching_title:
                     self._body["partOf"].append(new_part_of)
+
+    @staticmethod
+    def _get_title_for_comparison(s):
+        return re.sub(NO_PARENS_REGEX, "", unescape(s))
 
     def _add_crossref_summary(self, crossref, modified_properties):
         # "Abstract as a JSON string or a JATS XML snippet encoded into a JSON string"
