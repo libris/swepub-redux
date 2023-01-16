@@ -83,7 +83,7 @@ TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = [
     "stats_ssif_1",
 ]
 
-SWEPUB_USER_AGENT = getenv("SWEPUB_USER_AGENT", "https://github.com/libris/swepub-redux")
+SWEPUB_USER_AGENT = getenv("SWEPUB_USER_AGENT", "https://github.com/libris")
 
 cached_paths = get_common_json_paths()
 
@@ -400,7 +400,8 @@ def _load_doab():
     elif not environ.get("SWEPUB_SKIP_REMOTE"):
         try:
             log.info("Refreshing DOAB data")
-            with closing(requests.get(SWEPUB_DOAB_URL, stream=True, timeout=30)) as r:
+            with closing(requests.get(SWEPUB_DOAB_URL, stream=True, timeout=30, headers={"User-Agent": SWEPUB_USER_AGENT})) as r:
+                r.raise_for_status()
                 reader = csv.DictReader(codecs.iterdecode(r.iter_lines(), "utf-8"), delimiter=",")
                 for idx, row in enumerate(reader, 1):
                     if row["oapen.relation.isbn"]:
@@ -418,6 +419,7 @@ def _load_doab():
                 f.write(json.dumps(doab_data))
         except Exception as e:
             log.warning(f"Failed reading DOAB data: {e}")
+            log.warning(traceback.format_exc())
     log.info(f"Finished loading DOAB data (cached to disk for {DOAB_CACHE_TIME} seconds)")
     return doab_data
 
