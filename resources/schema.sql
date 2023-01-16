@@ -67,6 +67,7 @@ CREATE INDEX idx_converted_record_info_source_date_field_name ON converted_recor
 CREATE INDEX idx_converted_record_info_audit_code ON converted_record_info(audit_code);
 CREATE INDEX idx_converted_record_info_source_audit_code ON converted_record_info(source, audit_code);
 CREATE INDEX idx_converted_record_info_source_date_audit_code ON converted_record_info(source, date, audit_code);
+CREATE INDEX idx_converted_record_info_audit_name_audit_result ON converted_record_info(audit_name, audit_result);
 
 
 -- After conversion, validation and normalization each publication is stored in this
