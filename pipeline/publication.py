@@ -858,16 +858,16 @@ class Publication:
             if not self._body.get("partOf"):
                 self._body["partOf"] = []
 
-            new_part_of = {"@type": "Work"}
+            new_issn_part_of = {"@type": "Work"}
             crossref_container_title = ""
             if crossref.get("container-title") and len(crossref.get("container-title", [])) == 1:
                 crossref_container_title = unescape(crossref["container-title"][0])
-                new_part_of["hasTitle"] = [{
+                new_issn_part_of["hasTitle"] = [{
                     "@type": "Title",
                     "mainTitle": crossref_container_title
                 }]
 
-            new_part_of["identifiedBy"] = []
+            new_issn_part_of["identifiedBy"] = []
             for new_issn in new_issns:
                 if not new_issn.get("type") in ["print", "electronic", "eissn", "pissn"]:
                     continue
@@ -879,12 +879,12 @@ class Publication:
                     new_id_by["qualifier"] = "electronic"
                 elif new_issn["type"] in ["print", "pissn"]:
                     new_id_by["qualifier"] = "print"
-                new_part_of["identifiedBy"].append(new_id_by)
+                new_issn_part_of["identifiedBy"].append(new_id_by)
 
-            if new_part_of["identifiedBy"]:
-                new_part_of["meta"] = [self._crossref_source_consulted()]
-                issn_event_log_value = ", ".join(map(lambda x: f"{x['value']} ({x['@type']})", new_part_of["identifiedBy"]))
-                if new_part_of.get("hasTitle"):
+            if new_issn_part_of["identifiedBy"]:
+                new_issn_part_of["meta"] = [self._crossref_source_consulted()]
+                issn_event_log_value = ", ".join(map(lambda x: f"{x['value']} ({x['@type']})", new_issn_part_of["identifiedBy"]))
+                if new_issn_part_of.get("hasTitle"):
                     issn_event_log_value = f"{crossref_container_title}: {issn_event_log_value}"
 
                 # Now check if there's an existing partOf or partOf.hasSeries that
@@ -896,7 +896,7 @@ class Publication:
                                 similarity = get_common_substring_factor(self._get_title_for_comparison(part_of.main_title), self._get_title_for_comparison(crossref_container_title))
                                 if similarity > 0.6:
                                     found_matching_title = True
-                                    part_of.add_issns(PartOf(new_part_of))
+                                    part_of.add_issns(PartOf(new_issn_part_of))
                                     modified_properties.append({"name": "ISSNAdditionAuditor", "code": "add_issn", "value": issn_event_log_value})
                                     return
 
@@ -908,13 +908,15 @@ class Publication:
                         if not new_isbn.get("type") in ["print", "electronic"]:
                             continue
                         new_id_by = {
-                            "@type": "ISSN",
+                            "@type": "ISBN",
                             "value": new_isbn.get("value"),
                             "qualifier": new_isbn.get("type")
                         }
-                        new_isbn_part_of.append(new_id_by)
+                        new_isbn_part_of["identifiedBy"].append(new_id_by)
                     if len(new_isbn_part_of.get("identifiedBy")) > 0:
-                        new_isbn_part_of["hasSeries"].append(new_part_of)
+                        new_issn_part_of.pop("meta", None)
+                        new_isbn_part_of["hasSeries"].append(new_issn_part_of)
+                        new_isbn_part_of["meta"] = [self._crossref_source_consulted()]
                         self._body["partOf"].append(new_isbn_part_of)
                         isbn_event_log_value = ", ".join(map(lambda x: f"{x['value']} ({x['@type']})", new_isbn_part_of["identifiedBy"]))
                         issn_event_log_value = f"PartOf {isbn_event_log_value}, HasSeries {issn_event_log_value}"
@@ -922,7 +924,7 @@ class Publication:
                         return
 
                 # ...otherwise, just add the new ISNS(s) as a new PartOf
-                self._body["partOf"].append(new_part_of)
+                self._body["partOf"].append(new_issn_part_of)
                 modified_properties.append({"name": "ISSNAdditionAuditor", "code": "add_issn", "value": issn_event_log_value})
 
     @staticmethod
