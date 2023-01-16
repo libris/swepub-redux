@@ -849,6 +849,11 @@ class Publication:
             if c_issn.get("value") not in self.issns and c_issn.get("type") in ["electronic", "print"]:
                 new_issns.append(c_issn)
         if new_issns:
+            # If there's more than one container-title there's no way of knowing which ISSN(s) it belongs to,
+            # so in that case we just skip enrichment. https://github.com/CrossRef/rest-api-doc/issues/11
+            if len(crossref.get("container-title", [])) > 1:
+                return
+
             if not self._body.get("partOf"):
                 self._body["partOf"] = []
             new_part_of = {"@type": "Work"}
