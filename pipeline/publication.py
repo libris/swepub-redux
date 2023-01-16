@@ -850,15 +850,17 @@ class Publication:
                 new_issns.append(c_issn)
         if new_issns:
             # If there's more than one container-title there's no way of knowing which ISSN(s) it belongs to,
-            # so in that case we just skip enrichment. https://github.com/CrossRef/rest-api-doc/issues/11
-            if len(crossref.get("container-title", [])) > 1:
+            # so in that case we just skip enrichment - *unless* the Swepub publication has no partOf at all.
+            # https://github.com/CrossRef/rest-api-doc/issues/11
+            if len(crossref.get("container-title", [])) > 1 and len(self._body.get("partOf", [])) > 0:
                 return
 
             if not self._body.get("partOf"):
                 self._body["partOf"] = []
+
             new_part_of = {"@type": "Work"}
             crossref_container_title = ""
-            if crossref.get("container-title"):
+            if crossref.get("container-title") and len(crossref.get("container-title", [])) == 1:
                 crossref_container_title = unescape(crossref["container-title"][0])
                 new_part_of["hasTitle"] = [{
                     "@type": "Title",
@@ -884,7 +886,6 @@ class Publication:
                 issn_event_log_value = ", ".join(map(lambda x: f"{x['value']} ({x['@type']})", new_part_of["identifiedBy"]))
                 if new_part_of.get("hasTitle"):
                     issn_event_log_value = f"{crossref_container_title}: {issn_event_log_value}"
-                modified_properties.append({"name": "ISSNAdditionAuditor", "code": "add_issn", "value": issn_event_log_value})
 
                 # Now check if there's an existing partOf or partOf.hasSeries that
                 # we should add the new ISSN(s) to
@@ -896,10 +897,33 @@ class Publication:
                                 if similarity > 0.6:
                                     found_matching_title = True
                                     part_of.add_issns(PartOf(new_part_of))
+                                    modified_properties.append({"name": "ISSNAdditionAuditor", "code": "add_issn", "value": issn_event_log_value})
                                     return
 
-                # ...otherwise, add a new PartOf
+                # If there is no existing partOf, *but* there's an ISBN from Crossref,
+                # add the ISBN(s) as partOf and the ISSN(s) as partOf.hasSeries
+                if crossref.get("isbn-type") and len(self._body["partOf"]) == 0:
+                    new_isbn_part_of = {"@type": "Work", "identifiedBy": [], "hasSeries": []}
+                    for new_isbn in crossref.get("isbn-type"):
+                        if not new_isbn.get("type") in ["print", "electronic"]:
+                            continue
+                        new_id_by = {
+                            "@type": "ISSN",
+                            "value": new_isbn.get("value"),
+                            "qualifier": new_isbn.get("type")
+                        }
+                        new_isbn_part_of.append(new_id_by)
+                    if len(new_isbn_part_of.get("identifiedBy")) > 0:
+                        new_isbn_part_of["hasSeries"].append(new_part_of)
+                        self._body["partOf"].append(new_isbn_part_of)
+                        isbn_event_log_value = ", ".join(map(lambda x: f"{x['value']} ({x['@type']})", new_isbn_part_of["identifiedBy"]))
+                        issn_event_log_value = f"PartOf {isbn_event_log_value}, HasSeries {issn_event_log_value}"
+                        modified_properties.append({"name": "ISSNAdditionAuditor", "code": "add_issn", "value": issn_event_log_value})
+                        return
+
+                # ...otherwise, just add the new ISNS(s) as a new PartOf
                 self._body["partOf"].append(new_part_of)
+                modified_properties.append({"name": "ISSNAdditionAuditor", "code": "add_issn", "value": issn_event_log_value})
 
     @staticmethod
     def _get_title_for_comparison(s):
