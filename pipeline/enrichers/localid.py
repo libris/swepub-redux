@@ -53,4 +53,4 @@ def recover_orcid_from_localid(body, field, harvest_cache, source, cached_paths=
         # If no result, add it to the list of records with localID but no ORCID
         else:
             #print("Adding to localid_without_orcid", cache_key, body["@id"], person_name)
-            harvest_cache["localid_without_orcid"][cache_key] = body["@id"]
+            harvest_cache["localid_without_orcid"][body["@id"]] = 1

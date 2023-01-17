@@ -524,7 +524,7 @@ def _calculate_oai_ids_to_reprocess():
         cursor = connection.cursor()
         # At this point all records have been processed once. Now ensure that records where we can add
         # an ORCID are marked for reprocessing.
-        for oai_id in set([harvest_cache["localid_without_orcid"][k] for k in harvest_cache["localid_to_orcid"].keys() if k in harvest_cache["localid_without_orcid"].keys()]):
+        for oai_id in harvest_cache["localid_without_orcid"].keys():
             cursor.execute("UPDATE converted SET should_be_reprocessed = 1 WHERE oai_id = ?", [oai_id])
         connection.commit()
 
