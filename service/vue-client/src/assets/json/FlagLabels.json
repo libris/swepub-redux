@@ -42,5 +42,33 @@
   "PersonID": {
     "swe": "ORCID matchat med lokalt ID",
     "en": "ORCID matched with local ID"
+  },
+  "add_issn": {
+    "swe": "ISSN tillagt",
+    "en": "ISSN added"
+  },
+  "add_publisher": {
+    "swe": "Utgivare",
+    "en": "Utgivare"
+  },
+  "add_publisher_location": {
+    "swe": "Utgivningsort",
+    "en": "Place of issue"
+  },
+  "add_published_print": {
+    "swe": "Utgivningsår",
+    "en": "Publication date"
+  },
+  "add_published_online": {
+    "swe": "Epub ahead of print / Online first",
+    "en": "Online availability date"
+  },
+  "add_summary": {
+    "swe": "Abstract",
+    "en": "Abstract"
+  },
+  "add_license": {
+    "swe": "Licens",
+    "en": "License"
   }
 }

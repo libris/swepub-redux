@@ -2,6 +2,7 @@ import re
 from urllib.parse import urlunparse
 
 from service.utils.common import get_base_url
+from pipeline.util import ENRICHING_AUDITORS
 
 DEFAULT_FIELDS = [
     "DOI",
@@ -24,6 +25,13 @@ DEFAULT_AUDITORS = [
     "UKAAuditor",
     "AutoclassifierAuditor",
     "OAAuditor",
+    "PublisherAdditionAuditor",
+    "PublisherLocationAdditionAuditor",
+    "PublishedPrintAdditionAuditor",
+    "ProvisionActivityAdditionAuditor",
+    "ISSNAdditionAuditor",
+    "SummaryAdditionAuditor",
+    "LicenseAdditionAuditor",
 ]
 
 AUDIT_LABEL_MAP = {
@@ -33,7 +41,14 @@ AUDIT_LABEL_MAP = {
     "UKAAuditor": "UKA_comprehensive_check",
     "AutoclassifierAuditor": "auto_classify",
     "SwedishListAuditor": "swedish_list_check",
-    'OAAuditor': 'add_oa',
+    "OAAuditor": "add_oa",
+    "PublisherAdditionAuditor": "add_publisher",
+    "PublisherLocationAdditionAuditor": "add_publisher_location",
+    "PublishedPrintAdditionAuditor": "add_published_print",
+    "ProvisionActivityAdditionAuditor": "add_published_online",
+    "ISSNAdditionAuditor": "add_issn",
+    "SummaryAdditionAuditor": "add_summary",
+    "LicenseAdditionAuditor": "add_license",
 }
 
 LABEL_AUDIT_MAP = dict()
@@ -203,7 +218,7 @@ def _get_flags(events, selected_flags):
     for auditor, checks in events["audit_events"].items():
         flag = _get_audit_flags(auditor, checks, selected_flags)
         if flag:
-            if auditor in ["AutoclassifierAuditor", "OAAuditor"]:
+            if auditor in ENRICHING_AUDITORS:
                 # auto_classify and add_oa go into enrichment flags
                 enrichment_flags.update(flag)
             else:
@@ -300,7 +315,7 @@ def _get_audit_flags(auditor, checks, selected_flags):
     selected_auditor_flags = selected_flags.get("audit").get(label, [])
     selected_auto_classify_flags = (
         selected_flags.get("enrichment").get(label, [])
-        if auditor in ["AutoclassifierAuditor", "OAAuditor"]
+        if auditor in ENRICHING_AUDITORS
         else []
     )
 
@@ -320,7 +335,7 @@ def _get_audit_flags(auditor, checks, selected_flags):
         result_value = None
         flag = {}
 
-        if auditor in ["AutoclassifierAuditor", "OAAuditor"]:
+        if auditor in ENRICHING_AUDITORS:
             # AutoClassifier and OAAuditor are returned separately as they will be moved into enrichment category
             selected_flags = selected_auto_classify_flags
             if step["result"]:

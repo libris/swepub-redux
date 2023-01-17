@@ -41,7 +41,7 @@ from pipeline.legacy_sync import legacy_sync
 
 # To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..
 from pipeline.swepublog import logger as log
-from pipeline.util import chunker, get_common_json_paths
+from pipeline.util import chunker, get_common_json_paths, RandomisedRetry
 
 
 # TODO: Move configuration (some of which is shared with service/swepub.py) to a separate file
@@ -83,7 +83,7 @@ TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = [
     "stats_ssif_1",
 ]
 
-SWEPUB_USER_AGENT = getenv("SWEPUB_USER_AGENT", "https://github.com/libris/swepub-redux")
+SWEPUB_USER_AGENT = getenv("SWEPUB_USER_AGENT", "https://github.com/libris")
 
 cached_paths = get_common_json_paths()
 
@@ -305,7 +305,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, cached_paths, b
     num_deleted = 0
 
     with requests.Session() as session:
-        adapter = requests.adapters.HTTPAdapter(max_retries=2)
+        adapter = requests.adapters.HTTPAdapter(max_retries=RandomisedRetry(total=3, backoff_factor=2))
         session.mount('http://', adapter)
         session.mount('https://', adapter)
         with get_connection() as read_only_connection:
@@ -402,7 +402,8 @@ def _load_doab():
     elif not environ.get("SWEPUB_SKIP_REMOTE"):
         try:
             log.info("Refreshing DOAB data")
-            with closing(requests.get(SWEPUB_DOAB_URL, stream=True, timeout=30)) as r:
+            with closing(requests.get(SWEPUB_DOAB_URL, stream=True, timeout=30, headers={"User-Agent": SWEPUB_USER_AGENT})) as r:
+                r.raise_for_status()
                 reader = csv.DictReader(codecs.iterdecode(r.iter_lines(), "utf-8"), delimiter=",")
                 for idx, row in enumerate(reader, 1):
                     if row["oapen.relation.isbn"]:
@@ -420,6 +421,7 @@ def _load_doab():
                 f.write(json.dumps(doab_data))
         except Exception as e:
             log.warning(f"Failed reading DOAB data: {e}")
+            log.warning(traceback.format_exc())
     log.info(f"Finished loading DOAB data (cached to disk for {DOAB_CACHE_TIME} seconds)")
     return doab_data
 

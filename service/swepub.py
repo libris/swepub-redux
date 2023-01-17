@@ -37,7 +37,7 @@ from service.utils.bibliometrics_csv import export as bibliometrics_csv_export
 from service.utils.classify import enrich_subject
 
 from pipeline.convert import ModsParser
-from pipeline.util import Enrichment, Normalization, Validation
+from pipeline.util import Enrichment, Normalization, Validation, ENRICHING_AUDITORS_CODES
 
 FILE_PATH = path.dirname(path.abspath(__file__))
 
@@ -933,7 +933,7 @@ def process_get_stats(source=None):
         # Autoclassified is a bit of a special case. It's technically an auditor but should here
         # be counted as an enricher. "valid" means "enriched"; we don't actually log "not enriched"
         # for the autoclassifier, so we just subtract the number of enriched from the total.
-        if row["label"] in ["auto_classify", "add_oa"]:
+        if row["label"] in ENRICHING_AUDITORS_CODES:
             result["enrichments"][row["label"]] = {}
             result["enrichments"][row["label"]]["enriched"] = row["valid"]
             result["enrichments"][row["label"]]["unchanged"] = result["total"] - row["valid"]
@@ -1032,9 +1032,7 @@ def process_get_export(source=None):
     criteria = []
     for flag_type, flags in selected_flags.items():
         for flag_name, flag_values in flags.items():
-            if flag_type in ["validation", "enrichment", "normalization"] and flag_name not in [
-                "auto_classify", "add_oa"
-            ]:
+            if flag_type in ["validation", "enrichment", "normalization"] and flag_name not in ENRICHING_AUDITORS_CODES:
                 for flag_value in flag_values:
                     criteria.append(
                         (converted_record_info.field_name == Parameter("?"))
@@ -1048,7 +1046,7 @@ def process_get_export(source=None):
                         flag_value = int(Validation[flag_value.upper()])
 
                     values.append([flag_name, flag_value])
-            if flag_type == "audit" or flag_name in ["auto_classify", "add_oa"]:
+            if flag_type == "audit" or flag_name in ENRICHING_AUDITORS_CODES:
                 for flag_value in flag_values:
                     criteria.append(
                         (converted_record_info.audit_code == Parameter("?"))
