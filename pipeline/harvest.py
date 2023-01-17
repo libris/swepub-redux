@@ -545,7 +545,25 @@ def _add_link_between_source_and_enriched():
         connection.commit()
 
 
-def _reprocess_affected_records():
+def _reprocess_affected_records(sources_to_process):
+    max_workers = max(psutil.cpu_count(logical=True) * 2, 8)
+    with ProcessPoolExecutor(
+        max_workers=max_workers,
+        initializer=init,
+        initargs=(
+            lock,
+            harvest_cache,
+            added_converted_rowids,
+            log,
+            incremental,
+        ),
+    ) as executor:
+        for source in sources_to_process:
+            executor.submit(_handle_reprocess_affected_records, source)
+        executor.shutdown(wait=True)
+
+
+def _handle_reprocess_affected_records(source):
     with get_connection() as connection, requests.Session() as session:
         cursor = connection.cursor()
         inner_cursor = connection.cursor()
@@ -554,10 +572,10 @@ def _reprocess_affected_records():
         session.mount('https://', adapter)
 
         cursor.row_factory = lambda cursor, row: row[0]
-        oai_ids_to_reprocess = cursor.execute("SELECT oai_id FROM converted WHERE should_be_reprocessed = 1").fetchall()
+        oai_ids_to_reprocess = cursor.execute("SELECT oai_id FROM converted WHERE should_be_reprocessed = 1 AND source = ?", [source["code"]]).fetchall()
         cursor.row_factory = dict_factory
 
-        log.info(f"Reprocessing {len(oai_ids_to_reprocess)} records")
+        log.info(f"Reprocessing {len(oai_ids_to_reprocess)} records for {source['code']}")
         for oai_id in oai_ids_to_reprocess:
             try:
                 xml = cursor.execute("SELECT data FROM original WHERE oai_id = ?", [oai_id]).fetchone()["data"]
@@ -565,11 +583,18 @@ def _reprocess_affected_records():
                 converted = convert(xml)
                 (field_events, record_info) = validate(converted, harvest_cache, session, original_converted["source"], cached_paths, inner_cursor)
                 (audited, audit_events) = audit(converted, harvest_cache, session)
-                store_converted(original_converted["original_id"], audited.body, audit_events.data, field_events, record_info, connection)
+
+                lock.acquire()
+                try:
+                    with get_connection() as inner_connection:
+                        store_converted(original_converted["original_id"], audited.body, audit_events.data, field_events, record_info, inner_connection)
+                except Exception as e:
+                        log.warning(traceback.format_exc())
+                finally:
+                    lock.release()
             except Exception as e:
                 log.warning(traceback.format_exc())
                 continue
-        connection.commit()
 
 
 def init(l, c, a, lg, inc):
@@ -812,7 +837,7 @@ if __name__ == "__main__":
         t0 = t1
         _add_localid_orcid_to_db(harvest_cache)
         _calculate_oai_ids_to_reprocess()
-        _reprocess_affected_records()
+        _reprocess_affected_records(sources_to_process)
         _add_link_between_source_and_enriched()
         t1 = time.time()
         diff = round(t1 - t0, 2)
