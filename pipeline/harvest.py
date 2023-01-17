@@ -87,6 +87,7 @@ SWEPUB_USER_AGENT = getenv("SWEPUB_USER_AGENT", "https://github.com/libris")
 
 cached_paths = get_common_json_paths()
 
+
 # Wrap the harvest function just to easily log errors from subprocesses
 def harvest_wrapper(source):
     harvest_cache["meta"]["sources_to_go"].remove(source["code"])
@@ -323,7 +324,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, cached_paths, b
                         (audited, audit_events) = audit(converted, harvest_cache, session)
                     elif not record.deleted:
                         num_rejected += 1
-                except Exception as e:
+                except Exception:
                     log.warning(traceback.format_exc())
                     continue
 
@@ -354,7 +355,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, cached_paths, b
                                 connection,
                             )
                             converted_rowids.append(converted_rowid)
-                except Exception as e:
+                except Exception:
                     log.warning(traceback.format_exc())
                 finally:
                     lock.release()
@@ -522,8 +523,8 @@ def _add_localid_orcid_to_db(harvest_cache):
 def _calculate_oai_ids_to_reprocess():
     with get_connection() as connection:
         cursor = connection.cursor()
-        # At this point all records have been processed once. Now ensure that records where we can add
-        # an ORCID are marked for reprocessing.
+        # At this point all records have been processed once. Now ensure that records where
+        # we can possibly add an ORCID are marked for reprocessing.
         for oai_id in harvest_cache["localid_without_orcid"].keys():
             cursor.execute("UPDATE converted SET should_be_reprocessed = 1 WHERE oai_id = ?", [oai_id])
         connection.commit()
@@ -588,11 +589,11 @@ def _handle_reprocess_affected_records(source):
                 try:
                     with get_connection() as inner_connection:
                         store_converted(original_converted["original_id"], audited.body, audit_events.data, field_events, record_info, inner_connection)
-                except Exception as e:
+                except Exception:
                         log.warning(traceback.format_exc())
                 finally:
                     lock.release()
-            except Exception as e:
+            except Exception:
                 log.warning(traceback.format_exc())
                 continue
 
@@ -799,7 +800,6 @@ if __name__ == "__main__":
                     cursor.execute(f"DELETE FROM {table}")
         else:
             clean_and_init_storage()
-        processes = []
 
         # Initially synchronization was left up to sqlite3's file locking to handle,
         # which was fine, except that the try/sleep is somewhat inefficient and risks
@@ -808,12 +808,12 @@ if __name__ == "__main__":
         # distribute the database between the processes.
         lock = Lock()
 
-        # We want a lot of parallellism. The point of this is not only to saturate _our_ cores
+        # We want a lot of parallelism. The point of this is not only to saturate _our_ cores
         # which may well be "overloaded" during parts of the process, but also to keep as many
         # as possible of the sources working all at once feeding us data. Ideally we want our
         # network buffers full at all times, with data ready to consume for any core available.
         # Having many processes going at once is not a liability in terms of overhead.
-        # Context switching is a cost payed per core, not per thread/process.
+        # Context switching is a cost paid per core, not per thread/process.
         max_workers = max(psutil.cpu_count(logical=True) * 2, 8)
         with ProcessPoolExecutor(
             max_workers=max_workers,
@@ -842,7 +842,6 @@ if __name__ == "__main__":
         t1 = time.time()
         diff = round(t1 - t0, 2)
         log.info(f"Phase 2 (reprocessing affected records) ran for {diff} seconds")
-
 
     t0 = t1 if t1 else time.time()
     deduplicate()
