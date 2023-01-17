@@ -860,7 +860,7 @@ class Publication:
 
             new_issn_part_of = {"@type": "Work"}
             crossref_container_title = ""
-            if crossref.get("container-title") and len(crossref.get("container-title", [])) == 1:
+            if len(crossref.get("container-title", [])) == 1 and not crossref.get("isbn-type"):
                 crossref_container_title = unescape(crossref["container-title"][0])
                 new_issn_part_of["hasTitle"] = [{
                     "@type": "Title",
