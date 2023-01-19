@@ -850,9 +850,9 @@ class Publication:
                 new_issns.append(c_issn)
         if new_issns:
             # If there's more than one container-title there's no way of knowing which ISSN(s) it belongs to,
-            # so in that case we just skip enrichment - *unless* the Swepub publication has no partOf at all.
+            # so in that case we just skip enrichment.
             # https://github.com/CrossRef/rest-api-doc/issues/11
-            if len(crossref.get("container-title", [])) > 1 and len(self._body.get("partOf", [])) > 0:
+            if len(crossref.get("container-title", [])) > 1:
                 return
 
             if not self._body.get("partOf"):
@@ -860,7 +860,9 @@ class Publication:
 
             new_issn_part_of = {"@type": "Work"}
             crossref_container_title = ""
-            if len(crossref.get("container-title", [])) == 1 and not crossref.get("isbn-type"):
+            # Only use container-title if there's no ISBN in the Crossref data. Because if there *is*, we
+            # can't know for sure what container-title refers to (ISSN or ISBN).
+            if crossref.get("container-title") and not crossref.get("isbn-type"):
                 crossref_container_title = unescape(crossref["container-title"][0])
                 new_issn_part_of["hasTitle"] = [{
                     "@type": "Title",
@@ -899,29 +901,6 @@ class Publication:
                                     part_of.add_issns(PartOf(new_issn_part_of))
                                     modified_properties.append({"name": "ISSNAdditionAuditor", "code": "add_issn", "value": issn_event_log_value})
                                     return
-
-                # If there is no existing partOf, *but* there's an ISBN from Crossref,
-                # add the ISBN(s) as partOf and the ISSN(s) as partOf.hasSeries
-                if crossref.get("isbn-type") and len(self._body["partOf"]) == 0:
-                    new_isbn_part_of = {"@type": "Work", "identifiedBy": [], "hasSeries": []}
-                    for new_isbn in crossref.get("isbn-type"):
-                        if not new_isbn.get("type") in ["print", "electronic"]:
-                            continue
-                        new_id_by = {
-                            "@type": "ISBN",
-                            "value": new_isbn.get("value"),
-                            "qualifier": new_isbn.get("type")
-                        }
-                        new_isbn_part_of["identifiedBy"].append(new_id_by)
-                    if len(new_isbn_part_of.get("identifiedBy")) > 0:
-                        new_issn_part_of.pop("meta", None)
-                        new_isbn_part_of["hasSeries"].append(new_issn_part_of)
-                        new_isbn_part_of["meta"] = [self._crossref_source_consulted()]
-                        self._body["partOf"].append(new_isbn_part_of)
-                        isbn_event_log_value = ", ".join(map(lambda x: f"{x['value']} ({x['@type']})", new_isbn_part_of["identifiedBy"]))
-                        issn_event_log_value = f"PartOf {isbn_event_log_value}, HasSeries {issn_event_log_value}"
-                        modified_properties.append({"name": "ISSNAdditionAuditor", "code": "add_issn", "value": issn_event_log_value})
-                        return
 
                 # ...otherwise, just add the new ISNS(s) as a new PartOf
                 self._body["partOf"].append(new_issn_part_of)
