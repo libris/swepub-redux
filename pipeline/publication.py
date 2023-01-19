@@ -1001,6 +1001,9 @@ class Publication:
                         and not self.publication_status
                     )
                 ):
+                    # 'start' isn't always present, despite it being required by the spec
+                    if not license.get("start"):
+                        continue
                     if not self._body.get("license"):
                         self._body["license"] = []
                     self._body["license"].append(
