@@ -52,5 +52,11 @@ def recover_orcid_from_localid(body, field, harvest_cache, source, cached_paths=
             return created_fields
         # If no result, add it to the list of records with localID but no ORCID
         else:
-            #print("Adding to localid_without_orcid", cache_key, body["@id"], person_name)
-            harvest_cache["localid_without_orcid"][body["@id"]] = 1
+            # Normally we'd use a dict or a list to keep track of the OAI IDs, but 
+            # harvest_cache["localid_without_orcid"] is handled by multiprocessing.Manager
+            # and I believe we'd had to create an additional managed dict/list for each cache
+            # key, which feels a bit unwieldy. So just append the OAI ID to a string that we'll
+            # split later on.
+            if not harvest_cache["localid_without_orcid"].get(cache_key):
+                harvest_cache["localid_without_orcid"][cache_key] = ""
+            harvest_cache["localid_without_orcid"][cache_key] += body["@id"] + " "

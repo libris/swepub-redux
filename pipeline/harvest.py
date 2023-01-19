@@ -60,8 +60,6 @@ DOAB_CACHE_FILE = path.join(FILE_PATH, "../cache/doab.json")
 DOAB_CACHE_TIME = 604800
 
 ID_CACHE_FILE = path.join(FILE_PATH, "../cache/id_cache.json")
-LOCALID_ORCID_CACHE_FILE = path.join(FILE_PATH, "../cache/localid_orcid_cache.json")
-KNOWN_LOCALID_TO_ORCID_FILE = path.join(FILE_PATH, "../resources/known_localid_to_orcid.json")
 KNOWN_ISSN_FILE = path.join(FILE_PATH, "../resources/known_valid_issn.txt")
 KNOWN_DOI_FILE = path.join(FILE_PATH, "../resources/known_valid_doi.txt")
 
@@ -524,8 +522,17 @@ def _calculate_oai_ids_to_reprocess():
     with get_connection() as connection:
         cursor = connection.cursor()
         # At this point all records have been processed once. Now ensure that records where
-        # we can possibly add an ORCID are marked for reprocessing.
-        for oai_id in harvest_cache["localid_without_orcid"].keys():
+        # we can add an ORCID are marked for reprocessing.
+        # - localid_without_orcid is a dict where each key is a local ID, and the value is
+        #   a space-delimited list of OAI IDs where that local ID (but no ORCID) occurs.
+        # - localid_to_orcid is a dict where each key is a local ID and the value is a dict
+        #   containing ORCID and "source OAI ID".
+        # Comparing these two we'll know which OAI IDs can be enriched with ORCID.
+        oai_ids_to_reprocess = set()
+        for cache_key, oai_ids in harvest_cache["localid_without_orcid"].items():
+            if cache_key in harvest_cache["localid_to_orcid"]:
+                oai_ids_to_reprocess.update(oai_ids.split())
+        for oai_id in oai_ids_to_reprocess:
             cursor.execute("UPDATE converted SET should_be_reprocessed = 1 WHERE oai_id = ?", [oai_id])
         connection.commit()
 
@@ -596,6 +603,7 @@ def _handle_reprocess_affected_records(source):
             except Exception:
                 log.warning(traceback.format_exc())
                 continue
+        log.info(f"Finished reprocessing records for {source['code']}")
 
 
 def init(l, c, a, lg, inc):
