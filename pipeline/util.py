@@ -6,6 +6,7 @@ import re
 import Levenshtein
 import hashlib
 import cld3
+from unidecode import unidecode
 from requests.packages.urllib3.util.retry import Retry
 from random import random
 
@@ -219,9 +220,13 @@ def get_common_json_paths():
     return cached_paths
 
 
-def get_localid_cache_key(id_by, person_name, source):
-    return hashlib.sha256(f"{source}_{id_by.get('source', {}).get('code')}_{id_by.get('value')}_{person_name}".encode("utf-8")).hexdigest()[:32]
-
+# source: the code from sources.json (e.g. "kth", "uniarts")
+# id_by: identifiedBy dict for a person: id_by["source"]["code"] is typically (but not necessarily)
+# the same as the source code from sources.json; id_by["value"] is the local ID for the person
+# (e.g. "hfn", "foobar99"); name is FamilynameGivenname, e.g. "DoeJane", "DoeJohn".
+def get_localid_cache_key(id_by, name, source):
+    cleaned_name = unidecode(name).lower()[:32]
+    return f"{source}_{id_by.get('source', {}).get('code')}_{id_by.get('value')}_{cleaned_name}"
 
 # This is a heuristic, not an exact algorithm.
 # The idea is to first find the longest substring (loosely defined) shared between both a and b.
