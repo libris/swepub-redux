@@ -1440,7 +1440,12 @@ class PartOf:
         if part_of.body.get("meta"):
             if not self.body.get("meta"):
                 self.body["meta"] = []
-            self.body["meta"].append(part_of.body.get("meta"))
+            
+            meta = part_of.body.get("meta")
+            if isinstance(meta, list):
+                self.body["meta"] = meta
+            else:
+                self.body["meta"].append(meta)
 
     @property
     def isbns(self):
