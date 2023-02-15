@@ -8,6 +8,7 @@ from pipeline.auditors.issn import ISSNAuditor
 from pipeline.auditors.subjects import SubjectsAuditor
 from pipeline.auditors.oa import OAAuditor
 from pipeline.auditors.autoclassifier import AutoclassifierAuditor
+from pipeline.auditors.crossref import CrossrefAuditor
 from pipeline.publication import Publication
 
 AUDITORS = [
@@ -19,6 +20,7 @@ AUDITORS = [
     SubjectsAuditor(),
     OAAuditor(),
     AutoclassifierAuditor(),
+    CrossrefAuditor(),
 ]
 
 auditors = AUDITORS

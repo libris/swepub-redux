@@ -118,6 +118,30 @@
       "title": "ORCID matchat med lokalt ID",
       "text": "ORCID har lagts till om det förekommer i en annan post tillsammans med lokalt personID."
     },
+    "enrichment_flags_add_issn": {
+      "title": "ISSN tillagt",
+      "text": "ISSN har lagts till om det saknats. Berikningen sker med information från den externa datakällan Crossref."
+    },
+    "enrichment_flags_add_license": {
+      "title": "Licens",
+      "text": "Om licensinformation saknas har den lagts till i form av länk. Berikningen sker med information från den externa datakällan Crossref."
+    },
+    "enrichment_flags_add_published_online": {
+      "title": "Epub ahead of print / Online first",
+      "text": "Utgivningsdatum för artiklar som har publicerats online innan färdigställandet av tidskriftsnumret de kommer att ingå i har lagts till om det saknats. Berikningen sker med information från den externa datakällan Crossref."
+    },
+    "enrichment_flags_add_publisher": {
+      "title": "Utgivare",
+      "text": "Utgivare har lagts till om den saknats. Berikningen sker med information från den externa datakällan Crossref."
+    },
+    "enrichment_flags_add_publisher_location": {
+      "title": "Utgivningsort",
+      "text": "Utgivningsort har lagts till om den saknats. Berikningen sker med information från den externa datakällan Crossref."
+    },
+    "enrichment_flags_add_summary": {
+      "title": "Abstract",
+      "text": "Abstract/Sammanfattning har lagts till om den saknats. Berikningen sker med information från den externa datakällan Crossref."
+    },
     "harvest_overview": {
       "title": "Översikt",
       "text": "Översikten visar när hämtningen påbörjats och antalet poster som hämtats eller avvisats hittills. Därför kan antalet variera beroende på hur stor del av datamängden som bearbetats."

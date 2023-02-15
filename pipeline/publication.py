@@ -3,6 +3,12 @@ from pipeline.util import *
 import itertools
 import datetime
 from dateutil.parser import parse as parse_date
+from html import unescape
+
+import cld3
+from bs4 import BeautifulSoup
+from unidecode import unidecode
+
 
 """Max length in characters to compare text"""
 MAX_LENGTH_STRING_TO_COMPARE = 1000
@@ -40,6 +46,7 @@ ARTICLE_TYPES = [
     "https://id.kb.se/term/swepub/journal-issue",
 ]
 
+NO_PARENS_REGEX = re.compile(r"\([^()]*\)")
 
 class Publication:
     """Abstract publication format and API to access its properties """
@@ -769,6 +776,246 @@ class Publication:
             return True, [new_electroniclocator]
         return False, None
 
+    def add_crossref_data(self, crossref):
+        """Enriches publication with Crossref data where applicable"""
+        modified_properties = []
+
+        # Crossref metadata API JSON format:
+        # https://github.com/CrossRef/rest-api-doc/blob/master/api_format.md
+
+        # publisher => publication Publication / agent Agent label
+        # publisher-location => publication Publication / place Place label
+        # published-print => publication Publication date
+        self._add_crossref_pub_info(crossref, modified_properties)
+
+        # published-online => provisionActivity OnlineAvailability date
+        self._add_crossref_provision_activity(crossref, modified_properties)
+
+        # issn-type => partOf / identifiedBy ISSN value qualifier
+        self._add_crossref_issn(crossref, modified_properties)
+
+        # abstract => summary Summary label
+        self._add_crossref_summary(crossref, modified_properties)
+
+        # license => license License @id startDate
+        self._add_crossref_license(crossref, modified_properties)
+
+        if modified_properties:
+            return True, modified_properties
+        return False, modified_properties
+
+    def _add_crossref_pub_info(self, crossref, modified_properties):
+        if not self.publication_information:
+            self._body["publication"] = [{'@type': 'Publication'}]
+        pub_info = self.publication_information
+
+        if crossref.get("publisher") and not pub_info.body.get("agent", {}).get("label"):
+            pub_info.agent = {"@type": "Agent", "label": crossref.get("publisher")}
+            modified_properties.append({"name": "PublisherAdditionAuditor", "code": "add_publisher", "value": crossref.get("publisher")})
+
+        if crossref.get("publisher-location") and not pub_info.body.get("place", {}).get("label"):
+            pub_info.place = {"@type": "Place", "label": crossref.get("publisher-location")}
+            modified_properties.append({"name": "PublisherLocationAdditionAuditor", "code": "add_publisher_location", "value": crossref.get("publisher-location")})
+
+        if crossref.get("published-print") and not pub_info.date:
+            # https://github.com/CrossRef/rest-api-doc/blob/master/api_format.md#partial-date
+            pub_info.date = self._date_from_crossref_date_parts(crossref["published-print"]["date-parts"], year_only=True)
+            modified_properties.append({"name": "PublishedPrintAdditionAuditor", "code": "add_published_print", "value": pub_info.date})
+
+        if not pub_info._body.get("meta"):
+            pub_info._body["meta"] = []
+        pub_info._body["meta"].append(self._crossref_source_consulted())
+
+    def _add_crossref_provision_activity(self, crossref, modified_properties):
+        if crossref.get("published-online"):
+            if not self._body.get("provisionActivity"):
+                self._body["provisionActivity"] = []
+
+            if not any(d.get("@type", "") == "OnlineAvailability" for d in self._body["provisionActivity"]):
+                date_to_add = self._date_from_crossref_date_parts(crossref["published-online"]["date-parts"])
+                self._body["provisionActivity"].append({
+                    "@type": "OnlineAvailability",
+                    "date": date_to_add,
+                    "meta": [self._crossref_source_consulted()]
+                })
+                modified_properties.append({"name": "ProvisionActivityAdditionAuditor", "code": "add_published_online", "value": date_to_add})
+
+    def _add_crossref_issn(self, crossref, modified_properties):
+        # BEWARE! Crossref spec https://github.com/CrossRef/rest-api-doc/blob/master/api_format.md#issn-with-type
+        # has "One of eissn, pissn or lissn" but in actual data they use
+        # "electronic" and "print". Also unclear what lissn is.
+        new_issns = []
+        for c_issn in crossref.get("issn-type", []):
+            if c_issn.get("value") not in self.issns and c_issn.get("type") in ["electronic", "print"]:
+                new_issns.append(c_issn)
+        if new_issns:
+            # If there's more than one container-title there's no way of knowing which ISSN(s) it belongs to,
+            # so in that case we just skip enrichment.
+            # https://github.com/CrossRef/rest-api-doc/issues/11
+            if len(crossref.get("container-title", [])) > 1:
+                return
+
+            if not self._body.get("partOf"):
+                self._body["partOf"] = []
+
+            new_issn_part_of = {"@type": "Work"}
+            crossref_container_title = ""
+            # Only use container-title if there's no ISBN in the Crossref data. Because if there *is*, we
+            # can't know for sure what container-title refers to (ISSN or ISBN).
+            if crossref.get("container-title") and not crossref.get("isbn-type"):
+                crossref_container_title = unescape(crossref["container-title"][0])
+                new_issn_part_of["hasTitle"] = [{
+                    "@type": "Title",
+                    "mainTitle": crossref_container_title
+                }]
+
+            new_issn_part_of["identifiedBy"] = []
+            for new_issn in new_issns:
+                if not new_issn.get("type") in ["print", "electronic", "eissn", "pissn"]:
+                    continue
+                new_id_by = {
+                    "@type": "ISSN",
+                    "value": new_issn.get("value"),
+                }
+                if new_issn["type"] in ["electronic", "eissn"]:
+                    new_id_by["qualifier"] = "electronic"
+                elif new_issn["type"] in ["print", "pissn"]:
+                    new_id_by["qualifier"] = "print"
+                new_issn_part_of["identifiedBy"].append(new_id_by)
+
+            if new_issn_part_of["identifiedBy"]:
+                new_issn_part_of["meta"] = [self._crossref_source_consulted()]
+                issn_event_log_value = ", ".join(map(lambda x: f"{x['value']} ({x['@type']})", new_issn_part_of["identifiedBy"]))
+                if new_issn_part_of.get("hasTitle"):
+                    issn_event_log_value = f"{crossref_container_title}: {issn_event_log_value}"
+
+                # Now check if there's an existing partOf or partOf.hasSeries that
+                # we should add the new ISSN(s) to
+                if crossref_container_title:
+                    for outer_part_of in self.part_of:
+                        for part_of in [outer_part_of] + outer_part_of.has_series:
+                            if part_of.main_title:
+                                similarity = get_common_substring_factor(self._get_title_for_comparison(part_of.main_title), self._get_title_for_comparison(crossref_container_title))
+                                if similarity > 0.6:
+                                    found_matching_title = True
+                                    part_of.add_issns(PartOf(new_issn_part_of))
+                                    modified_properties.append({"name": "ISSNAdditionAuditor", "code": "add_issn", "value": issn_event_log_value})
+                                    return
+
+                # ...otherwise, just add the new ISNS(s) as a new PartOf
+                self._body["partOf"].append(new_issn_part_of)
+                modified_properties.append({"name": "ISSNAdditionAuditor", "code": "add_issn", "value": issn_event_log_value})
+
+    @staticmethod
+    def _get_title_for_comparison(s):
+        return re.sub(NO_PARENS_REGEX, "", unescape(s))
+
+    def _add_crossref_summary(self, crossref, modified_properties):
+        # "Abstract as a JSON string or a JATS XML snippet encoded into a JSON string"
+        c_summary = crossref.get("abstract")
+        if c_summary and not self.summary:
+            new_summary_label = ""
+            # If we're dealing with JATS XML, do it one way...
+            if c_summary.startswith("<jats"):
+                soup = BeautifulSoup(c_summary, "lxml")
+                # There can be multiple elements: <jats:title>, several <jats:p>, etc.
+                # Get rid of the title and its content (which is always (?) just
+                # "Abstract"), keep everything else.
+                if soup.find("jats:title"):
+                    soup.find("jats:title").extract()
+                # Get the text without tags
+                extracted_abstract = soup.get_text()
+                if extracted_abstract:
+                    new_summary_label = extracted_abstract
+            # Otherwise just strip any tags
+            else:
+                soup = BeautifulSoup(c_summary, "html.parser")
+                cleaned_abstract = soup.get_text()
+                if cleaned_abstract:
+                    new_summary_label = cleaned_abstract
+            if new_summary_label:
+                new_summary = {
+                    "@type": "Summary",
+                    "label": new_summary_label
+                }
+                # Now try to figure out the language
+                language_prediction = cld3.get_language(new_summary_label)
+                if language_prediction and language_prediction.is_reliable:
+                    if language_prediction.language == "en":
+                        new_summary["language"] = {
+                            "@type": "Language",
+                            "@id": "https://id.kb.se/language/eng",
+                            "code": "eng"
+                        }
+                    elif language_prediction.language == "sv":
+                        new_summary["language"] = {
+                            "@type": "Language",
+                            "@id": "https://id.kb.se/language/swe",
+                            "code": "swe"
+                        }
+                new_summary["meta"] = [self._crossref_source_consulted()]
+                self._body["instanceOf"]["summary"] = [new_summary]
+                modified_properties.append({"name": "SummaryAdditionAuditor", "code": "add_summary", "value": new_summary_label})
+
+    def _add_crossref_license(self, crossref, modified_properties):
+        c_license = crossref.get("license")
+        if c_license:
+            for license in c_license:
+                # Crossref content-version and Swepub publication status must match.
+                # "vor" is equal to Swepub's Published.
+                # "am" is equal to Swepub's Accepted.
+                # If there is no publication status in the Swepub publication,
+                # it's treated as Published.
+                if (
+                    (
+                        license["content-version"] == "vor"
+                        and self.publication_status == "https://id.kb.se/term/swepub/Published"
+                    )
+                    or (
+                        license["content-version"] == "am"
+                        and self.publication_status == "https://id.kb.se/term/swepub/Accepted"
+                    )
+                    or (
+                        license["content-version"] == "vor"
+                        and not self.publication_status
+                    )
+                ):
+                    # 'start' isn't always present, despite it being required by the spec
+                    if not license.get("start"):
+                        continue
+                    if not self._body.get("license"):
+                        self._body["license"] = []
+                    self._body["license"].append(
+                        {
+                            "@id": license["URL"],
+                            "@type": "License",
+                            "startDate": license["start"]["date-time"],
+                            "meta": [self._crossref_source_consulted()],
+                        }
+                    )
+                    modified_properties.append({"name": "LicenseAdditionAuditor", "code": "add_license", "value": license["URL"]})
+                    continue
+
+    @staticmethod
+    def _date_from_crossref_date_parts(date_parts, year_only=False):
+        if year_only:
+            return str(date_parts[0][0])
+        return "-".join(f"{n}".zfill(2) for n in date_parts[0])
+
+    @staticmethod
+    def _crossref_source_consulted():
+        return {
+            "@type": "AdminMetadata",
+            "sourceConsulted": [
+                {
+                    "@type": "SourceData",
+                    "label": "Information hämtad från Crossref.",
+                    "uri": "https://crossref.org/",
+                    "date": datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc).isoformat()
+                }
+            ]
+        }
+
     @property
     def electronic_locators(self):
         """ Return array of ElectronicLocator objects from electronicLocator field """
@@ -1017,6 +1264,31 @@ class HasSeries:
                 return i.get('partNumber')
         return None
 
+    @property
+    def issns(self):
+        """Return values for identifiedBy[?(@.@type=="ISSN")].value, Empty array if not exist """
+        return get_ids(self.body, 'identifiedBy', 'ISSN')
+
+    def add_issns(self, part_of):
+        """ Adds ISSN from part_of if not already exist, if it does then adds 'qualifier' if not set.
+        Also appends 'meta' from part_of.
+        """
+        for new_issn in part_of.issns:
+            new_issn_dict = _get_identified_by_dict(part_of.body, 'ISSN', new_issn)
+            if new_issn in self.issns:
+                self_issns_dict = _get_identified_by_dict(self.body, 'ISSN', new_issn)
+                if new_issn_dict.get('qualifier') and not self_issns_dict.get('qualifier'):
+                    self_issns_dict.update({'qualifier': new_issn_dict.get('qualifier')})
+            else:
+                try:
+                    self.body['identifiedBy'].append(new_issn_dict)
+                except KeyError:
+                    self.body.update({'identifiedBy': [new_issn_dict]})
+        if part_of.body.get("meta"):
+            if not self.body.get("meta"):
+                self.body["meta"] = []
+            self.body["meta"].append(part_of.body.get("meta"))
+
     def has_same_main_title(self, has_series):
         """True if part_of has the same main title"""
         return compare_text(self.main_title, has_series.main_title, self.STRING_MATCH_HASSERIES_MAIN_TITLE)
@@ -1151,7 +1423,9 @@ class PartOf:
         return get_ids(self.body, 'identifiedBy', 'ISSN')
 
     def add_issns(self, part_of):
-        """ Adds ISSN from part_of if not already exist, if it does then adds 'qualifier' if not set """
+        """ Adds ISSN from part_of if not already exist, if it does then adds 'qualifier' if not set.
+        Also appends 'meta' from part_of.
+        """
         for new_issn in part_of.issns:
             new_issn_dict = _get_identified_by_dict(part_of.body, 'ISSN', new_issn)
             if new_issn in self.issns:
@@ -1163,6 +1437,15 @@ class PartOf:
                     self.body['identifiedBy'].append(new_issn_dict)
                 except KeyError:
                     self.body.update({'identifiedBy': [new_issn_dict]})
+        if part_of.body.get("meta"):
+            if not self.body.get("meta"):
+                self.body["meta"] = []
+            
+            meta = part_of.body.get("meta")
+            if isinstance(meta, list):
+                self.body["meta"] = meta
+            else:
+                self.body["meta"].append(meta)
 
     @property
     def isbns(self):
@@ -1238,6 +1521,11 @@ class PublicationInformation:
     @property
     def date(self):
         return self.body.get('date')
+
+    @date.setter
+    def date(self, date):
+        """ Sets date from date string (YYYY) """
+        self._body['date'] = date
 
     @property
     def agent(self):

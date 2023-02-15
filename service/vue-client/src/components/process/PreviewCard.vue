@@ -141,6 +141,17 @@ export default {
                     </a>
                   </p>
                 </template>
+                <template v-else-if="flag.code === 'add_license'">
+                  <p>
+                    <a
+                      :href="`${flag.new_value}`"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Länk till licensen">
+                      {{flag.new_value}}
+                    </a>
+                  </p>
+                </template>
                 <template v-else>
                   <p>{{flag.new_value | joined }}</p>
                 </template>
