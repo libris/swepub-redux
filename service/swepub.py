@@ -27,7 +27,7 @@ from pypika.terms import BasicCriterion
 from pypika import functions as fn
 from collections import Counter
 from tempfile import NamedTemporaryFile
-import cld3
+from simplemma.langdetect import lang_detector
 
 from service.utils import bibliometrics
 from service.utils.common import *
@@ -417,8 +417,8 @@ def classify():
 
     annif_input = f"{title} {abstract} {keywords}"
 
-    language_prediction = cld3.get_language(annif_input) or ""
-    if language_prediction.language == "sv":
+    predicted_lang, lang_score = lang_detector(annif_input, lang=("sv", "en"))[0]
+    if predicted_lang == "sv":
         annif_url = ANNIF_SV_URL
     else:
         annif_url = ANNIF_EN_URL

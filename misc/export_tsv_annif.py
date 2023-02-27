@@ -1,7 +1,7 @@
 import sys
 
 import orjson
-import cld3
+from simplemma.langdetect import lang_detector
 
 from pipeline.storage import get_connection, dict_factory
 from pipeline.publication import Publication
@@ -58,11 +58,10 @@ def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_lev
 
                 # Remove summary if summary not in target language. We check all summaries
                 # (even the language-tagged ones) because we don't trust input.
-                language_prediction_summary = cld3.get_language(summary)
+                predicted_lang, lang_score = lang_detector(summary, lang=("sv", "en"))[0]
                 if (
-                    not language_prediction_summary
-                    or language_prediction_summary.language != target_language
-                    or not language_prediction_summary.is_reliable
+                    predicted_lang != target_language
+                    or score < 0.5:
                 ):
                     summary = ""
 
