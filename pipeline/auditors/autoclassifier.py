@@ -1,7 +1,7 @@
 from os import getenv, path
 import json
 
-import cld3
+from simplemma.langdetect import lang_detector
 
 from pipeline.auditors import BaseAuditor
 from pipeline.util import get_title_by_language
@@ -78,16 +78,12 @@ class AutoclassifierAuditor(BaseAuditor):
     def _auto_classify(self, publication, audit_events, session):
         summary = (publication.summary or "")[:5000].strip()
 
-        language_prediction_summary = cld3.get_language(summary)
+        language, lang_score = lang_detector(summary, lang=("sv", "en"))[0]
         # If we can't figure out the language of the summary, skip
         if (
-            not language_prediction_summary
-            or not language_prediction_summary.is_reliable
+            language not in ["sv", "en"]
+            or score < 0.5
         ):
-            return publication, audit_events, False
-        language = language_prediction_summary.language
-        # If guessed language not English or Swedish, skip
-        if language not in ["en", "sv"]:
             return publication, audit_events, False
 
         title = get_title_by_language(publication, language)

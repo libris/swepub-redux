@@ -5,7 +5,7 @@ import datetime
 from dateutil.parser import parse as parse_date
 from html import unescape
 
-import cld3
+from simplemma.langdetect import lang_detector
 from bs4 import BeautifulSoup
 from unidecode import unidecode
 
@@ -939,15 +939,15 @@ class Publication:
                     "label": new_summary_label
                 }
                 # Now try to figure out the language
-                language_prediction = cld3.get_language(new_summary_label)
-                if language_prediction and language_prediction.is_reliable:
-                    if language_prediction.language == "en":
+                predicted_lang, lang_score = lang_detector(new_summary_label, lang=("sv", "en"))[0]
+                if predicted_lang in ["sv", "en"] and lang_score >= 0.5:
+                    if predicted_lang == "en":
                         new_summary["language"] = {
                             "@type": "Language",
                             "@id": "https://id.kb.se/language/eng",
                             "code": "eng"
                         }
-                    elif language_prediction.language == "sv":
+                    elif predicted_lang == "sv":
                         new_summary["language"] = {
                             "@type": "Language",
                             "@id": "https://id.kb.se/language/swe",

@@ -5,7 +5,7 @@ from jsonpath_rw import parse
 import re
 import Levenshtein
 import hashlib
-import cld3
+from simplemma.langdetect import lang_detector
 from unidecode import unidecode
 from requests.packages.urllib3.util.retry import Retry
 from random import random
@@ -551,8 +551,8 @@ def get_title_by_language(publication, language):
         sub_title = t.get("subtitle", "").strip()
         if sub_title:
             whole_title = f"{whole_title} {sub_title}"
-        language_prediction_title = cld3.get_language(whole_title)
-        if not language_prediction_title or language_prediction_title.language != language or not language_prediction_title.is_reliable:
+        predicted_lang, lang_score = lang_detector(whole_title, lang=("sv", "en"))[0]
+        if predicted_lang != language or lang_score < 0.5:
             continue
         title = whole_title
         break
@@ -574,8 +574,8 @@ def get_summary_by_language(publication, language):
 
     # Remove summary if summary not in target language. We check all summaries
     # (even the language-tagged ones) because we don't trust input.
-    language_prediction_summary = cld3.get_language(summary)
-    if not language_prediction_summary or language_prediction_summary.language != language or not language_prediction_summary.is_reliable:
+    predicted_lang, lang_score = lang_detector(summary, lang=("sv", "en"))[0]
+    if predicted_lang != language or lang_score < 0.5:
         summary = ""
 
     return summary
