@@ -42,7 +42,7 @@ export default {
           key: 'duplicateIds',
           component: 'TableDataList',
           label: 'Sammanslagna ID',
-          selected: false,
+          selected: true,
           group: 'post',
         },
         {
@@ -55,7 +55,7 @@ export default {
           key: 'source',
           label: 'Organisation',
           component: 'TableDataList',
-          selected: false,
+          selected: true,
           group: 'org',
         },
         {
@@ -129,7 +129,7 @@ export default {
             renderComponent: 'TableDataLink',
             unshift: 'https://id.kb.se/term/swepub/',
           },
-          selected: false,
+          selected: true,
           group: 'publication',
         },
         {
@@ -145,13 +145,13 @@ export default {
         {
           key: 'contentMarking',
           label: 'Innehållsmärkning',
-          selected: false,
+          selected: true,
           group: 'publication',
         },
         {
           key: 'publicationYear',
           label: 'Utgivningsår',
-          selected: false,
+          selected: true,
           group: 'publication',
         },
         {
@@ -161,7 +161,7 @@ export default {
           props: {
             unshift: 'https://id.kb.se/term/swepub/',
           },
-          selected: false,
+          selected: true,
           group: 'publication',
         },
         {
@@ -193,7 +193,7 @@ export default {
           key: 'DOI',
           component: 'TableDataList',
           label: 'DOI',
-          selected: false,
+          selected: true,
           group: 'publication',
         },
         {
@@ -320,7 +320,7 @@ export default {
             targetKeys: ['threeDigitTopics'],
             renderFn: this.extractSubject,
           },
-          selected: false,
+          selected: true,
           group: 'subject',
         },
         {
