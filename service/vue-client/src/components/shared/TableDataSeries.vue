@@ -32,10 +32,7 @@ export default {
 
 <template>
   <div>
-    <table
-      v-for="(value, index) in tdValue"
-      :key="index"
-    >
+    <table v-for="(value, index) in tdValue" :key="index">
       <tbody>
         <tr v-for="key in Object.keys(value)" :key="key">
           <td><strong>{{key}}</strong></td>
