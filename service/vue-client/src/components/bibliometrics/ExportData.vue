@@ -233,45 +233,15 @@ export default {
           label: 'Fulltextlänk',
           component: 'TableDataLink',
           selected: false,
-          group: 'publication',
+          group: 'open_access',
         },
         {
           key: 'openAccess',
           label: 'Öppen tillgång',
           selected: false,
           component: 'TableDataBoolean',
-          group: 'publication',
+          group: 'open_access',
         },
-        /* TODO: add the parameters below when revamping frontend */
-        /* {
-          key: 'openAccessVersion',
-          label: 'Öppet tillgänglig version',
-          selected: false,
-          component: 'TableDataLink',
-          group: 'publication',
-        },
-        {
-          key: 'DOAJ',
-          label: 'DOAJ',
-          selected: false,
-          component: 'TableDataBoolean',
-          group: 'publication',
-        },
-        {
-          key: 'autoclassified',
-          label: 'Autoklassificerad',
-          selected: false,
-          component: 'TableDataBoolean',
-          group: 'publication',
-        },
-        {
-          key: 'series',
-          label: 'Serie',
-          selected: false,
-          component: 'TableDataList',
-          group: 'publication',
-        },
-        */
         {
           key: 'publicationChannel',
           label: 'Publiceringskanal',
@@ -334,6 +304,34 @@ export default {
           selected: false,
           group: 'subject',
         },
+        {
+          key: 'autoclassified',
+          label: 'Autoklassning',
+          selected: false,
+          group: 'subject',
+          component: 'TableDataBoolean',
+        },
+        {
+          key: 'DOAJ',
+          label: 'DOAJ',
+          selected: false,
+          component: 'TableDataBoolean',
+          group: 'open_access',
+        },
+        {
+          key: 'openAccessVersion',
+          label: 'Öppen tillgång-version',
+          component: 'TableDataBoolean',
+          group: 'open_access',
+          selected: false,
+        },
+        {
+          key: 'series',
+          label: 'Serie',
+          selected: false,
+          component: 'TableDataSeries',
+          group: 'channel',
+        },
       ],
     };
   },
@@ -379,7 +377,12 @@ export default {
           id: 'subject',
           label: 'Forskningsämne',
         },
+        {
+          id: 'open_access',
+          label: 'Öppen tillgång',
+        },
       ];
+
       return groups.map((group) => ({
         ...group,
         fields: this.fields.filter((field) => {
@@ -398,11 +401,13 @@ export default {
       if (type === 'preview') {
         queryCopy.limit = this.previewLimit;
       }
+
       if (type === 'export') {
         // specify fields for export here
         const fields = this.selectKeysForExport();
         queryCopy.fields = fields;
       }
+
       const jsonBody = JSON.stringify(queryCopy);
       Network.post(this.apiEndpoint, jsonBody, acceptHeader)
         .then((response) => {
@@ -468,85 +473,114 @@ export default {
 </script>
 
 <template>
-<section class="ExportData"
+<section
+  class="ExportData"
   id="preview-section"
   aria-labelledby="preview-heading"
   ref="previewSection"
   :aria-busy="previewLoading"
-  aria-live="polite">
+  aria-live="polite"
+>
   <!-- loading -->
   <vue-simple-spinner v-if="previewLoading" class="ExportData-previewLoading"/>
+
   <!-- error -->
   <div v-else-if="previewError">
     <p class="error" role="alert" aria-atomic="true">{{previewError}}</p>
   </div>
+
   <!-- has preview data -->
   <template v-else>
     <hr class="horizontal-wrapper divided-section">
+
     <h2 id="preview-heading" class="horizontal-wrapper heading heading-md">
       Förhandsgranskning av export
     </h2>
+
     <!-- no hits -->
     <p v-if="previewData.total === 0" class="horizontal-wrapper">
-      Inga träffar</p>
+      Inga träffar
+    </p>
+
     <!-- export limit exceeded -->
     <div v-else-if="exportLimitExceededWarning" class="horizontal-wrapper">
       <span class="error" role="alert" aria-atomic="true">{{exportLimitExceededWarning}}</span>
     </div>
+
     <!-- export possible -->
     <div v-else>
       <div class="horizontal-wrapper">
-        <p class="ExportData-descr" v-html="exportDescr" id="export-data-descr">
-        </p>
+        <p class="ExportData-descr" v-html="exportDescr" id="export-data-descr" />
       </div>
+
       <!-- field toggle -->
       <section class="ExportData-pickerContainer horizontal-wrapper"
         aria-labelledby="export-data-descr"
-        aria-controls="preview-section">
+        aria-controls="preview-section"
+      >
         <div class="ExportData-checkAll">
           <input type="checkbox"
             id="export_checkAll"
             :checked="allIsChecked"
-            @change="toggleAll">
+            @change="toggleAll"
+          >
+
           <label class="is-inline" for="export_checkAll">Välj samtliga</label>
         </div>
+
         <div class="ExportData-toggleGroups">
-          <div class="ExportData-toggleGroup"
+          <div
+            class="ExportData-toggleGroup"
             role="group"
             :aria-labelledby="`group-${group.id}`"
             v-for="group in fieldGroups"
-            :key="group.id">
+            :key="group.id"
+          >
             <h3 class="ExportData-toggleGroupLegend heading heading-xs" :id="`group-${group.id}`">
-              {{group.label}}</h3>
+              {{group.label}}
+            </h3>
+
             <ul class="ExportData-togglesGroupList" :aria-labelledby="`group-${group.id}`">
-              <li class="ExportData-togglesGroupListItem"
+              <li
+                class="ExportData-togglesGroupListItem"
                 v-for="(field, index) in group.fields"
-                :key="`${group.id}-${field.key}-${index}`">
+                :key="`${group.id}-${field.key}-${index}`"
+              >
                 <checkbox-toggle :id="`${group.id}-${field.key}-${index}`"
                   :label="field.label"
-                  v-model="field.selected"/>
+                  v-model="field.selected"
+                />
               </li>
             </ul>
           </div>
         </div>
       </section>
+
       <!-- export btns -->
-      <export-buttons :exportLoading="exportLoading"
+      <export-buttons
+        :exportLoading="exportLoading"
         :exportAllowed="exportAllowed"
         :exportError="exportError"
         @export-json="exportJson"
         @export-csv="exportCsv"
-        @export-tsv="exportTsv"/>
+        @export-tsv="exportTsv"
+      />
+
       <p class="bold" v-if="selectedFields.length === 0" role="status">
-        Inga fält valda</p>
+        Inga fält valda
+      </p>
+
       <template v-else>
         <!-- hits info -->
         <p class="bold" role="status">{{previewInfo}}</p>
+
         <!-- preview table -->
-        <preview-table :previewData="previewData"
+        <preview-table
+          :previewData="previewData"
           :tableCols="selectedFields"
           hitsProp='hits'
-          tableLayout='auto'/>
+          tableLayout='auto'
+        />
       </template>
     </div>
   </template>
