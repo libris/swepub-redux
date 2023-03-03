@@ -4,6 +4,7 @@ const TableDataList = () => import('@/components/shared/TableDataList');
 const TableDataBoolean = () => import('@/components/shared/TableDataBoolean');
 const TableDataMultiLine = () => import('@/components/shared/TableDataMultiLine');
 const TableDataId = () => import('@/components/shared/TableDataId');
+const TableDataSeries = () => import('@/components/shared/TableDataSeries');
 
 export default {
   name: 'preview-table',
@@ -13,6 +14,7 @@ export default {
     TableDataBoolean,
     TableDataMultiLine,
     TableDataId,
+    TableDataSeries,
   },
   props: {
     previewData: {
@@ -41,8 +43,6 @@ export default {
   },
   mounted() {
   },
-  watch: {
-  },
 };
 </script>
 
@@ -57,23 +57,30 @@ export default {
             :title="col.label">{{col.label}}</th>
         </tr>
       </thead>
+
       <tbody>
         <tr v-for="item in previewData[hitsProp]" :key="item.record_id">
-          <td v-for="(col, index) in tableCols"
+          <td
+            v-for="(col, index) in tableCols"
             :key="`td-${col.key}-${index}`"
-            :class="`col-${col.key}`">
+            :class="`col-${col.key}`"
+          >
             <!-- Renders the component and passes props
             specified in tableCols component prop -->
             <!-- must force-render a falsey boolean value -->
-            <component v-if="(col.component &&
+            <component
+              v-if="(col.component &&
               (item[col.key]) || col.component === 'TableDataBoolean')"
               :is="col.component"
               :tdKey="col.key"
               :tdValue="item[col.key]"
               :trData="item"
-              v-bind="col.props"></component>
-            <span v-else-if="item[col.key]"
-              :title="item[col.key]">{{item[col.key]}}</span>
+              v-bind="col.props"
+            />
+
+            <span v-else-if="item[col.key]" :title="item[col.key]">
+              {{item[col.key]}}
+            </span>
           </td>
         </tr>
       </tbody>
