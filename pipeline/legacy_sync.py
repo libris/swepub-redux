@@ -295,7 +295,7 @@ def _update_server_info():
         for source in sources.values():
             name = f"{source['name']} - Swepub"
             base_url = source["sets"][0]["url"]
-            origin = f"SWEPUB_{source['code'].upper()}"
+            origin = f"{source['code'].upper()}_SWEPUB"
 
             try:
                 mysql_cur.execute(
