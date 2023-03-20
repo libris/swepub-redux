@@ -4,19 +4,33 @@ import { mapGetters } from 'vuex';
 import ExportMixin from '@/components/mixins/ExportMixin';
 import * as Network from '@/utils/Network';
 import VueSimpleSpinner from 'vue-simple-spinner';
+import SelectSource from '@/components/shared/SelectSource';
+import SelectBase from '@/components/shared/SelectBase';
 
-const PreviewTable = () => import('@/components/shared/PreviewTable');
-const CheckboxToggle = () => import('@/components/shared/CheckboxToggle');
 const ExportButtons = () => import('@/components/shared/ExportButtons');
+
+const TableDataLink = () => import('@/components/shared/TableDataLink');
+const TableDataList = () => import('@/components/shared/TableDataList');
+const TableDataBoolean = () => import('@/components/shared/TableDataBoolean');
+const TableDataMultiLine = () => import('@/components/shared/TableDataMultiLine');
+const TableDataId = () => import('@/components/shared/TableDataId');
+const TableDataSeries = () => import('@/components/shared/TableDataSeries');
 
 export default {
   name: 'export-data',
   mixins: [ExportMixin],
   components: {
-    PreviewTable,
     VueSimpleSpinner,
-    CheckboxToggle,
     ExportButtons,
+    SelectSource,
+    SelectBase,
+
+    TableDataLink,
+    TableDataList,
+    TableDataBoolean,
+    TableDataMultiLine,
+    TableDataId,
+    TableDataSeries,
   },
   props: {
     query: {
@@ -25,6 +39,8 @@ export default {
   },
   data() {
     return {
+      previewOrg: null,
+      sources: [],
       fields: [
         {
           key: 'recordId',
@@ -333,6 +349,44 @@ export default {
           group: 'channel',
         },
       ],
+      fieldGroups: [
+        {
+          id: 'post',
+          label: 'Post',
+          selected: false,
+          indeterminate: false,
+        },
+        {
+          id: 'org',
+          label: 'Organisation/upphov',
+          selected: false,
+          indeterminate: false,
+        },
+        {
+          id: 'publication',
+          label: 'Publikation',
+          selected: false,
+          indeterminate: false,
+        },
+        {
+          id: 'channel',
+          label: 'Publiceringskanal',
+          selected: false,
+          indeterminate: false,
+        },
+        {
+          id: 'subject',
+          label: 'Forskningsämne',
+          selected: false,
+          indeterminate: false,
+        },
+        {
+          id: 'open_access',
+          label: 'Öppen tillgång',
+          selected: false,
+          indeterminate: false,
+        },
+      ],
     };
   },
   computed: {
@@ -352,53 +406,38 @@ export default {
       return this.fields.filter((field) => field.selected);
     },
     previewInfo() {
-      return `Visar ${this.previewLimit > this.previewData.total ? this.previewData.total : this.previewLimit}
-              av ${this.previewData.total} ${this.previewData.total === 1 ? 'post' : 'poster'}`;
+      return `${this.previewData.total} ${this.previewData.total === 1 ? 'post' : 'poster'}`;
     },
-    fieldGroups() {
-      const groups = [
-        {
-          id: 'post',
-          label: 'Post',
-        },
-        {
-          id: 'org',
-          label: 'Organisation/upphov',
-        },
-        {
-          id: 'publication',
-          label: 'Publikation',
-        },
-        {
-          id: 'channel',
-          label: 'Publiceringskanal',
-        },
-        {
-          id: 'subject',
-          label: 'Forskningsämne',
-        },
-        {
-          id: 'open_access',
-          label: 'Öppen tillgång',
-        },
-      ];
-
-      return groups.map((group) => ({
-        ...group,
-        fields: this.fields.filter((field) => {
+  },
+  methods: {
+    updateGroups() {
+      this.fieldGroups = this.fieldGroups.map((group) => {
+        const fields = this.fields.filter((field) => {
           if (field.hasOwnProperty('group')) {
             return field.group === group.id;
             // eslint-disable-next-line
           } console.warn(`${field.label} has no group!`);
           return false;
-        }),
-      }));
+        });
+        const selectedFields = fields.filter((field) => field.selected);
+
+        return {
+          ...group,
+          fields,
+          selected: selectedFields.length === fields.length,
+          indeterminate: selectedFields.length > 0 && selectedFields.length < fields.length,
+        };
+      });
     },
-  },
-  methods: {
     fetchData(type, success, fail, acceptHeader) {
       const queryCopy = { ...this.query };
       if (type === 'preview') {
+        if (this.previewOrg != null) {
+          queryCopy.org = [this.previewOrg];
+        } else {
+          delete queryCopy.org;
+        }
+
         queryCopy.limit = this.previewLimit;
       }
 
@@ -464,132 +503,414 @@ export default {
       });
       return mapped;
     },
+    onGroupChange(group) {
+      const selectedFields = group.fields.filter((field) => field.selected);
+
+      group.fields.forEach((groupField) => {
+        const field = this.fields.find((f) => f.key === groupField.key);
+        field.selected = selectedFields.length !== group.fields.length;
+      });
+
+      this.updateGroups();
+    },
+    getFieldPreview(field) {
+      if (this.previewData != null && this.previewData.hits.length > 0) {
+        const hit = this.previewData.hits.find((_hit) => _hit[field.key] != null
+          && _hit[field.key].length > 0);
+
+        if (hit != null) {
+          return hit[field.key];
+        }
+      }
+
+      return '';
+    },
+    fetchSources() {
+      Network.get('/api/v1/info/sources')
+        .then(({ sources }) => {
+          if (sources != null && sources.length > 0) {
+            this.sources = sources;
+            this.previewOrg = sources[0].code;
+          }
+        });
+    },
+    onGoNextSource() {
+      const currentIndex = this.sources.findIndex((source) => source.code === this.previewOrg);
+      if (currentIndex + 1 === this.sources.length) {
+        this.previewOrg = this.sources[0].code;
+      } else {
+        this.previewOrg = this.sources[currentIndex + 1].code;
+      }
+    },
   },
   mounted() {
+    this.updateGroups();
+    this.fetchSources();
   },
   watch: {
+    previewOrg() {
+      this.getPreview();
+    },
   },
 };
 </script>
 
 <template>
-<section
-  class="ExportData"
-  id="preview-section"
-  aria-labelledby="preview-heading"
-  ref="previewSection"
-  :aria-busy="previewLoading"
-  aria-live="polite"
->
-  <!-- loading -->
-  <vue-simple-spinner v-if="previewLoading" class="ExportData-previewLoading"/>
+  <section
+    class="ExportData"
+    id="preview-section"
+    aria-labelledby="preview-heading"
+    ref="previewSection"
+    :aria-busy="previewLoading"
+    aria-live="polite"
+  >
+    <!-- loading -->
+    <vue-simple-spinner v-if="previewLoading" class="ExportData-previewLoading" />
 
-  <!-- error -->
-  <div v-else-if="previewError">
-    <p class="error" role="alert" aria-atomic="true">{{previewError}}</p>
-  </div>
-
-  <!-- has preview data -->
-  <template v-else>
-    <hr class="horizontal-wrapper divided-section">
-
-    <h2 id="preview-heading" class="horizontal-wrapper heading heading-md">
-      Förhandsgranskning av export
-    </h2>
-
-    <!-- no hits -->
-    <p v-if="previewData.total === 0" class="horizontal-wrapper">
-      Inga träffar
-    </p>
-
-    <!-- export limit exceeded -->
-    <div v-else-if="exportLimitExceededWarning" class="horizontal-wrapper">
-      <span class="error" role="alert" aria-atomic="true">{{exportLimitExceededWarning}}</span>
+    <!-- error -->
+    <div v-else-if="previewError">
+      <p class="error" role="alert" aria-atomic="true">{{ previewError }}</p>
     </div>
 
-    <!-- export possible -->
-    <div v-else>
-      <div class="horizontal-wrapper">
-        <p class="ExportData-descr" v-html="exportDescr" id="export-data-descr" />
-      </div>
+    <!-- has preview data -->
+    <template v-else>
+      <hr class="horizontal-wrapper divided-section">
 
-      <!-- field toggle -->
-      <section class="ExportData-pickerContainer horizontal-wrapper"
-        aria-labelledby="export-data-descr"
-        aria-controls="preview-section"
-      >
-        <div class="ExportData-checkAll">
-          <input type="checkbox"
-            id="export_checkAll"
-            :checked="allIsChecked"
-            @change="toggleAll"
-          >
+      <h2 id="preview-heading" class="horizontal-wrapper heading heading-md">
+        Val av parametrar
+      </h2>
 
-          <label class="is-inline" for="export_checkAll">Välj samtliga</label>
-        </div>
-
-        <div class="ExportData-toggleGroups">
-          <div
-            class="ExportData-toggleGroup"
-            role="group"
-            :aria-labelledby="`group-${group.id}`"
-            v-for="group in fieldGroups"
-            :key="group.id"
-          >
-            <h3 class="ExportData-toggleGroupLegend heading heading-xs" :id="`group-${group.id}`">
-              {{group.label}}
-            </h3>
-
-            <ul class="ExportData-togglesGroupList" :aria-labelledby="`group-${group.id}`">
-              <li
-                class="ExportData-togglesGroupListItem"
-                v-for="(field, index) in group.fields"
-                :key="`${group.id}-${field.key}-${index}`"
-              >
-                <checkbox-toggle :id="`${group.id}-${field.key}-${index}`"
-                  :label="field.label"
-                  v-model="field.selected"
-                />
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <!-- export btns -->
-      <export-buttons
-        :exportLoading="exportLoading"
-        :exportAllowed="exportAllowed"
-        :exportError="exportError"
-        @export-json="exportJson"
-        @export-csv="exportCsv"
-        @export-tsv="exportTsv"
-      />
-
-      <p class="bold" v-if="selectedFields.length === 0" role="status">
-        Inga fält valda
+      <!-- no hits -->
+      <p v-if="previewData.total === 0" class="horizontal-wrapper">
+        Inga träffar
       </p>
 
-      <template v-else>
-        <!-- hits info -->
-        <p class="bold" role="status">{{previewInfo}}</p>
+      <!-- export limit exceeded -->
+      <div v-else-if="exportLimitExceededWarning" class="horizontal-wrapper">
+        <span class="error" role="alert" aria-atomic="true">{{ exportLimitExceededWarning }}</span>
+      </div>
 
-        <!-- preview table -->
-        <preview-table
-          :previewData="previewData"
-          :tableCols="selectedFields"
-          hitsProp='hits'
-          tableLayout='auto'
-        />
-      </template>
-    </div>
-  </template>
-</section>
+      <!-- export possible -->
+      <div v-else>
+        <div class="horizontal-wrapper">
+          <p class="ExportData-descr" v-html="exportDescr" id="export-data-descr" />
+
+          <div class="ExportData-tools">
+            <div></div>
+
+            <div class="buttons-wrapper">
+              <!-- hits info -->
+              <p class="bold" role="status">
+                <span class="phone">
+                  Exportera
+                </span>
+                {{ ' ' + previewInfo }}
+              </p>
+
+              <!-- export btns -->
+              <export-buttons
+                :exportLoading="exportLoading"
+                :exportAllowed="exportAllowed"
+                :exportError="exportError"
+                @export-json="exportJson"
+                @export-csv="exportCsv"
+                @export-tsv="exportTsv"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- field toggle -->
+        <section
+          class="ExportData-pickerContainer horizontal-wrapper"
+          aria-labelledby="export-data-descr"
+          aria-controls="preview-section"
+        >
+          <table class="ExportData-table">
+            <thead>
+              <tr>
+                <th class="desktop-checkAll">
+                  <input
+                    type="checkbox"
+                    id="export_checkAll"
+                    :checked="allIsChecked"
+                    @change="toggleAll"
+                  />
+                </th>
+
+                <th class="desktop-cell">
+                  Parametrar ({{ selectedFields.length }}/{{ fields.length }})
+                </th>
+
+                <th>
+                  <div class="ExportData-previewSelector">
+                    <div class="select-container">
+                      Förhandsgranska
+                      <select-base
+                        v-model="previewOrg"
+                        :providedOptions="sources"
+                        :value="previewOrg"
+                        :multiple="false"
+                        useValueProp="code"
+                        useLabelProp="name"
+                      />
+                    </div>
+
+                    <div class="next-source-button tablet" @click="onGoNextSource">
+                      <span class="desktop">
+                        Visa nästa
+                      </span>
+
+                      <span class="icon">
+                        <font-awesome-icon
+                          :icon="['fa', 'chevron-right']"
+                          role="presentation"
+                        />
+                      </span>
+                    </div>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr class="narrow-row">
+                <td>
+                  <input
+                    type="checkbox"
+                    id="export_checkAll"
+                    :checked="allIsChecked"
+                    @change="toggleAll"
+                  />
+                </td>
+
+                <td>
+                  Parametrar ({{ selectedFields.length }}/{{ fields.length }})
+                </td>
+              </tr>
+            </tbody>
+
+            <tbody
+              class="ExportData-tableGroup"
+              :aria-labelledby="`group-${group.id}`"
+              v-for="group in fieldGroups"
+              :key="group.id"
+            >
+              <!-- GROUP ROW-->
+              <tr class="ExportData-tableGroupRow tablet-row">
+                <td class="ExportData-tableCellAction">
+                  <input
+                    type="checkbox"
+                    :id="`${group.id}`"
+                    :indeterminate.prop="group.indeterminate"
+                    v-model="group.selected"
+                    @change="onGroupChange(group)"
+                  />
+                </td>
+
+                <td class="ExportData-tableCellLabel">
+                  {{ group.label }}
+                </td>
+
+                <td class="ExportData-tableCellPreview desktop-cell">
+                </td>
+              </tr>
+
+              <!-- GROUP FIELDS-->
+              <tr
+                class="ExportData-tableFieldRow"
+                v-for="(field, index) in group.fields"
+                :key="`${group.id}-${field.key}-${index}`"
+                :class="field.selected ? 'selected' : ''"
+              >
+                <td class="ExportData-tableCellAction">
+                  <input
+                    type="checkbox"
+                    :id="`${group.id}-${field.key}-${index}`"
+                    v-model="field.selected"
+                    @change="updateGroups"
+                  />
+                </td>
+
+                <td class="ExportData-tableCellLabel">
+                  <span class="ExportData-tableCellLabelContent">
+                    {{ field.label }}
+                  </span>
+
+                  <div class="no-desktop">
+                    <component
+                      v-if="(field.component &&
+                      (getFieldPreview(field)) || field.component === 'TableDataBoolean')"
+                      :is="field.component"
+                      :tdKey="field.key"
+                      :tdValue="getFieldPreview(field)"
+                      :trData="field"
+                      v-bind="field.props"
+                    />
+
+                    <span v-else-if="field.key" :title="field.key">
+                      {{ getFieldPreview(field) }}
+                    </span>
+                  </div>
+                </td>
+
+                <td class="ExportData-tableCellPreview desktop-cell">
+                  <!-- Renders the component and passes props
+                  specified in tableCols component prop -->
+                  <!-- must force-render a falsey boolean value -->
+                  <component
+                    v-if="(field.component &&
+                    (getFieldPreview(field)) || field.component === 'TableDataBoolean')"
+                    :is="field.component"
+                    :tdKey="field.key"
+                    :tdValue="getFieldPreview(field)"
+                    :trData="field"
+                    v-bind="field.props"
+                  />
+
+                  <span v-else-if="field.key" :title="field.key">
+                    {{ getFieldPreview(field) }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </template>
+  </section>
 </template>
 
 <style lang="scss">
 .ExportData {
   margin-bottom: 3em;
+
+  table {
+    border-spacing: 0;
+  }
+
+  &-table {
+    width: 100%;
+    max-width: 100%;
+
+    @media (max-width: 850px) {
+      overflow-x: auto;
+      table-layout: auto;
+    }
+
+    th, td {
+      border-top: 1px solid $greyLight;
+      border-right: 1px solid $greyLight;
+      padding: 1rem;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      box-shadow: 0px 1px 0px $greyLight;
+      font-weight: 600;
+      text-align: left;
+      background-color: white;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    th.desktop-checkAll {
+      width: 0px;
+      padding: 0px;
+
+      input {
+        display: none;
+      }
+
+      @media (min-width: $screen-md) {
+        width: auto;
+        padding: 1rem;
+
+        input {
+          display: block;
+        }
+      }
+    }
+
+    tr.ExportData-tableGroupRow {
+      td {
+        font-weight: bold;
+        background-color: $greyLighter;
+      }
+    }
+
+    tr.ExportData-tableFieldRow {
+      td {
+        color: $greyLight;
+        font-style: italic;
+      }
+
+      &.selected {
+        td {
+          color: inherit;
+          font-style: normal;
+        }
+      }
+    }
+
+    td {
+      vertical-align: middle;
+      box-sizing: border-box;
+
+      // Nested table cells
+      td {
+        white-space: normal;
+      }
+
+      @media (min-width: $screen-md) {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          &:first-of-type {
+            border-left: 1px solid $greyLight;
+          }
+        }
+      }
+
+      &:last-of-type {
+        tr:last-of-type {
+          td {
+            border-bottom: 1px solid $greyLight;
+          }
+        }
+      }
+    }
+
+    thead {
+      th:first-of-type {
+        border-left: 1px solid $greyLight;
+      }
+    }
+
+    td.ExportData-tableCellAction {
+      width: auto;
+    }
+
+    td.ExportData-tableCellPreview {
+      width: 100%;
+      white-space: normal;
+    }
+
+    .ExportData-tableCellLabelContent {
+      font-weight: bold;
+    }
+
+    input[type="checkbox"] {
+      margin-bottom: 0;
+    }
+  }
 
   &-previewLoading {
     margin-top: 2em;
@@ -601,107 +922,136 @@ export default {
 
   &-pickerContainer {
     width: 100%;
-    margin-bottom: 2em;
-    margin-top: 2em;
-  }
-
-  &-toggleGroups {
-    display: flex;
-    width: 100%;
-  }
-
-  &-toggleGroup {
-    &:first-of-type {
-      & .ExportData-togglesGroupList,
-      .ExportData-toggleGroupLegend {
-        padding-left: 0;
-      }
-    }
-
-    &:last-of-type {
-      & .ExportData-togglesGroupList {
-        border-right: none;
-      }
-    }
-  }
-
-  &-toggleGroupLegend {
-    margin: 0;
-    padding: 0 2rem;
-  }
-
-  &-togglesGroupList {
-    list-style-type: none;
-    padding: 0 2rem;
-    border-right: 1px solid $greyLight;
-    display: flex;
-    flex-wrap: wrap;
-    max-width: 250px;
-  }
-
-  &-togglesGroupListItem {
-    display: flex;
-    margin: 5px;
-  }
-
-  /* column wrap for grid supported browsers */
-  @supports (display: grid) {
-    &-togglesGroupList {
-      display: grid;
-      grid-auto-flow: column;
-      grid-template-rows: repeat(7, auto);
-      grid-gap: 10px 15px;
-      max-width: unset;
-    }
-
-    &-togglesGroupListItem {
-      margin: 0;
-    }
-  }
-
-  /* responsive settings for toggle section */
-  @media (max-width: $screen-lg) {
-    &-toggleGroups {
-      flex-direction: column;
-    }
-
-    &-toggleGroup {
-      flex: auto;
-    }
-
-    &-toggleGroupLegend {
-      padding: 0;
-    }
-
-    &-togglesGroupList {
-      padding: 0;
-      display: flex;
-      max-width: none;
-      border: none;
-      grid-gap: 0;
-    }
-
-    &-togglesGroupListItem {
-      margin: 5px 5px 5px 0;
-    }
-  }
-
-  &-checkAll {
-    display: inline-block;
-    padding: 10px;
-    border: 1px solid #d0d0d0;
-    border: 1px solid $greyLight;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-bottom: 10px;
-
-    & * {
-      margin-bottom: 0;
-    }
+    margin-bottom: .75rem;
+    margin-top: .75rem;
   }
 
   .PreviewTable {
     max-height: 70vh;
+  }
+
+  .ExportData-previewSelector {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .select-container {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+
+      @media (min-width: $screen-md) {
+        flex-direction: row;
+        align-items: center;
+      }
+    }
+
+    .SelectBase {
+      flex: 1;
+      padding: 0;
+
+      &-label {
+        display: none;
+      }
+
+      @media (min-width: $screen-md) {
+        margin-left: .75rem;
+      }
+    }
+
+    .next-source-button {
+      display: flex;
+      align-items: center;
+      font-weight: normal;
+      cursor: pointer;
+
+      .icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #E1E3E6;
+        border-radius: 100%;
+        height: 3rem;
+        width: 3rem;
+        margin-left: 1rem;
+      }
+    }
+  }
+
+  .ExportData-tools {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+
+    .buttons-wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (min-width: $screen-md) {
+      flex-direction: row;
+
+      .buttons-wrapper {
+        flex-direction: row;
+      }
+
+      .ExportButtons {
+        margin-left: 1.25rem;
+      }
+    }
+  }
+
+  .phone {
+    display: initial;
+  }
+
+  .no-desktop {
+    display: inherit;
+  }
+
+  .desktop-cell, .tablet-row, .tablet-cell, .tablet, .desktop {
+    display: none !important;
+  }
+
+  .phone-row, .narrow-row {
+    display: table-row !important;
+  }
+
+  /* responsive settings for toggle section */
+  @media (min-width: $screen-md) {
+    .tablet-row {
+      display: table-row !important;
+    }
+
+    .tablet-cell {
+      display: table-cell !important;
+    }
+
+    .phone-row, .phone {
+      display: none !important;
+    }
+
+    .tablet {
+      display: inherit !important;
+    }
+  }
+
+  @media (min-width: $screen-lg) {
+    .desktop-cell {
+      display: table-cell !important;
+    }
+
+    .no-desktop, .narrow-row {
+      display: none !important;
+    }
+
+    .desktop {
+      display: inherit !important;
+    }
+
+    .ExportData-tableCellLabelContent {
+      font-weight: normal;
+    }
   }
 }
 </style>
