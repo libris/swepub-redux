@@ -34,6 +34,16 @@ export default {
       type: Boolean,
       default: false,
     },
+    clearable: {
+      type: Boolean,
+      default: false,
+    },
+    useValueProp: {
+      required: false,
+    },
+    useLabelProp: {
+      required: false,
+    },
   },
   data() {
     return {
@@ -44,7 +54,6 @@ export default {
       label: 'No title provided',
       valueProp: 'value', // what prop to emit as value
       labelProp: 'label', // where v-select should look for label
-
     };
   },
   computed: {
@@ -74,6 +83,14 @@ export default {
   },
   mounted() {
     this.getOptions();
+
+    if (this.useValueProp != null) {
+      this.valueProp = this.useValueProp;
+    }
+
+    if (this.useLabelProp != null) {
+      this.labelProp = this.useLabelProp;
+    }
   },
   watch: {
   },
@@ -96,6 +113,7 @@ export default {
       :label="labelProp"
       :reduce="option => option[this.valueProp]"
       :value="value"
+      :clearable="clearable"
       @input="setSelected">
       <span slot="no-options">
         <span>{{fetchMsg}}</span>
@@ -109,15 +127,8 @@ export default {
 .SelectBase {
   padding: 1rem 0;
 
-  &-label {
-  }
-
   &-spinnerContainer {
     display: flex;
-  }
-
-  & .v-select {
-    max-width: 700px;
   }
 }
 </style>
