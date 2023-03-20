@@ -105,6 +105,7 @@ export default {
 
   &-dateInput {
     margin: 0 10px 0 5px;
+    width: 90px;
 
     &.has-error {
       border-color: $danger;
