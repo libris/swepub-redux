@@ -1,10 +1,11 @@
 import time
 
-from os import environ
+from os import environ, path
 import json
 from datetime import datetime
 import dateutil.parser
 import sys
+import traceback
 
 import mysql.connector
 from lxml import etree as ET
@@ -69,7 +70,18 @@ LEGACY_SEARCH_DATABASE = environ.get("SWEPUB_LEGACY_SEARCH_DATABASE")
 #   KEY `sets` (`sets`(100)) USING BTREE,
 #   KEY `pri_tar_ts_idx` (`record_id`,`target`,`timestamp`)
 # ) ENGINE=InnoDB AUTO_INCREMENT=53683825 DEFAULT CHARSET=utf8mb4;
-
+#
+# CREATE TABLE `server` (
+#   `server_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+#   `name` varchar(128) NOT NULL,
+#   `base_url` varchar(256) NOT NULL,
+#   `origin` varchar(32) NOT NULL,
+#   `admin_email` varchar(256) NOT NULL,
+#   `datetimeformat` varchar(32) NOT NULL DEFAULT 'YYYY-MM-DD',
+#   `selective_harvesting` tinyint(1) NOT NULL DEFAULT '0',
+#   PRIMARY KEY (`server_id`),
+#   UNIQUE KEY `origin` (`origin`) USING BTREE
+# ) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8mb4
 
 def _get_mysql_connection():
     try:
@@ -110,7 +122,16 @@ def _remote_timestamp(xml):
     return datetime.now().isoformat()
 
 
-def legacy_sync(hours=24):
+def _mods(xml):
+    try:
+        root = ET.fromstring(xml)
+        mods = root.find('.//{http://www.loc.gov/mods/v3}mods')
+        return ET.tostring(mods).decode('UTF-8')
+    except Exception:
+        return ""
+
+
+def _update_records(hours=24):
     with get_connection() as con, _get_mysql_connection() as mysql_con:
         cur = con.cursor()
         cur.row_factory = dict_factory
@@ -192,8 +213,9 @@ def legacy_sync(hours=24):
 
             xml_data = row["xml"]
 
-            origin = row["source_subset"]  # SwePub-ths
+            origin = f"{row['source'].upper()}_SWEPUB"
             target = "SWEPUB"
+            mods = _mods(xml_data)
             sets = _sets(xml_data)
             timestamp = datetime.fromtimestamp(row["modified"]).isoformat()
             remote_timestamp = dateutil.parser.isoparse(_remote_timestamp(xml_data))
@@ -213,13 +235,13 @@ def legacy_sync(hours=24):
                     origin,
                     target,
                     "swepub_mods",
-                    xml_data,
+                    mods,
                     sets,
                     timestamp,
                     remote_timestamp,
                     deleted,
                     origin,
-                    xml_data,
+                    mods,
                     sets,
                     timestamp,
                     remote_timestamp,
@@ -258,6 +280,54 @@ def legacy_sync(hours=24):
             )
         mysql_con.commit()
         log.info(f"Inserted/updated {counter} records")
+
+
+def _update_server_info():
+    source_file = environ.get("SWEPUB_SOURCE_FILE", path.join(path.dirname(path.abspath(__file__)), "../resources/sources.json"))
+    sources = json.load(open(source_file))
+
+    log.info("Updating server metadata")
+    with get_connection() as con, _get_mysql_connection() as mysql_con:
+        cur = con.cursor()
+        cur.row_factory = dict_factory
+        mysql_cur = mysql_con.cursor(prepared=True)
+
+        for source in sources.values():
+            name = f"{source['name']} - Swepub"
+            base_url = source["sets"][0]["url"]
+            origin = f"{source['code'].upper()}_SWEPUB"
+
+            try:
+                mysql_cur.execute(
+                    """
+                    INSERT INTO
+                        server(name, base_url, origin, admin_email)
+                    VALUES
+                        (%s, %s, %s, %s)
+                    ON DUPLICATE KEY UPDATE
+                        name=%s, base_url=%s, origin=%s, admin_email=%s
+                """,
+                (
+                    name,
+                    base_url,
+                    origin,
+                    "",
+                    name,
+                    base_url,
+                    origin,
+                    "",
+                    ),
+                )
+            except Exception as e:
+                log.warning(f"Failed updating legacy server info: {e}")
+                log.warning(traceback.format_exc())
+        mysql_con.commit()
+    log.info("Finished updating server metadata")
+
+
+def legacy_sync(hours=24):
+    _update_records(hours)
+    _update_server_info()
 
 
 # For debugging
