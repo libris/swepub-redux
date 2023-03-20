@@ -964,6 +964,7 @@ export default {
       align-items: center;
       font-weight: normal;
       cursor: pointer;
+      margin-left: 2rem;
 
       .icon {
         display: inline-flex;
