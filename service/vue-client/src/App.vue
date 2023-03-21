@@ -181,7 +181,7 @@ fieldset {
 .btn {
   margin: 10px 10px 10px 0;
   border: 0;
-  border-radius: 20px;
+  border-radius: 4px;
   background: $brandPrimary;
   color: $white;
   padding: 10px 15px;

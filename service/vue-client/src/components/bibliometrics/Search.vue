@@ -8,7 +8,6 @@ import SelectOutput from '@/components/shared/SelectOutput';
 import ValidationMixin from '@/components/mixins/ValidationMixin';
 
 const HelpBubble = () => import('@/components/shared/HelpBubble');
-const ChevronToggle = () => import('@/components/shared/ChevronToggle');
 const ExportData = () => import('@/components/bibliometrics/ExportData');
 
 export default {
@@ -20,7 +19,6 @@ export default {
     SelectOutput,
     YearPicker,
     HelpBubble,
-    ChevronToggle,
     ExportData,
   },
   props: {
@@ -37,13 +35,11 @@ export default {
         { value: 'epub', label: 'Epub ahead of print/Online first' },
         { value: 'submitted', label: 'Submitted, Accepted, In print' },
       ],
-      publicationStatusesVisible: !!this.query.publicationStatus,
       contentMarkings: [
         { value: 'ref', label: 'Sakkunniggranskat (ref)' },
         { value: 'vet', label: 'Övrigt vetenskapligt (vet)' },
         { value: 'pop', label: 'Övrigt (populärvetenskap, debatt) (pop)' },
       ],
-      contentMarkingVisible: !!this.query.contentMarking,
       search: null,
     };
   },
@@ -179,110 +175,140 @@ export default {
 </script>
 
 <template>
-  <section class="Search"
-    id="search-section"
-    role="tabpanel"
-    aria-labelledby="search-tab">
+  <section class="Search" id="search-section" role="tabpanel" aria-labelledby="search-tab">
     <div class="Search-wrapper horizontal-wrapper">
       <p id="service-descr" class="Search-descr" v-html="serviceDescr"></p>
+
       <div aria-describedby="service-descr" role="form">
-        <select-source v-model="selected.org" multiple>
-          <template v-slot:helpbubble>
-            <help-bubble bubbleKey="organization"/>
-          </template>
-        </select-source>
-        <year-picker v-model="selected.years"
-          legend="Utgivningsår"
-          :error="yearInputError">
-          <template v-slot:helpbubble>
-          <help-bubble bubbleKey="publication_year"/>
-        </template>
-        </year-picker>
-        <select-subject v-model="selected.subject" multiple>
-          <template v-slot:helpbubble>
-            <help-bubble bubbleKey="subject"/>
-          </template>
-        </select-subject>
-        <select-output v-model="selected.genreForm" multiple>
-          <template v-slot:helpbubble>
-            <help-bubble bubbleKey="output"/>
-          </template>
-        </select-output>
-        <div class="Search-fieldset">
-          <label for="keywords_input">Nyckelord</label>
-          <help-bubble bubbleKey="keywords"/>
-          <input class="Search-input"
-            type="text"
-            id="keywords_input"
-            v-model="selected.keywords"/>
+        <div class="Search-SelectContainer">
+          <select-source v-model="selected.org" multiple>
+            <template v-slot:helpbubble>
+              <help-bubble bubbleKey="organization"/>
+            </template>
+          </select-source>
+
+          <select-subject v-model="selected.subject" multiple>
+            <template v-slot:helpbubble>
+              <help-bubble bubbleKey="subject"/>
+            </template>
+          </select-subject>
         </div>
-        <fieldset class="Search-checkboxGroup Search-fieldset"
-          :class="{'is-hidden' : !publicationStatusesVisible}">
-          <legend id="publication-status"
-            @click="publicationStatusesVisible = !publicationStatusesVisible">
-            Publiceringsstatus
-          </legend>
-          <help-bubble bubbleKey="publication_status"/>
-          <chevron-toggle v-model="publicationStatusesVisible" ariaControls="publication-statuses"/>
-          <div class="Search-checkboxGroupItems" id="publication-statuses">
-            <div v-for="status in publicationStatuses"
-            :key="status.value">
-              <input :id="status.value"
-                type="checkbox"
-                :value="status.value"
-                v-model="selected.publicationStatus">
-              <label :for="status.value" class="Search-sublabel is-inline">{{status.label}}</label>
-            </div>
+
+        <div class="Search-SelectContainer">
+          <select-output v-model="selected.genreForm" multiple>
+            <template v-slot:helpbubble>
+              <help-bubble bubbleKey="output"/>
+            </template>
+          </select-output>
+
+          <div class="Search-fieldset">
+            <label for="keywords_input">Nyckelord</label>
+            <help-bubble bubbleKey="keywords"/>
+
+            <input class="Search-input"
+              type="text"
+              id="keywords_input"
+              v-model="selected.keywords"
+            />
           </div>
-        </fieldset>
-        <fieldset class="Search-checkboxGroup Search-fieldset"
-          :class="{'is-hidden' : !contentMarkingVisible}">
-          <legend id="content-marking"
-            @click="contentMarkingVisible = !contentMarkingVisible">
-            Innehållsmärkning</legend>
-          <help-bubble bubbleKey="content_marking"/>
-          <chevron-toggle v-model="contentMarkingVisible" ariaControls="content-markings"/>
-          <div class="Search-checkboxGroupItems" id="content-markings">
-            <div v-for="mark in contentMarkings"
-              :key="mark.value">
-              <input :id="mark.value"
-                type="checkbox"
-                :value="mark.value"
-                v-model="selected.contentMarking">
-              <label :for="mark.value" class="Search-sublabel is-inline">{{mark.label}}</label>
+        </div>
+
+        <year-picker v-model="selected.years" legend="Utgivningsår" :error="yearInputError">
+          <template v-slot:helpbubble>
+            <help-bubble bubbleKey="publication_year"/>
+          </template>
+        </year-picker>
+
+        <div class="Search-toggleGroups">
+          <fieldset class="Search-checkboxGroup Search-fieldset">
+            <legend id="publication-status">
+              Publiceringsstatus
+            </legend>
+
+            <help-bubble bubbleKey="publication_status"/>
+
+            <div class="Search-checkboxGroupItems" id="publication-statuses">
+              <div
+                v-for="status in publicationStatuses"
+                :key="status.value"
+                class="Search-inputContainer"
+              >
+                <input
+                  :id="status.value"
+                  type="checkbox"
+                  :value="status.value"
+                  v-model="selected.publicationStatus"
+                />
+
+                <label :for="status.value" class="Search-sublabel is-inline">
+                  {{status.label}}
+                </label>
+              </div>
             </div>
-          </div>
-        </fieldset>
-        <fieldset class="Search-fieldset">
+          </fieldset>
+
+          <fieldset class="Search-checkboxGroup Search-fieldset">
+            <legend id="content-marking">
+              Innehållsmärkning
+            </legend>
+
+            <help-bubble bubbleKey="content_marking"/>
+
+            <div class="Search-checkboxGroupItems" id="content-markings">
+              <div v-for="mark in contentMarkings" :key="mark.value" class="Search-inputContainer">
+                <input
+                  :id="mark.value"
+                  type="checkbox"
+                  :value="mark.value"
+                  v-model="selected.contentMarking"
+                />
+                <label :for="mark.value" class="Search-sublabel is-inline">{{mark.label}}</label>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="Search-fieldset">
             <legend>Svenska listan</legend>
             <help-bubble bubbleKey="swedish_list"/>
-          <div>
-            <input id="swedish-list" type="checkbox" v-model="selected.swedishList"/>
-            <label for="swedish-list" class="Search-sublabel is-inline">
-              Endast output ingående i sakkunniggranskade publiceringskanaler enligt Svenska listan
-            </label>
-          </div>
-        </fieldset>
-        <fieldset class="Search-fieldset">
+
+            <div class="Search-inputContainer">
+              <input id="swedish-list" type="checkbox" v-model="selected.swedishList" />
+              <label for="swedish-list" class="Search-sublabel is-inline">
+                {{ /* eslint-disable-next-line */ }}
+                Endast output ingående i sakkunniggranskade publiceringskanaler enligt Svenska listan
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset class="Search-fieldset">
             <legend>Öppen tillgång</legend>
             <help-bubble bubbleKey="open_access"/>
-          <div>
-            <input id="open-access" type="checkbox" v-model="selected.openAccess"/>
-            <label for="open-access" class="Search-sublabel is-inline">
-              Endast öppet tillgänglig output
-            </label>
-          </div>
-        </fieldset>
-        <button id="submit-btn"
+
+            <div class="Search-inputContainer">
+              <input id="open-access" type="checkbox" v-model="selected.openAccess" />
+              <label for="open-access" class="Search-sublabel is-inline">
+                Endast öppet tillgänglig output
+              </label>
+            </div>
+          </fieldset>
+        </div>
+
+        <button
+          id="submit-btn"
           class="btn"
           @click.prevent="pushQuery"
           :class="{'disabled' : !canGoToExport}"
-          :disabled="!canGoToExport">Visa</button>
-        <button id="clear-btn"
-          class="btn btn--warning"
-          @click.prevent="clearSelected">Rensa</button>
+          :disabled="!canGoToExport"
+        >
+          Visa
+        </button>
+
+        <button id="clear-btn" class="btn btn--warning" @click.prevent="clearSelected">
+          Rensa
+        </button>
       </div>
     </div>
+
     <transition name="fade">
       <export-data v-if="search" :query="search"/>
     </transition>
@@ -291,7 +317,6 @@ export default {
 
 <style lang="scss">
 .Search {
-
   &-wrapper {
     margin-bottom: 1em;
   }
@@ -301,16 +326,39 @@ export default {
   }
 
   &-sublabel {
+    flex: 1;
     font-weight: inherit;
   }
 
+  &-inputContainer {
+    display: flex;
+    align-items: flex-start;
+    border-bottom: 1px solid transparent;
+    margin-bottom: .5rem;
+    padding-bottom: .5rem;
+
+    input {
+      margin-bottom: 0;
+      position: relative;
+      top: 3px;
+    }
+
+    label {
+      margin-bottom: 0;
+    }
+
+    &:last-of-type {
+      border-bottom: 0;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+  }
+
   &-fieldset {
-    max-width: 700px;
     padding: 1rem 0;
   }
 
   &-checkboxGroup {
-
     & legend {
       cursor: pointer;
       & span {
@@ -324,7 +372,6 @@ export default {
       & > .Search-checkboxGroupItems {
         display: none;
       }
-
     }
   }
 
@@ -332,5 +379,71 @@ export default {
     width: 100%;
     margin-bottom: 0;
   }
+
+  &-toggleGroups {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    width: 100%;
+  }
+
+  &-toggleGroup {
+    &:first-of-type {
+      & .ExportData-togglesGroupList,
+      .ExportData-toggleGroupLegend {
+        padding-left: 0;
+      }
+    }
+
+    &:last-of-type {
+      & .ExportData-togglesGroupList {
+        border-right: none;
+      }
+    }
+  }
+
+  &-SelectContainer {
+    display: flex;
+
+    > div {
+      flex: 1;
+      flex-direction: row;
+
+      &:first-of-type {
+        margin-right: 1.5rem;
+      }
+
+      &:last-of-type {
+        margin-left: 1.5rem;
+      }
+
+      .vs__dropdown-toggle {
+        min-height: 36px;
+      }
+    }
+  }
+
+  /* responsive settings for toggle section */
+  @media (max-width: $screen-md) {
+    &-SelectContainer {
+      flex-direction: column;
+
+      > div {
+        margin: 0 !important;
+      }
+    }
+  }
+
+  @media (max-width: $screen-lg) {
+    &-toggleGroups {
+      grid-template-columns: repeat(1, 1fr);
+    }
+
+    &-inputContainer {
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid $greyLight;
+    }
+  }
+
 }
 </style>
