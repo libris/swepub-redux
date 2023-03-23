@@ -336,7 +336,7 @@ export default {
         },
         {
           key: 'openAccessVersion',
-          label: 'Öppen tillgång-version',
+          label: 'Version',
           component: 'TableDataBoolean',
           group: 'open_access',
           selected: false,
