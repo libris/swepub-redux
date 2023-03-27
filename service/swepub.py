@@ -317,8 +317,8 @@ def bibliometrics_api():
         q = q.where(Criterion.any(criteria))
         values.append(list(map(lambda x: f"{x}%", genre_form_broader)))
 
-    q_total = q.select(fn.Count("*").as_("total"))
-    q = q.select(finalized.data)
+    q_total = q.select(fn.Count(search_single.finalized_id).distinct().as_("total"))
+    q = q.select(finalized.data).distinct()
     q = q.join(finalized).on(search_single.finalized_id == finalized.id)
     if limit:
         q = q.limit(limit)
