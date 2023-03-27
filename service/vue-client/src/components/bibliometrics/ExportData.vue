@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable */
 import Helptexts from '@/assets/json/helptexts.json';
 import { mapGetters } from 'vuex';
 import ExportMixin from '@/components/mixins/ExportMixin';
@@ -255,13 +256,13 @@ export default {
           key: 'openAccess',
           label: 'Öppen tillgång',
           selected: false,
-          component: 'TableDataBoolean',
+          component: 'TableDataLink',
           group: 'open_access',
         },
         {
           key: 'publicationChannel',
           label: 'Publiceringskanal',
-          selected: false,
+          selected: true,
           group: 'channel',
         },
         {
@@ -337,7 +338,7 @@ export default {
         {
           key: 'openAccessVersion',
           label: 'Version',
-          component: 'TableDataBoolean',
+          component: 'TableDataLink',
           group: 'open_access',
           selected: false,
         },
@@ -513,8 +514,12 @@ export default {
       const selectedFields = group.fields.filter((field) => field.selected);
 
       group.fields.forEach((groupField) => {
-        const field = this.fields.find((f) => f.key === groupField.key);
-        field.selected = selectedFields.length !== group.fields.length;
+        this.fields = this.fields.map((f) => {
+          if (f.key === groupField.key) {
+            f.selected = selectedFields.length !== group.fields.length;
+          }
+          return f;
+        });
       });
 
       this.updateGroups();
@@ -522,7 +527,8 @@ export default {
     getFieldPreview(field) {
       if (this.previewData != null && this.previewData.hits.length > 0) {
         const hit = this.previewData.hits.find((_hit) => _hit[field.key] != null
-          && _hit[field.key].length > 0);
+          && (_hit[field.key].length > 0 || Object.keys(_hit[field.key]).length > 0)
+        );
 
         if (hit != null) {
           return hit[field.key];
@@ -866,6 +872,7 @@ export default {
 
       // Nested table cells
       td {
+        padding: 0;
         white-space: normal;
       }
 
@@ -949,6 +956,10 @@ export default {
       @media (min-width: $screen-md) {
         flex-direction: row;
         align-items: center;
+      }
+
+      .vs__selected-options {
+        flex-wrap: nowrap;
       }
     }
 
