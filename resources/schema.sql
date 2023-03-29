@@ -235,6 +235,7 @@ CREATE TABLE search_subject (
 );
 CREATE INDEX idx_search_subject_finalized_id ON search_subject(finalized_id);
 CREATE INDEX idx_search_subject_value ON search_subject(value);
+CREATE INDEX idx_search_subject_value_finalized ON search_subject(value, finalized_id);
 
 
 CREATE TABLE search_creator (
