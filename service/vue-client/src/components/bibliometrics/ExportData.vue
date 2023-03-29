@@ -41,7 +41,9 @@ export default {
   data() {
     return {
       previewOrg: null,
+      previewHit: null,
       sources: [],
+      filteredSources: [],
       fields: [
         {
           key: 'recordId',
@@ -525,14 +527,8 @@ export default {
       this.updateGroups();
     },
     getFieldPreview(field) {
-      if (this.previewData != null && this.previewData.hits.length > 0) {
-        const hit = this.previewData.hits.find((_hit) => _hit[field.key] != null
-          && (_hit[field.key].length > 0 || Object.keys(_hit[field.key]).length > 0)
-        );
-
-        if (hit != null) {
-          return hit[field.key];
-        }
+      if (this.previewHit != null) {
+        return this.previewHit[field.key];
       }
 
       return '';
@@ -542,16 +538,38 @@ export default {
         .then(({ sources }) => {
           if (sources != null && sources.length > 0) {
             this.sources = sources;
-            this.previewOrg = sources[0].code;
+            this.filterSources();
           }
         });
     },
-    onGoNextSource() {
-      const currentIndex = this.sources.findIndex((source) => source.code === this.previewOrg);
-      if (currentIndex + 1 === this.sources.length) {
-        this.previewOrg = this.sources[0].code;
-      } else {
-        this.previewOrg = this.sources[currentIndex + 1].code;
+    filterSources() {
+      if (this.sources != null) {
+        this.filteredSources = [...this.sources].filter((source) => this.query.org.indexOf(source.code) > -1);
+
+        if (this.filteredSources.length > 0) {
+          this.previewOrg = this.filteredSources[0].code;
+        } else {
+          this.previewOrg = null;
+        }
+      }
+    },
+    onGoNextPreviewHit() {
+      if (this.previewData == null) {
+        return false;
+      }
+
+      const orgHits = [...this.previewData.hits].filter((_hit) => _hit.source.indexOf(this.previewOrg) > -1);
+
+      if (orgHits.length > 0) {
+        if (this.previewHit != null) {
+          const currentIndex = orgHits.findIndex((_hit) => _hit.recordId === this.previewHit.recordId);
+          if (currentIndex + 1 < orgHits.length) {
+            this.previewHit = orgHits[currentIndex + 1];
+            return true;
+          }
+        }
+
+        this.previewHit = orgHits[0];
       }
     },
   },
@@ -560,8 +578,16 @@ export default {
     this.fetchSources();
   },
   watch: {
+    previewData() {
+      this.onGoNextPreviewHit();
+    },
     previewOrg() {
+      this.previewHit = null;
       this.getPreview();
+      this.onGoNextPreviewHit();
+    },
+    query() {
+      this.filterSources();
     },
   },
 };
@@ -660,7 +686,7 @@ export default {
                       Förhandsgranska
                       <select-base
                         v-model="previewOrg"
-                        :providedOptions="sources"
+                        :providedOptions="filteredSources"
                         :value="previewOrg"
                         :multiple="false"
                         useValueProp="code"
@@ -668,7 +694,7 @@ export default {
                       />
                     </div>
 
-                    <div class="next-source-button tablet" @click="onGoNextSource">
+                    <div class="next-source-button tablet" @click="onGoNextPreviewHit">
                       <span class="desktop">
                         Visa nästa
                       </span>

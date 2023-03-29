@@ -138,9 +138,6 @@ export default {
         }, acceptHeader);
     },
   },
-  mounted() {
-    this.getPreview();
-  },
   watch: {
     query(newVal) {
       this.getPreview(newVal);
