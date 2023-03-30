@@ -1,5 +1,4 @@
 <script>
-/* eslint-disable */
 import Helptexts from '@/assets/json/helptexts.json';
 import { mapGetters } from 'vuex';
 import ExportMixin from '@/components/mixins/ExportMixin';
@@ -415,7 +414,7 @@ export default {
       return this.fields.filter((field) => field.selected);
     },
     previewInfo() {
-      return `${this.previewData.total} ${this.previewData.total === 1 ? 'post' : 'poster'}`;
+      return `${this.hitCount} ${this.hitCount === 1 ? 'post' : 'poster'}`;
     },
   },
   methods: {
@@ -454,6 +453,10 @@ export default {
         // specify fields for export here
         const fields = this.selectKeysForExport();
         queryCopy.fields = fields;
+      }
+
+      if (type === 'hitCount') {
+        queryCopy.limit = 1;
       }
 
       const jsonBody = JSON.stringify(queryCopy);
@@ -544,7 +547,15 @@ export default {
     },
     filterSources() {
       if (this.sources != null) {
-        this.filteredSources = [...this.sources].filter((source) => this.query.org.indexOf(source.code) > -1);
+        if (this.query.org.length > 0) {
+          /* eslint-disable */
+          this.filteredSources = [...this.sources].filter((source) =>
+            this.query.org.indexOf(source.code) > -1
+          );
+          /* eslint-enable */
+        } else {
+          this.filteredSources = [...this.sources];
+        }
 
         if (this.filteredSources.length > 0) {
           this.previewOrg = this.filteredSources[0].code;
@@ -558,19 +569,31 @@ export default {
         return false;
       }
 
-      const orgHits = [...this.previewData.hits].filter((_hit) => _hit.source.indexOf(this.previewOrg) > -1);
+      /* eslint-disable */
+      const orgHits = [...this.previewData.hits].filter((_hit) =>
+        _hit.source.indexOf(this.previewOrg) > -1
+      );
+      /* eslint-enable */
 
       if (orgHits.length > 0) {
         if (this.previewHit != null) {
-          const currentIndex = orgHits.findIndex((_hit) => _hit.recordId === this.previewHit.recordId);
+          /* eslint-disable */
+          const currentIndex = orgHits.findIndex((_hit) =>
+            _hit.recordId === this.previewHit.recordId
+          );
+          /* eslint-enable */
+
           if (currentIndex + 1 < orgHits.length) {
             this.previewHit = orgHits[currentIndex + 1];
             return true;
           }
         }
 
+        // eslint-disable-next-line
         this.previewHit = orgHits[0];
       }
+
+      return true;
     },
   },
   mounted() {
@@ -603,7 +626,10 @@ export default {
     aria-live="polite"
   >
     <!-- loading -->
-    <vue-simple-spinner v-if="previewLoading" class="ExportData-previewLoading" />
+    <vue-simple-spinner
+      v-if="previewLoading"
+      class="ExportData-previewLoading"
+    />
 
     <!-- error -->
     <div v-else-if="previewError">

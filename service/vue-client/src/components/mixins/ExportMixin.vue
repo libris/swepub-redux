@@ -25,6 +25,7 @@ export default {
       exportError: '',
       paginationLoading: false,
       paginationError: '',
+      hitCount: 0,
       // setttings
       previewLimit: 20,
       exportLimit: 9999999,
@@ -41,8 +42,8 @@ export default {
       return [];
     },
     exportLimitExceededWarning() {
-      if (this.previewData && (this.previewData.total > this.exportLimit)) {
-        return `Antalet träffar (${this.previewData.total}) överskrider exportgränsen på ${this.exportLimit} poster. Avgränsa sökningen och försök igen.`;
+      if (this.previewData && (this.hitCount > this.exportLimit)) {
+        return `Antalet träffar (${this.hitCount}) överskrider exportgränsen på ${this.exportLimit} poster. Avgränsa sökningen och försök igen.`;
       }
       return false;
     },
@@ -61,8 +62,8 @@ export default {
   },
   methods: {
     getPreview() {
-      this.previewData = null;
       this.previewLoading = true;
+      this.previewData = null;
       this.previewError = '';
       this.exportError = '';
 
@@ -80,6 +81,15 @@ export default {
           this.previewLoading = false;
           this.previewError = `Ett fel inträffade vid förhandsgranskning: ${err}`;
         });
+    },
+    getHitCount() {
+      this.hitCount = 0;
+
+      this.fetchData('hitCount', (response) => { // success
+        if (response != null) {
+          this.hitCount = response.total;
+        }
+      });
     },
     paginate(direction) {
       this.paginationLoading = true;
@@ -141,7 +151,11 @@ export default {
   watch: {
     query(newVal) {
       this.getPreview(newVal);
+      this.getHitCount();
     },
+  },
+  mounted() {
+    this.getHitCount();
   },
 };
 </script>
