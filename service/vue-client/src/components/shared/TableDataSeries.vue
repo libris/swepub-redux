@@ -67,3 +67,10 @@ export default {
     </ul>
   </div>
 </template>
+
+<style scoped>
+ul {
+  padding-left: 2.55rem;
+  margin-bottom: 0;
+}
+</style>
