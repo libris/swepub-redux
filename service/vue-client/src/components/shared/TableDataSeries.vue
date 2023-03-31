@@ -1,6 +1,12 @@
 <script>
 export default {
   name: 'table-data-series',
+  data() {
+    return {
+      mainTitle: null,
+      identifiedBy: null,
+    };
+  },
   props: {
     tdKey: {
       type: String,
@@ -27,24 +33,44 @@ export default {
       default: false,
     },
   },
+  mounted() {
+    if (this.tdValue.length > 0) {
+      this.tdValue.forEach((value) => {
+        if (value.hasTitle != null && value.hasTitle.length > 0) {
+          this.mainTitle = value.hasTitle[0].mainTitle;
+        }
+
+        if (value.identifiedBy != null) {
+          this.identifiedBy = value.identifiedBy;
+        }
+      });
+    }
+  },
 };
 </script>
 
 <template>
   <div>
-    <table v-for="(value, index) in tdValue" :key="index">
-      <tbody>
-        <tr v-for="key in Object.keys(value)" :key="key">
-          <td><strong>{{key}}</strong></td>
-          <td>{{value[key]}}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div>
+      {{mainTitle}}
+    </div>
+
+    <ul
+      v-if="identifiedBy != null"
+    >
+      <li
+        v-for="(item) in identifiedBy"
+        :key="item['@type']"
+      >
+        {{ item.qualifier }}: {{ item.value }}
+      </li>
+    </ul>
   </div>
 </template>
 
-<style lang="scss" scoped>
-table {
-  background: white;
+<style scoped>
+ul {
+  padding-left: 2.55rem;
+  margin-bottom: 0;
 }
 </style>

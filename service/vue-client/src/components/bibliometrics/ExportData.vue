@@ -40,7 +40,9 @@ export default {
   data() {
     return {
       previewOrg: null,
+      previewHit: null,
       sources: [],
+      filteredSources: [],
       fields: [
         {
           key: 'recordId',
@@ -255,13 +257,13 @@ export default {
           key: 'openAccess',
           label: 'Öppen tillgång',
           selected: false,
-          component: 'TableDataBoolean',
+          component: 'TableDataLink',
           group: 'open_access',
         },
         {
           key: 'publicationChannel',
           label: 'Publiceringskanal',
-          selected: false,
+          selected: true,
           group: 'channel',
         },
         {
@@ -336,8 +338,8 @@ export default {
         },
         {
           key: 'openAccessVersion',
-          label: 'Öppen tillgång-version',
-          component: 'TableDataBoolean',
+          label: 'Version',
+          component: 'TableDataLink',
           group: 'open_access',
           selected: false,
         },
@@ -412,7 +414,7 @@ export default {
       return this.fields.filter((field) => field.selected);
     },
     previewInfo() {
-      return `${this.previewData.total} ${this.previewData.total === 1 ? 'post' : 'poster'}`;
+      return `${this.hitCount} ${this.hitCount === 1 ? 'post' : 'poster'}`;
     },
   },
   methods: {
@@ -451,6 +453,10 @@ export default {
         // specify fields for export here
         const fields = this.selectKeysForExport();
         queryCopy.fields = fields;
+      }
+
+      if (type === 'hitCount') {
+        queryCopy.limit = 1;
       }
 
       const jsonBody = JSON.stringify(queryCopy);
@@ -513,20 +519,19 @@ export default {
       const selectedFields = group.fields.filter((field) => field.selected);
 
       group.fields.forEach((groupField) => {
-        const field = this.fields.find((f) => f.key === groupField.key);
-        field.selected = selectedFields.length !== group.fields.length;
+        this.fields = this.fields.map((f) => {
+          if (f.key === groupField.key) {
+            f.selected = selectedFields.length !== group.fields.length;
+          }
+          return f;
+        });
       });
 
       this.updateGroups();
     },
     getFieldPreview(field) {
-      if (this.previewData != null && this.previewData.hits.length > 0) {
-        const hit = this.previewData.hits.find((_hit) => _hit[field.key] != null
-          && _hit[field.key].length > 0);
-
-        if (hit != null) {
-          return hit[field.key];
-        }
+      if (this.previewHit != null) {
+        return this.previewHit[field.key];
       }
 
       return '';
@@ -536,17 +541,59 @@ export default {
         .then(({ sources }) => {
           if (sources != null && sources.length > 0) {
             this.sources = sources;
-            this.previewOrg = sources[0].code;
+            this.filterSources();
           }
         });
     },
-    onGoNextSource() {
-      const currentIndex = this.sources.findIndex((source) => source.code === this.previewOrg);
-      if (currentIndex + 1 === this.sources.length) {
-        this.previewOrg = this.sources[0].code;
-      } else {
-        this.previewOrg = this.sources[currentIndex + 1].code;
+    filterSources() {
+      if (this.sources != null) {
+        if (this.query.org.length > 0) {
+          /* eslint-disable */
+          this.filteredSources = [...this.sources].filter((source) =>
+            this.query.org.indexOf(source.code) > -1
+          );
+          /* eslint-enable */
+        } else {
+          this.filteredSources = [...this.sources];
+        }
+
+        if (this.filteredSources.length > 0) {
+          this.previewOrg = this.filteredSources[0].code;
+        } else {
+          this.previewOrg = null;
+        }
       }
+    },
+    onGoNextPreviewHit() {
+      if (this.previewData == null) {
+        return false;
+      }
+
+      /* eslint-disable */
+      const orgHits = [...this.previewData.hits].filter((_hit) =>
+        _hit.source.indexOf(this.previewOrg) > -1
+      );
+      /* eslint-enable */
+
+      if (orgHits.length > 0) {
+        if (this.previewHit != null) {
+          /* eslint-disable */
+          const currentIndex = orgHits.findIndex((_hit) =>
+            _hit.recordId === this.previewHit.recordId
+          );
+          /* eslint-enable */
+
+          if (currentIndex + 1 < orgHits.length) {
+            this.previewHit = orgHits[currentIndex + 1];
+            return true;
+          }
+        }
+
+        // eslint-disable-next-line
+        this.previewHit = orgHits[0];
+      }
+
+      return true;
     },
   },
   mounted() {
@@ -554,8 +601,16 @@ export default {
     this.fetchSources();
   },
   watch: {
+    previewData() {
+      this.onGoNextPreviewHit();
+    },
     previewOrg() {
+      this.previewHit = null;
       this.getPreview();
+      this.onGoNextPreviewHit();
+    },
+    query() {
+      this.filterSources();
     },
   },
 };
@@ -571,7 +626,10 @@ export default {
     aria-live="polite"
   >
     <!-- loading -->
-    <vue-simple-spinner v-if="previewLoading" class="ExportData-previewLoading" />
+    <vue-simple-spinner
+      v-if="previewLoading"
+      class="ExportData-previewLoading"
+    />
 
     <!-- error -->
     <div v-else-if="previewError">
@@ -654,7 +712,7 @@ export default {
                       Förhandsgranska
                       <select-base
                         v-model="previewOrg"
-                        :providedOptions="sources"
+                        :providedOptions="filteredSources"
                         :value="previewOrg"
                         :multiple="false"
                         useValueProp="code"
@@ -662,7 +720,7 @@ export default {
                       />
                     </div>
 
-                    <div class="next-source-button tablet" @click="onGoNextSource">
+                    <div class="next-source-button tablet" @click="onGoNextPreviewHit">
                       <span class="desktop">
                         Visa nästa
                       </span>
@@ -866,6 +924,7 @@ export default {
 
       // Nested table cells
       td {
+        padding: 0;
         white-space: normal;
       }
 
@@ -949,6 +1008,10 @@ export default {
       @media (min-width: $screen-md) {
         flex-direction: row;
         align-items: center;
+      }
+
+      .vs__selected-options {
+        flex-wrap: nowrap;
       }
     }
 
