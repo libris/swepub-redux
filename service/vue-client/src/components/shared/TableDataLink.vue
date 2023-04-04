@@ -89,6 +89,7 @@ export default {
 
 <style lang="scss">
 .TableDataLink {
+  word-break: break-all;
   &-icon {
     color: $greyDarker;
     margin-right: 5px;
