@@ -595,6 +595,37 @@ export default {
 
       return true;
     },
+    onGoPrevPreviewHit() {
+      if (this.previewData == null) {
+        return false;
+      }
+
+      /* eslint-disable */
+      const orgHits = [...this.previewData.hits].filter((_hit) =>
+        _hit.source.indexOf(this.previewOrg) > -1
+      );
+      /* eslint-enable */
+
+      if (orgHits.length > 0) {
+        if (this.previewHit != null) {
+          /* eslint-disable */
+          const currentIndex = orgHits.findIndex((_hit) =>
+            _hit.recordId === this.previewHit.recordId
+          );
+          /* eslint-enable */
+
+          if (currentIndex - 1 >= 0) {
+            this.previewHit = orgHits[currentIndex - 1];
+            return true;
+          }
+        }
+
+        // eslint-disable-next-line
+        this.previewHit = orgHits[orgHits.length - 1];
+      }
+
+      return true;
+    },
   },
   mounted() {
     this.updateGroups();
@@ -720,9 +751,25 @@ export default {
                       />
                     </div>
 
+                    <div class="next-source-button tablet" @click="onGoPrevPreviewHit">
+                      <span
+                        class="icon"
+                        :style="{ transform: 'rotate(180deg)', marginLeft: 0, marginRight: '1rem' }"
+                      >
+                        <font-awesome-icon
+                          :icon="['fa', 'chevron-right']"
+                          role="presentation"
+                        />
+                      </span>
+
+                      <span class="desktop">
+                        Föregående
+                      </span>
+                    </div>
+
                     <div class="next-source-button tablet" @click="onGoNextPreviewHit">
                       <span class="desktop">
-                        Visa nästa
+                        Nästa
                       </span>
 
                       <span class="icon">
