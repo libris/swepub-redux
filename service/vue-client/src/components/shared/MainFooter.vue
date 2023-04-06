@@ -26,6 +26,7 @@ export default {
       <div class="MainFooter-logoWrapper">
         <img class="MainFooter-logo" :src="logo.src" :alt="logo.alt"/>
       </div>
+
       <nav class="MainFooter-nav" aria-label="Meny sidfot">
         <div class="MainFooter-group">
           <div class="MainFooter-headerWrap">
@@ -76,6 +77,11 @@ export default {
     max-width: $screen-lg;
     margin: auto;
     display: flex;
+    flex-direction: column;
+
+    @media (min-width: 320px) {
+      flex-direction: row;
+    }
   }
 
   &-logoWrapper {
@@ -93,7 +99,15 @@ export default {
   }
 
   &-group {
-    margin: 0 3em;
+    margin: 0 .55em;
+
+    @media (min-width: 320px) {
+      margin: 0 1em;
+    }
+
+    @media (min-width: $screen-md) {
+      margin: 0 3em;
+    }
   }
 
   &-header {
@@ -139,11 +153,6 @@ export default {
 
     &-logo {
       width: 100px;
-      margin-left: -10px;
-    }
-
-    &-group {
-      margin: 0 1em;
     }
   }
 }
