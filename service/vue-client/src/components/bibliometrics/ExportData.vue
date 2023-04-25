@@ -108,6 +108,8 @@ export default {
           component: 'TableDataList',
           props: {
             targetKeys: ['ORCID'],
+            renderComponent: 'TableDataLink',
+            unshift: 'https://orcid.org/',
           },
           selected: false,
           group: 'org',
@@ -217,6 +219,9 @@ export default {
         {
           key: 'DOI',
           component: 'TableDataList',
+          props: {
+            renderComponent: 'TableDataLink',
+          },
           label: 'DOI',
           selected: true,
           group: 'publication_id',
@@ -257,7 +262,7 @@ export default {
           key: 'openAccess',
           label: 'Öppen tillgång',
           selected: false,
-          component: 'TableDataLink',
+          component: 'TableDataBoolean',
           group: 'open_access',
         },
         {
