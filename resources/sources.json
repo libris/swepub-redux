@@ -517,5 +517,16 @@
         "envs": ["DEV", "QA"]
       }
     ]
+  },
+  "havochvatten": {
+    "code": "havochvatten",
+    "name": "Havs- och vattenmyndigheten",
+    "sets": [
+      {
+        "url": "http://havochvatten.diva-portal.org/dice/oai",
+        "subset": "SwePub-havochvatten",
+        "metadata_prefix": "swepub_mods"
+      }
+    ]
   }
 }
