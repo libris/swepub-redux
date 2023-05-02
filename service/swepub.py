@@ -167,8 +167,8 @@ def bibliometrics_api():
             limit = int(limit)
 
         doi = query_data.get("DOI")
-        # TODO: Ugly replacements, fix frontend
 
+        # TODO: Ugly replacements, fix frontend
         genre_form = [
             gf.strip().replace(".", "/").rstrip("/")
             for gf in query_data.get("genreForm", [])
@@ -287,6 +287,7 @@ def bibliometrics_api():
     if any([title, keywords]):
         q = q.join(search_fulltext).on(search_single.finalized_id == search_fulltext.finalized_id)
 
+    has_joined_search_org = False # ugh
     for param in [
         (search_doi, doi),
         (search_subject, subjects),
@@ -299,6 +300,8 @@ def bibliometrics_api():
                 q = q.where(param[0].value == Parameter("?"))
             q = q.join(param[0]).on(search_single.finalized_id == param[0].finalized_id)
             values.append(param[1])
+            if param[0] == search_org:
+                has_joined_search_org = True
 
     if genre_form or genre_form_broader:
         q = q.join(search_genre_form).on(search_single.finalized_id == search_genre_form.finalized_id)
@@ -317,6 +320,10 @@ def bibliometrics_api():
         q = q.where(Criterion.any(criteria))
         values.append(list(map(lambda x: f"{x}%", genre_form_broader)))
 
+    q_orgs = q.select(search_org.value).distinct()
+    if not has_joined_search_org:
+        q_orgs = q_orgs.join(search_org).on(search_org.finalized_id == search_single.finalized_id)
+
     q_total = q.select(fn.Count(search_single.finalized_id).distinct().as_("total"))
     q = q.select(finalized.data).distinct()
     q = q.join(finalized).on(search_single.finalized_id == finalized.id)
@@ -325,6 +332,12 @@ def bibliometrics_api():
 
     cur = get_db().cursor()
     cur.row_factory = dict_factory
+
+    matching_orgs = cur.execute(str(q_orgs), list(flatten(values))).fetchall()
+    matching_orgs_list = [
+        {"code": d["value"], "name": INFO_API_SOURCE_ORG_MAPPING[d["value"]]["name"]} for d in matching_orgs
+    ]
+
     total_docs = cur.execute(str(q_total), list(flatten(values))).fetchone()["total"]
     fields = query_data.get("fields", [])
     if fields is None:
@@ -361,6 +374,7 @@ def bibliometrics_api():
             yield (
                 f'"query": {json.dumps(query_data)},'
                 f'"query_handled_at": "{handled_at}",'
+                f'"matching_orgs": {json.dumps(matching_orgs_list)},'
                 f'"total": {total_docs}'
                 "}"
             )
