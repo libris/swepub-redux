@@ -26,6 +26,7 @@ export default {
       paginationLoading: false,
       paginationError: '',
       hitCount: 0,
+      matching_orgs: [],
       // setttings
       previewLimit: 20,
       exportLimit: 9999999,
@@ -84,10 +85,17 @@ export default {
     },
     getHitCount() {
       this.hitCount = 0;
+      this.matching_orgs = [];
 
       this.fetchData('hitCount', (response) => { // success
         if (response != null) {
           this.hitCount = response.total;
+          this.matching_orgs = response.matching_orgs;
+
+          if (this.matching_orgs.length > 0) {
+            // eslint-disable-next-line
+            this.previewOrg = this.matching_orgs[0].code;
+          }
         }
       });
     },

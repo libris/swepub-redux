@@ -41,8 +41,6 @@ export default {
     return {
       previewOrg: null,
       previewHit: null,
-      sources: [],
-      filteredSources: [],
       fields: [
         {
           key: 'recordId',
@@ -541,34 +539,6 @@ export default {
 
       return '';
     },
-    fetchSources() {
-      Network.get('/api/v1/info/sources')
-        .then(({ sources }) => {
-          if (sources != null && sources.length > 0) {
-            this.sources = sources;
-            this.filterSources();
-          }
-        });
-    },
-    filterSources() {
-      if (this.sources != null) {
-        if (this.query.org.length > 0) {
-          /* eslint-disable */
-          this.filteredSources = [...this.sources].filter((source) =>
-            this.query.org.indexOf(source.code) > -1
-          );
-          /* eslint-enable */
-        } else {
-          this.filteredSources = [...this.sources];
-        }
-
-        if (this.filteredSources.length > 0) {
-          this.previewOrg = this.filteredSources[0].code;
-        } else {
-          this.previewOrg = null;
-        }
-      }
-    },
     onGoNextPreviewHit() {
       if (this.previewData == null) {
         return false;
@@ -634,7 +604,6 @@ export default {
   },
   mounted() {
     this.updateGroups();
-    this.fetchSources();
   },
   watch: {
     previewData() {
@@ -644,9 +613,6 @@ export default {
       this.previewHit = null;
       this.getPreview();
       this.onGoNextPreviewHit();
-    },
-    query() {
-      this.filterSources();
     },
   },
 };
@@ -748,7 +714,7 @@ export default {
                       Förhandsgranska
                       <select-base
                         v-model="previewOrg"
-                        :providedOptions="filteredSources"
+                        :providedOptions="this.matching_orgs"
                         :value="previewOrg"
                         :multiple="false"
                         useValueProp="code"
