@@ -82,7 +82,7 @@ class AutoclassifierAuditor(BaseAuditor):
         # If we can't figure out the language of the summary, skip
         if (
             language not in ["sv", "en"]
-            or score < 0.5
+            or lang_score < 0.5
         ):
             return publication, audit_events, False
 
