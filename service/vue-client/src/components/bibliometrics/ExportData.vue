@@ -57,6 +57,10 @@ export default {
         {
           key: 'duplicateIds',
           component: 'TableDataList',
+          props: {
+            renderComponent: 'TableDataLink',
+            base: '/api/v1/process/publications/',
+          },
           label: 'Sammanslagna ID',
           selected: true,
           group: 'post',
@@ -246,6 +250,11 @@ export default {
         {
           key: 'PMID',
           label: 'PubMed ID',
+          component: 'TableDataList',
+          props: {
+            renderComponent: 'TableDataLink',
+            base: 'https://pubmed.ncbi.nlm.nih.gov/',
+          },
           selected: false,
           group: 'publication_id',
         },
@@ -279,6 +288,10 @@ export default {
           key: 'ISSN',
           label: 'ISSN',
           component: 'TableDataList',
+          props: {
+            renderComponent: 'TableDataLink',
+            base: 'https://portal.issn.org/resource/ISSN/',
+          },
           selected: false,
           group: 'channel',
         },

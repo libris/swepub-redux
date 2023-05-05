@@ -31,6 +31,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    base: {
+      type: String,
+      required: false,
+    },
 
   },
   data() {
@@ -39,6 +43,9 @@ export default {
   computed: {
     linkUrl() {
       if (this.tdValue) {
+        if (this.base) {
+          return this.base + this.tdValue;
+        }
         if (this.shift) {
           return this.shift + this.tdValue;
         }
