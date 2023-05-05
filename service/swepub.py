@@ -337,6 +337,7 @@ def bibliometrics_api():
     matching_orgs_list = [
         {"code": d["value"], "name": INFO_API_SOURCE_ORG_MAPPING[d["value"]]["name"]} for d in matching_orgs
     ]
+    matching_orgs_list.sort(key=lambda k: k["name"])
 
     total_docs = cur.execute(str(q_total), list(flatten(values))).fetchone()["total"]
     fields = query_data.get("fields", [])
