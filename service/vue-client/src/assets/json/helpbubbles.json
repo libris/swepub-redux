@@ -186,7 +186,7 @@
     },
     "output": {
       "title": "Outputtyp",
-      "text": "Forskningsresultat enligt Svensk indelning av forskningsoutput. Tänk på att söka både på huvudkategori och underkategori eftersom alla outputs inte är indelade i underkategorier. <a href='https://www.kb.se/samverkan-och-utveckling/swepub/format-och-praxis.html'>Mer information om outputtyper</a>."
+      "text": "Kategorisering av typer av publiceringskällor enligt Svensk indelning av forskningsoutput. Tänk på att all output inte är indelad i underkategorier. För att söka outputs på både huvud- och underkategorier välj rubriken HUVUDKATEGORI - ALLA. Vid sökning på endast huvudkategori förekommer bara outputs utan underkategorier. <a href='https://www.kb.se/samverkan-och-utveckling/swepub/format-och-praxis.html'>Mer information om outputtyper</a>."
     },
     "publication_status": {
       "title": "Publiceringsstatus",
