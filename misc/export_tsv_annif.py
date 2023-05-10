@@ -61,7 +61,7 @@ def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_lev
                 predicted_lang, lang_score = lang_detector(summary, lang=("sv", "en"))[0]
                 if (
                     predicted_lang != target_language
-                    or lang_score < 0.5:
+                    or lang_score < 0.5
                 ):
                     summary = ""
 
