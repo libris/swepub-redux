@@ -51,7 +51,7 @@ def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_lev
                 if not summary:
                     summary = publication.summary or ""
 
-                summary = " ".join((summary or "")[:5000].splitlines()).strip()
+                summary = " ".join((summary or "")[:5000].split()).strip()
                 # Remove suspiciously short abstracts (e.g. "N/A", "[no abstract]", ...)
                 if len(summary) < 50:
                     summary = ""
