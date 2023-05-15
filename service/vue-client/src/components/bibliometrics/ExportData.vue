@@ -4,19 +4,33 @@ import { mapGetters } from 'vuex';
 import ExportMixin from '@/components/mixins/ExportMixin';
 import * as Network from '@/utils/Network';
 import VueSimpleSpinner from 'vue-simple-spinner';
+import SelectSource from '@/components/shared/SelectSource';
+import SelectBase from '@/components/shared/SelectBase';
 
-const PreviewTable = () => import('@/components/shared/PreviewTable');
-const CheckboxToggle = () => import('@/components/shared/CheckboxToggle');
 const ExportButtons = () => import('@/components/shared/ExportButtons');
+
+const TableDataLink = () => import('@/components/shared/TableDataLink');
+const TableDataList = () => import('@/components/shared/TableDataList');
+const TableDataBoolean = () => import('@/components/shared/TableDataBoolean');
+const TableDataMultiLine = () => import('@/components/shared/TableDataMultiLine');
+const TableDataId = () => import('@/components/shared/TableDataId');
+const TableDataSeries = () => import('@/components/shared/TableDataSeries');
 
 export default {
   name: 'export-data',
   mixins: [ExportMixin],
   components: {
-    PreviewTable,
     VueSimpleSpinner,
-    CheckboxToggle,
     ExportButtons,
+    SelectSource,
+    SelectBase,
+
+    TableDataLink,
+    TableDataList,
+    TableDataBoolean,
+    TableDataMultiLine,
+    TableDataId,
+    TableDataSeries,
   },
   props: {
     query: {
@@ -25,6 +39,8 @@ export default {
   },
   data() {
     return {
+      previewOrg: null,
+      previewHit: null,
       fields: [
         {
           key: 'recordId',
@@ -34,15 +50,19 @@ export default {
               return data.publicationCount > 1;
             },
           },
-          label: 'Record ID',
+          label: 'ID',
           selected: true,
           group: 'post',
         },
         {
           key: 'duplicateIds',
           component: 'TableDataList',
+          props: {
+            renderComponent: 'TableDataLink',
+            base: '/api/v1/process/publications/',
+          },
           label: 'Sammanslagna ID',
-          selected: false,
+          selected: true,
           group: 'post',
         },
         {
@@ -55,7 +75,7 @@ export default {
           key: 'source',
           label: 'Organisation',
           component: 'TableDataList',
-          selected: false,
+          selected: true,
           group: 'org',
         },
         {
@@ -90,6 +110,8 @@ export default {
           component: 'TableDataList',
           props: {
             targetKeys: ['ORCID'],
+            renderComponent: 'TableDataLink',
+            unshift: 'https://orcid.org/',
           },
           selected: false,
           group: 'org',
@@ -129,7 +151,7 @@ export default {
             renderComponent: 'TableDataLink',
             unshift: 'https://id.kb.se/term/swepub/',
           },
-          selected: false,
+          selected: true,
           group: 'publication',
         },
         {
@@ -145,13 +167,13 @@ export default {
         {
           key: 'contentMarking',
           label: 'Innehållsmärkning',
-          selected: false,
+          selected: true,
           group: 'publication',
         },
         {
           key: 'publicationYear',
           label: 'Utgivningsår',
-          selected: false,
+          selected: true,
           group: 'publication',
         },
         {
@@ -161,7 +183,7 @@ export default {
           props: {
             unshift: 'https://id.kb.se/term/swepub/',
           },
-          selected: false,
+          selected: true,
           group: 'publication',
         },
         {
@@ -190,38 +212,6 @@ export default {
           group: 'publication',
         },
         {
-          key: 'DOI',
-          component: 'TableDataList',
-          label: 'DOI',
-          selected: false,
-          group: 'publication',
-        },
-        {
-          key: 'ISBN',
-          label: 'ISBN',
-          component: 'TableDataList',
-          selected: false,
-          group: 'publication',
-        },
-        {
-          key: 'ISI',
-          label: 'ISI ID',
-          selected: false,
-          group: 'publication',
-        },
-        {
-          key: 'scopusId',
-          label: 'Scopus ID',
-          selected: false,
-          group: 'publication',
-        },
-        {
-          key: 'PMID',
-          label: 'PubMed ID',
-          selected: false,
-          group: 'publication',
-        },
-        {
           key: 'archiveURI',
           label: 'Länk till arkiv',
           selected: false,
@@ -229,53 +219,63 @@ export default {
           group: 'publication',
         },
         {
+          key: 'DOI',
+          component: 'TableDataList',
+          props: {
+            renderComponent: 'TableDataLink',
+          },
+          label: 'DOI',
+          selected: true,
+          group: 'publication_id',
+        },
+        {
+          key: 'ISBN',
+          label: 'ISBN',
+          component: 'TableDataList',
+          selected: false,
+          group: 'publication_id',
+        },
+        {
+          key: 'ISI',
+          label: 'ISI ID',
+          selected: false,
+          group: 'publication_id',
+        },
+        {
+          key: 'scopusId',
+          label: 'Scopus ID',
+          selected: false,
+          group: 'publication_id',
+        },
+        {
+          key: 'PMID',
+          label: 'PubMed ID',
+          component: 'TableDataList',
+          props: {
+            renderComponent: 'TableDataLink',
+            base: 'https://pubmed.ncbi.nlm.nih.gov/',
+          },
+          selected: false,
+          group: 'publication_id',
+        },
+        {
           key: 'electronicLocator',
           label: 'Fulltextlänk',
           component: 'TableDataLink',
           selected: false,
-          group: 'publication',
+          group: 'open_access',
         },
         {
           key: 'openAccess',
           label: 'Öppen tillgång',
           selected: false,
           component: 'TableDataBoolean',
-          group: 'publication',
+          group: 'open_access',
         },
-        /* TODO: add the parameters below when revamping frontend */
-        /* {
-          key: 'openAccessVersion',
-          label: 'Öppet tillgänglig version',
-          selected: false,
-          component: 'TableDataLink',
-          group: 'publication',
-        },
-        {
-          key: 'DOAJ',
-          label: 'DOAJ',
-          selected: false,
-          component: 'TableDataBoolean',
-          group: 'publication',
-        },
-        {
-          key: 'autoclassified',
-          label: 'Autoklassificerad',
-          selected: false,
-          component: 'TableDataBoolean',
-          group: 'publication',
-        },
-        {
-          key: 'series',
-          label: 'Serie',
-          selected: false,
-          component: 'TableDataList',
-          group: 'publication',
-        },
-        */
         {
           key: 'publicationChannel',
           label: 'Publiceringskanal',
-          selected: false,
+          selected: true,
           group: 'channel',
         },
         {
@@ -288,6 +288,10 @@ export default {
           key: 'ISSN',
           label: 'ISSN',
           component: 'TableDataList',
+          props: {
+            renderComponent: 'TableDataLink',
+            base: 'https://portal.issn.org/resource/ISSN/',
+          },
           selected: false,
           group: 'channel',
         },
@@ -320,7 +324,7 @@ export default {
             targetKeys: ['threeDigitTopics'],
             renderFn: this.extractSubject,
           },
-          selected: false,
+          selected: true,
           group: 'subject',
         },
         {
@@ -333,6 +337,78 @@ export default {
           },
           selected: false,
           group: 'subject',
+        },
+        {
+          key: 'autoclassified',
+          label: 'Autoklassning',
+          selected: false,
+          group: 'subject',
+          component: 'TableDataBoolean',
+        },
+        {
+          key: 'DOAJ',
+          label: 'DOAJ',
+          selected: false,
+          component: 'TableDataBoolean',
+          group: 'open_access',
+        },
+        {
+          key: 'openAccessVersion',
+          label: 'Version',
+          component: 'TableDataLink',
+          group: 'open_access',
+          selected: false,
+        },
+        {
+          key: 'series',
+          label: 'Serie',
+          selected: false,
+          component: 'TableDataSeries',
+          group: 'channel',
+        },
+      ],
+      fieldGroups: [
+        {
+          id: 'post',
+          label: 'Post',
+          selected: false,
+          indeterminate: false,
+        },
+        {
+          id: 'org',
+          label: 'Organisation/upphov',
+          selected: false,
+          indeterminate: false,
+        },
+        {
+          id: 'publication',
+          label: 'Publikation',
+          selected: false,
+          indeterminate: false,
+        },
+        {
+          id: 'publication_id',
+          label: 'Publikations-ID',
+          selected: false,
+          indeterminate: false,
+        },
+        {
+          id: 'channel',
+          label: 'Publiceringskanal',
+          selected: false,
+          indeterminate: false,
+        },
+        {
+          id: 'subject',
+          label: 'Forskningsämne',
+          selected: false,
+          indeterminate: false,
+        },
+        {
+          id: 'open_access',
+          label: 'Öppen tillgång',
+          selected: false,
+          indeterminate: false,
         },
       ],
     };
@@ -354,55 +430,51 @@ export default {
       return this.fields.filter((field) => field.selected);
     },
     previewInfo() {
-      return `Visar ${this.previewLimit > this.previewData.total ? this.previewData.total : this.previewLimit}
-              av ${this.previewData.total} ${this.previewData.total === 1 ? 'post' : 'poster'}`;
+      return `${this.hitCount} ${this.hitCount === 1 ? 'post' : 'poster'}`;
     },
-    fieldGroups() {
-      const groups = [
-        {
-          id: 'post',
-          label: 'Post',
-        },
-        {
-          id: 'org',
-          label: 'Organisation/upphov',
-        },
-        {
-          id: 'publication',
-          label: 'Publikation',
-        },
-        {
-          id: 'channel',
-          label: 'Publiceringskanal',
-        },
-        {
-          id: 'subject',
-          label: 'Forskningsämne',
-        },
-      ];
-      return groups.map((group) => ({
-        ...group,
-        fields: this.fields.filter((field) => {
+  },
+  methods: {
+    updateGroups() {
+      this.fieldGroups = this.fieldGroups.map((group) => {
+        const fields = this.fields.filter((field) => {
           if (field.hasOwnProperty('group')) {
             return field.group === group.id;
             // eslint-disable-next-line
           } console.warn(`${field.label} has no group!`);
           return false;
-        }),
-      }));
+        });
+        const selectedFields = fields.filter((field) => field.selected);
+
+        return {
+          ...group,
+          fields,
+          selected: selectedFields.length === fields.length,
+          indeterminate: selectedFields.length > 0 && selectedFields.length < fields.length,
+        };
+      });
     },
-  },
-  methods: {
     fetchData(type, success, fail, acceptHeader) {
       const queryCopy = { ...this.query };
       if (type === 'preview') {
+        if (this.previewOrg != null) {
+          queryCopy.org = [this.previewOrg];
+        } else {
+          delete queryCopy.org;
+        }
+
         queryCopy.limit = this.previewLimit;
       }
+
       if (type === 'export') {
         // specify fields for export here
         const fields = this.selectKeysForExport();
         queryCopy.fields = fields;
       }
+
+      if (type === 'hitCount') {
+        queryCopy.limit = 1;
+      }
+
       const jsonBody = JSON.stringify(queryCopy);
       Network.post(this.apiEndpoint, jsonBody, acceptHeader)
         .then((response) => {
@@ -459,103 +531,482 @@ export default {
       });
       return mapped;
     },
+    onGroupChange(group) {
+      const selectedFields = group.fields.filter((field) => field.selected);
+
+      group.fields.forEach((groupField) => {
+        this.fields = this.fields.map((f) => {
+          if (f.key === groupField.key) {
+            f.selected = selectedFields.length !== group.fields.length;
+          }
+          return f;
+        });
+      });
+
+      this.updateGroups();
+    },
+    getFieldPreview(field) {
+      if (this.previewHit != null) {
+        return this.previewHit[field.key];
+      }
+
+      return '';
+    },
+    onGoNextPreviewHit() {
+      if (this.previewData == null) {
+        return false;
+      }
+
+      /* eslint-disable */
+      const orgHits = [...this.previewData.hits].filter((_hit) =>
+        _hit.source.indexOf(this.previewOrg) > -1
+      );
+      /* eslint-enable */
+
+      if (orgHits.length > 0) {
+        if (this.previewHit != null) {
+          /* eslint-disable */
+          const currentIndex = orgHits.findIndex((_hit) =>
+            _hit.recordId === this.previewHit.recordId
+          );
+          /* eslint-enable */
+
+          if (currentIndex + 1 < orgHits.length) {
+            this.previewHit = orgHits[currentIndex + 1];
+            return true;
+          }
+        }
+
+        // eslint-disable-next-line
+        this.previewHit = orgHits[0];
+      }
+
+      return true;
+    },
+    onGoPrevPreviewHit() {
+      if (this.previewData == null) {
+        return false;
+      }
+
+      /* eslint-disable */
+      const orgHits = [...this.previewData.hits].filter((_hit) =>
+        _hit.source.indexOf(this.previewOrg) > -1
+      );
+      /* eslint-enable */
+
+      if (orgHits.length > 0) {
+        if (this.previewHit != null) {
+          /* eslint-disable */
+          const currentIndex = orgHits.findIndex((_hit) =>
+            _hit.recordId === this.previewHit.recordId
+          );
+          /* eslint-enable */
+
+          if (currentIndex - 1 >= 0) {
+            this.previewHit = orgHits[currentIndex - 1];
+            return true;
+          }
+        }
+
+        // eslint-disable-next-line
+        this.previewHit = orgHits[orgHits.length - 1];
+      }
+
+      return true;
+    },
   },
   mounted() {
+    this.updateGroups();
   },
   watch: {
+    previewData() {
+      this.onGoNextPreviewHit();
+    },
+    previewOrg() {
+      this.previewHit = null;
+      this.getPreview();
+      this.onGoNextPreviewHit();
+    },
   },
 };
 </script>
 
 <template>
-<section class="ExportData"
-  id="preview-section"
-  aria-labelledby="preview-heading"
-  ref="previewSection"
-  :aria-busy="previewLoading"
-  aria-live="polite">
-  <!-- loading -->
-  <vue-simple-spinner v-if="previewLoading" class="ExportData-previewLoading"/>
-  <!-- error -->
-  <div v-else-if="previewError">
-    <p class="error" role="alert" aria-atomic="true">{{previewError}}</p>
-  </div>
-  <!-- has preview data -->
-  <template v-else>
-    <hr class="horizontal-wrapper divided-section">
-    <h2 id="preview-heading" class="horizontal-wrapper heading heading-md">
-      Förhandsgranskning av export
-    </h2>
-    <!-- no hits -->
-    <p v-if="previewData.total === 0" class="horizontal-wrapper">
-      Inga träffar</p>
-    <!-- export limit exceeded -->
-    <div v-else-if="exportLimitExceededWarning" class="horizontal-wrapper">
-      <span class="error" role="alert" aria-atomic="true">{{exportLimitExceededWarning}}</span>
+  <section
+    class="ExportData"
+    id="preview-section"
+    aria-labelledby="preview-heading"
+    ref="previewSection"
+    :aria-busy="previewLoading"
+    aria-live="polite"
+  >
+    <!-- loading -->
+    <vue-simple-spinner
+      v-if="previewLoading"
+      class="ExportData-previewLoading"
+    />
+
+    <!-- error -->
+    <div v-else-if="previewError">
+      <p class="error" role="alert" aria-atomic="true">{{ previewError }}</p>
     </div>
-    <!-- export possible -->
-    <div v-else>
-      <div class="horizontal-wrapper">
-        <p class="ExportData-descr" v-html="exportDescr" id="export-data-descr">
-        </p>
+
+    <!-- has preview data -->
+    <template v-else>
+      <hr class="horizontal-wrapper divided-section">
+
+      <h2 id="preview-heading" class="horizontal-wrapper heading heading-md">
+        Val av parametrar
+      </h2>
+
+      <!-- no hits -->
+      <p v-if="previewData.total === 0" class="horizontal-wrapper">
+        Inga träffar
+      </p>
+
+      <!-- export limit exceeded -->
+      <div v-else-if="exportLimitExceededWarning" class="horizontal-wrapper">
+        <span class="error" role="alert" aria-atomic="true">{{ exportLimitExceededWarning }}</span>
       </div>
-      <!-- field toggle -->
-      <section class="ExportData-pickerContainer horizontal-wrapper"
-        aria-labelledby="export-data-descr"
-        aria-controls="preview-section">
-        <div class="ExportData-checkAll">
-          <input type="checkbox"
-            id="export_checkAll"
-            :checked="allIsChecked"
-            @change="toggleAll">
-          <label class="is-inline" for="export_checkAll">Välj samtliga</label>
-        </div>
-        <div class="ExportData-toggleGroups">
-          <div class="ExportData-toggleGroup"
-            role="group"
-            :aria-labelledby="`group-${group.id}`"
-            v-for="group in fieldGroups"
-            :key="group.id">
-            <h3 class="ExportData-toggleGroupLegend heading heading-xs" :id="`group-${group.id}`">
-              {{group.label}}</h3>
-            <ul class="ExportData-togglesGroupList" :aria-labelledby="`group-${group.id}`">
-              <li class="ExportData-togglesGroupListItem"
-                v-for="(field, index) in group.fields"
-                :key="`${group.id}-${field.key}-${index}`">
-                <checkbox-toggle :id="`${group.id}-${field.key}-${index}`"
-                  :label="field.label"
-                  v-model="field.selected"/>
-              </li>
-            </ul>
+
+      <!-- export possible -->
+      <div v-else>
+        <div class="horizontal-wrapper">
+          <p class="ExportData-descr" v-html="exportDescr" id="export-data-descr" />
+
+          <div class="ExportData-tools">
+            <div></div>
+
+            <div class="buttons-wrapper">
+              <!-- hits info -->
+              <p class="bold" role="status">
+                <span class="phone">
+                  Exportera
+                </span>
+                {{ ' ' + previewInfo }}
+              </p>
+
+              <!-- export btns -->
+              <export-buttons
+                :exportLoading="exportLoading"
+                :exportAllowed="exportAllowed"
+                :exportError="exportError"
+                @export-json="exportJson"
+                @export-csv="exportCsv"
+                @export-tsv="exportTsv"
+              />
+            </div>
           </div>
         </div>
-      </section>
-      <!-- export btns -->
-      <export-buttons :exportLoading="exportLoading"
-        :exportAllowed="exportAllowed"
-        :exportError="exportError"
-        @export-json="exportJson"
-        @export-csv="exportCsv"
-        @export-tsv="exportTsv"/>
-      <p class="bold" v-if="selectedFields.length === 0" role="status">
-        Inga fält valda</p>
-      <template v-else>
-        <!-- hits info -->
-        <p class="bold" role="status">{{previewInfo}}</p>
-        <!-- preview table -->
-        <preview-table :previewData="previewData"
-          :tableCols="selectedFields"
-          hitsProp='hits'
-          tableLayout='auto'/>
-      </template>
-    </div>
-  </template>
-</section>
+
+        <!-- field toggle -->
+        <section
+          class="ExportData-pickerContainer horizontal-wrapper"
+          aria-labelledby="export-data-descr"
+          aria-controls="preview-section"
+        >
+          <table class="ExportData-table">
+            <thead>
+              <tr>
+                <th class="desktop-checkAll">
+                  <input
+                    type="checkbox"
+                    id="export_checkAll"
+                    :checked="allIsChecked"
+                    @change="toggleAll"
+                  />
+                </th>
+
+                <th class="desktop-cell">
+                  Parametrar ({{ selectedFields.length }}/{{ fields.length }})
+                </th>
+
+                <th>
+                  <div class="ExportData-previewSelector">
+                    <div class="select-container">
+                      Förhandsgranska
+                      <select-base
+                        v-model="previewOrg"
+                        :providedOptions="this.matching_orgs"
+                        :value="previewOrg"
+                        :multiple="false"
+                        useValueProp="code"
+                        useLabelProp="name"
+                      />
+                    </div>
+
+                    <div class="next-source-button tablet" @click="onGoPrevPreviewHit">
+                      <span
+                        class="icon"
+                        :style="{ transform: 'rotate(180deg)', marginLeft: 0, marginRight: '1rem' }"
+                      >
+                        <font-awesome-icon
+                          :icon="['fa', 'chevron-right']"
+                          role="presentation"
+                        />
+                      </span>
+
+                      <span class="desktop">
+                        Föregående
+                      </span>
+                    </div>
+
+                    <div class="next-source-button tablet" @click="onGoNextPreviewHit">
+                      <span class="desktop">
+                        Nästa
+                      </span>
+
+                      <span class="icon">
+                        <font-awesome-icon
+                          :icon="['fa', 'chevron-right']"
+                          role="presentation"
+                        />
+                      </span>
+                    </div>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr class="narrow-row">
+                <td>
+                  <input
+                    type="checkbox"
+                    id="export_checkAll"
+                    :checked="allIsChecked"
+                    @change="toggleAll"
+                  />
+                </td>
+
+                <td>
+                  Parametrar ({{ selectedFields.length }}/{{ fields.length }})
+                </td>
+              </tr>
+            </tbody>
+
+            <tbody
+              class="ExportData-tableGroup"
+              :aria-labelledby="`group-${group.id}`"
+              v-for="group in fieldGroups"
+              :key="group.id"
+            >
+              <!-- GROUP ROW-->
+              <tr class="ExportData-tableGroupRow tablet-row">
+                <td class="ExportData-tableCellAction">
+                  <input
+                    type="checkbox"
+                    :id="`${group.id}`"
+                    :indeterminate.prop="group.indeterminate"
+                    v-model="group.selected"
+                    @change="onGroupChange(group)"
+                  />
+                </td>
+
+                <td class="ExportData-tableCellLabel">
+                  {{ group.label }}
+                </td>
+
+                <td class="ExportData-tableCellPreview desktop-cell">
+                </td>
+              </tr>
+
+              <!-- GROUP FIELDS-->
+              <tr
+                class="ExportData-tableFieldRow"
+                v-for="(field, index) in group.fields"
+                :key="`${group.id}-${field.key}-${index}`"
+                :class="field.selected ? 'selected' : ''"
+              >
+                <td class="ExportData-tableCellAction">
+                  <input
+                    type="checkbox"
+                    :id="`${group.id}-${field.key}-${index}`"
+                    v-model="field.selected"
+                    @change="updateGroups"
+                  />
+                </td>
+
+                <td class="ExportData-tableCellLabel">
+                  <span class="ExportData-tableCellLabelContent">
+                    {{ field.label }}
+                  </span>
+
+                  <div class="no-desktop">
+                    <component
+                      v-if="(field.component &&
+                      (getFieldPreview(field)) || field.component === 'TableDataBoolean')"
+                      :is="field.component"
+                      :tdKey="field.key"
+                      :tdValue="getFieldPreview(field)"
+                      :trData="field"
+                      v-bind="field.props"
+                    />
+
+                    <span v-else-if="field.key" :title="field.key">
+                      {{ getFieldPreview(field) }}
+                    </span>
+                  </div>
+                </td>
+
+                <td class="ExportData-tableCellPreview desktop-cell">
+                  <!-- Renders the component and passes props
+                  specified in tableCols component prop -->
+                  <!-- must force-render a falsey boolean value -->
+                  <component
+                    v-if="(field.component &&
+                    (getFieldPreview(field)) || field.component === 'TableDataBoolean')"
+                    :is="field.component"
+                    :tdKey="field.key"
+                    :tdValue="getFieldPreview(field)"
+                    :trData="field"
+                    v-bind="field.props"
+                  />
+
+                  <span v-else-if="field.key" :title="field.key">
+                    {{ getFieldPreview(field) }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </template>
+  </section>
 </template>
 
 <style lang="scss">
 .ExportData {
   margin-bottom: 3em;
+
+  table {
+    border-spacing: 0;
+  }
+
+  &-table {
+    width: 100%;
+    max-width: 100%;
+
+    @media (max-width: 850px) {
+      overflow-x: auto;
+      table-layout: auto;
+    }
+
+    th, td {
+      border-top: 1px solid $greyLight;
+      border-right: 1px solid $greyLight;
+      padding: 1rem;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      box-shadow: 0px 1px 0px $greyLight;
+      font-weight: 600;
+      text-align: left;
+      background-color: white;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    th.desktop-checkAll {
+      width: 0px;
+      padding: 0px;
+
+      input {
+        display: none;
+      }
+
+      @media (min-width: $screen-md) {
+        width: auto;
+        padding: 1rem;
+
+        input {
+          display: block;
+        }
+      }
+    }
+
+    tr.ExportData-tableGroupRow {
+      td {
+        font-weight: bold;
+        background-color: $greyLighter;
+      }
+    }
+
+    tr.ExportData-tableFieldRow {
+      td {
+        color: $greyLight;
+        font-style: italic;
+      }
+
+      &.selected {
+        td {
+          color: inherit;
+          font-style: normal;
+        }
+      }
+    }
+
+    td {
+      vertical-align: middle;
+      box-sizing: border-box;
+
+      // Nested table cells
+      td {
+        padding: 0;
+        white-space: normal;
+      }
+
+      @media (min-width: $screen-md) {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          &:first-of-type {
+            border-left: 1px solid $greyLight;
+          }
+        }
+      }
+
+      &:last-of-type {
+        tr:last-of-type {
+          td {
+            border-bottom: 1px solid $greyLight;
+          }
+        }
+      }
+    }
+
+    thead {
+      th:first-of-type {
+        border-left: 1px solid $greyLight;
+      }
+    }
+
+    td.ExportData-tableCellAction {
+      width: auto;
+    }
+
+    td.ExportData-tableCellPreview {
+      width: 100%;
+      white-space: normal;
+    }
+
+    .ExportData-tableCellLabelContent {
+      font-weight: bold;
+    }
+
+    input[type="checkbox"] {
+      margin-bottom: 0;
+    }
+  }
 
   &-previewLoading {
     margin-top: 2em;
@@ -567,107 +1018,141 @@ export default {
 
   &-pickerContainer {
     width: 100%;
-    margin-bottom: 2em;
-    margin-top: 2em;
-  }
-
-  &-toggleGroups {
-    display: flex;
-    width: 100%;
-  }
-
-  &-toggleGroup {
-    &:first-of-type {
-      & .ExportData-togglesGroupList,
-      .ExportData-toggleGroupLegend {
-        padding-left: 0;
-      }
-    }
-
-    &:last-of-type {
-      & .ExportData-togglesGroupList {
-        border-right: none;
-      }
-    }
-  }
-
-  &-toggleGroupLegend {
-    margin: 0;
-    padding: 0 2rem;
-  }
-
-  &-togglesGroupList {
-    list-style-type: none;
-    padding: 0 2rem;
-    border-right: 1px solid $greyLight;
-    display: flex;
-    flex-wrap: wrap;
-    max-width: 250px;
-  }
-
-  &-togglesGroupListItem {
-    display: flex;
-    margin: 5px;
-  }
-
-  /* column wrap for grid supported browsers */
-  @supports (display: grid) {
-    &-togglesGroupList {
-      display: grid;
-      grid-auto-flow: column;
-      grid-template-rows: repeat(7, auto);
-      grid-gap: 10px 15px;
-      max-width: unset;
-    }
-
-    &-togglesGroupListItem {
-      margin: 0;
-    }
-  }
-
-  /* responsive settings for toggle section */
-  @media (max-width: $screen-lg) {
-    &-toggleGroups {
-      flex-direction: column;
-    }
-
-    &-toggleGroup {
-      flex: auto;
-    }
-
-    &-toggleGroupLegend {
-      padding: 0;
-    }
-
-    &-togglesGroupList {
-      padding: 0;
-      display: flex;
-      max-width: none;
-      border: none;
-      grid-gap: 0;
-    }
-
-    &-togglesGroupListItem {
-      margin: 5px 5px 5px 0;
-    }
-  }
-
-  &-checkAll {
-    display: inline-block;
-    padding: 10px;
-    border: 1px solid #d0d0d0;
-    border: 1px solid $greyLight;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-bottom: 10px;
-
-    & * {
-      margin-bottom: 0;
-    }
+    margin-bottom: .75rem;
+    margin-top: .75rem;
   }
 
   .PreviewTable {
     max-height: 70vh;
+  }
+
+  .ExportData-previewSelector {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .select-container {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+
+      @media (min-width: $screen-md) {
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .vs__selected-options {
+        flex-wrap: nowrap;
+      }
+    }
+
+    .SelectBase {
+      flex: 1;
+      padding: 0;
+
+      &-label {
+        display: none;
+      }
+
+      @media (min-width: $screen-md) {
+        margin-left: .75rem;
+      }
+    }
+
+    .next-source-button {
+      display: flex;
+      align-items: center;
+      font-weight: normal;
+      cursor: pointer;
+      margin-left: 2rem;
+
+      .icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #E1E3E6;
+        border-radius: 100%;
+        height: 3rem;
+        width: 3rem;
+        margin-left: 1rem;
+      }
+    }
+  }
+
+  .ExportData-tools {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+
+    .buttons-wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (min-width: $screen-md) {
+      flex-direction: row;
+
+      .buttons-wrapper {
+        flex-direction: row;
+      }
+
+      .ExportButtons {
+        margin-left: 1.25rem;
+      }
+    }
+  }
+
+  .phone {
+    display: initial;
+  }
+
+  .no-desktop {
+    display: inherit;
+  }
+
+  .desktop-cell, .tablet-row, .tablet-cell, .tablet, .desktop {
+    display: none !important;
+  }
+
+  .phone-row, .narrow-row {
+    display: table-row !important;
+  }
+
+  /* responsive settings for toggle section */
+  @media (min-width: $screen-md) {
+    .tablet-row {
+      display: table-row !important;
+    }
+
+    .tablet-cell {
+      display: table-cell !important;
+    }
+
+    .phone-row, .phone {
+      display: none !important;
+    }
+
+    .tablet {
+      display: inherit !important;
+    }
+  }
+
+  @media (min-width: $screen-lg) {
+    .desktop-cell {
+      display: table-cell !important;
+    }
+
+    .no-desktop, .narrow-row {
+      display: none !important;
+    }
+
+    .desktop {
+      display: inherit !important;
+    }
+
+    .ExportData-tableCellLabelContent {
+      font-weight: normal;
+    }
   }
 }
 </style>

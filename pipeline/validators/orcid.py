@@ -39,7 +39,7 @@ def validate_format(orcid):
 def validate_span(orcid):
     try:
         orcnum = int(strip_url(orcid).replace("-", "")[:-1])
-        inspan = 15000000 <= orcnum <= 35000001
+        inspan = (15000000 <= orcnum <= 35000001) or (900000000000 <= orcnum <= 900100000000)
         if inspan:
             return True, "span"
         else:

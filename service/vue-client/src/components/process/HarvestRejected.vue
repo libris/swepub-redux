@@ -110,6 +110,7 @@ export default {
     },
   },
   mounted() {
+    this.getPreview();
   },
   watch: {
   },

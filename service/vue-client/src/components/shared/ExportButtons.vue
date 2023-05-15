@@ -51,12 +51,34 @@ export default {
   .ExportButtons {
     display: flex;
     align-items: center;
-    margin-top: 2em;
     flex-wrap: wrap;
+    flex-direction: column;
 
     & .btn {
-      margin-top: 0;
-      margin-bottom: 5px;
+      width: 100%;
+      margin: 4px 0;
+    }
+
+    @media (min-width: $screen-md) {
+      flex-direction: row;
+
+      & .btn {
+        border-radius: 0;
+        width: auto;
+        margin: 0;
+        margin-right: 1px;
+
+        &:first-of-type {
+          border-top-left-radius: 4px;
+          border-bottom-left-radius: 4px;
+        }
+
+        &:last-of-type {
+          border-top-right-radius: 4px;
+          border-bottom-right-radius: 4px;
+          margin-right: 0;
+        }
+      }
     }
   }
 </style>
