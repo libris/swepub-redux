@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
 
-export const useCounterStore = defineStore('settings', {
+export const useSettingsStore = defineStore('settings', {
   state: () => ({
     serviceName: 'Swepub',
-    version: `${process.env.VUE_APP_VERSION}`,
-    apiPath: `${process.env.VUE_APP_API_PATH}`,
+    version: `${import.meta.env.VITE_VUE_APP_VERSION}`,
+    apiPath: `${import.meta.env.VITE_VUE_APP_API_PATH}`,
     matomoId: 'MATOMO_ID',
     language: 'swe',
     navigation: [
