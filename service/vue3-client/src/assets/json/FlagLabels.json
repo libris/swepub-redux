@@ -1,0 +1,74 @@
+{
+  "ISSN_missing_check": {
+    "swe": "ISSN saknas",
+    "en": "ISSN missing"
+  },
+  "UKA_comprehensive_check": {
+    "swe": "UKÄ ofullständig",
+    "en": "UKA comprehensive"
+  },
+  "contributor_duplicate_check": {
+    "swe": "Upphov dubblerat",
+    "en": "Contributor duplicate"
+  },
+  "creator_count_check": {
+    "swe": "Upphovsantal",
+    "en": "Creator count"
+  },
+  "auto_classify": {
+    "swe": "Autoklassning",
+    "en": "Auto classify"
+  },
+  "creator_count": {
+    "swe": "Upphovsantal",
+    "en": "Creator count"
+  },
+  "free_text": {
+    "swe": "Fritext",
+    "en": "Free text"
+  },
+  "publication_year": {
+    "swe": "Utgivningsår",
+    "en": "Publication year"
+  },
+  "UKA": {
+    "swe": "UKÄ",
+    "en": "UKA"
+  },
+  "add_oa": {
+    "swe": "Öppen tillgång",
+    "en": "Open access"
+  },
+  "PersonID": {
+    "swe": "ORCID matchat med lokalt ID",
+    "en": "ORCID matched with local ID"
+  },
+  "add_issn": {
+    "swe": "ISSN tillagt",
+    "en": "ISSN added"
+  },
+  "add_publisher": {
+    "swe": "Utgivare",
+    "en": "Utgivare"
+  },
+  "add_publisher_location": {
+    "swe": "Utgivningsort",
+    "en": "Place of issue"
+  },
+  "add_published_print": {
+    "swe": "Utgivningsår",
+    "en": "Publication date"
+  },
+  "add_published_online": {
+    "swe": "Epub ahead of print / Online first",
+    "en": "Online availability date"
+  },
+  "add_summary": {
+    "swe": "Abstract",
+    "en": "Abstract"
+  },
+  "add_license": {
+    "swe": "Licens",
+    "en": "License"
+  }
+}
