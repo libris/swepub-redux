@@ -1,6 +1,7 @@
 <script>
 import TabMenu from '@/components/shared/TabMenu.vue';
 
+import { KeepAlive } from 'vue';
 const BibliometricsSearch = () => import('@/components/bibliometrics/Search.vue');
 const DataDump = () => import('@/components/bibliometrics/DataDump.vue');
 
@@ -11,6 +12,7 @@ export default {
     TabMenu,
     BibliometricsSearch,
     DataDump,
+    KeepAlive
   },
   props: {
     query: { // passed from vue router
@@ -51,17 +53,10 @@ export default {
 
 <template>
   <div class="Bibliometrics vertical-wrapper">
-    <tab-menu class="horizontal-wrapper" @go="switchTab" :tabs="tabs" :active="activeTab" />
-    <keep-alive>
-      <bibliometrics-search v-show="activeTab === 'search'" :query="query" />
-    </keep-alive>
-    <keep-alive>
-      <data-dump v-show="activeTab === 'datadump'" />
-    </keep-alive>
+    <TabMenu class="horizontal-wrapper" @go="switchTab" :tabs="tabs" :active="activeTab" />
+
+      <BibliometricsSearch v-show="activeTab === 'search'" :query="query" />
+
+    <DataDump v-show="activeTab === 'datadump'" />
   </div>
 </template>
-
-<style lang="scss">
-:root {
-}
-</style>

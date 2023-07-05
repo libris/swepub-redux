@@ -6,7 +6,7 @@ import * as Network from '@/utils/Network';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import SelectSource from '@/components/shared/SelectSource.vue';
 import SelectBase from '@/components/shared/SelectBase.vue';
-import { useSettingsStore } from '@/stores/settings.vue';
+import { useSettingsStore } from '@/stores/settings';
 
 const ExportButtons = () => import('@/components/shared/ExportButtons.vue');
 

@@ -1,4 +1,5 @@
 <script>
+import { Transition } from 'vue';
 import { mapState } from 'pinia';
 import autoSize from 'autosize';
 import VueSimpleSpinner from 'vue-simple-spinner';
@@ -13,6 +14,7 @@ export default {
   components: {
     VueSimpleSpinner,
     HelpBubble,
+    Transition,
   },
   data() {
     return {
@@ -168,7 +170,7 @@ export default {
         </div>
       </div>
     </div>
-    <transition name="fade">
+    <Transition name="fade">
       <section class="Classify-resultWrapper"
         v-show="result"
         aria-labelledby="result">
@@ -212,7 +214,7 @@ export default {
           </p>
         </div>
       </section>
-    </transition>
+    </Transition>
   </section>
 </template>
 

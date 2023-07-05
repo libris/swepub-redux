@@ -1,4 +1,5 @@
 <script>
+import { Transition } from 'vue';
 import * as StringUtil from '@/utils/String';
 import Helptexts from '@/assets/json/helptexts.json';
 import YearPicker from '@/components/shared/YearPicker.vue';
@@ -12,12 +13,13 @@ const ExportData = () => import('@/components/bibliometrics/ExportData.vue');
 
 export default {
   name: 'bibliometrics-search',
-  mixins: [ValidationMixin],
+  // mixins: [ValidationMixin],
   components: {
     SelectSource,
     SelectSubject,
     SelectOutput,
     YearPicker,
+    Transition,
     HelpBubble,
     ExportData,
   },
@@ -175,35 +177,35 @@ export default {
 </script>
 
 <template>
-  <section class="Search" id="search-section" role="tabpanel" aria-labelledby="search-tab">
+  <div class="Search" id="search-section" role="tabpanel" aria-labelledby="search-tab">
     <div class="Search-wrapper horizontal-wrapper">
       <p id="service-descr" class="Search-descr" v-html="serviceDescr"></p>
 
       <div aria-describedby="service-descr" role="form">
         <div class="Search-SelectContainer">
-          <select-source v-model="selected.org" multiple>
+          <SelectSource v-model="selected.org" multiple>
             <template v-slot:helpbubble>
-              <help-bubble bubbleKey="organization"/>
+              <!-- <help-bubble bubbleKey="organization"/> -->
             </template>
-          </select-source>
+          </SelectSource>
 
-          <select-subject v-model="selected.subject" multiple>
+          <SelectSubject v-model="selected.subject" multiple>
             <template v-slot:helpbubble>
-              <help-bubble bubbleKey="subject"/>
+              <!-- <help-bubble bubbleKey="subject"/> -->
             </template>
-          </select-subject>
+          </SelectSubject>
         </div>
 
         <div class="Search-SelectContainer">
-          <select-output v-model="selected.genreForm" multiple>
+          <SelectOutput v-model="selected.genreForm" multiple>
             <template v-slot:helpbubble>
-              <help-bubble bubbleKey="output"/>
+              <!-- <help-bubble bubbleKey="output"/> -->
             </template>
-          </select-output>
+          </SelectOutput>
 
           <div class="Search-fieldset">
             <label for="keywords_input">Nyckelord</label>
-            <help-bubble bubbleKey="keywords"/>
+            <!-- <help-bubble bubbleKey="keywords"/> -->
 
             <input class="Search-input"
               type="text"
@@ -213,11 +215,11 @@ export default {
           </div>
         </div>
 
-        <year-picker v-model="selected.years" legend="Utgivningsår" :error="yearInputError">
+        <YearPicker v-model="selected.years" legend="Utgivningsår" :error="yearInputError">
           <template v-slot:helpbubble>
-            <help-bubble bubbleKey="publication_year"/>
+            <!-- <help-bubble bubbleKey="publication_year"/> -->
           </template>
-        </year-picker>
+        </YearPicker>
 
         <div class="Search-toggleGroups">
           <fieldset class="Search-checkboxGroup Search-fieldset">
@@ -225,7 +227,7 @@ export default {
               Publiceringsstatus
             </legend>
 
-            <help-bubble bubbleKey="publication_status"/>
+            <!-- <help-bubble bubbleKey="publication_status"/> -->
 
             <div class="Search-checkboxGroupItems" id="publication-statuses">
               <div
@@ -252,7 +254,7 @@ export default {
               Innehållsmärkning
             </legend>
 
-            <help-bubble bubbleKey="content_marking"/>
+            <!-- <help-bubble bubbleKey="content_marking"/> -->
 
             <div class="Search-checkboxGroupItems" id="content-markings">
               <div v-for="mark in contentMarkings" :key="mark.value" class="Search-inputContainer">
@@ -269,7 +271,7 @@ export default {
 
           <fieldset class="Search-fieldset">
             <legend>Svenska listan</legend>
-            <help-bubble bubbleKey="swedish_list"/>
+            <!-- <help-bubble bubbleKey="swedish_list"/> -->
 
             <div class="Search-inputContainer">
               <input id="swedish-list" type="checkbox" v-model="selected.swedishList" />
@@ -282,7 +284,7 @@ export default {
 
           <fieldset class="Search-fieldset">
             <legend>Öppen tillgång</legend>
-            <help-bubble bubbleKey="open_access"/>
+            <!-- <help-bubble bubbleKey="open_access"/> -->
 
             <div class="Search-inputContainer">
               <input id="open-access" type="checkbox" v-model="selected.openAccess" />
@@ -309,10 +311,10 @@ export default {
       </div>
     </div>
 
-    <transition name="fade">
-      <export-data v-if="search" :query="search"/>
-    </transition>
-  </section>
+    <Transition name="fade">
+      <ExportData v-if="search" :query="search"/>
+    </Transition>
+  </div>
 </template>
 
 <style lang="scss">

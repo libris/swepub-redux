@@ -1,4 +1,5 @@
 <script>
+import { Transition } from 'vue';
 import FetchMixin from '@/components/mixins/FetchMixin.vue';
 import YearPicker from '@/components/shared/YearPicker.vue';
 import Helptexts from '@/assets/json/helptexts.json';
@@ -19,6 +20,7 @@ export default {
     FlagPicker,
     ExportFlags,
     HelpBubble,
+    Transition,
   },
   props: {
     query: { // passed from vue router
@@ -250,7 +252,7 @@ export default {
         </div>
       </div>
     </section>
-    <transition name="fade">
+    <Transition name="fade">
       <section class="horizontal-wrapper"
         v-if="data"
         ref="flagSection"
@@ -287,8 +289,9 @@ export default {
             @click="push(selectedExportUrl)">Förhandsgranska export</button>
         </div>
       </section>
-    </transition>
-    <transition name="fade">
+    </Transition>
+
+    <Transition name="fade">
       <!-- selectionUnchanged check match url query with valid select state,
       prevents showing weird results if user tampers with params -->
       <export-flags v-if="hasExportInUrl &&
@@ -297,7 +300,7 @@ export default {
         data &&
         data.total > 0"
         :query="query"/>
-    </transition>
+    </Transition>
   </section>
 </template>
 

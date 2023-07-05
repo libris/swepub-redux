@@ -7,18 +7,18 @@ bubbleKey - where to look for copy in helpbubbles.json, mapped by [route.name][b
 color: color for the icon itself
 
 */
-import { mixin as clickaway } from 'vue-clickaway';
-import { VTooltip } from 'v-tooltip';
+// import { mixin as clickaway } from 'vue-clickaway';
+// import { VTooltip } from 'v-tooltip';
 import Helpbubbles from '@/assets/json/helpbubbles.json';
 import { mapState } from 'pinia';
 import { useSettingsStore } from '@/stores/settings';
 
 export default {
   name: 'help-bubble',
-  mixins: [clickaway],
-  directives: {
-    tooltip: VTooltip,
-  },
+  // mixins: [clickaway],
+  // directives: {
+  //   tooltip: VTooltip,
+  // },
   components: {
   },
   props: {
@@ -77,11 +77,17 @@ export default {
       this.isOpen = false;
     },
   },
+  mounted() {
+    console.log('helpbubbles', JSON.parse(JSON.stringify(Helpbubbles)));
+  },
 };
 </script>
 
 <template>
-  <div class="HelpBubble"
+  <div>
+    test
+  </div>
+  <!-- <div class="HelpBubble"
     role="button"
     :aria-label="label"
     v-if="tooltipObj && tooltipObj.text"
@@ -99,7 +105,7 @@ export default {
       trigger: 'manual',
       show: isOpen,
       html: true }"/>
-  </div>
+  </div> -->
 </template>
 
 <style lang="scss">

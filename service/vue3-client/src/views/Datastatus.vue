@@ -1,4 +1,5 @@
 <script>
+import { Transition } from 'vue';
 import * as Network from '@/utils/Network';
 import SelectSource from '@/components/shared/SelectSource.vue';
 import YearPicker from '@/components/shared/YearPicker.vue';
@@ -23,6 +24,7 @@ export default {
     ShortStats,
     DatastatusValidations,
     DatastatusSubjects,
+    Transition,
   },
   props: {
     params: {
@@ -184,24 +186,29 @@ export default {
       <p v-if="error" role="alert" aria-atomic="true">
         <span class="error">{{ error }}</span>
       </p>
-      <transition name="fade">
-      <datastatus-summary v-if="!loading && data"
-        :data="data"
-        :sources="sources" />
-      </transition>
+      <Transition name="fade">
+        <datastatus-summary
+          v-if="!loading && data"
+          :data="data"
+          :sources="sources"
+        />
+      </Transition>
     </div>
-    <transition name="fade">
+
+    <Transition name="fade">
       <short-stats v-if="data && data.total > 0" :data="{
         openAccess: data.openAccess,
         swedishList: data.swedishList,
         ssif: data.ssif }"/>
-    </transition>
-    <transition name="fade">
+    </Transition>
+
+    <Transition name="fade">
       <section class="Datastatus-chartContainer horizontal-wrapper flex">
         <datastatus-subjects :apiQuery="apiQuery.subjects"/>
         <datastatus-validations :apiQuery="apiQuery.validations"/>
       </section>
-    </transition>
+    </Transition>
+
     <p v-if="data" class="Datastatus-note">Underliggande data kan hämtas i
       <router-link to="/bibliometrics">Bibliometri</router-link>,
       <router-link to="/bibliometrics/datadump">Datadump</router-link> eller

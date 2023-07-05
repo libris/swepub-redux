@@ -6,15 +6,15 @@
  */
 import { useSettingsStore } from '@/stores/settings';
 import { mapState } from 'pinia';
-import { VTooltip } from 'v-tooltip';
+// import { VTooltip } from 'v-tooltip';
 
 export default {
   name: 'table-data-id',
   components: {
   },
-  directives: {
-    tooltip: VTooltip,
-  },
+  // directives: {
+  //   tooltip: VTooltip,
+  // },
   props: {
     tdKey: {
       type: String,
@@ -75,13 +75,14 @@ export default {
 <template>
   <span class="TableDataId">
     <span class="TableDataId-iconWrapper" v-if="isDeduped && isBibliometrics">
-      <font-awesome-icon
+      <!-- TODO: Fix tooltip-->
+      <!-- <font-awesome-icon
         :icon="['fas', 'copy']"
         :aria-label="dedupTooltipText"
         v-tooltip.right-start="{
           content: dedupTooltipText,
           classes: 'TableDataId-tooltip',
-        }"/>
+        }"/> -->
     </span>
     <span v-if="!isDeduped && isBibliometrics" class="TableDataId-iconWrapper">
       <!-- empty placeholder -->
@@ -90,13 +91,14 @@ export default {
       <span class="TableDataId-iconWrapper">
         <font-awesome-icon title="Öppnar i ny flik" :icon="['fa', 'external-link-alt']"/>
       </span>
-      <a :href="linkUrl"
+      <!-- TODO: Fix tooltip-->
+      <!-- <a :href="linkUrl"
         v-tooltip.top="{
           content: linkTooltipText,
           classes: 'TableDataId-tooltip',
         }"
         v-bind="target"
-        :title="this.linkUrl">{{tdValue}}</a>
+        :title="this.linkUrl">{{tdValue}}</a> -->
     </span>
     <span v-else>{{tdValue}}</span>
   </span>
