@@ -1,5 +1,5 @@
 <script>
-import { Transition } from 'vue';
+import { Transition, defineAsyncComponent } from 'vue';
 import * as Network from '@/utils/Network';
 import SelectSource from '@/components/shared/SelectSource.vue';
 import YearPicker from '@/components/shared/YearPicker.vue';
@@ -7,10 +7,10 @@ import ValidationMixin from '@/components/mixins/ValidationMixin.vue';
 import FetchMixin from '@/components/mixins/FetchMixin.vue';
 import ShortStats from '@/components/datastatus/ShortStats.vue';
 
-const HelpBubble = () => import('@/components/shared/HelpBubble.vue');
-const DatastatusSummary = () => import('@/components/datastatus/Summary.vue');
-const DatastatusValidations = () => import('@/components/datastatus/Validations.vue');
-const DatastatusSubjects = () => import('@/components/datastatus/Subjects.vue');
+const HelpBubble = defineAsyncComponent(() => import('@/components/shared/HelpBubble.vue'));
+const DatastatusSummary = defineAsyncComponent(() => import('@/components/datastatus/Summary.vue'));
+const DatastatusValidations = defineAsyncComponent(() => import('@/components/datastatus/Validations.vue'));
+const DatastatusSubjects = defineAsyncComponent(() => import('@/components/datastatus/Subjects.vue'));
 
 export default {
   // eslint-disable-next-line
@@ -182,7 +182,7 @@ export default {
     </section>
     <div class="Datastatus-chartContainer horizontal-wrapper" v-if="loading || error || data">
       <hr class="divided-section">
-      <vue-simple-spinner v-if="loading" size="large"/>
+      <!-- <vue-simple-spinner v-if="loading" size="large"/> -->
       <p v-if="error" role="alert" aria-atomic="true">
         <span class="error">{{ error }}</span>
       </p>

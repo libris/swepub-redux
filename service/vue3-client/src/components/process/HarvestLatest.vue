@@ -1,9 +1,10 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import FetchMixin from '@/components/mixins/FetchMixin.vue';
 
-const HelpBubble = () => import('@/components/shared/HelpBubble.vue');
-const HarvestSummary = () => import('@/components/process/HarvestSummary.vue');
-const HarvestRejected = () => import('@/components/process/HarvestRejected.vue');
+const HelpBubble = defineAsyncComponent(() => import('@/components/shared/HelpBubble.vue'));
+const HarvestSummary = defineAsyncComponent(() => import('@/components/process/HarvestSummary.vue'));
+const HarvestRejected = defineAsyncComponent(() => import('@/components/process/HarvestRejected.vue'));
 
 export default {
   name: 'harvest-latest',
@@ -47,10 +48,12 @@ export default {
 </script>
 
 <template>
-  <section class="HarvestLatest"
+  <section
+    class="HarvestLatest"
     :aria-busy="loading"
-    aria-labelledby="status-tab harvest-latest-heading">
-    <vue-simple-spinner v-if="loading"/>
+    aria-labelledby="status-tab harvest-latest-heading"
+  >
+    <!-- <vue-simple-spinner v-if="loading"/> -->
     <p v-if="error">
       <span class="error" role="alert" aria-atomic="true">{{ error }}</span>
     </p>

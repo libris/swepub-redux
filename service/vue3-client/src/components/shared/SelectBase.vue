@@ -104,7 +104,8 @@ export default {
     </label>
     <slot name="helpbubble"></slot>
     <div class="SelectBase-spinnerContainer" v-if="loading" >
-      <vue-simple-spinner size="small" />
+      <!-- <vue-simple-spinner size="small" /> -->
+      spinner
     </div>
     <v-select v-else
       :options="options"

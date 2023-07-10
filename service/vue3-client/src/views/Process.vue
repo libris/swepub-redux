@@ -1,8 +1,9 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import TabMenu from '@/components/shared/TabMenu.vue';
 
-const DataQuality = () => import('@/components/process/DataQuality.vue');
-const HarvestStatus = () => import('@/components/process/HarvestStatus.vue');
+const DataQuality = defineAsyncComponent(() => import('@/components/process/DataQuality.vue'));
+const HarvestStatus = defineAsyncComponent(() => import('@/components/process/HarvestStatus.vue'));
 
 export default {
   // eslint-disable-next-line

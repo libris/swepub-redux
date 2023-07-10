@@ -1,7 +1,8 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import palettes from '@/assets/json/chartPalettes.json';
 
-const DoughnutContainer = () => import('@/components/datastatus/DoughnutContainer.vue');
+const DoughnutContainer = defineAsyncComponent(() => import('@/components/datastatus/DoughnutContainer.vue'));
 
 export default {
   name: 'datastatus-summary',

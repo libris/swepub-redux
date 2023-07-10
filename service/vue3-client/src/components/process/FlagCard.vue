@@ -1,9 +1,10 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { mapState } from 'pinia';
 import FlagLabels from '@/assets/json/FlagLabels.json';
 import { useSettingsStore } from '@/stores/settings';
 
-const HelpBubble = () => import('@/components/shared/HelpBubble.vue');
+const HelpBubble = defineAsyncComponent(() => import('@/components/shared/HelpBubble.vue'));
 
 export default {
   name: 'FlagCard',

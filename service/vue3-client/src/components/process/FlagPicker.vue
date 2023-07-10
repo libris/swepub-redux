@@ -1,6 +1,7 @@
 <script>
-const FlagCard = () => import('@/components/process/FlagCard.vue');
-const HelpBubble = () => import('@/components/shared/HelpBubble.vue');
+import { defineAsyncComponent } from 'vue';
+const FlagCard = defineAsyncComponent(() => import('@/components/process/FlagCard.vue'));
+const HelpBubble = defineAsyncComponent(() => import('@/components/shared/HelpBubble.vue'));
 
 export default {
   name: 'FlagPicker',

@@ -1,5 +1,5 @@
 <script>
-import { Transition } from 'vue';
+import { Transition, defineAsyncComponent } from 'vue';
 import { mapState } from 'pinia';
 import autoSize from 'autosize';
 import VueSimpleSpinner from 'vue-simple-spinner';
@@ -7,7 +7,7 @@ import * as Network from '@/utils/Network';
 import Helptexts from '@/assets/json/helptexts.json';
 import { useSettingsStore } from '@/stores/settings';
 
-const HelpBubble = () => import('@/components/shared/HelpBubble.vue');
+const HelpBubble = defineAsyncComponent(() => import('@/components/shared/HelpBubble.vue'));
 
 export default {
   name: 'classify-form',
@@ -164,7 +164,7 @@ export default {
           :class="{ 'disabled' : !canProceed }"
           :disabled="!canProceed">
           Rensa</button>
-          <vue-simple-spinner v-if="loading"/>
+          <!-- <vue-simple-spinner v-if="loading"/> -->
         <div v-if="errorMsg">
           <p class="error" role="alert" aria-atomic="true">{{ errorMsg }}</p>
         </div>

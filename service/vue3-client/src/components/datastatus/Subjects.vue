@@ -1,9 +1,10 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import FetchMixin from '@/components/mixins/FetchMixin.vue';
 import HelpBubble from '@/components/shared/HelpBubble.vue';
 import palettes from '@/assets/json/chartPalettes.json';
 
-const DoughnutContainer = () => import('@/components/datastatus/DoughnutContainer.vue');
+const DoughnutContainer = defineAsyncComponent(() => import('@/components/datastatus/DoughnutContainer.vue'));
 
 export default {
   name: 'datastatus-subjects',
@@ -115,7 +116,7 @@ export default {
       <h2 id="subjects-heading" class="heading heading-md">Forskningsämne (SSIF)</h2>
       <help-bubble bubbleKey="subjects"/>
     </div>
-    <vue-simple-spinner class="TopicChart-loading" size="large" v-if="loading"/>
+    <!-- <vue-simple-spinner class="TopicChart-loading" size="large" v-if="loading"/> -->
     <p v-if="error" role="alert" aria-atomic="true">
       <span class="error">{{ error }}</span>
     </p>

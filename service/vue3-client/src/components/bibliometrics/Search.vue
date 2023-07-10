@@ -1,5 +1,5 @@
 <script>
-import { Transition } from 'vue';
+import { Transition, defineAsyncComponent } from 'vue';
 import * as StringUtil from '@/utils/String';
 import Helptexts from '@/assets/json/helptexts.json';
 import YearPicker from '@/components/shared/YearPicker.vue';
@@ -8,12 +8,12 @@ import SelectSubject from '@/components/shared/SelectSubject.vue';
 import SelectOutput from '@/components/shared/SelectOutput.vue';
 import ValidationMixin from '@/components/mixins/ValidationMixin.vue';
 
-const HelpBubble = () => import('@/components/shared/HelpBubble.vue');
-const ExportData = () => import('@/components/bibliometrics/ExportData.vue');
+const HelpBubble = defineAsyncComponent(() => import('@/components/shared/HelpBubble.vue'));
+const ExportData = defineAsyncComponent(() => import('@/components/bibliometrics/ExportData.vue'));
 
 export default {
   name: 'bibliometrics-search',
-  // mixins: [ValidationMixin],
+  mixins: [ValidationMixin],
   components: {
     SelectSource,
     SelectSubject,
@@ -185,13 +185,13 @@ export default {
         <div class="Search-SelectContainer">
           <SelectSource v-model="selected.org" multiple>
             <template v-slot:helpbubble>
-              <!-- <help-bubble bubbleKey="organization"/> -->
+              <HelpBubble bubbleKey="organization"/>
             </template>
           </SelectSource>
 
           <SelectSubject v-model="selected.subject" multiple>
             <template v-slot:helpbubble>
-              <!-- <help-bubble bubbleKey="subject"/> -->
+              <HelpBubble bubbleKey="subject"/>
             </template>
           </SelectSubject>
         </div>
@@ -199,13 +199,13 @@ export default {
         <div class="Search-SelectContainer">
           <SelectOutput v-model="selected.genreForm" multiple>
             <template v-slot:helpbubble>
-              <!-- <help-bubble bubbleKey="output"/> -->
+              <HelpBubble bubbleKey="output"/>
             </template>
           </SelectOutput>
 
           <div class="Search-fieldset">
             <label for="keywords_input">Nyckelord</label>
-            <!-- <help-bubble bubbleKey="keywords"/> -->
+            <HelpBubble bubbleKey="keywords"/>
 
             <input class="Search-input"
               type="text"
@@ -215,11 +215,11 @@ export default {
           </div>
         </div>
 
-        <YearPicker v-model="selected.years" legend="Utgivningsår" :error="yearInputError">
+        <!-- TODO: FIX THIS <YearPicker v-model="selected.years" legend="Utgivningsår" :error="yearInputError">
           <template v-slot:helpbubble>
-            <!-- <help-bubble bubbleKey="publication_year"/> -->
+            <HelpBubble bubbleKey="publication_year"/>
           </template>
-        </YearPicker>
+        </YearPicker> -->
 
         <div class="Search-toggleGroups">
           <fieldset class="Search-checkboxGroup Search-fieldset">
@@ -227,7 +227,7 @@ export default {
               Publiceringsstatus
             </legend>
 
-            <!-- <help-bubble bubbleKey="publication_status"/> -->
+            <HelpBubble bubbleKey="publication_status"/>
 
             <div class="Search-checkboxGroupItems" id="publication-statuses">
               <div
@@ -254,7 +254,7 @@ export default {
               Innehållsmärkning
             </legend>
 
-            <!-- <help-bubble bubbleKey="content_marking"/> -->
+            <HelpBubble bubbleKey="content_marking"/>
 
             <div class="Search-checkboxGroupItems" id="content-markings">
               <div v-for="mark in contentMarkings" :key="mark.value" class="Search-inputContainer">
@@ -271,7 +271,7 @@ export default {
 
           <fieldset class="Search-fieldset">
             <legend>Svenska listan</legend>
-            <!-- <help-bubble bubbleKey="swedish_list"/> -->
+            <HelpBubble bubbleKey="swedish_list"/>
 
             <div class="Search-inputContainer">
               <input id="swedish-list" type="checkbox" v-model="selected.swedishList" />
@@ -284,7 +284,7 @@ export default {
 
           <fieldset class="Search-fieldset">
             <legend>Öppen tillgång</legend>
-            <!-- <help-bubble bubbleKey="open_access"/> -->
+            <HelpBubble bubbleKey="open_access"/>
 
             <div class="Search-inputContainer">
               <input id="open-access" type="checkbox" v-model="selected.openAccess" />

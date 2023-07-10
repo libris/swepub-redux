@@ -1,10 +1,11 @@
 <script>
-const TableDataLink = () => import('@/components/shared/TableDataLink.vue');
-const TableDataList = () => import('@/components/shared/TableDataList.vue');
-const TableDataBoolean = () => import('@/components/shared/TableDataBoolean.vue');
-const TableDataMultiLine = () => import('@/components/shared/TableDataMultiLine.vue');
-const TableDataId = () => import('@/components/shared/TableDataId.vue');
-const TableDataSeries = () => import('@/components/shared/TableDataSeries.vue');
+import { defineAsyncComponent } from 'vue';
+const TableDataLink = defineAsyncComponent(() => import('@/components/shared/TableDataLink.vue'));
+const TableDataList = defineAsyncComponent(() => import('@/components/shared/TableDataList.vue'));
+const TableDataBoolean = defineAsyncComponent(() => import('@/components/shared/TableDataBoolean.vue'));
+const TableDataMultiLine = defineAsyncComponent(() => import('@/components/shared/TableDataMultiLine.vue'));
+const TableDataId = defineAsyncComponent(() => import('@/components/shared/TableDataId.vue'));
+const TableDataSeries = defineAsyncComponent(() => import('@/components/shared/TableDataSeries.vue'));
 
 export default {
   name: 'preview-table',

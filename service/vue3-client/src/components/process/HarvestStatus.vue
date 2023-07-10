@@ -1,11 +1,12 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import Helptexts from '@/assets/json/helptexts.json';
 import SelectSource from '@/components/shared/SelectSource.vue';
 
-const TabMenu = () => import('@/components/shared/TabMenu.vue');
-const HarvestLatest = () => import('@/components/process/HarvestLatest.vue');
-const HarvestHistory = () => import('@/components/process/HarvestHistory.vue');
-const HelpBubble = () => import('@/components/shared/HelpBubble.vue');
+const TabMenu = defineAsyncComponent(() => import('@/components/shared/TabMenu.vue'));
+const HarvestLatest = defineAsyncComponent(() => import('@/components/process/HarvestLatest.vue'));
+const HarvestHistory = defineAsyncComponent(() => import('@/components/process/HarvestHistory.vue'));
+const HelpBubble = defineAsyncComponent(() => import('@/components/shared/HelpBubble.vue'));
 
 export default {
   name: 'harvest-status',

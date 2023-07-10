@@ -40,7 +40,7 @@ export default {
       :class="{'disabled' : !exportAllowed}"
       :disabled="!exportAllowed"
       @click="$emit('export-tsv')">Exportera TSV</button>
-    <vue-simple-spinner v-if="exportLoading" />
+    <!-- <vue-simple-spinner v-if="exportLoading" /> -->
     <div v-if="exportError">
       <span class="error" role="alert" aria-atomic="true">{{exportError}}</span>
     </div>

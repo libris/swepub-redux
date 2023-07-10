@@ -5,17 +5,11 @@
 // data, loading & error vars - make sure to shadow these
 
 import { mapState } from 'pinia';
-import VueSimpleSpinner from 'vue-simple-spinner';
 import * as Network from '@/utils/Network';
 import { useSettingsStore } from '@/stores/settings';
 
 export default {
   name: 'fetch-mixin',
-  components: {
-    VueSimpleSpinner,
-  },
-  props: {
-  },
   data() {
     return {
       data: null,
@@ -61,10 +55,6 @@ export default {
           });
       });
     },
-  },
-  mounted() {
-  },
-  watch: {
   },
 };
 </script>

@@ -12,8 +12,8 @@
  * showEmptyValues - (bool) true will print blank lines for null/empty values
  * = good for data that needs to correlate across tr:s, default false
  */
-
-const TableDataLink = () => import('@/components/shared/TableDataLink.vue');
+import { defineAsyncComponent } from 'vue';
+const TableDataLink = defineAsyncComponent(() => import('@/components/shared/TableDataLink.vue'));
 
 export default {
   name: 'table-data-list',

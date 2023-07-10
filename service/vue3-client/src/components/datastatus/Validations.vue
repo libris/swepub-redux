@@ -1,10 +1,11 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import FlagLabels from '@/assets/json/FlagLabels.json';
 import FetchMixin from '@/components/mixins/FetchMixin.vue';
 import HelpBubble from '@/components/shared/HelpBubble.vue';
 
-const BarChart = () => import('@/components/datastatus/BarChart.vue');
-const SrChartTable = () => import('@/components/datastatus/SrChartTable.vue');
+const BarChart = defineAsyncComponent(() => import('@/components/datastatus/BarChart.vue'));
+const SrChartTable = defineAsyncComponent(() => import('@/components/datastatus/SrChartTable.vue'));
 
 export default {
   name: 'datastatus-validations',
@@ -123,7 +124,7 @@ export default {
       <h2 id="validations-heading" class="heading heading-md">Ofullständiga data</h2>
       <help-bubble bubbleKey="validations"/>
     </div>
-    <vue-simple-spinner class="TopicChart-loading" size="large" v-if="loading"/>
+    <!-- <vue-simple-spinner class="TopicChart-loading" size="large" v-if="loading"/> -->
     <p v-if="error" role="alert" aria-atomic="true">
       <span class="error">{{ error }}</span>
     </p>

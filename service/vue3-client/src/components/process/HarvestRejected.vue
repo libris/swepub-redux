@@ -1,12 +1,13 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { mapState } from 'pinia';
 import * as Network from '@/utils/Network';
 import ExportMixin from '@/components/mixins/ExportMixin.vue';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import { useSettingsStore } from '@/stores/settings';
 
-const PaginationComponent = () => import('@/components/shared/PaginationComponent.vue');
-const PreviewTable = () => import('@/components/shared/PreviewTable.vue');
+const PaginationComponent = defineAsyncComponent(() => import('@/components/shared/PaginationComponent.vue'));
+const PreviewTable = defineAsyncComponent(() => import('@/components/shared/PreviewTable.vue'));
 
 export default {
   name: 'harvest-rejected',
@@ -119,7 +120,8 @@ export default {
 <template>
   <div class="HarvestRejected" :aria-busy="previewLoading" aria-live="polite">
     <!-- loading -->
-    <vue-simple-spinner v-if="previewLoading" class="HarvestRejected-previewLoading"/>
+    <!-- <vue-simple-spinner v-if="previewLoading" class="HarvestRejected-previewLoading"/> -->
+    <div v-if="previewLoading">spinner</div>
     <!-- error -->
     <div v-else-if="previewError">
       <p role="alert" aria-atomic="true"><span class="error">{{previewError}}</span></p>
@@ -140,7 +142,8 @@ export default {
             @go="paginate"/>
         </div>
         <!-- pagination loader -->
-        <vue-simple-spinner class="HarvestRejected-previewLoading" v-if="paginationLoading" />
+        <!-- <vue-simple-spinner class="HarvestRejected-previewLoading" v-if="paginationLoading" /> -->
+        <div v-if="previewLoading">spinner</div>
         <!-- preview table -->
         <preview-table v-else
           :previewData="previewData"

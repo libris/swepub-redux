@@ -1,4 +1,5 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import { mapState } from 'pinia';
 import Helptexts from '@/assets/json/helptexts.json';
 import * as Network from '@/utils/Network';
@@ -6,9 +7,9 @@ import ExportMixin from '@/components/mixins/ExportMixin.vue';
 import VueSimpleSpinner from 'vue-simple-spinner';
 import { useSettingsStore } from '@/stores/settings';
 
-const ExportButtons = () => import('@/components/shared/ExportButtons.vue');
-const PaginationComponent = () => import('@/components/shared/PaginationComponent.vue');
-const PreviewCard = () => import('@/components/process/PreviewCard.vue');
+const ExportButtons = defineAsyncComponent(() => import('@/components/shared/ExportButtons.vue'));
+const PaginationComponent = defineAsyncComponent(() => import('@/components/shared/PaginationComponent.vue'));
+const PreviewCard = defineAsyncComponent(() => import('@/components/process/PreviewCard.vue'));
 
 export default {
   name: 'export-flags',
@@ -109,7 +110,8 @@ export default {
   :aria-busy="previewLoading"
   aria-live="polite">
   <!-- loading -->
-  <vue-simple-spinner v-if="previewLoading" class="ExportFlags-previewLoading"/>
+  <!-- <vue-simple-spinner v-if="previewLoading" class="ExportFlags-previewLoading"/> -->
+  <div v-if="previewLoading">spinner</div>
   <!-- error -->
   <div v-else-if="previewError">
     <p class="error" role="alert" aria-atomic="true">{{previewError}}</p>
@@ -147,7 +149,8 @@ export default {
           @go="paginate"/>
       </div>
       <!-- pagination loader -->
-      <vue-simple-spinner class="ExportFlags-previewLoading" v-if="paginationLoading"/>
+      <!-- <vue-simple-spinner v-if="previewLoading" class="ExportFlags-previewLoading"/> -->
+      <div v-if="previewLoading">spinner</div>
       <!-- preview cards -->
       <ol v-else class="ExportFlags-cardList">
         <preview-card v-for="(item, index) in previewData.hits"

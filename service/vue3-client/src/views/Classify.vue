@@ -1,8 +1,9 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import TabMenu from '@/components/shared/TabMenu.vue';
 
-const ClassifyForm = () => import('@/components/classify/ClassifyForm.vue');
-const ClassifyDocumentation = () => import('@/components/classify/Documentation.vue');
+const ClassifyForm = defineAsyncComponent(() => import('@/components/classify/ClassifyForm.vue'));
+const ClassifyDocumentation = defineAsyncComponent(() => import('@/components/classify/Documentation.vue'));
 
 export default {
   // eslint-disable-next-line

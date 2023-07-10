@@ -1,9 +1,10 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import TabMenu from '@/components/shared/TabMenu.vue';
 
 import { KeepAlive } from 'vue';
-const BibliometricsSearch = () => import('@/components/bibliometrics/Search.vue');
-const DataDump = () => import('@/components/bibliometrics/DataDump.vue');
+const BibliometricsSearch = defineAsyncComponent(() => import('@/components/bibliometrics/Search.vue'));
+const DataDump = defineAsyncComponent(() => import('@/components/bibliometrics/DataDump.vue'));
 
 export default {
   // eslint-disable-next-line
@@ -55,7 +56,7 @@ export default {
   <div class="Bibliometrics vertical-wrapper">
     <TabMenu class="horizontal-wrapper" @go="switchTab" :tabs="tabs" :active="activeTab" />
 
-      <BibliometricsSearch v-show="activeTab === 'search'" :query="query" />
+    <BibliometricsSearch v-show="activeTab === 'search'" :query="query" />
 
     <DataDump v-show="activeTab === 'datadump'" />
   </div>

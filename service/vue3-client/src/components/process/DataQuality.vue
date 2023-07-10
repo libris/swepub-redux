@@ -1,5 +1,5 @@
 <script>
-import { Transition } from 'vue';
+import { Transition, defineAsyncComponent } from 'vue';
 import FetchMixin from '@/components/mixins/FetchMixin.vue';
 import YearPicker from '@/components/shared/YearPicker.vue';
 import Helptexts from '@/assets/json/helptexts.json';
@@ -7,9 +7,9 @@ import * as StringUtil from '@/utils/String';
 import SelectSource from '@/components/shared/SelectSource.vue';
 import ValidationMixin from '@/components/mixins/ValidationMixin.vue';
 
-const HelpBubble = () => import('@/components/shared/HelpBubble.vue');
-const FlagPicker = () => import('@/components/process/FlagPicker.vue');
-const ExportFlags = () => import('@/components/process/ExportFlags.vue');
+const HelpBubble = defineAsyncComponent(() => import('@/components/shared/HelpBubble.vue'));
+const FlagPicker = defineAsyncComponent(() => import('@/components/process/FlagPicker.vue'));
+const ExportFlags = defineAsyncComponent(() => import('@/components/process/ExportFlags.vue'));
 
 export default {
   name: 'data-quality',

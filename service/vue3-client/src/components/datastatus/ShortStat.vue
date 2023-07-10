@@ -1,5 +1,6 @@
 <script>
-const HelpBubble = () => import('@/components/shared/HelpBubble.vue');
+import { defineAsyncComponent } from 'vue';
+const HelpBubble = defineAsyncComponent(() => import('@/components/shared/HelpBubble.vue'));
 
 export default {
   name: 'short-stat',

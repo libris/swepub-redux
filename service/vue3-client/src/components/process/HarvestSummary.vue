@@ -1,9 +1,10 @@
 <script>
+import { defineAsyncComponent } from 'vue';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 
-const ChevronToggle = () => import('@/components/shared/ChevronToggle.vue');
-const HarvestRejected = () => import('@/components/process/HarvestRejected.vue');
+const ChevronToggle = defineAsyncComponent(() => import('@/components/shared/ChevronToggle.vue'));
+const HarvestRejected = defineAsyncComponent(() => import('@/components/process/HarvestRejected.vue'));
 
 export default {
   name: 'harvest-summary',

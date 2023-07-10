@@ -1,8 +1,9 @@
 <script>
 // handles communication between chart and legend components
-const DoughnutChart = () => import('@/components/datastatus/DoughnutChart.vue');
-const ChartLegend = () => import('@/components/datastatus/ChartLegend.vue');
-const SrChartTable = () => import('@/components/datastatus/SrChartTable.vue');
+import { defineAsyncComponent } from 'vue';
+const DoughnutChart = defineAsyncComponent(() => import('@/components/datastatus/DoughnutChart.vue'));
+const ChartLegend = defineAsyncComponent(() => import('@/components/datastatus/ChartLegend.vue'));
+const SrChartTable = defineAsyncComponent(() => import('@/components/datastatus/SrChartTable.vue'));
 
 export default {
   name: 'doughnut-container',

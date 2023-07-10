@@ -8,14 +8,14 @@ import SelectSource from '@/components/shared/SelectSource.vue';
 import SelectBase from '@/components/shared/SelectBase.vue';
 import { useSettingsStore } from '@/stores/settings';
 
-const ExportButtons = () => import('@/components/shared/ExportButtons.vue');
+const ExportButtons = (() => import('@/components/shared/ExportButtons.vue'));
 
-const TableDataLink = () => import('@/components/shared/TableDataLink.vue');
-const TableDataList = () => import('@/components/shared/TableDataList.vue');
-const TableDataBoolean = () => import('@/components/shared/TableDataBoolean.vue');
-const TableDataMultiLine = () => import('@/components/shared/TableDataMultiLine.vue');
-const TableDataId = () => import('@/components/shared/TableDataId.vue');
-const TableDataSeries = () => import('@/components/shared/TableDataSeries.vue');
+const TableDataLink = (() => import('@/components/shared/TableDataLink.vue'));
+const TableDataList = (() => import('@/components/shared/TableDataList.vue'));
+const TableDataBoolean = (() => import('@/components/shared/TableDataBoolean.vue'));
+const TableDataMultiLine = (() => import('@/components/shared/TableDataMultiLine.vue'));
+const TableDataId = (() => import('@/components/shared/TableDataId.vue'));
+const TableDataSeries = (() => import('@/components/shared/TableDataSeries.vue'));
 
 export default {
   name: 'export-data',
@@ -640,10 +640,15 @@ export default {
     aria-live="polite"
   >
     <!-- loading -->
-    <vue-simple-spinner
+    <!-- TODO: Fix vue-simple-spinner replacement
+      <vue-simple-spinner
       v-if="previewLoading"
       class="ExportData-previewLoading"
-    />
+    /> -->
+
+    <div v-if="previewLoading">
+      spinner
+    </div>
 
     <!-- error -->
     <div v-else-if="previewError">
