@@ -1,5 +1,7 @@
 <script>
 import SelectBase from '@/components/shared/SelectBase.vue';
+import { useSettingsStore } from '@/stores/settings';
+import { mapState } from 'pinia';
 
 export default {
   name: 'select-subject',
@@ -16,11 +18,12 @@ export default {
     };
   },
   computed: {
+    ...mapState(useSettingsStore, ['language']),
   },
   methods: {
     transformOptions(subjects) {
       const sortedSubjects = [];
-      const lang = this.settings.language;
+      const lang = this.language;
 
       function addSubject(key, value) {
         sortedSubjects.push({ label: `${key} - ${value[lang]}`, id: key });

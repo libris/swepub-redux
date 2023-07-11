@@ -8,14 +8,13 @@ import SelectSource from '@/components/shared/SelectSource.vue';
 import SelectBase from '@/components/shared/SelectBase.vue';
 import { useSettingsStore } from '@/stores/settings';
 
-const ExportButtons = (() => import('@/components/shared/ExportButtons.vue'));
-
-const TableDataLink = (() => import('@/components/shared/TableDataLink.vue'));
-const TableDataList = (() => import('@/components/shared/TableDataList.vue'));
-const TableDataBoolean = (() => import('@/components/shared/TableDataBoolean.vue'));
-const TableDataMultiLine = (() => import('@/components/shared/TableDataMultiLine.vue'));
-const TableDataId = (() => import('@/components/shared/TableDataId.vue'));
-const TableDataSeries = (() => import('@/components/shared/TableDataSeries.vue'));
+import ExportButtons from '../shared/ExportButtons.vue';
+import TableDataLink from '../shared/TableDataLink.vue';
+import TableDataList from '../shared/TableDataList.vue';
+import TableDataBoolean from '../shared/TableDataBoolean.vue';
+import TableDataMultiLine from '../shared/TableDataMultiLine.vue';
+import TableDataId from '../shared/TableDataId.vue';
+import TableDataSeries from '../shared/TableDataSeries.vue';
 
 export default {
   name: 'export-data',

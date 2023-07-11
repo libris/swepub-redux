@@ -12,10 +12,6 @@ import { parseLinkHeader as parseLink } from '@web3-storage/parse-link-header';
 
 export default {
   name: 'export-mixin',
-  components: {
-  },
-  props: {
-  },
   data() {
     return {
       previewData: {},
