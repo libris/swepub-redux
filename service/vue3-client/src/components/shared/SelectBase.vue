@@ -24,6 +24,9 @@ export default {
       type: [Array, Object],
       required: false,
     },
+    modelValue: {
+      type: [String, Array], // single, multiple
+    },
     value: {
       type: [String, Array], // single, multiple
     },
@@ -78,7 +81,7 @@ export default {
       if (!val || val.length === 0) {
         this.$emit('clear');
       }
-      this.$emit('input', val);
+      this.$emit('update:modelValue', val);
     },
   },
   mounted() {
@@ -113,7 +116,7 @@ export default {
       :multiple="multiple"
       :label="labelProp"
       :reduce="option => option[this.valueProp]"
-      :value="value"
+      :value="modelValue"
       :clearable="clearable"
       @input="setSelected">
       <span slot="no-options">
