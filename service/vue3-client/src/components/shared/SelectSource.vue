@@ -4,10 +4,6 @@ import SelectBase from '@/components/shared/SelectBase.vue';
 export default {
   name: 'select-source',
   extends: SelectBase,
-  components: {
-  },
-  props: {
-  },
   data() {
     return {
       label: 'Organisation',
@@ -34,14 +30,5 @@ export default {
       return sources;
     },
   },
-  mounted() {
-  },
-  watch: {
-  },
 };
 </script>
-
-<style lang="scss">
-:root {
-}
-</style>

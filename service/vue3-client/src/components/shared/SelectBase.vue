@@ -95,8 +95,6 @@ export default {
       this.labelProp = this.useLabelProp;
     }
   },
-  watch: {
-  },
 };
 </script>
 
@@ -105,24 +103,29 @@ export default {
     <label :for="`${$options.name}-select`" class="SelectBase-label">
       {{this.label}}
     </label>
+
     <slot name="helpbubble"></slot>
+
     <div class="SelectBase-spinnerContainer" v-if="loading" >
       <!-- <vue-simple-spinner size="small" /> -->
       spinner
     </div>
+
     <v-select v-else
       :options="options"
       :inputId="`${$options.name}-select`"
       :multiple="multiple"
       :label="labelProp"
       :reduce="option => option[this.valueProp]"
-      :value="modelValue"
+      :modelValue="modelValue"
       :clearable="clearable"
-      @input="setSelected">
+      @update:modelValue="setSelected"
+    >
       <span slot="no-options">
         <span>{{fetchMsg}}</span>
       </span>
     </v-select>
+
     <p v-if="error"><span class="error">{{error}}</span></p>
   </div>
 </template>
