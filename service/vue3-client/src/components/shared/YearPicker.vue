@@ -8,14 +8,12 @@
 
 export default {
   name: 'year-picker',
-  components: {
-  },
   props: {
     legend: {
       type: String,
       required: false,
     },
-    value: {
+    modelValue: {
       type: Object,
       required: true,
       validator(val) {
@@ -33,13 +31,13 @@ export default {
   },
   computed: {
     from() {
-      if (this.value.from) {
-        return parseInt(this.value.from);
+      if (this.modelValue.from) {
+        return parseInt(this.modelValue.from);
       } return '';
     },
     to() {
-      if (this.value.to) {
-        return parseInt(this.value.to);
+      if (this.modelValue.to) {
+        return parseInt(this.modelValue.to);
       } return '';
     },
   },
@@ -47,12 +45,8 @@ export default {
     handleInput() {
       const from = this.$refs.fromValue.value;
       const to = this.$refs.toValue.value;
-      this.$emit('input', { from, to });
+      this.$emit('update:modelValue', { from, to });
     },
-  },
-  mounted() {
-  },
-  watch: {
   },
 };
 </script>
@@ -61,44 +55,55 @@ export default {
   <fieldset class="YearPicker">
     <legend v-if="legend">{{legend}}</legend>
     <slot name="helpbubble"></slot>
+
     <div>
       <label class="YearPicker-label">
         Från och med
-      <input id="year-from"
-        class="YearPicker-dateInput"
-        :class="{'has-error' : error}"
-        :aria-invalid="!!error"
-        type="number"
-        ref="fromValue"
-        :value="from"
-        @input="handleInput"
-        min="1000"
-        max="2500"
-        step="1"/></label>
+        <input
+          id="year-from"
+          class="YearPicker-dateInput"
+          :class="{'has-error' : error}"
+          :aria-invalid="!!error"
+          type="number"
+          ref="fromValue"
+          :value="from"
+          @input="handleInput"
+          min="1000"
+          max="2500"
+          step="1"
+        />
+      </label>
+
       <label class="YearPicker-label">
         till och med
-      <input id="year-to"
-        class="YearPicker-dateInput"
-        :class="{'has-error' : error}"
-        :aria-invalid="!!error"
-        type="number"
-        ref="toValue"
-        :value="to"
-        @input="handleInput"
-        min="1000"
-        max="2500"
-        step="1"/></label>
-      <span v-if="error"
+        <input id="year-to"
+          class="YearPicker-dateInput"
+          :class="{'has-error' : error}"
+          :aria-invalid="!!error"
+          type="number"
+          ref="toValue"
+          :value="to"
+          @input="handleInput"
+          min="1000"
+          max="2500"
+          step="1"
+        />
+      </label>
+
+      <span
+        v-if="error"
         class="error is-inline"
         role="alert"
-        aria-atomic="true">{{error}}</span>
+        aria-atomic="true"
+      >
+        {{error}}
+      </span>
     </div>
   </fieldset>
 </template>
 
 <style lang="scss">
 .YearPicker {
-
   &-label {
     font-weight: initial;
   }

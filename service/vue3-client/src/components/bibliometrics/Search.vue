@@ -215,11 +215,11 @@ export default {
           </div>
         </div>
 
-        <!-- TODO: FIX THIS <YearPicker v-model="selected.years" legend="Utgivningsår" :error="yearInputError">
+        <YearPicker v-model="selected.years" legend="Utgivningsår" :error="yearInputError">
           <template v-slot:helpbubble>
             <HelpBubble bubbleKey="publication_year"/>
           </template>
-        </YearPicker> -->
+        </YearPicker>
 
         <div class="Search-toggleGroups">
           <fieldset class="Search-checkboxGroup Search-fieldset">
