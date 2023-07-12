@@ -6,6 +6,7 @@ import YearPicker from '@/components/shared/YearPicker.vue';
 import ValidationMixin from '@/components/mixins/ValidationMixin.vue';
 import FetchMixin from '@/components/mixins/FetchMixin.vue';
 import ShortStats from '@/components/datastatus/ShortStats.vue';
+import Spinner from '@/components/shared/Spinner.vue';
 
 const HelpBubble = defineAsyncComponent(() => import('@/components/shared/HelpBubble.vue'));
 const DatastatusSummary = defineAsyncComponent(() => import('@/components/datastatus/Summary.vue'));
@@ -25,6 +26,7 @@ export default {
     DatastatusValidations,
     DatastatusSubjects,
     Transition,
+    Spinner,
   },
   props: {
     params: {
@@ -182,7 +184,7 @@ export default {
     </section>
     <div class="Datastatus-chartContainer horizontal-wrapper" v-if="loading || error || data">
       <hr class="divided-section">
-      <!-- <vue-simple-spinner v-if="loading" size="large"/> -->
+      <Spinner v-if="loading" size="large"/>
       <p v-if="error" role="alert" aria-atomic="true">
         <span class="error">{{ error }}</span>
       </p>

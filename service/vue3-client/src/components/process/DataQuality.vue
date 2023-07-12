@@ -6,6 +6,7 @@ import Helptexts from '@/assets/json/helptexts.json';
 import * as StringUtil from '@/utils/String';
 import SelectSource from '@/components/shared/SelectSource.vue';
 import ValidationMixin from '@/components/mixins/ValidationMixin.vue';
+import Spinner from '../shared/Spinner.vue';
 
 const HelpBubble = defineAsyncComponent(() => import('@/components/shared/HelpBubble.vue'));
 const FlagPicker = defineAsyncComponent(() => import('@/components/process/FlagPicker.vue'));
@@ -21,6 +22,7 @@ export default {
     ExportFlags,
     HelpBubble,
     Transition,
+    Spinner,
   },
   props: {
     query: { // passed from vue router
@@ -245,7 +247,7 @@ export default {
             :class="{'disabled' : !selected.source}"
             @click.prevent="clearSearch"
             :disabled="!selected.source">Rensa</button>
-          <vue-simple-spinner v-if="loading"/>
+          <Spinner v-if="loading"/>
           <div v-if="error">
             <span class="error" role="alert" aria-atomic="true">{{ error }}</span>
           </div>

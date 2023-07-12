@@ -218,11 +218,6 @@ fieldset {
 /*---------------------------*
 * Misc
 *----------------------------*/
-
-.vue-simple-spinner {
-  border-color: $brandPrimary $mark $mark !important;
-}
-
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity .3s ease;

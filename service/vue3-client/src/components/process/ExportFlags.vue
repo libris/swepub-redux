@@ -4,7 +4,7 @@ import { mapState } from 'pinia';
 import Helptexts from '@/assets/json/helptexts.json';
 import * as Network from '@/utils/Network';
 import ExportMixin from '@/components/mixins/ExportMixin.vue';
-import VueSimpleSpinner from 'vue-simple-spinner';
+import Spinner from '../shared/Spinner.vue';
 import { useSettingsStore } from '@/stores/settings';
 
 const ExportButtons = defineAsyncComponent(() => import('@/components/shared/ExportButtons.vue'));
@@ -15,7 +15,7 @@ export default {
   name: 'export-flags',
   mixins: [ExportMixin],
   components: {
-    VueSimpleSpinner,
+    Spinner,
     ExportButtons,
     PaginationComponent,
     PreviewCard,
@@ -110,8 +110,7 @@ export default {
   :aria-busy="previewLoading"
   aria-live="polite">
   <!-- loading -->
-  <!-- <vue-simple-spinner v-if="previewLoading" class="ExportFlags-previewLoading"/> -->
-  <div v-if="previewLoading">spinner</div>
+  <Spinner v-if="previewLoading" class="ExportFlags-previewLoading"/>
   <!-- error -->
   <div v-else-if="previewError">
     <p class="error" role="alert" aria-atomic="true">{{previewError}}</p>
@@ -149,8 +148,7 @@ export default {
           @go="paginate"/>
       </div>
       <!-- pagination loader -->
-      <!-- <vue-simple-spinner v-if="previewLoading" class="ExportFlags-previewLoading"/> -->
-      <div v-if="previewLoading">spinner</div>
+      <Spinner v-if="previewLoading" class="ExportFlags-previewLoading"/>
       <!-- preview cards -->
       <ol v-else class="ExportFlags-cardList">
         <preview-card v-for="(item, index) in previewData.hits"

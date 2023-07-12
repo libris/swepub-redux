@@ -3,7 +3,6 @@ import Helptexts from '@/assets/json/helptexts.json';
 import { mapState } from 'pinia';
 import ExportMixin from '@/components/mixins/ExportMixin.vue';
 import * as Network from '@/utils/Network';
-import VueSimpleSpinner from 'vue-simple-spinner';
 import SelectSource from '@/components/shared/SelectSource.vue';
 import SelectBase from '@/components/shared/SelectBase.vue';
 import { useSettingsStore } from '@/stores/settings';
@@ -15,15 +14,16 @@ import TableDataBoolean from '../shared/TableDataBoolean.vue';
 import TableDataMultiLine from '../shared/TableDataMultiLine.vue';
 import TableDataId from '../shared/TableDataId.vue';
 import TableDataSeries from '../shared/TableDataSeries.vue';
+import Spinner from '../shared/Spinner.vue';
 
 export default {
   name: 'export-data',
   mixins: [ExportMixin],
   components: {
-    VueSimpleSpinner,
     ExportButtons,
     SelectSource,
     SelectBase,
+    Spinner,
 
     TableDataLink,
     TableDataList,
@@ -639,11 +639,10 @@ export default {
     aria-live="polite"
   >
     <!-- loading -->
-    <!-- TODO: Fix vue-simple-spinner replacement
-      <vue-simple-spinner
+    <Spinner
       v-if="previewLoading"
       class="ExportData-previewLoading"
-    /> -->
+    />
 
     <div v-if="previewLoading">
       spinner

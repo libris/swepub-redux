@@ -16,14 +16,14 @@ import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 const $route = useRoute();
-const trigger = ref(null);
-const floating = ref(null);
+let trigger = ref(null);
+let floating = ref(null);
 const floatingStyles = useFloating(trigger, floating, {
   middleware: [autoPlacement()]
 });
 
 const language = useSettingsStore().language;
-const isOpen = ref(false);
+let isOpen = ref(false);
 
 const labelByLang = {
   swe: 'Hjälp',

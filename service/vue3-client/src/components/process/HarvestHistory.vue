@@ -1,6 +1,7 @@
 <script>
 import { defineAsyncComponent } from 'vue';
 import FetchMixin from '@/components/mixins/FetchMixin.vue';
+import Spinner from '../shared/Spinner.vue';
 
 const HelpBubble = defineAsyncComponent(() => import('@/components/shared/HelpBubble.vue'));
 const HarvestSummary = defineAsyncComponent(() => import('@/components/process/HarvestSummary.vue'));
@@ -11,8 +12,7 @@ export default {
   components: {
     HelpBubble,
     HarvestSummary,
-  },
-  props: {
+    Spinner,
   },
   data() {
     return {
@@ -60,7 +60,7 @@ export default {
     :aria-busy="loading"
     aria-labelledby="status-tab harvest-history-heading"
   >
-    <!-- <vue-simple-spinner v-if="loading"/> -->
+    <Spinner v-if="loading"/>
     <p v-if="error">
       <span class="error" role="alert" aria-atomic="true">{{ error }}</span>
     </p>

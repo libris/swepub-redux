@@ -12,12 +12,14 @@
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
 import FetchMixin from '@/components/mixins/FetchMixin.vue';
+import Spinner from './Spinner.vue';
 
 export default {
   name: 'select-base',
   mixins: [FetchMixin],
   components: {
     vSelect,
+    Spinner,
   },
   props: {
     providedOptions: {
@@ -107,8 +109,7 @@ export default {
     <slot name="helpbubble"></slot>
 
     <div class="SelectBase-spinnerContainer" v-if="loading" >
-      <!-- <vue-simple-spinner size="small" /> -->
-      spinner
+      <Spinner size="small" />
     </div>
 
     <v-select v-else

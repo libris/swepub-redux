@@ -33,7 +33,6 @@
     "vue-matomo": "^4.2.0",
     "vue-router": "^4.2.2",
     "vue-select": "^4.0.0-beta.6",
-    "vue-simple-spinner": "^1.2.10",
     "whatwg-fetch": "^3.6.2"
   },
   "devDependencies": {

@@ -1,10 +1,10 @@
 <script>
-import VueSimpleSpinner from 'vue-simple-spinner';
+import Spinner from './Spinner.vue';
 
 export default {
   name: 'export-buttons',
   components: {
-    VueSimpleSpinner,
+    Spinner,
   },
   props: {
     exportLoading: {
@@ -40,7 +40,7 @@ export default {
       :class="{'disabled' : !exportAllowed}"
       :disabled="!exportAllowed"
       @click="$emit('export-tsv')">Exportera TSV</button>
-    <!-- <vue-simple-spinner v-if="exportLoading" /> -->
+      <Spinner v-if="exportLoading" />
     <div v-if="exportError">
       <span class="error" role="alert" aria-atomic="true">{{exportError}}</span>
     </div>
