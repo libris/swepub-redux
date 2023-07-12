@@ -13,7 +13,6 @@ const HelpBubble = defineAsyncComponent(() => import('@/components/shared/HelpBu
 export default {
   name: 'classify-form',
   components: {
-    VueSimpleSpinner,
     HelpBubble,
     Transition,
     Spinner,
@@ -166,7 +165,7 @@ export default {
           :class="{ 'disabled' : !canProceed }"
           :disabled="!canProceed">
           Rensa</button>
-          <SpinnerVue v-if="loading"/>
+          <Spinner v-if="loading"/>
         <div v-if="errorMsg">
           <p class="error" role="alert" aria-atomic="true">{{ errorMsg }}</p>
         </div>

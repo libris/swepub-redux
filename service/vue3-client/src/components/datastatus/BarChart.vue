@@ -8,8 +8,6 @@ export default {
   name: 'bar-chart',
   extends: Bar,
   mixins: [reactiveProp],
-  components: {
-  },
   props: {
     chartData: {
       type: Object,
@@ -75,15 +73,9 @@ export default {
       },
     };
   },
-  computed: {
-  },
-  methods: {
-  },
   mounted() {
     this.addPlugin({ id: 'chartjs-plugin-deferred' });
     this.renderChart(this.chartData, this.chartOptions);
-  },
-  watch: {
   },
 };
 </script>

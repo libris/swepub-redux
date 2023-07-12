@@ -129,13 +129,20 @@ export default {
     </div>
     <div v-if="hasHarvestParams">
       <hr class="divided-section" ref="harvestDivider">
-      <tab-menu @go="switchTab"
+
+      <tab-menu
+        @go="switchTab"
         :tabs="tabs"
-        :active="activeTab"/>
-        <keep-alive>
-          <harvest-latest v-if="activeTab === 'latest'"/>
-          <harvest-history v-if="activeTab === 'history'"/>
-        </keep-alive>
+        :active="activeTab"
+      />
+
+      <keep-alive>
+        <harvest-latest v-if="activeTab === 'latest'"/>
+      </keep-alive>
+
+      <keep-alive>
+        <harvest-history v-if="activeTab === 'history'"/>
+      </keep-alive>
     </div>
   </section>
 </template>

@@ -1,5 +1,7 @@
 <script>
-import { Transition, defineAsyncComponent } from 'vue';
+import { Transition } from 'vue';
+import { mapState } from 'pinia';
+import { useSettingsStore } from '@/stores/settings';
 import * as Network from '@/utils/Network';
 import SelectSource from '@/components/shared/SelectSource.vue';
 import YearPicker from '@/components/shared/YearPicker.vue';
@@ -8,10 +10,10 @@ import FetchMixin from '@/components/mixins/FetchMixin.vue';
 import ShortStats from '@/components/datastatus/ShortStats.vue';
 import Spinner from '@/components/shared/Spinner.vue';
 
-const HelpBubble = defineAsyncComponent(() => import('@/components/shared/HelpBubble.vue'));
-const DatastatusSummary = defineAsyncComponent(() => import('@/components/datastatus/Summary.vue'));
-const DatastatusValidations = defineAsyncComponent(() => import('@/components/datastatus/Validations.vue'));
-const DatastatusSubjects = defineAsyncComponent(() => import('@/components/datastatus/Subjects.vue'));
+import HelpBubble from '@/components/shared/HelpBubble.vue';
+import DatastatusSummary from '@/components/datastatus/Summary.vue';
+import DatastatusValidations from '@/components/datastatus/Validations.vue';
+import DatastatusSubjects from '@/components/datastatus/Subjects.vue';
 
 export default {
   // eslint-disable-next-line
@@ -47,6 +49,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(useSettingsStore, ['apiPath']),
     syncedSelection() {
       return {
         source: this.params.source ? this.params.source : '',
@@ -102,7 +105,7 @@ export default {
     fetchSources() {
       // source names needed by multiple components
       // fetched here & passed to select-source
-      Network.get(`${this.settings.apiPath}/info/sources`)
+      Network.get(`${this.apiPath}/info/sources`)
         .then((response) => {
           if (response.statusCode === 200) {
             this.sources = response;
