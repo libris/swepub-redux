@@ -5,16 +5,19 @@ import { createPinia } from 'pinia'
 import { FontAwesomeIcon, FontAwesomeLayers } from '@fortawesome/vue-fontawesome';
 
 import VueMatomo from 'vue-matomo';
+import FloatingVue from 'floating-vue';
 import App from './App.vue'
 import router from './router'
 import * as LayoutUtil from '@/utils/Layout'
 import { useSettingsStore } from '@/stores/settings';
 import '@/utils/Icons';
+import 'floating-vue/dist/style.css'
 
 const app = createApp(App)
 
-app.use(createPinia())
-app.use(router)
+app.use(createPinia());
+app.use(router);
+app.use(FloatingVue);
 
 // only use Matomo if id is present, i.e in production mode
 // TODO: Figure out how we initialize something using values from store

@@ -1,9 +1,8 @@
 <script>
 // handles communication between chart and legend components
-import { defineAsyncComponent } from 'vue';
-const DoughnutChart = defineAsyncComponent(() => import('@/components/datastatus/DoughnutChart.vue'));
-const ChartLegend = defineAsyncComponent(() => import('@/components/datastatus/ChartLegend.vue'));
-const SrChartTable = defineAsyncComponent(() => import('@/components/datastatus/SrChartTable.vue'));
+import DoughnutChart from '@/components/datastatus/DoughnutChart.vue';
+import ChartLegend from '@/components/datastatus/ChartLegend.vue';
+import SrChartTable from '@/components/datastatus/SrChartTable.vue';
 
 export default {
   name: 'doughnut-container',
@@ -47,10 +46,6 @@ export default {
     handleLegendLeave() {
       this.openTooltip = null;
     },
-  },
-  mounted() {
-  },
-  watch: {
   },
 };
 </script>

@@ -6,15 +6,13 @@
  */
 import { useSettingsStore } from '@/stores/settings';
 import { mapState } from 'pinia';
-// import { VTooltip } from 'v-tooltip';
+import Tooltip from './Tooltip.vue';
 
 export default {
   name: 'table-data-id',
   components: {
+    Tooltip,
   },
-  // directives: {
-  //   tooltip: VTooltip,
-  // },
   props: {
     tdKey: {
       type: String,
@@ -63,42 +61,34 @@ export default {
       return this.deduped && this.deduped(this.trData);
     },
   },
-  methods: {
-  },
-  mounted() {
-  },
-  watch: {
-  },
 };
 </script>
 
 <template>
   <span class="TableDataId">
     <span class="TableDataId-iconWrapper" v-if="isDeduped && isBibliometrics">
-      <!-- TODO: Fix tooltip-->
-      <!-- <font-awesome-icon
-        :icon="['fas', 'copy']"
-        :aria-label="dedupTooltipText"
-        v-tooltip.right-start="{
-          content: dedupTooltipText,
-          classes: 'TableDataId-tooltip',
-        }"/> -->
+      <Tooltip :label="dedupTooltipText">
+        <font-awesome-icon
+          :icon="['fas', 'copy']"
+          :aria-label="dedupTooltipText"
+        />
+      </Tooltip>
     </span>
+
     <span v-if="!isDeduped && isBibliometrics" class="TableDataId-iconWrapper">
       <!-- empty placeholder -->
     </span>
+
     <span v-if="linkUrl">
       <span class="TableDataId-iconWrapper">
         <font-awesome-icon title="Öppnar i ny flik" :icon="['fa', 'external-link-alt']"/>
       </span>
-      <!-- TODO: Fix tooltip-->
-      <!-- <a :href="linkUrl"
-        v-tooltip.top="{
-          content: linkTooltipText,
-          classes: 'TableDataId-tooltip',
-        }"
-        v-bind="target"
-        :title="this.linkUrl">{{tdValue}}</a> -->
+
+      <Tooltip :label="linkTooltipText">
+        <a :href="linkUrl" v-bind="target" :title="this.linkUrl">
+          {{tdValue}}
+        </a>
+      </Tooltip>
     </span>
     <span v-else>{{tdValue}}</span>
   </span>
@@ -110,40 +100,6 @@ export default {
     width: 20px;
     display: inline-block;
     color: $greyDarker;
-  }
-
-  &-tooltip {
-    max-width: 300px;
-
-    &[x-placement^="right"] {
-      margin-left: 10px;
-    }
-
-    & .tooltip-inner {
-      color: $white;
-      background: $greyDarker;
-      border: none;
-      padding: 5px 10px;
-    }
-
-    & .tooltip-arrow {
-      border: 1px solid $greyDarker;
-    }
-
-    &[x-placement^="top"] {
-      margin-bottom: 10px;
-
-      .tooltip-arrow {
-        border-width: 5px 5px 0 5px;
-        border-left-color: transparent !important;
-        border-right-color: transparent !important;
-        border-bottom-color: transparent !important;
-        bottom: -5px;
-        left: calc(50% - 5px);
-        margin-top: 0;
-        margin-bottom: 0;
-      }
-    }
   }
 }
 </style>

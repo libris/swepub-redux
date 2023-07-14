@@ -2,8 +2,6 @@
 // v-bind to parent like so: v-model="field.selected"
 export default {
   name: 'checkbox-toggle',
-  components: {
-  },
   props: {
     value: {
       type: Boolean,
@@ -32,10 +30,6 @@ export default {
       this.$emit('input', !this.value);
     },
   },
-  mounted() {
-  },
-  watch: {
-  },
 };
 </script>
 
@@ -53,7 +47,6 @@ export default {
 </template>
 
 <style scoped lang="scss">
-
 .CheckboxToggle {
   border: 1px solid $purple;
   color: $purple;

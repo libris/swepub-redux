@@ -3,10 +3,6 @@ import Helptexts from '@/assets/json/helptexts.json';
 
 export default {
   name: 'data-dump',
-  components: {
-  },
-  props: {
-  },
   data() {
     return {};
   },
@@ -14,12 +10,6 @@ export default {
     content() {
       return Helptexts.bibliometrics.datadump;
     },
-  },
-  methods: {
-  },
-  mounted() {
-  },
-  watch: {
   },
 };
 </script>
@@ -34,7 +24,6 @@ export default {
 </template>
 
 <style lang="scss">
-
 .DataDump {
   &-content {
     max-width: $screen-md;
