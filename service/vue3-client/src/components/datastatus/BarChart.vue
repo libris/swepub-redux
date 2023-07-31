@@ -34,28 +34,32 @@ export default {
         legend: {
           display: false,
         },
-        tooltips: {
-          mode: 'index',
-          intersect: false,
-          backgroundColor: '#fff',
-          titleFontColor: '#727272',
-          titleFontFamily: "'Open sans', sans-serif",
-          titleFontSize: 14,
-          bodyFontColor: '#000',
-          bodyFontFamily: "'Open sans', sans-serif",
-          bodyFontSize: 14,
-          borderColor: '#949494',
-          borderWidth: 1,
-          // callbacks: {
-          //   title: ((tooltipItem) => this.chartData.labels[tooltipItem[0].index]),
-          //   label: ((tooltipItem) => {
-          //     const { datasetIndex, index } = tooltipItem;
-          //     const number = this.chartData.datasets[datasetIndex].data[index];
-          //     const suffix = number === 1 ? 'post' : 'poster';
-          //     const percentage = this.chartData.percentage[index];
-          //     return `${number} ${suffix} (${percentage}%)`;
-          //   }),
-          // },
+        plugins: {
+          tooltip: {
+            backgroundColor: '#fff',
+            titleColor: '#727272',
+            titleFont: {
+              family: "'Open sans', sans-serif",
+              size: 14,
+            },
+            bodyColor: '#000',
+            bodyFont: {
+              family: "'Open sans', sans-serif",
+              size: 14,
+            },
+            borderColor: '#949494',
+            borderWidth: 1,
+            callbacks: {
+              title: ((tooltipItem) => this.chartData.labels[tooltipItem[0].dataIndex]),
+              label: ((tooltipItem) => {
+                const { dataIndex } = tooltipItem;
+                const total = this.chartData.total[dataIndex].toLocaleString();
+                const suffix = total === 1 ? 'post' : 'poster';
+                const percentage = this.chartData.percentage[dataIndex];
+                return `${total} ${suffix} (${percentage}%)`;
+              }),
+            },
+          },
         },
         hover: {
           mode: 'index',
