@@ -1,13 +1,9 @@
 import { defineStore } from 'pinia'
 
-// process.env.VITE_VUE_APP_VERSION = require('./package.json').version;
-// process.env.VITE_VUE_APP_API_PATH = '/api/v1';
-
-
 export const useSettingsStore = defineStore('settings', {
   state: () => ({
     serviceName: 'Swepub',
-    version: `0.0`,
+    version: __APP_VERSION__,
     apiPath: `/api/v1`,
     matomoId: 'MATOMO_ID',
     language: 'swe',

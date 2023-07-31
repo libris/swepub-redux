@@ -8,6 +8,9 @@ export default defineConfig({
   plugins: [
     vue(),
   ],
+  define: {
+    __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+  },
   server: {
     port: 8080,
     proxy: {
