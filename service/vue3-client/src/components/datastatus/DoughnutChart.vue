@@ -1,15 +1,23 @@
+<template>
+  <Doughnut
+    :options="chartOptions"
+    :data="chartData"
+    :style="chartStyles"
+  />
+</template>
+
 <script>
 /* eslint-disable no-underscore-dangle */
-import { Doughnut, mixins } from 'vue-chartjs';
-import 'chartjs-plugin-deferred';
+import { Doughnut } from 'vue-chartjs';
+import { Chart, CategoryScale, LinearScale, Tooltip, DoughnutController, ArcElement } from 'chart.js';
+import ChartDeffered from 'chartjs-plugin-deferred';
 
-const { reactiveProp } = mixins;
+Chart.register(ChartDeffered, CategoryScale, LinearScale, Tooltip, DoughnutController, ArcElement);
 
 export default {
   name: 'doughnut-chart',
-  extends: Doughnut,
-  mixins: [reactiveProp],
   components: {
+    Doughnut,
   },
   props: {
     chartData: {
@@ -45,77 +53,27 @@ export default {
           bodyFontSize: 14,
           borderColor: '#949494',
           borderWidth: 1,
-          callbacks: {
-            title: ((tooltipItem) => this.chartData.labels[tooltipItem[0].index]),
-            label: ((tooltipItem) => {
-              const { index } = tooltipItem;
-              const total = this.chartData.total[index].toLocaleString();
-              const suffix = total === 1 ? 'post' : 'poster';
-              const percentage = this.chartData.percentage[index];
-              return `${total} ${suffix} (${percentage}%)`;
-            }),
-          },
+          // callbacks: {
+          //   title: ((tooltipItem) => this.chartData.labels[tooltipItem[0].index]),
+          //   label: ((tooltipItem) => {
+          //     const { index } = tooltipItem;
+          //     const total = this.chartData.total[index].toLocaleString();
+          //     const suffix = total === 1 ? 'post' : 'poster';
+          //     const percentage = this.chartData.percentage[index];
+          //     return `${total} ${suffix} (${percentage}%)`;
+          //   }),
+          // },
         },
       },
     };
   },
   computed: {
-  },
-  methods: {
-    showTooltip(index) {
-      const chart = this.$data._chart;
-      const segment = chart.getDatasetMeta(0).data[index];
-
-      if (typeof (Event) === 'function') {
-        // supports customEvents
-        // dispatch mouseevent for pie hover effect
-        const rect = chart.canvas.getBoundingClientRect();
-        const point = segment.getCenterPoint();
-        const event = new MouseEvent('mousemove', {
-          clientX: rect.left + point.x,
-          clientY: rect.top + point.y,
-        });
-        const node = chart.canvas;
-        node.dispatchEvent(event);
-      } else {
-        // fallback (IE11)
-        // set tooltip to active
-        chart.tooltip._active = [segment];
-        chart.tooltip.update();
-        chart.draw();
+    chartStyles() {
+      return {
+        height: (this.height ?? '400') + 'px',
+        width: (this.width ?? '400') + 'px',
       }
-    },
-    hideTooltips() {
-      const chart = this.$data._chart;
-
-      if (typeof (Event) === 'function') {
-        // supports customEvents
-        // dispatch mouseevent
-        const evt = new MouseEvent('mousemove', {
-          clientX: 0,
-          clientY: 0,
-        });
-        const node = chart.canvas;
-        node.dispatchEvent(evt);
-      } else {
-        // fallback (IE11)
-        // set tooltip to inactive
-        chart.tooltip._active = [];
-        chart.tooltip.update();
-        chart.draw();
-      }
-    },
-  },
-  mounted() {
-    this.addPlugin({ id: 'chartjs-plugin-deferred' });
-    this.renderChart(this.chartData, this.chartOptions);
-  },
-  watch: {
-    openTooltip(val) {
-      if (val !== null) {
-        this.showTooltip(val);
-      } else this.hideTooltips();
-    },
-  },
+    }
+  }
 };
 </script>

@@ -1,13 +1,22 @@
-<script>
-import { Bar, mixins } from 'vue-chartjs';
-import 'chartjs-plugin-deferred';
+<template>
+  <Bar
+    :options="chartOptions"
+    :data="chartData"
+  />
+</template>
 
-const { reactiveProp } = mixins;
+<script>
+import { Bar } from 'vue-chartjs';
+import { Chart, CategoryScale, LinearScale, Tooltip, BarElement } from 'chart.js';
+import ChartDeffered from 'chartjs-plugin-deferred';
+
+Chart.register(ChartDeffered, CategoryScale, LinearScale, Tooltip, BarElement);
 
 export default {
   name: 'bar-chart',
-  extends: Bar,
-  mixins: [reactiveProp],
+  components: {
+    Bar,
+  },
   props: {
     chartData: {
       type: Object,
@@ -37,23 +46,23 @@ export default {
           bodyFontSize: 14,
           borderColor: '#949494',
           borderWidth: 1,
-          callbacks: {
-            title: ((tooltipItem) => this.chartData.labels[tooltipItem[0].index]),
-            label: ((tooltipItem) => {
-              const { datasetIndex, index } = tooltipItem;
-              const number = this.chartData.datasets[datasetIndex].data[index];
-              const suffix = number === 1 ? 'post' : 'poster';
-              const percentage = this.chartData.percentage[index];
-              return `${number} ${suffix} (${percentage}%)`;
-            }),
-          },
+          // callbacks: {
+          //   title: ((tooltipItem) => this.chartData.labels[tooltipItem[0].index]),
+          //   label: ((tooltipItem) => {
+          //     const { datasetIndex, index } = tooltipItem;
+          //     const number = this.chartData.datasets[datasetIndex].data[index];
+          //     const suffix = number === 1 ? 'post' : 'poster';
+          //     const percentage = this.chartData.percentage[index];
+          //     return `${number} ${suffix} (${percentage}%)`;
+          //   }),
+          // },
         },
         hover: {
           mode: 'index',
           intersect: false,
         },
         scales: {
-          yAxes: [{
+          yAxes: {
             ticks: {
               beginAtZero: true,
               precision: 0,
@@ -61,21 +70,25 @@ export default {
               fontSize: 14,
               fontColor: '#000',
             },
-          }],
-          xAxes: [{
+          },
+          xAxes: {
             ticks: {
               fontFamily: "'Open sans', sans-serif",
               fontSize: 14,
               fontColor: '#000',
             },
-          }],
+          },
         },
       },
     };
   },
-  mounted() {
-    this.addPlugin({ id: 'chartjs-plugin-deferred' });
-    this.renderChart(this.chartData, this.chartOptions);
+  computed: {
+    chartStyles() {
+      return {
+        height: (this.height ?? '400') + 'px',
+        width: (this.width ?? '400') + 'px',
+      }
+    }
   },
 };
 </script>

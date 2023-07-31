@@ -125,23 +125,30 @@ export default {
         <h2 class="heading heading-lg">{{title}}</h2>
         <h3 class="heading-lg" v-if="source">{{total}} poster i Swepub</h3>
         <p v-else id="summary-descr">
-          Fördelning antal poster för organisationer som levererar data till Swepub</p>
+          Fördelning antal poster för organisationer som levererar data till Swepub
+        </p>
       </div>
+
       <div v-if="source">
-      <router-link :to="`/process/${source}/status`">
-        Visa senaste leverans i Leveransstatus</router-link>
+        <router-link :to="`/process/${source}/status`">
+          Visa senaste leverans i Leveransstatus
+        </router-link>
       </div>
     </div>
+
     <div v-if="!source">
       <div class="Summary-totalContainer">
         <div class="Summary-totalNumberContainer">
           <h2 id="totalNumber">{{total}}</h2>
           <h3 class="heading-lg">poster i Swepub</h3>
         </div>
-        <doughnut-container :chartData="chartData"
+
+        <doughnut-container
+          :chartData="chartData"
           chartId="summary-doughnut"
           :chartStyles="chartStyles"
-          describedbyId="summary-descr"/>
+          describedbyId="summary-descr"
+        />
       </div>
     </div>
   </section>

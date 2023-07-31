@@ -52,17 +52,26 @@ export default {
 
 <template>
   <div class="DoughnutContainer">
-    <doughnut-chart :chartData="chartData"
+    <doughnut-chart
+      :chartData="chartData"
       :chartId="chartId"
       :openTooltip="openTooltip"
       :styles="chartStyles"
-      aria-hidden="true"/>
-    <chart-legend :data="chartData"
+      aria-hidden="true"
+    />
+
+    <chart-legend
+      :data="chartData"
       @mouseover="handleLegendHover"
       @mouseleave="handleLegendLeave"
       :linked="linked"
-      :describedbyId="describedbyId"/>
-    <sr-chart-table :chartData="chartData" :describedbyId="describedbyId"/>
+      :describedbyId="describedbyId"
+    />
+
+    <sr-chart-table
+      :chartData="chartData"
+      :describedbyId="describedbyId"
+    />
   </div>
 </template>
 
@@ -77,5 +86,4 @@ export default {
     flex-wrap: wrap;
   }
 }
-
 </style>
