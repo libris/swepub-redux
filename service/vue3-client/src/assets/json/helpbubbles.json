@@ -1,0 +1,246 @@
+{
+  "Classify": {
+    "title": {
+      "title": "Titel",
+      "text": "Titel på den output som ska klassificeras. Använd kolon för att separera huvudtitel och undertitel."
+    },
+    "summary": {
+      "title": "Sammanfattning",
+      "text": "Abstract/sammanfattning av den output som ska klassificeras. För bästa resultat, ange sammanfattning på antingen engelska eller svenska."
+    },
+    "keywords": {
+      "title": "Nyckelord",
+      "text": "Nyckel-/ämnesord för den output som ska klassificeras. Om du anger flera ord, lägg in ett komma mellan varje."
+    },
+    "level": {
+      "title": "Klassificeringsnivå",
+      "text": "Den nivå av klassificering du vill visa i resultatet enligt Standard för svensk indelning av forskningsämnen (SSIF). 1) 3-siffernivå (forskningsämnesgrupp). 2) 5-siffernivå (forskningsämnen). Observera att dataunderlaget för 3-siffernivån är större i Swepub och därför ger mer tillförlitliga resultat."
+    },
+    "result": {
+      "title": "Resultat",
+      "text": "Förslagen på ämnesklassificering listas efter poäng (”värde”). Du får en sifferkombination (”kod”) och en rubrik (”benämning”) för varje forskningsämne(-sgrupp). Högst fem förslag visas. Det första resultatet matchar bäst den titel, nyckelord och/eller sammanfattning som den du har angett. Om du ser meddelandet ”Ingen matchning” finns inte tillräckligt med dataunderlag för att föreslå en klassificering."
+    }
+  },
+  "Process": {
+    "publication_year": {
+      "title": "Utgivningsår",
+      "text": "Data från och med 2012 är genomgående mer fullständiga än tidigare data."
+    },
+    "validation_flags": {
+      "title": "Ofullständiga data",
+      "text": "Data som av Swepub identifierats som ofullständiga får valideringsflaggor. Här ingår felaktigheter i format eller dubblerade, ogiltiga eller saknade värden."
+    },
+    "validation_flags_DOI": {
+      "title": "DOI",
+      "text": "DOI-koden ska börja med 10 och gå att verifiera mot CrossRef eller shortDOI Service."
+    },
+    "validation_flags_ISBN": {
+      "title": "ISBN",
+      "text": "ISBN börjar med 978 eller regionskod. Det anges utan bindestreck och har 10 eller 13 tecken där den sista är kontrollkod (checksum) 0-9 eller X."
+    },
+    "validation_flags_ISI": {
+      "title": "ISI",
+      "text": "ISI ID/UT-nummer/WoS ID består antingen av 15 siffror som börjar med 000, eller av 15 tecken som börjar med A19."
+    },
+    "validation_flags_ISSN": {
+      "title": "ISSN",
+      "text": "ISSN består av 8 siffror varav den sista är kontrollkod (checksum) 0-9 eller X. ISSN ska skrivas enbart som kod i två 4-sifferblock och ska gå att verifieras mot ISSN Portal."
+    },
+    "validation_flags_ORCID": {
+      "title": "ORCID",
+      "text": "ORCID består av 16 tecken varav den sista är kontrollkod (checksum) 0-9 eller X. ORCID skrivs i fyra 4-teckenblock åtskilda med bindestreck."
+    },
+    "validation_flags_duplicate": {
+      "title": "Duplicate",
+      "text": "Upphovspersoner med samma personID och roll kan inte vara angivna dubbelt."
+    },
+    "validation_flags_UKA": {
+      "title": "SSIF",
+      "text": "Ämnesklassificering enligt Standard för Svensk Indelning av Forskningsämnen (SSIF) ska anges minst på 3-siffernivå (forskningsämnesgrupp)."
+    },
+    "validation_flags_unicode": {
+      "title": "Unicode",
+      "text": "Teckenkodningen ska vara UTF-8."
+    },
+    "validation_flags_creator_count": {
+      "title": "Creator count",
+      "text": "Avser totalt antal upphovspersoner. Ett numeriskt antal upphovspersoner ska finnas angivet i ett eget fält. Det numeriska antalet ska inte vara mindre än det totala antalet angivna upphovspersoner respektive redaktörer."
+    },
+    "validation_flags_publication_year": {
+      "title": "Publication year",
+      "text": "Utgivningsdatum ska vara angivet enligt ISO 8601 i format YYYY för årtal och YYYY-MM-DD för datum."
+    },
+    "enrichment_flags": {
+      "title": "Berikade data",
+      "text": "Uppgifter märkta med berikningsflaggor har blivit flyttade, separerade, tillagda eller tvättade av Swepub i syfte att höja datakvaliteten."
+    },
+    "enrichment_flags_DOI": {
+      "title": "DOI",
+      "text": "DOI har tvättats från övriga tecken före 10. Ogiltigt DOI har flyttats till fältet för ogiltiga identifikatorer."
+    },
+    "enrichment_flags_free_text": {
+      "title": "Free text",
+      "text": "Fritextfälten för titel, abstract och anmärkningar har tvättats från html-taggar."
+    },
+    "enrichment_flags_ISBN": {
+      "title": "ISBN",
+      "text": "Flera ISBN i samma fält har separerats, ISBN-numret har tvättats från övriga tecken och ogiltigt ISBN har flyttats till fältet för ogiltiga identifikatorer."
+    },
+    "enrichment_flags_ISI": {
+      "title": "ISI",
+      "text": "ISI ID/UT-nummer/WoS ID har tvättats från övriga tecken. Ogiltiga ID:n har flyttats till fältet för ogiltiga identifikatorer."
+    },
+    "enrichment_flags_ISSN": {
+      "title": "ISSN",
+      "text": "Flera ISSN i samma fält har separerats. ISSN-numret har tvättats från övriga tecken. Ogiltigt ISSN har flyttats till fältet för ogiltiga identifikatorer."
+    },
+    "enrichment_flags_ORCID": {
+      "title": "ORCID",
+      "text": "ORCID har tvättats från övriga tecken. Ett saknat 0 har lagts till. Ogiltigt ORCID har censurerats."
+    },
+    "enrichment_flags_UKA": {
+      "title": "SSIF",
+      "text": "Maskinellt genererad ämnesklassificering enligt Standard för svensk indelning av forskningsämnen (SSIF) på 3-siffernivå (forskningsämnesgrupp) baserad på textanalys av abstract, nyckelord och titel har lagts till. För mer information, se <a href='#'>Swepub ämnesklassificering</a>."
+    },
+    "enrichment_flags_unicode": {
+      "title": "Unicode",
+      "text": "Felaktiga tecknen har byts ut eller raderats."
+    },
+    "enrichment_flags_auto_classify": {
+      "title": "Autoklassning",
+      "text": "Publikationen har autoklassificerats av Swepub enligt Standard för svensk indelning av forskningsämnen (SSIF, tidigare UKÄ) på 3-siffernivå. Autoklassningen är baserad på publikationens sammanfattning, titel och nyckelord."
+    },
+    "enrichment_flags_add_oa": {
+      "title": "Öppen tillgång",
+      "text": "Publikationen har berikats med information om länk till fulltext, om fulltexten är öppet tillgänglig eller prenumerationsbaserad, om version av fulltexten och om publiceringskanalen för publikationen ingår i Directory of Open Access Journals (DOAJ). Berikningen sker med information från de externa datakällorna Unpaywall och Directory of Open Access Books (DOAB)."
+    },
+    "enrichment_flags_PersonID": {
+      "title": "ORCID matchat med lokalt ID",
+      "text": "ORCID har lagts till om det förekommer i en annan post tillsammans med lokalt personID."
+    },
+    "enrichment_flags_add_issn": {
+      "title": "ISSN tillagt",
+      "text": "ISSN har lagts till om det saknats. Berikningen sker med information från den externa datakällan Crossref."
+    },
+    "enrichment_flags_add_license": {
+      "title": "Licens",
+      "text": "Om licensinformation saknas har den lagts till i form av länk. Berikningen sker med information från den externa datakällan Crossref."
+    },
+    "enrichment_flags_add_published_online": {
+      "title": "Epub ahead of print / Online first",
+      "text": "Utgivningsdatum för artiklar som har publicerats online innan färdigställandet av tidskriftsnumret de kommer att ingå i har lagts till om det saknats. Berikningen sker med information från den externa datakällan Crossref."
+    },
+    "enrichment_flags_add_publisher": {
+      "title": "Utgivare",
+      "text": "Utgivare har lagts till om den saknats. Berikningen sker med information från den externa datakällan Crossref."
+    },
+    "enrichment_flags_add_publisher_location": {
+      "title": "Utgivningsort",
+      "text": "Utgivningsort har lagts till om den saknats. Berikningen sker med information från den externa datakällan Crossref."
+    },
+    "enrichment_flags_add_summary": {
+      "title": "Abstract",
+      "text": "Abstract/Sammanfattning har lagts till om den saknats. Berikningen sker med information från den externa datakällan Crossref."
+    },
+    "harvest_overview": {
+      "title": "Översikt",
+      "text": "Översikten visar när hämtningen påbörjats och antalet poster som hämtats eller avvisats hittills. Därför kan antalet variera beroende på hur stor del av datamängden som bearbetats."
+    },
+    "harvest_rejected": {
+      "title": "Avvisade poster",
+      "text": "Poster som avvisats eftersom de inte uppfyller den <a href='https://www.kb.se/samverkan-och-utveckling/swepub/datamodell/bibliografisk-miniminiva.html'>bibliografiska miniminivån</a>. Dessa är märkta med en feltyp. Posterna kan korrigeras i den lokala publikationsdatabasen och tas sedan in i Swepub vid nästa hämtning."
+    },
+    "harvest_history": {
+      "title": "Historik",
+      "text": "Historiken visar hämtningar som gjorts de senaste 30 dagarna. Översikten visar när hämtningen påbörjats och antalet poster som hämtats eller avvisats, samt om en hämtning avbrutits."
+    },
+    "audit_flags": {
+      "title": "Motstridiga data",
+      "text": "Data som av Swepub märkts upp när flera fält korrelerar med varandra men innehåller motstridiga eller oförväntade data. Här ingår motstridigheter i upphovsantal och upphov samt saknade ISSN, upphovsantal och ämnesklassificering."
+    },
+    "audit_flags_UKA_comprehensive_check": {
+      "title": "UKÄ ofullständig",
+      "text": "Ämnesklassificering enligt Standard för svensk indelning av forskningsämnen (SSIF, tidigare UKÄ) på 3- eller 5-siffernivå saknas. Klassificering på 3-siffernivån är den nivå som rekommenderas av Swepub."
+    },
+    "audit_flags_contributor_duplicate_check": {
+      "title": "Upphov dubblerat",
+      "text": "Det finns dubbletter bland angivna upphovspersoner."
+    },
+    "audit_flags_creator_count_check": {
+      "title": "Upphovsantal motstridigt",
+      "text": "Antalet upphovspersoner är mindre än antalet namn som finns angivna för publikationen."
+    },
+    "audit_flags_ISSN_missing_check": {
+      "title": "ISSN saknas",
+      "text": "Artiklar publicerade i tidskrift bör ha angivet ISSN."
+    }
+  },
+  "Bibliometrics": {
+    "subject": {
+      "title": "Forskningsämne (SSIF)",
+      "text": "Ämnesklassificering enligt Standard för svensk indelning av forskningsämnen (SSIF). Tänk på att inte alla poster i Swepub  är ämnesklassificerade. Dessutom är ämnesklassificering på 3-siffernivå genomgående mer förekommande än på 5-siffernivå."
+    },
+    "keywords": {
+      "title": "Nyckelord",
+      "text": "Ämnesord från de levererande organisationerna, för mer specificerad beskrivning. Det gäller särskilt om ämnet inte täcks i forskningsämnen enligt Standard för svensk indelning av forskningsämnen (SSIF). Om du anger flera ämnesord, lägg in ett komma mellan varje."
+    },
+    "output": {
+      "title": "Outputtyp",
+      "text": "Kategorisering av typer av publiceringskällor enligt Svensk indelning av forskningsoutput. Tänk på att all output inte är indelad i underkategorier. För att söka outputs på både huvud- och underkategorier välj rubriken HUVUDKATEGORI - ALLA. Vid sökning på endast huvudkategori förekommer bara outputs utan underkategorier. <a href='https://www.kb.se/samverkan-och-utveckling/swepub/format-och-praxis.html'>Mer information om outputtyper</a>."
+    },
+    "publication_status": {
+      "title": "Publiceringsstatus",
+      "text": "Det skede för formell publicering som output är i."
+    },
+    "content_marking": {
+      "title": "Innehållsmärkning",
+      "text": "Nivå av sakkunniggranskning och målgrupp för enstaka output. Tänk på att innehållsmärkning kan skilja sig från bedömningen av sakkunniggranskning i Svenska listan, som utgår från publiceringskanalen i sin helhet."
+    }
+  },
+  "Datastatus": {
+    "ssif": {
+      "title": "Ämnesklassificering (SSIF)",
+      "text": "Samtliga poster som klassificerats med ämne enligt Standard för svensk indelning av forskningsämnen (SSIF). Här ingår även poster som ämnesklassificerats automatiskt av Swepub, baserat på titel, nyckelord och sammanfattning."
+    },
+    "open_access": {
+      "title": "Öppen tillgång",
+      "text": "Output som är fritt tillgänglig enligt den information som har angetts i metadata från posten eller hämtats från de externa datakällorna Unpaywall och Directory of Open Access Books - DOAB."
+    },
+    "subjects": {
+      "title": "Forskningsämne (SSIF)",
+      "text": "Fördelning av samtliga poster med ämnesklassificering på nivå 1 enligt Standard för svensk indelning av forskningsämnen (SSIF)."
+    },
+    "validations": {
+      "title": "Ofullständiga data",
+      "text": "Data som av Swepub identifierats som ofullständiga märks upp med valideringsflaggor. Här ingår felaktigheter i format eller dubblerade, ogiltiga eller saknade värden."
+    },
+    "timeline": {
+      "title": "Poster över tid",
+      "text": "Fördelning av poster efter utgivningsår sedan 2010."
+    }
+  },
+  "*": {
+    "organization": {
+      "title": "Organisation",
+      "text": "Den organisation som har levererat data till Swepub."
+    },
+    "publication_year": {
+      "title": "Utgivningsår",
+      "text": "Data från och med 2012 är genomgående mer fullständiga än tidigare data."
+    },
+    "swedish_list": {
+      "title": "Svenska listan",
+      "text": "Svenskt register över sakkunniggranskade publiceringskanaler, som tillhandahålls av Vetenskapsrådet. <a href='http://www.vr.se/uppdrag/oppen-vetenskap/sakkunniggranskade-publiceringskanaler-i-swepub.html'>Mer information om Svenska listan</a>."
+    },
+    "open_access": {
+      "title": "Öppen tillgång",
+      "text": "Output som är fritt tillgänglig för nedladdning."
+    }
+  },
+  "test": {
+    "test": {
+      "title": "this is a test title",
+      "text": "this is a test text"
+    }
+  }
+}

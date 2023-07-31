@@ -1,0 +1,22 @@
+<script setup>
+import { defineProps } from 'vue';
+
+const { label } = defineProps({
+  label: {
+    type: String,
+    required: true,
+  },
+});
+</script>
+
+<template>
+  <div class="tooltip" :label="label" v-tooltip="label">
+    <slot />
+  </div>
+</template>
+
+<style lang="scss">
+.tooltip {
+  display: inline-flex;
+}
+</style>
