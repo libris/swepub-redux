@@ -115,8 +115,8 @@ export default {
                   <div v-for="(added_oa, index) in flag.new_value"
                             :key="`ul-add_oa-${index}`"
                             class="links">
-                    <template v-for="(value, name) in added_oa">
-                      <span :key="`li-add_oa-${name}`">
+                    <template>
+                      <span v-for="(value, name) in added_oa" :key="`li-add_oa-${name}`">
                         {{ name }}:
                         <a
                             :href="value"
