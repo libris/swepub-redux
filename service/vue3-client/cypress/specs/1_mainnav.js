@@ -2,89 +2,64 @@
 
 describe('Main navigation', () => {
   beforeEach(() => {
-    cy.server();
-    cy.route('**/info/sources', 'fixture:sources.json').as('sources');
-    cy.route('**/info/research-subjects', 'fixture:research-subjects.json').as('researchSubjects');
-    cy.route('**/info/output-types', 'fixture:output-types.json').as('outputTypes');
-    cy.route('**/datastatus', 'fixture:datastatus.json').as('datastatus');
-    cy.route('**/datastatus/ssif', 'fixture:datastatus_ssif.json').as('ssif');
-    cy.route('**/datastatus/validations', 'fixture:datastatus_validations.json').as('validations');
+    cy.intercept('**/info/sources', { fixture: 'sources.json' }).as('sources');
+    cy.intercept('**/info/research-subjects', { fixture: 'research-subjects.json' }).as('researchSubjects');
+    cy.intercept('**/info/output-types', { fixture: 'output-types.json' }).as('outputTypes');
+    cy.intercept('**/datastatus', { fixture: 'datastatus.json' }).as('datastatus');
+    cy.intercept('**/datastatus/ssif', { fixture: 'datastatus_ssif.json' }).as('ssif');
+    cy.intercept('**/datastatus/validations', { fixture: 'datastatus_validations.json' }).as('validations');
   });
 
   it('can navigate to /process', () => {
     cy.visit('/');
     cy.get('.MainNav a[href="/process"]')
       .click();
+    cy.location('pathname', { timeout: 10000 }).should('eq', '/process');
+    cy.get('.Process').should('be.visible');
+    cy.title().should('include', 'Databearbetning');
   });
 
-  it('displays process view', () => {
+  it('can navigate to /classify', () => {
+    cy.visit('/');
+    cy.get('.MainNav a[href="/classify"]')
+      .click();
+    cy.location('pathname', { timeout: 10000 }).should('eq', '/classify');
+    cy.get('.Classify').should('be.visible');
+    cy.title().should('include', 'Ämnesklassificering');
+  });
+
+  it('can navigate to /datastatus', () => {
+    cy.visit('/');
+    cy.get('.MainNav a[href="/datastatus"]')
+      .click();
+    cy.location('pathname', { timeout: 10000 }).should('eq', '/datastatus');
+    cy.get('.Datastatus').should('be.visible');
+    cy.title().should('include', 'Datastatus');
+  });
+  it('can navigate to /bibliometrics', () => {
+    cy.visit('/');
+    cy.get('.MainNav a[href="/bibliometrics"]')
+      .click();
+    cy.location('pathname', { timeout: 10000 }).should('eq', '/bibliometrics');
+    cy.get('.Bibliometrics').should('be.visible');
+    cy.title().should('include', 'Bibliometri');
+  });
+
+  it('navigates back', () => {
+    cy.visit('/process');
+    cy.get('.MainNav a[href="/classify"]')
+      .click();
+    cy.go('back');
     cy.get('.Process')
       .should('be.visible');
   });
 
-  it('has Process in page title', () => {
-    cy.title().should((title) => {
-      expect(title).to.contain('Databearbetning');
-    });
-  });
-
-  it('navigates to /classify', () => {
-    cy.get('.MainNav a[href="/classify"]')
-      .click();
-  });
-
-  it('displays Classify view', () => {
-    cy.get('.Classify')
-      .should('be.visible');
-  });
-
-  it('has Classify in page title', () => {
-    cy.title().should((title) => {
-      expect(title).to.contain('Ämnesklassificering');
-    });
-  });
-
-  it('navigates to /datastatus', () => {
-    cy.get('.MainNav a[href="/datastatus"]')
-      .click();
-  });
-
-  it('displays Datastatus view', () => {
-    cy.get('.Datastatus')
-      .should('be.visible');
-  });
-
-  it('has Datastatus in page title', () => {
-    cy.title().should((title) => {
-      expect(title).to.contain('Datastatus');
-    });
-  });
-
-  it('navigates to /bibliometrics', () => {
-    cy.get('.MainNav a[href="/bibliometrics"]')
-      .click();
-  });
-
-  it('displays Bibliometrics view', () => {
-    cy.get('.Bibliometrics')
-      .should('be.visible');
-  });
-
-  it('has Bibliometrics in page title', () => {
-    cy.title().should((title) => {
-      expect(title).to.contain('Bibliometri');
-    });
-  });
-
-  it('navigates back', () => {
-    cy.go('back');
-    cy.get('.Datastatus')
-      .should('be.visible');
-  });
-
   it('navigates forward', () => {
+    cy.visit('/process');
+    cy.get('.MainNav a[href="/classify"]').click();
+    cy.go('back');
     cy.go('forward');
-    cy.get('.Bibliometrics')
+    cy.get('.Classify')
       .should('be.visible');
   });
 
