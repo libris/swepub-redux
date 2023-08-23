@@ -1,0 +1,15 @@
+{
+  "completed_timestamp":"2021-01-13T00:02:58.912171+00:00",
+  "deleted_so_far":1,
+  "failed_sets":0,
+  "failures":0,
+  "harvest_id":"49fe2f3c-5532-11eb-9bb0-02420a000106",
+  "harvest_retries":0,
+  "indexed_so_far":88,
+  "prevented":121,
+  "rejected":1,
+  "source_code":"su",
+  "source_name":"Stockholms universitet",
+  "start_timestamp":"2021-01-13T00:02:40.017150+00:00",
+  "successes":90
+}

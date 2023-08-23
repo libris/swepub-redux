@@ -1,0 +1,29 @@
+{
+  "ssif":{
+     "1 Naturvetenskap":{
+        "percentage":23.06,
+        "total":367438
+     },
+     "2 Teknik":{
+        "percentage":17.43,
+        "total":277746
+     },
+     "3 Medicin och hälsovetenskap":{
+        "percentage":26.1,
+        "total":415735
+     },
+     "4 Lantbruksvetenskap och veterinärmedicin":{
+        "percentage":2.03,
+        "total":32386
+     },
+     "5 Samhällsvetenskap":{
+        "percentage":20.37,
+        "total":324472
+     },
+     "6 Humaniora och konst":{
+        "percentage":11.01,
+        "total":175329
+     }
+  },
+  "total":1593106
+}

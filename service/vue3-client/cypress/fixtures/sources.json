@@ -1,0 +1,180 @@
+{
+  "sources": [
+    {
+      "name": "Uppsala universitet",
+      "code": "uu"
+    },
+    {
+      "name": "Lunds universitet",
+      "code": "lu"
+    },
+    {
+      "name": "Karolinska Institutet",
+      "code": "ki"
+    },
+    {
+      "name": "Chalmers tekniska högskola",
+      "code": "cth"
+    },
+    {
+      "name": "Göteborgs universitet",
+      "code": "gu"
+    },
+    {
+      "name": "Kungliga Tekniska högskolan",
+      "code": "kth"
+    },
+    {
+      "name": "Linköpings universitet",
+      "code": "liu"
+    },
+    {
+      "name": "Stockholms universitet",
+      "code": "su"
+    },
+    {
+      "name": "Umeå universitet",
+      "code": "umu"
+    },
+    {
+      "name": "Luleå tekniska universitet",
+      "code": "ltu"
+    },
+    {
+      "name": "Linnéuniversitetet",
+      "code": "lnu"
+    },
+    {
+      "name": "Sveriges lantbruksuniversitet",
+      "code": "slu"
+    },
+    {
+      "name": "Örebro universitet",
+      "code": "oru"
+    },
+    {
+      "name": "Karlstads universitet",
+      "code": "kau"
+    },
+    {
+      "name": "Jönköping University",
+      "code": "hj"
+    },
+    {
+      "name": "RISE Research Institutes of Sweden",
+      "code": "ri"
+    },
+    {
+      "name": "Mittuniversitetet",
+      "code": "miun"
+    },
+    {
+      "name": "Malmö universitet",
+      "code": "mau"
+    },
+    {
+      "name": "Södertörns högskola",
+      "code": "sh"
+    },
+    {
+      "name": "Mälardalens universitet",
+      "code": "mdh"
+    },
+    {
+      "name": "Högskolan Dalarna",
+      "code": "du"
+    },
+    {
+      "name": "Högskolan i Borås",
+      "code": "hb"
+    },
+    {
+      "name": "Högskolan i Gävle",
+      "code": "hig"
+    },
+    {
+      "name": "Högskolan i Halmstad",
+      "code": "hh"
+    },
+    {
+      "name": "Statens väg- och transportforskningsinstitut",
+      "code": "vti"
+    },
+    {
+      "name": "Högskolan Kristianstad",
+      "code": "hkr"
+    },
+    {
+      "name": "Blekinge Tekniska Högskola",
+      "code": "bth"
+    },
+    {
+      "name": "Naturvårdsverket",
+      "code": "naturvardsverket"
+    },
+    {
+      "name": "Högskolan i Skövde",
+      "code": "his"
+    },
+    {
+      "name": "Högskolan Väst",
+      "code": "hv"
+    },
+    {
+      "name": "Riksantikvarieämbetet",
+      "code": "raa"
+    },
+    {
+      "name": "Försvarshögskolan",
+      "code": "fhs"
+    },
+    {
+      "name": "Ersta Sköndal Bräcke högskola",
+      "code": "esh"
+    },
+    {
+      "name": "Naturhistoriska riksmuseet",
+      "code": "nrm"
+    },
+    {
+      "name": "Gymnastik- och idrottshögskolan",
+      "code": "gih"
+    },
+    {
+      "name": "Nordiska Afrikainstitutet",
+      "code": "nai"
+    },
+    {
+      "name": "Röda Korsets Högskola",
+      "code": "rkh"
+    },
+    {
+      "name": "Sophiahemmet Högskola",
+      "code": "shh"
+    },
+    {
+      "name": "Konstfack",
+      "code": "konstfack"
+    },
+    {
+      "name": "Enskilda Högskolan Stockholm",
+      "code": "ths"
+    },
+    {
+      "name": "Nationalmuseum",
+      "code": "nationalmuseum"
+    },
+    {
+      "name": "Kungl. Musikhögskolan",
+      "code": "kmh"
+    },
+    {
+      "name": "Stockholms konstnärliga högskola",
+      "code": "uniarts"
+    },
+    {
+      "name": "Kungl. Konsthögskolan",
+      "code": "kkh"
+    }
+  ]
+}

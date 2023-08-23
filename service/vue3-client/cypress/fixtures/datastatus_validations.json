@@ -1,0 +1,45 @@
+{
+  "total": 15921,
+  "validationFlags": {
+    "DOI": {
+      "percentage": 30.66,
+      "total": 4882
+    },
+    "ISBN": {
+      "percentage": 39.17,
+      "total": 6236
+    },
+    "ISI": {
+      "percentage": 0.04,
+      "total": 7
+    },
+    "ISSN": {
+      "percentage": 22.84,
+      "total": 3637
+    },
+    "ORCID": {
+      "percentage": 6.91,
+      "total": 1100
+    },
+    "UKA": {
+      "percentage": 0.0,
+      "total": 0
+    },
+    "URI": {
+      "percentage": 0.0,
+      "total": 0
+    },
+    "creator_count": {
+      "percentage": 0.3,
+      "total": 47
+    },
+    "free_text": {
+      "percentage": 0.0,
+      "total": 0
+    },
+    "publication_year": {
+      "percentage": 0.08,
+      "total": 12
+    }
+  }
+}

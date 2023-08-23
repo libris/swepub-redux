@@ -1,0 +1,117 @@
+{
+  "intellectual-property": {
+    "swe": "Immaterialrättslig output",
+    "subcategories": {
+      "patent": {
+        "swe": "Patent"
+      },
+      "other": {
+        "swe": "Övrig immaterialrättslig output"
+      }
+    }
+  },
+  "conference": {
+    "swe": "Konferensoutput",
+    "subcategories": {
+      "paper": {
+        "swe": "Paper i proceeding"
+      },
+      "poster": {
+        "swe": "Poster"
+      },
+      "proceeding": {
+        "swe": "Proceeding (redaktörskap)"
+      },
+      "other": {
+        "swe": "Övriga konferensbidrag"
+      }
+    }
+  },
+  "artistic-work": {
+    "swe": "Konstnärlig output",
+    "subcategories": {
+      "artistic-thesis": {
+        "swe": "Dokumenterat konstnärligt forskningsprojekt (doktorsavhandling)"
+      },
+      "original-creative-work": {
+        "swe": "Konstnärligt arbete"
+      }
+    }
+  },
+  "publication": {
+    "swe": "Publikation",
+    "subcategories": {
+      "newspaper-article": {
+        "swe": "Artikel i dags-/nyhetstidning"
+      },
+      "journal-article": {
+        "swe": "Artikel i vetenskaplig tidskrift"
+      },
+      "magazine-article": {
+        "swe": "Artikel i övriga tidskrifter"
+      },
+      "encyclopedia-entry": {
+        "swe": "Bidrag till encyklopedi"
+      },
+      "book": {
+        "swe": "Bok"
+      },
+      "doctoral-thesis": {
+        "swe": "Doktorsavhandling"
+      },
+      "review-article": {
+        "swe": "Forskningsöversiktsartikel"
+      },
+      "foreword-afterword": {
+        "swe": "För-/Efterord"
+      },
+      "editorial-letter": {
+        "swe": "Inledande text i tidskrift / proceeding (letters, editorials, comments, notes)"
+      },
+      "report-chapter": {
+        "swe": "Kapitel i rapport"
+      },
+      "book-chapter": {
+        "swe": "Kapitel i samlingsverk"
+      },
+      "licentiate-thesis": {
+        "swe": "Licentiatavhandling"
+      },
+      "preprint": {
+        "swe": "Preprint"
+      },
+      "report": {
+        "swe": "Rapport"
+      },
+      "book-review": {
+        "swe": "Recension"
+      },
+      "edited-book": {
+        "swe": "Samlingsverk (redaktörsskap)"
+      },
+      "journal-issue": {
+        "swe": "Special-/temanummer av tidskrift (redaktörskap)"
+      },
+      "critical-edition": {
+        "swe": "Textkritisk utgåva"
+      },
+      "working-paper": {
+        "swe": "Working paper"
+      },
+      "other": {
+        "swe": "Övrig publikation"
+      }
+    }
+  },
+  "other": {
+    "swe": "Övrig output",
+    "subcategories": {
+      "data-set": {
+        "swe": "Dataset"
+      },
+      "software": {
+        "swe": "Programvara"
+      }
+    }
+  }
+}
