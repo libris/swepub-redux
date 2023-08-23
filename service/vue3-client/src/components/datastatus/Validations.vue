@@ -1,5 +1,7 @@
 <script>
 import { defineAsyncComponent } from 'vue';
+import { mapState } from 'pinia';
+import { useSettingsStore } from '@/stores/settings';
 import FlagLabels from '@/assets/json/FlagLabels.json';
 import FetchMixin from '@/components/mixins/FetchMixin.vue';
 import HelpBubble from '@/components/shared/HelpBubble.vue';
@@ -30,6 +32,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(useSettingsStore, ['apiPath', 'language']),
     chartData() {
       if (this.data.validationFlags) {
         const dataArr = [];
@@ -53,8 +56,8 @@ export default {
           if (this.data.validationFlags[el].total > 0) {
             dataArr.push(this.data.validationFlags[el].total);
             percentageArr.push(this.data.validationFlags[el].percentage);
-            const label = FlagLabels[el] && FlagLabels[el][this.settings.language]
-              ? FlagLabels[el][this.settings.language] : el;
+            const label = FlagLabels[el] && FlagLabels[el][this.language]
+              ? FlagLabels[el][this.language] : el;
             labelArr.push(label);
             codeArr.push(el);
           }
