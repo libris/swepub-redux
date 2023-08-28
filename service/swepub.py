@@ -714,11 +714,14 @@ def process_get_publication(record_id=None):
 
     cur = get_db().cursor()
     row = cur.execute(
-        "SELECT data FROM converted WHERE oai_id = ? AND deleted = 0", [record_id]
+        "SELECT data, modified FROM converted WHERE oai_id = ? AND deleted = 0", [record_id]
     ).fetchone()
     if not row:
         _errors(["Not Found"], status_code=404)
-    return Response(row[0], mimetype="application/ld+json")
+    data = json.loads(row[0])
+    if request.args.get("_debug") is not None:
+        data["_harvest_time"] = datetime.fromtimestamp(row[1]).isoformat()
+    return Response(json.dumps(data), mimetype="application/ld+json")
 
 
 @app.route("/api/v1/process/publications/<path:record_id>/original", methods=["GET"])
