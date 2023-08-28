@@ -720,7 +720,7 @@ def process_get_publication(record_id=None):
         _errors(["Not Found"], status_code=404)
     data = json.loads(row[0])
     if request.args.get("_debug") is not None:
-        data["_harvest_time"] = datetime.fromtimestamp(row[1]).isoformat()
+        data["meta"]["_harvest_time"] = datetime.fromtimestamp(row[1]).isoformat()
     return Response(json.dumps(data), mimetype="application/ld+json")
 
 
