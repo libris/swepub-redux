@@ -7,7 +7,8 @@ import Levenshtein
 import hashlib
 from simplemma.langdetect import lang_detector
 from unidecode import unidecode
-from requests.packages.urllib3.util.retry import Retry
+
+from requests.adapters import Retry
 from random import random
 
 from pipeline.swepublog import logger as log
