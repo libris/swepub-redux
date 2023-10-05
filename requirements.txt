@@ -22,3 +22,4 @@ flexmock==0.11.3
 beautifulsoup4==4.11.1
 Unidecode==1.3.6
 simplemma==0.9.1
+Werkzeug==2.3.6
