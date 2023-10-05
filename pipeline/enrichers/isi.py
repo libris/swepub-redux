@@ -4,7 +4,7 @@ from pipeline.util import update_at_path, unicode_translate, make_event, Enrichm
 # flake8: noqa W504
 isi_regex = re.compile(
     "(?<![/0-9a-zA-Z])"
-    + "((000[0-9]{12})"  # Shouldn't be preceded by chars that it can contain or '/' (prevent doi)
+    + "((00[01][0-9]{12})"  # Shouldn't be preceded by chars that it can contain or '/' (prevent doi)
     + "|"  # Accept one of the two valid formats
     + "([Aa]19[0-9a-zA-Z]{12}))"
     + "(?:(?![0-9a-zA-Z]))"  # Shouldn't be exceeded by chars it can contain
