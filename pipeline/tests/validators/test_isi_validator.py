@@ -6,6 +6,7 @@ def test_valid_isi():
     isi = [
         "000123456789123",  # Correct ISI
         "000321123456789",  # Correct ISI
+        "001021900400014",  # Correct ISI
         "A1994PR35700005",  # Correct ISI
         "A1997WE83100014",  # Correct ISI
         "A19123456789123",  # 'Correct' ISI
@@ -21,7 +22,7 @@ def test_valid_isi():
 
 def test_invalid_isi_format():
     isi = [
-        "001123456789123",  # Incorrect prefix
+        "002123456789123",  # Incorrect prefix
         "A18123456789123",  # Incorrect prefix
         "00012345678912",  # Incorrect length
         "0001234567891234",  # Incorrect length
