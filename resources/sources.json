@@ -528,5 +528,17 @@
         "metadata_prefix": "swepub_mods"
       }
     ]
+  },
+  "ivl": {
+    "code": "ivl",
+    "name": "Svenska Miljöinstitutet",
+    "sets": [
+      {
+        "url": "https://ivl.diva-portal.org/dice/oai",
+        "subset": "SwePub-ivl",
+        "metadata_prefix": "swepub_mods",
+        "envs": ["DEV", "QA"]
+      }
+    ]
   }
 }
