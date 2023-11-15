@@ -1,11 +1,10 @@
 /* eslint-disable no-unused-expressions */
 describe('Bibliometrics', () => {
   beforeEach(() => {
-    cy.server();
-    cy.route('**/info/sources', 'fixture:sources.json').as('sources');
-    cy.route('**/info/research-subjects', 'fixture:research-subjects.json').as('researchSubjects');
-    cy.route('**/info/output-types', 'fixture:output-types.json').as('outputTypes');
-    cy.route('POST', '**/bibliometrics', 'fixture:bibliometrics.json').as('bibliometrics');
+    cy.intercept('**/info/sources', { fixture: 'sources.json' }).as('sources');
+    cy.intercept('**/info/research-subjects', { fixture: 'research-subjects.json' }).as('researchSubjects');
+    cy.intercept('**/info/output-types', { fixture: 'output-types.json' }).as('outputTypes');
+    cy.intercept('POST', '**/bibliometrics', { fixture: 'bibliometrics.json' }).as('bibliometrics');
   });
 
   it('displays the view when visiting app root', () => {
@@ -19,29 +18,30 @@ describe('Bibliometrics', () => {
   });
 
   it('enables submit button by default', () => {
+    cy.visit('/bibliometrics');
     cy.get('#submit-btn').should('not.be.disabled');
   });
 
   it('fetches sources by default', () => {
     cy.visit('/bibliometrics');
-    cy.wait('@sources').then((xhr) => {
-      expect(xhr.method).to.eq('GET');
+    cy.wait('@sources').then((interception) => {
+      expect(interception.request.method).to.eq('GET');
     });
     cy.get('#select-source-select').should('be.visible');
   });
 
   it('fetches research-subjects by default', () => {
     cy.visit('/bibliometrics');
-    cy.wait('@researchSubjects').then((xhr) => {
-      expect(xhr.method).to.eq('GET');
+    cy.wait('@researchSubjects').then((interception) => {
+      expect(interception.request.method).to.eq('GET');
     });
     cy.get('#select-subject-select').should('be.visible');
   });
 
   it('fetches output-types by default', () => {
     cy.visit('/bibliometrics');
-    cy.wait('@outputTypes').then((xhr) => {
-      expect(xhr.method).to.eq('GET');
+    cy.wait('@outputTypes').then((interception) => {
+      expect(interception.request.method).to.eq('GET');
     });
     cy.get('#select-output-select').should('be.visible');
   });
@@ -49,9 +49,9 @@ describe('Bibliometrics', () => {
   it('makes limited post request to bibliometrics api on search', () => {
     cy.visit('/bibliometrics');
     cy.get('#submit-btn').click();
-    cy.wait('@bibliometrics').then((xhr) => {
-      expect(xhr.method).to.eq('POST');
-      expect(xhr.requestBody.limit).to.eq(20);
+    cy.wait('@bibliometrics').then((interception) => {
+      expect(interception.request.method).to.eq('POST');
+      expect(interception.request.body.limit).to.eq(20);
     });
   });
 
@@ -75,6 +75,15 @@ describe('Bibliometrics', () => {
   });
 
   it('clears the year input error and enables submit button', () => {
+    cy.visit('/bibliometrics');
+    cy.get('#year-from')
+      .clear()
+      .type('2020');
+    cy.get('#year-to')
+      .clear()
+      .type('2019')
+      .should('have.attr', 'aria-invalid', 'true');
+    cy.get('.YearPicker .error').should('be.visible');
     cy.get('.YearPicker .error').should('be.visible');
     cy.get('#year-from')
       .clear()
@@ -82,7 +91,7 @@ describe('Bibliometrics', () => {
     cy.get('#year-to')
       .clear()
       .type('2020');
-    cy.get('.YearPicker .error').should('not.be.visible');
+    cy.get('.YearPicker .error').should('not.exist');
     cy.get('#submit-btn').should('not.be.disabled');
   });
 
@@ -233,14 +242,13 @@ describe('Bibliometrics', () => {
   });
 
   it('prints an error on fetch fail', () => {
-    cy.route({
-      method: 'POST',
-      url: '**/bibliometrics',
-      status: 500,
-      response: {
-        message: 'test error',
+    cy.visit('/bibliometrics');
+    cy.intercept('POST', '**/bibliometrics', {
+      statusCode: 500,
+      body: {
+        name: 'test error',
       },
-    });
+    })
     cy.reload();
     cy.get('#preview-section .error').should('be.visible');
   });
