@@ -1,12 +1,14 @@
 <script setup>
-import { defineProps } from 'vue';
+import { toRefs } from 'vue';
 
-const { label } = defineProps({
+const props = defineProps({
   label: {
     type: String,
     required: true,
   },
 });
+
+const { label } = toRefs(props);
 </script>
 
 <template>
