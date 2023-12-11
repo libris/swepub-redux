@@ -192,12 +192,12 @@ class Publication:
     def issns(self):
         """Return a list of all ISSNs ordered by importance."""
         issns = set()
-        for part_of in self.body.get("partOf", []) + self.body.get("hasSeries", []):
-            if isinstance(part_of, dict):
-                for el in part_of.get("identifiedBy", []) + part_of.get("indirectlyIdentifiedBy", []):
+        for is_part_of in self.body.get("isPartOf", []) + self.body.get("hasSeries", []):
+            if isinstance(is_part_of, dict):
+                for el in is_part_of.get("identifiedBy", []) + is_part_of.get("indirectlyIdentifiedBy", []):
                     if el.get("@type") == "ISSN":
                         issns.add(el.get("value"))
-                for series in part_of.get("hasSeries", []):
+                for series in is_part_of.get("hasSeries", []):
                     for el in series.get("identifiedBy", []) + series.get("indirectlyIdentifiedBy", []):
                         if el.get("@type") == "ISSN":
                             issns.add(el.get("value"))
@@ -591,8 +591,8 @@ class Publication:
                 has_series_objects.append(HasSeries(serie))
         return has_series_objects
 
-    def add_series(self, part_of):
-        new_has_series = part_of.has_series
+    def add_series(self, is_part_of):
+        new_has_series = is_part_of.has_series
         self_has_series = self.has_series
         for new_has_serie in new_has_series:
             if new_has_serie not in self_has_series:
@@ -637,13 +637,13 @@ class Publication:
 
     @property
     def identifiedby_isbns(self):
-        """Return a list of all ISBN (including partOf)"""
+        """Return a list of all ISBN (including isPartOf)"""
         isbns = set()
         for isbn in self.body.get("identifiedBy", []):
             if isinstance(isbn, dict) and isbn.get("@type") == "ISBN":
                 isbns.add(isbn.get("value"))
-        for part_of in self.body.get("partOf", {}):
-            for isbn in part_of.get("identifiedBy", []):
+        for is_part_of in self.body.get("isPartOf", {}):
+            for isbn in is_part_of.get("identifiedBy", []):
                 if isinstance(isbn, dict) and isbn.get("@type") == "ISBN":
                     isbns.add(isbn.get("value"))
         return [isbn for isbn in isbns if isbn]
@@ -658,12 +658,12 @@ class Publication:
         return [doi for doi in dois if doi]
 
     @property
-    def identifiedby_partof_dois(self):
-        """Returns a list of all DOI partOf identifiedBy"""
+    def identifiedby_ispartof_dois(self):
+        """Returns a list of all DOI isPartOf identifiedBy"""
         dois = set()
-        for part_of in self.body.get('partOf', []):
-            if isinstance(part_of, dict) and "identifiedBy" in part_of:
-                for doi in part_of.get("identifiedBy", []):
+        for is_part_of in self.body.get('isPartOf', []):
+            if isinstance(is_part_of, dict) and "identifiedBy" in is_part_of:
+                for doi in is_part_of.get("identifiedBy", []):
                     if doi.get("@type") == "DOI":
                         dois.add(doi.get("value"))
         return [doi for doi in dois if doi]
@@ -791,7 +791,7 @@ class Publication:
         # published-online => provisionActivity OnlineAvailability date
         self._add_crossref_provision_activity(crossref, modified_properties)
 
-        # issn-type => partOf / identifiedBy ISSN value qualifier
+        # issn-type => isPartOf / identifiedBy ISSN value qualifier
         self._add_crossref_issn(crossref, modified_properties)
 
         # abstract => summary Summary label
@@ -855,21 +855,21 @@ class Publication:
             if len(crossref.get("container-title", [])) > 1:
                 return
 
-            if not self._body.get("partOf"):
-                self._body["partOf"] = []
+            if not self._body.get("isPartOf"):
+                self._body["isPartOf"] = []
 
-            new_issn_part_of = {"@type": "Work"}
+            new_issn_is_part_of = {"@type": "Work"}
             crossref_container_title = ""
             # Only use container-title if there's no ISBN in the Crossref data. Because if there *is*, we
             # can't know for sure what container-title refers to (ISSN or ISBN).
             if crossref.get("container-title") and not crossref.get("isbn-type"):
                 crossref_container_title = unescape(crossref["container-title"][0])
-                new_issn_part_of["hasTitle"] = [{
+                new_issn_is_part_of["hasTitle"] = [{
                     "@type": "Title",
                     "mainTitle": crossref_container_title
                 }]
 
-            new_issn_part_of["identifiedBy"] = []
+            new_issn_is_part_of["identifiedBy"] = []
             for new_issn in new_issns:
                 if not new_issn.get("type") in ["print", "electronic", "eissn", "pissn"]:
                     continue
@@ -881,29 +881,29 @@ class Publication:
                     new_id_by["qualifier"] = "electronic"
                 elif new_issn["type"] in ["print", "pissn"]:
                     new_id_by["qualifier"] = "print"
-                new_issn_part_of["identifiedBy"].append(new_id_by)
+                new_issn_is_part_of["identifiedBy"].append(new_id_by)
 
-            if new_issn_part_of["identifiedBy"]:
-                new_issn_part_of["meta"] = [self._crossref_source_consulted()]
-                issn_event_log_value = ", ".join(map(lambda x: f"{x['value']} ({x['@type']})", new_issn_part_of["identifiedBy"]))
-                if new_issn_part_of.get("hasTitle"):
+            if new_issn_is_part_of["identifiedBy"]:
+                new_issn_is_part_of["meta"] = [self._crossref_source_consulted()]
+                issn_event_log_value = ", ".join(map(lambda x: f"{x['value']} ({x['@type']})", new_issn_is_part_of["identifiedBy"]))
+                if new_issn_is_part_of.get("hasTitle"):
                     issn_event_log_value = f"{crossref_container_title}: {issn_event_log_value}"
 
-                # Now check if there's an existing partOf or partOf.hasSeries that
+                # Now check if there's an existing isPartOf or isPartOf.hasSeries that
                 # we should add the new ISSN(s) to
                 if crossref_container_title:
-                    for outer_part_of in self.part_of:
-                        for part_of in [outer_part_of] + outer_part_of.has_series:
-                            if part_of.main_title:
-                                similarity = get_common_substring_factor(self._get_title_for_comparison(part_of.main_title), self._get_title_for_comparison(crossref_container_title))
+                    for outer_is_part_of in self.is_part_of:
+                        for is_part_of in [outer_is_part_of] + outer_is_part_of.has_series:
+                            if is_part_of.main_title:
+                                similarity = get_common_substring_factor(self._get_title_for_comparison(is_part_of.main_title), self._get_title_for_comparison(crossref_container_title))
                                 if similarity > 0.6:
                                     found_matching_title = True
-                                    part_of.add_issns(PartOf(new_issn_part_of))
+                                    is_part_of.add_issns(IsPartOf(new_issn_is_part_of))
                                     modified_properties.append({"name": "ISSNAdditionAuditor", "code": "add_issn", "value": issn_event_log_value})
                                     return
 
-                # ...otherwise, just add the new ISNS(s) as a new PartOf
-                self._body["partOf"].append(new_issn_part_of)
+                # ...otherwise, just add the new ISNS(s) as a new IsPartOf
+                self._body["isPartOf"].append(new_issn_is_part_of)
                 modified_properties.append({"name": "ISSNAdditionAuditor", "code": "add_issn", "value": issn_event_log_value})
 
     @staticmethod
@@ -1032,18 +1032,18 @@ class Publication:
         self._body['electronicLocator'] = [e.body for e in electronic_locators]
 
     @property
-    def part_of(self):
-        """ Return array of PartOf objetcs from partOf """
-        part_of = []
-        for p in self.body.get('partOf', []):
+    def is_part_of(self):
+        """ Return array of IsPartOf objects from isPartOf """
+        is_part_of = []
+        for p in self.body.get('isPartOf', []):
             if isinstance(p, dict):
-                part_of.append(PartOf(p))
-        return part_of
+                is_part_of.append(IsPartOf(p))
+        return is_part_of
 
-    @part_of.setter
-    def part_of(self, part_of):
-        """ Sets array for partOf from array of PartOf objects """
-        self._body['partOf'] = [part.body for part in part_of]
+    @is_part_of.setter
+    def is_part_of(self, is_part_of):
+        """ Sets array for isPartOf from array of IsPartOf objects """
+        self._body['isPartOf'] = [part.body for part in is_part_of]
 
     @property
     def identifiedby_ids(self):
@@ -1218,9 +1218,9 @@ def safe_concat(first, second, separator=' '):
 
 class HasSeries:
     """Abstract hasSeries format and API to access its properties
-    Populated by Publication.has_series or PartOf.has_series"""
+    Populated by Publication.has_series or IsPartOf.has_series"""
 
-    """Match ratios for various partOf fields, see SequenceMatcher """
+    """Match ratios for various isPartOf fields, see SequenceMatcher """
     STRING_MATCH_HASSERIES_MAIN_TITLE = 0.9
 
     def __init__(self, body):
@@ -1269,12 +1269,12 @@ class HasSeries:
         """Return values for identifiedBy[?(@.@type=="ISSN")].value, Empty array if not exist """
         return get_ids(self.body, 'identifiedBy', 'ISSN')
 
-    def add_issns(self, part_of):
-        """ Adds ISSN from part_of if not already exist, if it does then adds 'qualifier' if not set.
-        Also appends 'meta' from part_of.
+    def add_issns(self, is_part_of):
+        """ Adds ISSN from is_part_of if not already exist, if it does then adds 'qualifier' if not set.
+        Also appends 'meta' from is_part_of.
         """
-        for new_issn in part_of.issns:
-            new_issn_dict = _get_identified_by_dict(part_of.body, 'ISSN', new_issn)
+        for new_issn in is_part_of.issns:
+            new_issn_dict = _get_identified_by_dict(is_part_of.body, 'ISSN', new_issn)
             if new_issn in self.issns:
                 self_issns_dict = _get_identified_by_dict(self.body, 'ISSN', new_issn)
                 if new_issn_dict.get('qualifier') and not self_issns_dict.get('qualifier'):
@@ -1284,13 +1284,13 @@ class HasSeries:
                     self.body['identifiedBy'].append(new_issn_dict)
                 except KeyError:
                     self.body.update({'identifiedBy': [new_issn_dict]})
-        if part_of.body.get("meta"):
+        if is_part_of.body.get("meta"):
             if not self.body.get("meta"):
                 self.body["meta"] = []
-            self.body["meta"].append(part_of.body.get("meta"))
+            self.body["meta"].append(is_part_of.body.get("meta"))
 
     def has_same_main_title(self, has_series):
-        """True if part_of has the same main title"""
+        """True if is_part_of has the same main title"""
         return compare_text(self.main_title, has_series.main_title, self.STRING_MATCH_HASSERIES_MAIN_TITLE)
 
     def has_same_issn(self, has_series):
@@ -1346,35 +1346,35 @@ class ElectronicLocator:
                 self.notes.append(note)
 
 
-class PartOf:
-    """Abstract partOf format and API to access its properties
-    Populated by partOf by Publications.part_of"""
+class IsPartOf:
+    """Abstract isPartOf format and API to access its properties
+    Populated by isPartOf by Publications.is_part_of"""
 
-    """Match ratios for various partOf fields, see SequenceMatcher """
-    STRING_MATCH_PARTOF_MAIN_TITLE = 0.8
-    STRING_MATCH_PARTOF_SUB_TITLE = 0.8
+    """Match ratios for various isPartOf fields, see SequenceMatcher """
+    STRING_MATCH_ISPARTOF_MAIN_TITLE = 0.8
+    STRING_MATCH_ISPARTOF_SUB_TITLE = 0.8
 
     def __init__(self, body):
         self._body = body
 
-    def __eq__(self, part_of):
-        """ Two partOf is equal if one its identifier are the same (ISSN or ISBN) or
+    def __eq__(self, is_part_of):
+        """ Two isPartOf is equal if one its identifier are the same (ISSN or ISBN) or
         and same maintitle, subtitle, volumenumber and issueNumber"""
-        if self._body == part_of._body:
+        if self._body == is_part_of._body:
             return True
 
-        same_issns = len(set(self.issns).intersection(part_of.issns)) > 0
+        same_issns = len(set(self.issns).intersection(is_part_of.issns)) > 0
         if same_issns:
             return True
 
-        same_isbns = len(set(self.isbns).intersection(part_of.isbns)) > 0
+        same_isbns = len(set(self.isbns).intersection(is_part_of.isbns)) > 0
         if same_isbns:
             return True
 
-        same_main_title = self.has_same_main_title(part_of)
-        same_sub_title = self.has_same_sub_title(part_of)
-        same_volume_number = self.volume_number == part_of.volume_number
-        same_issue_number = self.issue_number == part_of.issue_number
+        same_main_title = self.has_same_main_title(is_part_of)
+        same_sub_title = self.has_same_sub_title(is_part_of)
+        same_volume_number = self.volume_number == is_part_of.volume_number
+        same_issue_number = self.issue_number == is_part_of.issue_number
         return same_main_title and same_sub_title and same_volume_number and same_issue_number
 
     @property
@@ -1422,12 +1422,12 @@ class PartOf:
         """Return values for identifiedBy[?(@.@type=="ISSN")].value, Empty array if not exist """
         return get_ids(self.body, 'identifiedBy', 'ISSN')
 
-    def add_issns(self, part_of):
-        """ Adds ISSN from part_of if not already exist, if it does then adds 'qualifier' if not set.
-        Also appends 'meta' from part_of.
+    def add_issns(self, is_part_of):
+        """ Adds ISSN from is_part_of if not already exist, if it does then adds 'qualifier' if not set.
+        Also appends 'meta' from is_part_of.
         """
-        for new_issn in part_of.issns:
-            new_issn_dict = _get_identified_by_dict(part_of.body, 'ISSN', new_issn)
+        for new_issn in is_part_of.issns:
+            new_issn_dict = _get_identified_by_dict(is_part_of.body, 'ISSN', new_issn)
             if new_issn in self.issns:
                 self_issns_dict = _get_identified_by_dict(self.body, 'ISSN', new_issn)
                 if new_issn_dict.get('qualifier') and not self_issns_dict.get('qualifier'):
@@ -1437,11 +1437,11 @@ class PartOf:
                     self.body['identifiedBy'].append(new_issn_dict)
                 except KeyError:
                     self.body.update({'identifiedBy': [new_issn_dict]})
-        if part_of.body.get("meta"):
+        if is_part_of.body.get("meta"):
             if not self.body.get("meta"):
                 self.body["meta"] = []
             
-            meta = part_of.body.get("meta")
+            meta = is_part_of.body.get("meta")
             if isinstance(meta, list):
                 self.body["meta"] = meta
             else:
@@ -1452,10 +1452,10 @@ class PartOf:
         """Return values for identifiedBy[?(@.@type=="ISBN")].value, Empty array if not exist """
         return get_ids(self.body, 'identifiedBy', 'ISBN')
 
-    def add_isbns(self, part_of):
-        """ Adds ISBN from part_of if not already exist, if it does then adds 'qualifier' if not set """
-        for new_isbn in part_of.isbns:
-            new_isbn_dict = _get_identified_by_dict(part_of.body, 'ISBN', new_isbn)
+    def add_isbns(self, is_part_of):
+        """ Adds ISBN from is_part_of if not already exist, if it does then adds 'qualifier' if not set """
+        for new_isbn in is_part_of.isbns:
+            new_isbn_dict = _get_identified_by_dict(is_part_of.body, 'ISBN', new_isbn)
             if new_isbn in self.isbns:
                 self_isbns_dict = _get_identified_by_dict(self.body, 'ISBN', new_isbn)
                 if new_isbn_dict.get('qualifier') and not self_isbns_dict.get('qualifier'):
@@ -1468,16 +1468,16 @@ class PartOf:
 
     @property
     def has_series(self):
-        """ Return array of PartOfHasSeries objects from hasSeries field """
+        """ Return array of IsPartOfHasSeries objects from hasSeries field """
         has_series = []
         has_series_json_array = self.body.get('hasSeries', [])
         if has_series_json_array is not None:
             for serie in has_series_json_array:
-                has_series.append(PartOfHasSeries(serie))
+                has_series.append(IsPartOfHasSeries(serie))
         return has_series
 
-    def add_series(self, part_of):
-        new_has_series = part_of.has_series
+    def add_series(self, is_part_of):
+        new_has_series = is_part_of.has_series
         self_has_series = self.has_series
         for new_has_serie in new_has_series:
             if new_has_serie not in self_has_series:
@@ -1485,21 +1485,21 @@ class PartOf:
         if len(self_has_series) > 0:
             self.body['hasSeries'] = [has_serie.body for has_serie in self_has_series]
 
-    def has_same_main_title(self, part_of):
-        """True if part_of has the same main title"""
-        # partOf w/o main title should never match
-        if self.main_title is None and part_of.main_title is None:
+    def has_same_main_title(self, is_part_of):
+        """True if is_part_of has the same main title"""
+        # isPartOf w/o main title should never match
+        if self.main_title is None and is_part_of.main_title is None:
             return False
-        return compare_text(self.main_title, part_of.main_title, self.STRING_MATCH_PARTOF_MAIN_TITLE)
+        return compare_text(self.main_title, is_part_of.main_title, self.STRING_MATCH_ISPARTOF_MAIN_TITLE)
 
-    def has_same_sub_title(self, part_of):
-        """True if part_of has the same sub title"""
+    def has_same_sub_title(self, is_part_of):
+        """True if is_part_of has the same sub title"""
         # sub title is less common, so here we don't need to be as strict
-        return compare_text(self.sub_title, part_of.sub_title, self.STRING_MATCH_PARTOF_SUB_TITLE)
+        return compare_text(self.sub_title, is_part_of.sub_title, self.STRING_MATCH_ISPARTOF_SUB_TITLE)
 
 
-class PartOfHasSeries(HasSeries):
-    """ Two has series for partOf is equal if it has same ISSN or same maintitle """
+class IsPartOfHasSeries(HasSeries):
+    """ Two has series for isPartOf is equal if it has same ISSN or same maintitle """
     def __eq__(self, has_series):
         same_identified_by = self.has_same_issn(has_series)
         same_main_title = self.has_same_main_title(has_series)

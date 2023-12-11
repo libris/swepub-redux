@@ -1507,7 +1507,7 @@
 
         <!-- NOT DUPLICATES (below this line -->
         <!-- Title: Towards a prediction model for people movements in urban areas -->
-        <!-- Reason: ConferencePaper with different partOf.hastitle.mainTitle -->
+        <!-- Reason: ConferencePaper with different isPartOf.hastitle.mainTitle -->
         <!-- oai:DiVA.org:bth-6986 -->
         <!-- oai:muep.mau.se:2043/15776 -->
         <!-- oai:DiVA.org:hj-37923  -->

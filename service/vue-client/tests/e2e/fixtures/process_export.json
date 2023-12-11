@@ -10,19 +10,19 @@
                     "code":"recovery",
                     "new_value":"22128271",
                     "old_value":"2212 - 8271",
-                    "path":"partOf.[0].hasSeries.[0].identifiedBy.[0].value"
+                    "path":"isPartOf.[0].hasSeries.[0].identifiedBy.[0].value"
                  },
                  {
                     "code":"recovery",
                     "new_value":"22128271",
                     "old_value":"2212 - 8271",
-                    "path":"partOf.[1].hasSeries.[0].identifiedBy.[0].value"
+                    "path":"isPartOf.[1].hasSeries.[0].identifiedBy.[0].value"
                  },
                  {
                     "code":"recovery",
                     "new_value":"22128271",
                     "old_value":"2212 - 8271",
-                    "path":"partOf.[2].hasSeries.[0].identifiedBy.[0].value"
+                    "path":"isPartOf.[2].hasSeries.[0].identifiedBy.[0].value"
                  }
               ]
            }
@@ -51,19 +51,19 @@
                     "code":"recovery",
                     "new_value":"2212-8271",
                     "old_value":"2212- 8271",
-                    "path":"partOf.[0].hasSeries.[0].identifiedBy.[0].value"
+                    "path":"isPartOf.[0].hasSeries.[0].identifiedBy.[0].value"
                  },
                  {
                     "code":"recovery",
                     "new_value":"2212-8271",
                     "old_value":"2212- 8271",
-                    "path":"partOf.[1].hasSeries.[0].identifiedBy.[0].value"
+                    "path":"isPartOf.[1].hasSeries.[0].identifiedBy.[0].value"
                  },
                  {
                     "code":"recovery",
                     "new_value":"2212-8271",
                     "old_value":"2212- 8271",
-                    "path":"partOf.[2].hasSeries.[0].identifiedBy.[0].value"
+                    "path":"isPartOf.[2].hasSeries.[0].identifiedBy.[0].value"
                  }
               ]
            }
@@ -170,7 +170,7 @@
               "ISSN":[
                  {
                     "code":"checksum",
-                    "path":"partOf.[0].hasSeries.[0].identifiedBy.[0].value",
+                    "path":"isPartOf.[0].hasSeries.[0].identifiedBy.[0].value",
                     "result":"invalid",
                     "value":"2633-7763"
                  }

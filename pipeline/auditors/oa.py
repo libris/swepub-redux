@@ -31,7 +31,7 @@ class OAAuditor(BaseAuditor):
         identifiers = (
             publication.identifiedby_isbns
             + publication.identifiedby_dois
-            + publication.identifiedby_partof_dois
+            + publication.identifiedby_ispartof_dois
         )
         download_uris = []
         added_electroniclocators = []

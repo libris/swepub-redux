@@ -141,7 +141,7 @@ class PublicationMerger:
         master = self._merge_identifiedby_ids(master, candidate)
         master = self._merge_indirectly_identifiedby_ids(master, candidate)
         master = self._merge_electronic_locators(master, candidate)
-        master = self._merge_part_of(master, candidate)
+        master = self._merge_is_part_of(master, candidate)
         master = self._merge_publication_information(master, candidate)
         master = self._merge_usage_and_access_policy(master, candidate)
         return master
@@ -293,21 +293,21 @@ class PublicationMerger:
         return master
 
     @staticmethod
-    def _merge_part_of(master, candidate):
-        """Merge partOf.hasSeries if same identifier or
-        (same partOf.hasTitle.mainTitle/subtitle/volumeNumber/issuenumber)."""
-        master_part_ofs = master.part_of
-        candidate_parts_of = candidate.part_of
+    def _merge_is_part_of(master, candidate):
+        """Merge isPartOf.hasSeries if same identifier or
+        (same isPartOf.hasTitle.mainTitle/subtitle/volumeNumber/issuenumber)."""
+        master_is_part_ofs = master.is_part_of
+        candidate_parts_of = candidate.is_part_of
         for c_p in candidate_parts_of:
-            if c_p not in master_part_ofs:
-                master_part_ofs.append(c_p)
+            if c_p not in master_is_part_ofs:
+                master_is_part_ofs.append(c_p)
             else:
-                index = master_part_ofs.index(c_p)
-                master_part_of = master_part_ofs[index]
-                master_part_of.add_issns(c_p)
-                master_part_of.add_isbns(c_p)
-                master_part_of.add_series(c_p)
-        master.part_of = master_part_ofs
+                index = master_is_part_ofs.index(c_p)
+                master_is_part_of = master_is_part_ofs[index]
+                master_is_part_of.add_issns(c_p)
+                master_is_part_of.add_isbns(c_p)
+                master_is_part_of.add_series(c_p)
+        master.is_part_of = master_is_part_ofs
         return master
 
     @staticmethod

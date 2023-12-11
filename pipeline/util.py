@@ -210,9 +210,9 @@ def get_common_json_paths():
         paths_to_cache.append(f"instanceOf.contribution.[{i}].agent.identifiedBy")
         paths_to_cache.append(f"instanceOf.contribution.[{i}].agent.identifiedBy.[0]")
         paths_to_cache.append(f"instanceOf.contribution.[{i}].agent.identifiedBy.[1]")
-        paths_to_cache.append(f"partOf.[{i}].identifiedBy")
-        paths_to_cache.append(f"partOf.[{i}].identifiedBy.[0]")
-        paths_to_cache.append(f"partOf.[{i}].identifiedBy.[1]")
+        paths_to_cache.append(f"isPartOf.[{i}].identifiedBy")
+        paths_to_cache.append(f"isPartOf.[{i}].identifiedBy.[0]")
+        paths_to_cache.append(f"isPartOf.[{i}].identifiedBy.[1]")
     cached_paths = {}
 
     for path in paths_to_cache:
@@ -420,15 +420,15 @@ def get_combined_title(body):
     return ""
 
 
-def get_part_of(body):
-    """ Return array of PartOf objects from partOf """
-    part_of = []
-    part_of_json_array = body.get('partOf', [])
-    if part_of_json_array is not None:
-        for p in part_of_json_array:
+def get_is_part_of(body):
+    """ Return array of IsPartOf objects from isPartOf """
+    is_part_of = []
+    is_part_of_json_array = body.get('isPartOf', [])
+    if is_part_of_json_array is not None:
+        for p in is_part_of_json_array:
             if isinstance(p, dict):
-                part_of.append(p)
-    return part_of
+                is_part_of.append(p)
+    return is_part_of
 
 
 def part_of_main_title(body):
