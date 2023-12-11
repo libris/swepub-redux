@@ -37,7 +37,7 @@ export default {
       ],
       contentMarkings: [
         { value: 'ref', label: 'Sakkunniggranskat (ref)' },
-        { value: 'vet', label: 'Övrigt vetenskapligt (vet)' },
+        { value: 'vet', label: 'Övrigt vetenskapligt/konstnärligt (vet)' },
         { value: 'pop', label: 'Övrigt (populärvetenskap, debatt) (pop)' },
       ],
       search: null,
