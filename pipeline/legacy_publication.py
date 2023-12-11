@@ -137,7 +137,7 @@ class Publication:
         self.add_instance_of_subject_650()
         self.add_instance_of_subject_653()
         self.add_instance_of_contribution_100_and_700_710()
-        self.add_part_of_773()
+        self.add_is_part_of_773()
         self.add_electronic_locator_and_identified_by_856()
         return self.body
 
@@ -427,28 +427,25 @@ class Publication:
                 if not _is_uka_subject(s) and s.get("prefLabel"):
                     s["label"] = s.pop("prefLabel")
 
-    def add_part_of_773(self):
+    def add_is_part_of_773(self):
         """
-        Moves partOf to isPartOf, affects marc field 773
+        Reconstruct isPartOf, affects marc field 773
         1. Sets @type to Instance for each (is)PartOf
         2. Moves isPartOf.hasInstance.extent to isPartOf.extent. Removes the rest of hasInstance
         3. Creates isPartOf.marc:enumerationAndFirstPage  with volumeNumber and issueNumber
         3. Creates part with volumeNumber and issueNumber
         """
         body = self.body
-        if body.get("partOf"):
+        if body.get("isPartOf"):
             part = ""
             marc_enumeration_and_first_page = ""
 
             provision_activity_statement = _get_provision_activity_statement(body)
-            # Currently in swepub the name is partOf but while in libris its isPartOf. Once SWEPUB2-699 rename our
-            # partOf to isPartOf this code has to be updated
-
-            # Not all parts of 'partOf' should remain in body after conversion.
+            # Not all parts of 'isPartOf' should remain in body after conversion.
             # Only take parts that has title and does not have 'genreForm' or 'Dataset' as type, ignore other parts.
 
             to_add_to_body = []
-            before_convert = body.pop("partOf", [])
+            before_convert = body.pop("isPartOf", [])
 
             for is_part in before_convert:
 

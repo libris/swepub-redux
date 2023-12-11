@@ -162,7 +162,7 @@
             <xsl:call-template name="identifiers"/>
 
             <xsl:if test="mods:relatedItem[@type = 'host'] and mods:relatedItem[@type = 'series']" >
-                <array key="partOf">
+                <array key="isPartOf">
                     <xsl:for-each select="mods:relatedItem[@type = 'host']">
                         <dict>
                             <xsl:call-template name="relatedItem">
@@ -182,7 +182,7 @@
                 </array>
             </xsl:if>
             <xsl:if test="mods:relatedItem[@type = 'host'] and not(mods:relatedItem[@type = 'series'])">
-                <array key="partOf">
+                <array key="isPartOf">
                     <xsl:for-each select="mods:relatedItem[@type = 'host']">
                         <dict>
                             <xsl:call-template name="relatedItem">

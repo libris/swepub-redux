@@ -377,7 +377,7 @@ def test_parser(parser):
             'creationDate': '2017-09-07',
             'changeDate': '2017-09-07'
         },
-        "partOf": [
+        "isPartOf": [
             {
                 "@type": "Dataset",
                 "hasTitle": [
@@ -608,8 +608,8 @@ def test_host_title_is_extracted(parser):
         {'@type': 'Title', 'foo': 'bar'}
     ]
 
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 1
-    assert expected == parser.parse_mods(raw_xml)['partOf'][0]['hasTitle']
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
+    assert expected == parser.parse_mods(raw_xml)['isPartOf'][0]['hasTitle']
 
 
 def test_publication_with_series_and_host(parser):
@@ -628,14 +628,14 @@ def test_publication_with_series_and_host(parser):
         {'@type': 'Work', 'hasTitle': [{'@type': 'Title', 'mainTitle': 'ISKO', 'volumeNumber': '3'}]}
     ]
 
-    expected_part_of = [
+    expected_is_part_of = [
         {'@type': 'Work', 'hasTitle': [{'@type': 'Title', 'mainTitle': 'BOSE', 'volumeNumber': '5'}],
          'hasSeries': expected_has_series}
     ]
 
     actual = parser.parse_mods(raw_xml)
-    assert actual['partOf'] == expected_part_of
-    assert actual['partOf'][0]['hasSeries'] == expected_has_series
+    assert actual['isPartOf'] == expected_is_part_of
+    assert actual['isPartOf'][0]['hasSeries'] == expected_has_series
 
 
 def test_series_title_and_part_number_are_extracted(parser):
@@ -769,7 +769,7 @@ def test_host_volume_number_is_extracted(parser):
       </relatedItem>
     """)
 
-    assert '1337' == parser.parse_mods(raw_xml)['partOf'][0]['hasTitle'][0]['volumeNumber']
+    assert '1337' == parser.parse_mods(raw_xml)['isPartOf'][0]['hasTitle'][0]['volumeNumber']
 
 
 def test_series_issue_number_is_extracted(parser):
@@ -791,7 +791,7 @@ def test_host_issue_number_is_extracted(parser):
       </relatedItem>
     """)
 
-    assert '1337' == parser.parse_mods(raw_xml)['partOf'][0]['hasTitle'][0]['issueNumber']
+    assert '1337' == parser.parse_mods(raw_xml)['isPartOf'][0]['hasTitle'][0]['issueNumber']
 
 
 def test_host_part_number_is_not_extracted(parser):
@@ -802,7 +802,7 @@ def test_host_part_number_is_not_extracted(parser):
       </relatedItem>
     """)
 
-    assert 'partNumber' not in parser.parse_mods(raw_xml)['partOf'][0]['hasTitle'][0]
+    assert 'partNumber' not in parser.parse_mods(raw_xml)['isPartOf'][0]['hasTitle'][0]
 
 
 def test_host_include_id_type_issue_number(parser):
@@ -819,7 +819,7 @@ def test_host_include_id_type_issue_number(parser):
         }
     ]
 
-    assert expected_identified_by == parser.parse_mods(raw_xml)['partOf'][0]['identifiedBy']
+    assert expected_identified_by == parser.parse_mods(raw_xml)['isPartOf'][0]['identifiedBy']
 
 
 def test_handle_empty_detail_type_issue(parser):
@@ -832,7 +832,7 @@ def test_handle_empty_detail_type_issue(parser):
       </relatedItem>
     """)
 
-    assert {'@type': 'Title', 'mainTitle': '.'} == parser.parse_mods(raw_xml)['partOf'][0]['hasTitle'][0]
+    assert {'@type': 'Title', 'mainTitle': '.'} == parser.parse_mods(raw_xml)['isPartOf'][0]['hasTitle'][0]
 
 
 def test_handle_empty_start_and_end_for_extent(parser):
@@ -845,7 +845,7 @@ def test_handle_empty_start_and_end_for_extent(parser):
       </relatedItem>
     """)
 
-    assert {'@type': 'Title', 'mainTitle': '.'} == parser.parse_mods(raw_xml)['partOf'][0]['hasTitle'][0]
+    assert {'@type': 'Title', 'mainTitle': '.'} == parser.parse_mods(raw_xml)['isPartOf'][0]['hasTitle'][0]
 
 
 def test_series_article_number_is_extracted(parser):
@@ -879,8 +879,8 @@ def test_host_identifier_is_extracted(mods_identifier, bibframe_type, parser):
         }
     ]
 
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 1
-    assert identified_by == parser.parse_mods(raw_xml)['partOf'][0]['identifiedBy']
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
+    assert identified_by == parser.parse_mods(raw_xml)['isPartOf'][0]['identifiedBy']
 
 
 def test_host_only_gets_position_information_on_forst_title_instance(parser):
@@ -914,7 +914,7 @@ def test_host_only_gets_position_information_on_forst_title_instance(parser):
         ]
     }
 
-    assert expected == parser.parse_mods(raw_xml)['partOf'][0]
+    assert expected == parser.parse_mods(raw_xml)['isPartOf'][0]
 
 
 def test_series_only_gets_position_information_on_forst_title_instance(parser):
@@ -1004,9 +1004,9 @@ def test_host_note_is_extracted(parser):
         {'@type': 'Note', 'label': 'bar'},
         {'@type': 'Note', 'label': 'arg'}
     ]
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 2
-    assert notes[:2] == parser.parse_mods(raw_xml)['partOf'][0]['hasNote']
-    assert notes[2:] == parser.parse_mods(raw_xml)['partOf'][1]['hasNote']
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 2
+    assert notes[:2] == parser.parse_mods(raw_xml)['isPartOf'][0]['hasNote']
+    assert notes[2:] == parser.parse_mods(raw_xml)['isPartOf'][1]['hasNote']
 
 
 def test_host_with_note_and_citation_is_extracted(parser):
@@ -1024,8 +1024,8 @@ def test_host_with_note_and_citation_is_extracted(parser):
         {'@type': 'Note', 'label': 'bar', 'noteType': 'partText'}
     ]
 
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 1
-    assert notes == parser.parse_mods(raw_xml)['partOf'][0]['hasNote']
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
+    assert notes == parser.parse_mods(raw_xml)['isPartOf'][0]['hasNote']
 
 
 def test_host_citation_is_extracted(parser):
@@ -1053,9 +1053,9 @@ def test_host_citation_is_extracted(parser):
         {'@type': 'Note', 'label': 'arg', 'noteType': 'partText'}
     ]
 
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 2
-    assert notes[:3] == parser.parse_mods(raw_xml)['partOf'][0]['hasNote']
-    assert notes[3:] == parser.parse_mods(raw_xml)['partOf'][1]['hasNote']
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 2
+    assert notes[:3] == parser.parse_mods(raw_xml)['isPartOf'][0]['hasNote']
+    assert notes[3:] == parser.parse_mods(raw_xml)['isPartOf'][1]['hasNote']
 
 
 def test_host_with_open_ended_extent(parser):
@@ -1067,8 +1067,8 @@ def test_host_with_open_ended_extent(parser):
       </relatedItem>
     """)
 
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 1
-    assert parser.parse_mods(raw_xml)['partOf'][0]['hasInstance'] == {
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
+    assert parser.parse_mods(raw_xml)['isPartOf'][0]['hasInstance'] == {
         '@type': 'Instance',
         'extent': [{'@type': 'Extent', 'label': '234-'}]
     }
@@ -1079,7 +1079,7 @@ def test_host_with_empty_part_element(parser):
       <relatedItem type="host"><part/></relatedItem>
     """)
 
-    assert parser.parse_mods(raw_xml)['partOf'] == [{'@type': 'Work'}]
+    assert parser.parse_mods(raw_xml)['isPartOf'] == [{'@type': 'Work'}]
 
 
 def test_host_with_empty_extent_element(parser):
@@ -1087,7 +1087,7 @@ def test_host_with_empty_extent_element(parser):
       <relatedItem type="host"><part><extent/></part></relatedItem>
     """)
 
-    assert parser.parse_mods(raw_xml)['partOf'] == [{'@type': 'Work'}]
+    assert parser.parse_mods(raw_xml)['isPartOf'] == [{'@type': 'Work'}]
 
 
 def test_series_with_empty_part_element(parser):
@@ -1115,8 +1115,8 @@ def test_host_with_open_beginning_extent(parser):
       </relatedItem>
     """)
 
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 1
-    assert parser.parse_mods(raw_xml)['partOf'][0]['hasInstance'] == {
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
+    assert parser.parse_mods(raw_xml)['isPartOf'][0]['hasInstance'] == {
         '@type': 'Instance',
         'extent': [{'@type': 'Extent', 'label': '-234'}]
     }
@@ -1133,8 +1133,8 @@ def test_empty_start_and_end_are_ignored(parser):
         </part>
       </relatedItem>
     """)
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 1
-    assert 'hasInstance' not in parser.parse_mods(raw_xml)['partOf'][0]
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
+    assert 'hasInstance' not in parser.parse_mods(raw_xml)['isPartOf'][0]
 
 
 def test_host_with_closed_extent(parser):
@@ -1148,8 +1148,8 @@ def test_host_with_closed_extent(parser):
         </part>
       </relatedItem>
     """)
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 1
-    assert parser.parse_mods(raw_xml)['partOf'][0]['hasInstance'] == {
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
+    assert parser.parse_mods(raw_xml)['isPartOf'][0]['hasInstance'] == {
         '@type': 'Instance',
         'extent': [{'@type': 'Extent', 'label': '123-234'}]
     }
@@ -1166,8 +1166,8 @@ def test_host_with_total_extent(parser):
       </relatedItem>
     """)
 
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 1
-    assert parser.parse_mods(raw_xml)['partOf'][0]['hasInstance'] == {
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
+    assert parser.parse_mods(raw_xml)['isPartOf'][0]['hasInstance'] == {
         '@type': 'Instance',
         'extent': [{'@type': 'Extent', 'label': '123'}]
     }
@@ -1199,7 +1199,7 @@ def test_host_with_multiple_extents(parser):
       </relatedItem>
     """)
 
-    actual = parser.parse_mods(raw_xml)['partOf']
+    actual = parser.parse_mods(raw_xml)['isPartOf']
     assert len(actual) == 2
     assert actual[0]['hasInstance'] == {
         '@type': 'Instance',
@@ -1233,8 +1233,8 @@ def test_series_identifier_with_display_label_is_extracted(display_label, parser
         }
     ]
 
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 1
-    assert identified_by == parser.parse_mods(raw_xml)['partOf'][0]['identifiedBy']
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
+    assert identified_by == parser.parse_mods(raw_xml)['isPartOf'][0]['identifiedBy']
 
 
 def test_empty_issn_series_identifier_does_not_create_bibframe_field(parser):
@@ -1248,7 +1248,7 @@ def test_empty_issn_series_identifier_does_not_create_bibframe_field(parser):
     assert identified_by == parser.parse_mods(raw_xml)['hasSeries'][0]['identifiedBy']
 
 
-def test_empty_issn_part_of_identifier_does_not_create_bibframe_field(parser):
+def test_empty_issn_is_part_of_identifier_does_not_create_bibframe_field(parser):
     raw_xml = MODS("""
           <relatedItem type="host">
             <identifier type="issn"/>
@@ -1256,7 +1256,7 @@ def test_empty_issn_part_of_identifier_does_not_create_bibframe_field(parser):
         """)
     identified_by = []
 
-    assert identified_by == parser.parse_mods(raw_xml)['partOf'][0]['identifiedBy']
+    assert identified_by == parser.parse_mods(raw_xml)['isPartOf'][0]['identifiedBy']
 
 
 def test_orcid_person_id_is_extracted(parser):
@@ -3137,22 +3137,22 @@ def test_invalid_identifiers(parser):
     ]
     assert expectedIncorrectlyIdentifiedBy == parser.parse_mods(raw_xml)['incorrectlyIdentifiedBy']
 
-    expectedPartOfIdentifiedBy = [
+    expectedIsPartOfIdentifiedBy = [
         {'@type': 'DOI', 'value': '10.1080/03468759408579279'},
         {'@type': 'URI', 'value': 'https://research.chalmers.se/publication/254409'},
         {'@type': 'ISBN', 'value': '9789129703771'}, {'@type': 'ISI', 'value': '000071067000025'},
         {'@type': 'ISSN', 'value': '1532-6349'}
     ]
-    assert expectedPartOfIdentifiedBy == parser.parse_mods(raw_xml)['partOf'][0]['identifiedBy']
+    assert expectedIsPartOfIdentifiedBy == parser.parse_mods(raw_xml)['isPartOf'][0]['identifiedBy']
 
-    expectedPartOfIncorrectlyIdentifiedBy = [
+    expectedIsPartOfIncorrectlyIdentifiedBy = [
         {'@type': 'DOI', 'value': 'invalid_doi'},
         {'@type': 'URI', 'value': 'invalid_uri'},
         {'@type': 'ISBN', 'value': 'invalid_isbn'},
         {'@type': 'ISI', 'value': 'invalid_isi'},
         {'@type': 'ISSN', 'value': 'invalid_issn'}
     ]
-    assert expectedPartOfIncorrectlyIdentifiedBy == parser.parse_mods(raw_xml)['partOf'][0]['incorrectlyIdentifiedBy']
+    assert expectedIsPartOfIncorrectlyIdentifiedBy == parser.parse_mods(raw_xml)['isPartOf'][0]['incorrectlyIdentifiedBy']
 
 
 def test_name_identifiers_swpmods_2(parser):

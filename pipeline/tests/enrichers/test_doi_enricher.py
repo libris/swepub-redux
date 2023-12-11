@@ -62,11 +62,11 @@ def test_doi_enrich_valid_prefixes():
     # Test valid prefixes left untouched.
     test_data = "https://doi.org/10.10/valid"
     expected_result = "https://doi.org/10.10/valid"
-    body = {"partOf": [{"identifiedBy": [{"value": test_data}]}]}
+    body = {"isPartOf": [{"identifiedBy": [{"value": test_data}]}]}
 
     field = FieldMeta(
         value=test_data,
-        path="partOf.[0].identifiedBy.[0].value",
+        path="isPartOf.[0].identifiedBy.[0].value",
     )
 
     recover_doi(body, field)
@@ -75,11 +75,11 @@ def test_doi_enrich_valid_prefixes():
 
     test_data = "http://doi.org/10.10/valid"
     expected_result = "http://doi.org/10.10/valid"
-    body = {"partOf": [{"identifiedBy": [{"value": test_data}]}]}
+    body = {"isPartOf": [{"identifiedBy": [{"value": test_data}]}]}
 
     field = FieldMeta(
         value=test_data,
-        path="partOf.[0].identifiedBy.[0].value",
+        path="isPartOf.[0].identifiedBy.[0].value",
     )
 
     recover_doi(body, field)
@@ -88,11 +88,11 @@ def test_doi_enrich_valid_prefixes():
 
 
 def _test_doi_enrichment(test_data, expected_result, expected_codes):
-    body = {"partOf": [{"identifiedBy": [{"value": test_data}]}]}
+    body = {"isPartOf": [{"identifiedBy": [{"value": test_data}]}]}
 
     field = FieldMeta(
         value=test_data,
-        path="partOf.[0].identifiedBy.[0].value",
+        path="isPartOf.[0].identifiedBy.[0].value",
     )
 
     recover_doi(body, field)

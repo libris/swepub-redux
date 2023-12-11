@@ -5,7 +5,7 @@
     <request verb="ListRecords" metadataPrefix="swepub_mods" set="SwePub-bth">http://bth.diva-portal.org/dice/oai
     </request>
     <ListRecords>
-        <!-- Triplett to check merging of instanceOf.contributions and instanceOf.partOf -->
+        <!-- Triplett to check merging of instanceOf.contributions and instanceOf.isPartOf -->
         <!-- oai:DiVA.org:lnu-89149 -->
         <!-- oai:DiVA.org:hj-37520 -->
         <!-- oai:DiVA.org:umu-51669 -->
@@ -362,7 +362,7 @@
             </metadata>
         </record>
 
-        <!-- Duplicate to check merging of partOf.identifiedBy and partOf.hasSeries -->
+        <!-- Duplicate to check merging of isPartOf.identifiedBy and isPartOf.hasSeries -->
         <!-- oai:DiVA.org:bth-17087 -->
         <!-- oai:DiVA.org:lnu-78542 -->
         <record>
@@ -2497,7 +2497,7 @@
           </metadata>
         </record>
 
-        <!-- Duplicate to check merging of partOf.mainTitle/subtitle -->
+        <!-- Duplicate to check merging of isPartOf.mainTitle/subtitle -->
         <!-- oai:DiVA.org:hkr-13156 -->
         <!-- oai:DiVA.org:hkr-19149 -->
         <record>

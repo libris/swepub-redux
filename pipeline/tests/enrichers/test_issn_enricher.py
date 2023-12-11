@@ -83,11 +83,11 @@ def test_non_recoverable_issn_from_isbn10_with_delimiter_and_withespace():
 def test_dual_issn():
     test_data = '0256-4718 (Print), 1753-5387 (Online)'
 
-    body = {"partOf": [{"identifiedBy": [{"value": test_data}]}]}
+    body = {"isPartOf": [{"identifiedBy": [{"value": test_data}]}]}
 
     field = FieldMeta(
         value=test_data,
-        path="partOf.[0].identifiedBy.[0].value",
+        path="isPartOf.[0].identifiedBy.[0].value",
     )
 
     created_fields = recover_issn(body, field)
@@ -101,11 +101,11 @@ def test_dual_issn():
 
 
 def _test_issn_enrichment(enricher, test_data, expected_result, expected_codes):
-    body = {"partOf": [{"identifiedBy": [{"value": test_data}]}]}
+    body = {"isPartOf": [{"identifiedBy": [{"value": test_data}]}]}
 
     field = FieldMeta(
         value=test_data,
-        path="partOf.[0].identifiedBy.[0].value",
+        path="isPartOf.[0].identifiedBy.[0].value",
     )
 
     enricher(body, field)
@@ -120,11 +120,11 @@ def _test_issn_enrichment(enricher, test_data, expected_result, expected_codes):
 
 
 def _test_none_issn_enrichment(enricher, test_data):
-    body = {"partOf": [{"identifiedBy": [{"value": test_data}]}]}
+    body = {"isPartOf": [{"identifiedBy": [{"value": test_data}]}]}
 
     field = FieldMeta(
         value=test_data,
-        path="partOf.[0].identifiedBy.[0].value",
+        path="isPartOf.[0].identifiedBy.[0].value",
     )
 
     enricher(body, field)

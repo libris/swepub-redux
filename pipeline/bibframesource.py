@@ -566,12 +566,12 @@ class BibframeSource:
             "https://id.kb.se/term/swepub/grantAgreement",
             "https://id.kb.se/term/swepub/initiative",
         ]
-        part_ofs = self.bibframe_master.get("partOf", [])
-        for part_of in part_ofs:
-            part_of_type = part_of.get("@type")
-            if part_of_type and part_of_type == "Dataset":
+        is_part_ofs = self.bibframe_master.get("isPartOf", [])
+        for is_part_of in is_part_ofs:
+            is_part_of_type = is_part_of.get("@type")
+            if is_part_of_type and is_part_of_type == "Dataset":
                 continue
-            genreforms = part_of.get("genreForm", [])
+            genreforms = is_part_of.get("genreForm", [])
             found_blacklisted_gf = False
             for gf in genreforms:
                 gf_id = gf.get("@id")
@@ -579,7 +579,7 @@ class BibframeSource:
                     found_blacklisted_gf = True
             if found_blacklisted_gf:
                 continue
-            for title in part_of.get("hasTitle", []):
+            for title in is_part_of.get("hasTitle", []):
                 if title.get("@type", "") == "Title":
                     return _create_title_string(title)
         return None
@@ -714,9 +714,9 @@ class BibframeSource:
         for identifier in ids:
             if identifier.get("@type", "") == "DOI":
                 doi_list.append(identifier.get("value"))
-        part_ofs = self.bibframe_master.get("partOf", [])
-        for part_of in part_ofs:
-            ids = part_of.get("identifiedBy", [])
+        is_part_ofs = self.bibframe_master.get("isPartOf", [])
+        for is_part_of in is_part_ofs:
+            ids = is_part_of.get("identifiedBy", [])
             for identifier in ids:
                 if identifier.get("@type", "") == "DOI":
                     doi_list.append(identifier.get("value"))
@@ -733,11 +733,11 @@ class BibframeSource:
     def _get_ISSN_or_ISBN(self, id_type):
         id_list = []
         id_list.extend(
-            _get_root_dict_ids(root_dict=self.bibframe_master, label="partOf", id_type=id_type)
+            _get_root_dict_ids(root_dict=self.bibframe_master, label="isPartOf", id_type=id_type)
         )
-        for part_of in self.bibframe_master.get("partOf", []):
+        for is_part_of in self.bibframe_master.get("isPartOf", []):
             id_list.extend(
-                _get_root_dict_ids(root_dict=part_of, label="hasSeries", id_type=id_type)
+                _get_root_dict_ids(root_dict=is_part_of, label="hasSeries", id_type=id_type)
             )
         id_list.extend(
             _get_root_dict_ids(root_dict=self.bibframe_master, label="hasSeries", id_type=id_type)
@@ -757,8 +757,8 @@ class BibframeSource:
     @property
     def series_title(self):
         serials = self.bibframe_master.get("hasSeries", [])
-        for part_of in self.bibframe_master.get("partOf", []):
-            for serial in part_of.get("hasSeries", []):
+        for is_part_of in self.bibframe_master.get("isPartOf", []):
+            for serial in is_part_of.get("hasSeries", []):
                 serials.append(serial)
         for serial in serials:
             titles = serial.get("hasTitle", [])
@@ -772,8 +772,8 @@ class BibframeSource:
         _series = []
         serials = self.bibframe_master.get("hasSeries", [])
 
-        for part_of in self.bibframe_master.get("partOf", []):
-            for serial in part_of.get("hasSeries", []):
+        for is_part_of in self.bibframe_master.get("isPartOf", []):
+            for serial in is_part_of.get("hasSeries", []):
                 serials.append(serial)
 
         for serial in serials:
