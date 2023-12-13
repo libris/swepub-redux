@@ -1193,9 +1193,17 @@
             <xsl:when test="$type = 'isbn'">
                 <string key="@type">ISBN</string>
             </xsl:when>
+            <xsl:when test="$type = 'ocolc'">
+                <string key="@type">WorldCatNumber</string>
+            </xsl:when>
+            <!-- "worldcat" has been changed to "ocolc"; "worldcat" kept for backwards compatibility" -->
             <xsl:when test="$type = 'worldcat'">
                 <string key="@type">WorldCatNumber</string>
             </xsl:when>
+            <xsl:when test="$type = 'se-libr'">
+                <string key="@type">LibrisNumber</string>
+            </xsl:when>
+             <!-- "libris" has been changed to "se-libr"; "libris" kept for backwards compatibility" -->
             <xsl:when test="$type = 'libris'">
                 <string key="@type">LibrisNumber</string>
             </xsl:when>
