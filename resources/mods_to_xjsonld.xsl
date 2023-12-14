@@ -247,7 +247,7 @@
                 </dict>
             </xsl:if>
             <xsl:if test="mods:originInfo">
-                <xsl:if test="mods:originInfo/mods:publisher or mods:originInfo/mods:place or mods:originInfo/mods:dateIssued">
+                <xsl:if test="mods:originInfo/mods:publisher or mods:originInfo/mods:place or mods:originInfo/mods:dateIssued or (mods:originInfo[@eventType = 'publication'] and (mods:originInfo/mods:agent/mods:role/mods:roleTerm[.='pbl'] or mods:originInfo/mods:agent/mods:role/mods:roleTerm[@valueURI = 'http://id.loc.gov/vocabulary/relators/pbl']))">
                     <array key="publication">
                         <dict>
                             <string key="@type">Publication</string>
@@ -255,6 +255,12 @@
                                 <dict key="agent">
                                     <string key="@type">Agent</string>
                                     <string key="label"><xsl:value-of select="mods:originInfo/mods:publisher"/></string>
+                                </dict>
+                            </xsl:if>
+                            <xsl:if test="mods:originInfo/mods:agent/mods:namePart">
+                                <dict key="agent">
+                                    <string key="@type">Agent</string>
+                                    <string key="label"><xsl:value-of select="mods:originInfo/mods:agent/mods:namePart"/></string>
                                 </dict>
                             </xsl:if>
                             <xsl:if test="mods:originInfo/mods:place/mods:placeTerm">

@@ -2633,10 +2633,132 @@ def test_agent_is_extracted_as_provision_activity_agent(parser):
     assert actual == expected
 
 
+def test_agent_is_extracted_as_provision_activity_agent_2(parser):
+    raw_xml = MODS("""
+        <originInfo eventType="publication">
+            <agent>
+                <namePart>Cambridge University Press</namePart>
+                <role>
+                    <roleTerm authority="marcrelator" valueURI="http://id.loc.gov/vocabulary/relators/pbl">pbl</roleTerm>
+                </role>
+            </agent>
+        </originInfo>
+    """)
+
+    actual = parser.parse_mods(raw_xml)['publication']
+    expected = [
+        {
+            '@type': 'Publication',
+            'agent': {
+                '@type': 'Agent',
+                'label': 'Cambridge University Press'
+            }
+        }
+    ]
+
+    assert actual == expected
+
+
+def test_agent_is_extracted_as_provision_activity_agent_3(parser):
+    raw_xml = MODS("""
+        <originInfo eventType="publication">
+            <agent>
+                <namePart>Cambridge University Press</namePart>
+                <role>
+                    <roleTerm authority="marcrelator">pbl</roleTerm>
+                </role>
+            </agent>
+        </originInfo>
+    """)
+
+    actual = parser.parse_mods(raw_xml)['publication']
+    expected = [
+        {
+            '@type': 'Publication',
+            'agent': {
+                '@type': 'Agent',
+                'label': 'Cambridge University Press'
+            }
+        }
+    ]
+
+    assert actual == expected
+
+
+def test_agent_is_extracted_as_provision_activity_agent_4(parser):
+    raw_xml = MODS("""
+        <originInfo eventType="publication">
+            <agent>
+                <namePart>Cambridge University Press</namePart>
+                <role>
+                    <roleTerm authority="marcrelator" valueURI="http://id.loc.gov/vocabulary/relators/pbl"></roleTerm>
+                </role>
+            </agent>
+        </originInfo>
+    """)
+
+    actual = parser.parse_mods(raw_xml)['publication']
+    expected = [
+        {
+            '@type': 'Publication',
+            'agent': {
+                '@type': 'Agent',
+                'label': 'Cambridge University Press'
+            }
+        }
+    ]
+
+    assert actual == expected
+
+
+def test_agent_is_not_extracted_as_provision_activity_agent_if_roleterm_stuff_missing(parser):
+    raw_xml = MODS("""
+        <originInfo eventType="publication">
+            <agent>
+                <namePart>Cambridge University Press</namePart>
+                <role>
+                    <roleTerm authority="marcrelator" valueURI="http://id.loc.gov/vocabulary/relators/foo">bar</roleTerm>
+                </role>
+            </agent>
+        </originInfo>
+    """)
+
+    assert "publication" not in parser.parse_mods(raw_xml)
+
+
 def test_complete_origin_info(parser):
     raw_xml = MODS("""
         <originInfo>
             <publisher>Cambridge University Press</publisher>
+            <dateIssued>1986-05-30</dateIssued>
+            <place>
+                <placeTerm>Ankeborg</placeTerm>
+            </place>
+        </originInfo>
+    """)
+
+    actual = parser.parse_mods(raw_xml)['publication']
+    expected = [
+        {
+            '@type': 'Publication',
+            'date': '1986-05-30',
+            'place': {'@type': 'Place', 'label': 'Ankeborg'},
+            'agent': {'@type': 'Agent', 'label': 'Cambridge University Press'}
+        }
+    ]
+
+    assert actual == expected
+
+
+def test_complete_origin_info_2(parser):
+    raw_xml = MODS("""
+        <originInfo eventType="publication">
+            <agent>
+                <namePart>Cambridge University Press</namePart>
+                <role>
+                    <roleTerm authority="marcrelator" valueURI="http://id.loc.gov/vocabulary/relators/pbl">pbl</roleTerm>
+                </role>
+            </agent>
             <dateIssued>1986-05-30</dateIssued>
             <place>
                 <placeTerm>Ankeborg</placeTerm>
