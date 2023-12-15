@@ -246,39 +246,173 @@
                     </xsl:if>
                 </dict>
             </xsl:if>
+
             <xsl:if test="mods:originInfo">
-                <xsl:if test="mods:originInfo/mods:publisher or mods:originInfo/mods:place or mods:originInfo/mods:dateIssued or (mods:originInfo[@eventType = 'publication'] and (mods:originInfo/mods:agent/mods:role/mods:roleTerm[.='pbl'] or mods:originInfo/mods:agent/mods:role/mods:roleTerm[@valueURI = 'http://id.loc.gov/vocabulary/relators/pbl']))">
+                <!-- If originInfo has *no* attributes *and* certain elements, *or* the attribute eventType='publication' and certain elements, consider it to be a publication -->
+                <xsl:if test="(mods:originInfo[not(@*)] and (mods:originInfo/mods:publisher or mods:originInfo/mods:place or mods:originInfo/mods:dateIssued)) or (mods:originInfo[@eventType = 'publication'] and (mods:originInfo/mods:agent/mods:role/mods:roleTerm[.='pbl'] or mods:originInfo/mods:agent/mods:role/mods:roleTerm[@valueURI = 'http://id.loc.gov/vocabulary/relators/pbl']))">
                     <array key="publication">
-                        <dict>
-                            <string key="@type">Publication</string>
-                            <xsl:if test="mods:originInfo/mods:publisher">
-                                <dict key="agent">
-                                    <string key="@type">Agent</string>
-                                    <string key="label"><xsl:value-of select="mods:originInfo/mods:publisher"/></string>
+                        <xsl:for-each select="mods:originInfo[not(@*) or @eventType = 'publication']">
+                            <xsl:if test="mods:publisher or mods:place or mods:dateIssued or (@eventType = 'publication' and (mods:agent/mods:role/mods:roleTerm[.='pbl'] or mods:agent/mods:role/mods:roleTerm[@valueURI = 'http://id.loc.gov/vocabulary/relators/pbl']))">
+                                <dict>
+                                    <string key="@type">Publication</string>
+                                    <xsl:if test="mods:publisher">
+                                        <dict key="agent">
+                                            <string key="@type">Agent</string>
+                                            <string key="label"><xsl:value-of select="mods:publisher"/></string>
+                                        </dict>
+                                    </xsl:if>
+                                    <xsl:if test="mods:agent/mods:namePart">
+                                        <dict key="agent">
+                                            <string key="@type">Agent</string>
+                                            <string key="label"><xsl:value-of select="mods:agent/mods:namePart"/></string>
+                                        </dict>
+                                    </xsl:if>
+                                    <xsl:if test="mods:place/mods:placeTerm">
+                                        <dict key="place">
+                                            <string key="@type">Place</string>
+                                            <string key="label"><xsl:value-of select="mods:place/mods:placeTerm"/></string>
+                                        </dict>
+                                    </xsl:if>
+                                    <xsl:if test="mods:dateIssued">
+                                        <string key="date">
+                                            <xsl:call-template name="date">
+                                                <xsl:with-param name="date" select="mods:dateIssued" />
+                                            </xsl:call-template>
+                                        </string>
+                                    </xsl:if>
                                 </dict>
                             </xsl:if>
-                            <xsl:if test="mods:originInfo/mods:agent/mods:namePart">
-                                <dict key="agent">
-                                    <string key="@type">Agent</string>
-                                    <string key="label"><xsl:value-of select="mods:originInfo/mods:agent/mods:namePart"/></string>
-                                </dict>
-                            </xsl:if>
-                            <xsl:if test="mods:originInfo/mods:place/mods:placeTerm">
-                                <dict key="place">
-                                    <string key="@type">Place</string>
-                                    <string key="label"><xsl:value-of select="mods:originInfo/mods:place/mods:placeTerm"/></string>
-                                </dict>
-                            </xsl:if>
-                            <xsl:if test="mods:originInfo/mods:dateIssued">
-                                <string key="date">
-                                    <xsl:call-template name="date">
-                                        <xsl:with-param name="date" select="mods:originInfo/mods:dateIssued" />
-                                    </xsl:call-template>
-                                </string>
-                            </xsl:if>
-                        </dict>
-                    </array>>
+                        </xsl:for-each>
+                    </array>
                 </xsl:if>
+
+                <xsl:if test="mods:originInfo[@eventType = 'manufacture'] and (mods:originInfo/mods:agent/mods:role/mods:roleTerm[.='mfr'] or mods:originInfo/mods:agent/mods:role/mods:roleTerm[@valueURI = 'http://id.loc.gov/vocabulary/relators/mfr'])">
+                    <array key="manufacture">
+                        <xsl:for-each select="mods:originInfo[@eventType = 'manufacture']">
+                            <xsl:if test="mods:agent/mods:role/mods:roleTerm[.='mfr'] or mods:agent/mods:role/mods:roleTerm[@valueURI = 'http://id.loc.gov/vocabulary/relators/mfr']">
+                                <dict>
+                                    <string key="@type">Manufacture</string>
+                                    <xsl:if test="mods:agent/mods:namePart">
+                                        <dict key="agent">
+                                            <string key="@type">Agent</string>
+                                            <string key="label"><xsl:value-of select="mods:agent/mods:namePart"/></string>
+                                        </dict>
+                                    </xsl:if>
+                                    <xsl:if test="mods:place/mods:placeTerm">
+                                        <dict key="place">
+                                            <string key="@type">Place</string>
+                                            <string key="label"><xsl:value-of select="mods:place/mods:placeTerm"/></string>
+                                        </dict>
+                                    </xsl:if>
+                                </dict>
+                            </xsl:if>
+                        </xsl:for-each>
+                    </array>
+                </xsl:if>
+
+                <xsl:if test="mods:originInfo[@eventType = 'distribution'] and (mods:originInfo/mods:agent/mods:role/mods:roleTerm[.='dst'] or mods:originInfo/mods:agent/mods:role/mods:roleTerm[@valueURI = 'http://id.loc.gov/vocabulary/relators/dst'])">
+                    <array key="distribution">
+                        <xsl:for-each select="mods:originInfo[@eventType = 'distribution']">
+                            <xsl:if test="mods:agent/mods:role/mods:roleTerm[.='dst'] or mods:agent/mods:role/mods:roleTerm[@valueURI = 'http://id.loc.gov/vocabulary/relators/dst']">
+                                <dict>
+                                    <string key="@type">Distribution</string>
+                                    <xsl:if test="mods:agent/mods:namePart">
+                                        <dict key="agent">
+                                            <string key="@type">Agent</string>
+                                            <string key="label"><xsl:value-of select="mods:agent/mods:namePart"/></string>
+                                        </dict>
+                                    </xsl:if>
+                                    <xsl:if test="mods:place/mods:placeTerm">
+                                        <dict key="place">
+                                            <string key="@type">Place</string>
+                                            <string key="label"><xsl:value-of select="mods:place/mods:placeTerm"/></string>
+                                        </dict>
+                                    </xsl:if>
+                                </dict>
+                            </xsl:if>
+                        </xsl:for-each>
+                    </array>
+                </xsl:if>
+
+                <xsl:if test="mods:originInfo[@eventType = 'production'] and (mods:originInfo/mods:agent/mods:role/mods:roleTerm[.='pro'] or mods:originInfo/mods:agent/mods:role/mods:roleTerm[@valueURI = 'http://id.loc.gov/vocabulary/relators/pro'])">
+                    <array key="production">
+                        <xsl:for-each select="mods:originInfo[@eventType = 'production']">
+                            <xsl:if test="mods:agent/mods:role/mods:roleTerm[.='pro'] or mods:agent/mods:role/mods:roleTerm[@valueURI = 'http://id.loc.gov/vocabulary/relators/pro']">
+                                <dict>
+                                    <string key="@type">Production</string>
+                                    <xsl:if test="mods:agent/mods:namePart">
+                                        <dict key="agent">
+                                            <string key="@type">Agent</string>
+                                            <string key="label"><xsl:value-of select="mods:agent/mods:namePart"/></string>
+                                        </dict>
+                                    </xsl:if>
+                                    <xsl:if test="mods:place/mods:placeTerm">
+                                        <dict key="place">
+                                            <string key="@type">Place</string>
+                                            <string key="label"><xsl:value-of select="mods:place/mods:placeTerm"/></string>
+                                        </dict>
+                                    </xsl:if>
+                                </dict>
+                            </xsl:if>
+                        </xsl:for-each>
+                    </array>
+                </xsl:if>
+
+                <!-- Yes, this is a mess. -->
+                <xsl:variable name="hasContribution">
+                    <xsl:for-each select="mods:originInfo">
+                        <xsl:variable name="roleTerm" select="mods:agent/mods:role/mods:roleTerm" />
+                        <xsl:variable name="roleTermValueURI" select="mods:agent/mods:role/mods:roleTerm[@valueURI]" />
+                        <xsl:if test="
+                            mods:agent/mods:role/mods:roleTerm
+                            and not($roleTerm = 'pbl' or $roleTerm = 'mfr' or $roleTerm = 'dst' or $roleTerm = 'pro')
+                            and not($roleTermValueURI = 'http://id.loc.gov/vocabulary/relators/pbl' or $roleTermValueURI = 'http://id.loc.gov/vocabulary/relators/mfr' or $roleTermValueURI = 'http://id.loc.gov/vocabulary/relators/dst' or $roleTermValueURI = 'http://id.loc.gov/vocabulary/relators/pro')
+                        ">
+                            <xsl:value-of select="'true'"/>
+                        </xsl:if>
+                    </xsl:for-each>
+                </xsl:variable>
+
+                <xsl:if test="$hasContribution = 'true'">
+                    <array key="contribution">
+                        <xsl:for-each select="mods:originInfo">
+                            <xsl:variable name="roleTerm" select="mods:agent/mods:role/mods:roleTerm" />
+                            <xsl:variable name="roleTermValueURI" select="mods:agent/mods:role/mods:roleTerm[@valueURI]" />
+                            <xsl:if test="
+                                mods:agent/mods:role/mods:roleTerm
+                                and not($roleTerm = 'pbl' or $roleTerm = 'mfr' or $roleTerm = 'dst' or $roleTerm = 'pro')
+                                and not($roleTermValueURI = 'http://id.loc.gov/vocabulary/relators/pbl' or $roleTermValueURI = 'http://id.loc.gov/vocabulary/relators/mfr' or $roleTermValueURI = 'http://id.loc.gov/vocabulary/relators/dst' or $roleTermValueURI = 'http://id.loc.gov/vocabulary/relators/pro')
+                            ">
+                                <dict>
+                                    <string key="@type">Contribution</string>
+                                    <xsl:if test="mods:agent/mods:namePart">
+                                        <dict key="agent">
+                                            <string key="@type">Agent</string>
+                                            <string key="label"><xsl:value-of select="mods:agent/mods:namePart"/></string>
+                                            <array key="role">
+                                                <dict>
+                                                    <xsl:if test="mods:agent/mods:role/mods:roleTerm">
+                                                        <string key="@id">http://id.loc.gov/vocabulary/relators/<xsl:value-of select="mods:agent/mods:role/mods:roleTerm"/></string>
+                                                    </xsl:if>
+                                                    <xsl:if test="mods:agent/mods:role/mods:roleTerm[@valueURI]">
+                                                        <string key="@id"><xsl:value-of select="mods:agent/mods:role/mods:roleTerm/@valueURI"/></string>
+                                                    </xsl:if>
+                                                </dict>
+                                            </array>
+                                        </dict>
+                                    </xsl:if>
+                                    <xsl:if test="mods:place/mods:placeTerm">
+                                        <dict key="place">
+                                            <string key="@type">Place</string>
+                                            <string key="label"><xsl:value-of select="mods:place/mods:placeTerm"/></string>
+                                        </dict>
+                                    </xsl:if>
+                                </dict>
+                            </xsl:if>
+                        </xsl:for-each>
+                    </array>
+                </xsl:if>
+
                 <xsl:if test="mods:originInfo/mods:dateOther">
                     <xsl:for-each select="mods:originInfo/mods:dateOther[@type = 'defence']">
                         <array key="dissertation">
@@ -337,6 +471,7 @@
                     </string>
                 </xsl:if>
             </xsl:if>
+
             <xsl:if test="mods:location">
                   <array key="electronicLocator">
                     <xsl:for-each select="mods:location/*">
