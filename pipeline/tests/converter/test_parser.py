@@ -3343,6 +3343,8 @@ def test_several_access_policies(parser):
     assert expected_usage_and_access_policy == parsed_policy
 
 
+# Tests related to changes in Swepub MODS 4.0 below
+
 def test_origininfo_eventtype_publication_1(parser):
     raw_xml = MODS("""
         <originInfo eventType="publication">
