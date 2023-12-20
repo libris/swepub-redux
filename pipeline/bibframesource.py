@@ -104,7 +104,7 @@ class BibframeSource:
         "https://id.kb.se/term/swepub/other",
         "https://id.kb.se/term/swepub/other/data-set",
         "https://id.kb.se/term/swepub/other/software",
-        "https://id.kb.se/term/swepub/artistic-work/original-creative-work",  # Also in OUTPUT_TYPES_CONSIDER_OTHER_TYPE
+        "https://id.kb.se/term/swepub/artistic-work/original-creative-work",
     ]
 
     # Output types for which role 'edt' is to be considered a creator.
@@ -112,12 +112,13 @@ class BibframeSource:
         "https://id.kb.se/term/swepub/publication/edited-book",
         "https://id.kb.se/term/swepub/conference/proceeding",
         "https://id.kb.se/term/swepub/publication/journal-issue",
+        "https://id.kb.se/term/swepub/artistic-work",
+        "https://id.kb.se/term/swepub/artistic-work/artistic-thesis",
+        "https://id.kb.se/term/swepub/artistic-work/original-creative-work",
     ]
 
     # Output types for which to consider other output type (if present).
     OUTPUT_TYPES_CONSIDER_OTHER_TYPE = [
-        "https://id.kb.se/term/swepub/artistic-work/original-creative-work",  # Also in CREATORS_AUT_CRE
-        "https://id.kb.se/term/swepub/artistic-work",  # Also in OUTPUT_TYPES_NOT_SPECIFIED
     ]
 
     # For these, if only 'edt' is present then 'edt' should be considered the creator role.
