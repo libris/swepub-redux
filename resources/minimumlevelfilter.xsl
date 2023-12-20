@@ -72,6 +72,8 @@
         </xsl:variable>
         <xsl:variable name="corporate" select="string-length($corporateTmp)"/>
 
+        <xsl:variable name="nameViolationExemption" select="count(mods:genre[@authority = 'kb.se' and @type = 'outputType'][. = 'artistic-work' or . = 'artistic-work/original-creative-work' or . = 'artistic-work/artistic-thesis'])"/>
+
         <!--<xsl:variable name="corporate" select="count(mods:name[@type='corporate' and @authority != '' and mods:namePart != '' and mods:role/mods:roleTerm[@type='code' and @authority='marcrelator' and . = 'pbl']])"/>-->
 
         <!-- Titel -->
@@ -135,7 +137,7 @@
 
         <xsl:variable name="resultString">
             <xsl:if test="number($institution) = 0">01recordContentSourceViolation,</xsl:if>
-            <xsl:if test="number($personal) + number($corporate) = 0">02nameViolation,</xsl:if>
+            <xsl:if test="number($personal) + number($corporate) + $nameViolationExemption = 0">02nameViolation,</xsl:if>
             <xsl:if test="number($title) = 0">03titleViolation,</xsl:if>
             <!--xsl:if test="number($pubtype) = 0">05publicationTypeViolation,</xsl:if>
             <xsl:if test="number($outtype) = 0">06outputTypeViolation,</xsl:if-->
