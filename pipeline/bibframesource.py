@@ -105,6 +105,7 @@ class BibframeSource:
         "https://id.kb.se/term/swepub/other/data-set",
         "https://id.kb.se/term/swepub/other/software",
         "https://id.kb.se/term/swepub/artistic-work/original-creative-work",
+        "https://id.kb.se/term/swepub/artistic-work",
     ]
 
     # Output types for which role 'edt' is to be considered a creator.
