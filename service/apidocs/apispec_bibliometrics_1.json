@@ -135,7 +135,7 @@
           },
           "outputTypes": {
             "example": [
-              "https://id.kb.se/term/swepub/publication/book"
+              "https://id.kb.se/term/swepub/output/publication/book"
             ],
             "items": {
               "type": "string"

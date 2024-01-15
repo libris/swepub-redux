@@ -149,7 +149,7 @@ export default {
           component: 'TableDataList',
           props: {
             renderComponent: 'TableDataLink',
-            unshift: 'https://id.kb.se/term/swepub/',
+            unshift: 'https://id.kb.se/term/swepub/output/',
           },
           selected: true,
           group: 'publication',

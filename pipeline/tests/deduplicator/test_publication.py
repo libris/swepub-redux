@@ -47,16 +47,16 @@ def test_publication_date_old_version():
 
 def test_genre_form(master):
     assert set(master.genre_form) == {'https://id.kb.se/term/swepub/ArtisticWork',
-                                      'https://id.kb.se/term/swepub/artistic-work'}
+                                      'https://id.kb.se/term/swepub/output/artistic-work'}
     master.add_genre_form(['https://somewhere'])
     assert set(master.genre_form) == {'https://id.kb.se/term/swepub/ArtisticWork',
-                                      'https://id.kb.se/term/swepub/artistic-work',
+                                      'https://id.kb.se/term/swepub/output/artistic-work',
                                       'https://somewhere'}
-    master.add_genre_form(['https://id.kb.se/term/swepub/publication/book-chapter'])
+    master.add_genre_form(['https://id.kb.se/term/swepub/output/publication/book-chapter'])
     assert set(master.genre_form) == {'https://id.kb.se/term/swepub/ArtisticWork',
-                                      'https://id.kb.se/term/swepub/artistic-work',
+                                      'https://id.kb.se/term/swepub/output/artistic-work',
                                       'https://somewhere',
-                                      'https://id.kb.se/term/swepub/publication/book-chapter'}
+                                      'https://id.kb.se/term/swepub/output/publication/book-chapter'}
 
 
 def test_has_same_title(master,
@@ -97,13 +97,13 @@ def test_has_same_genre_form(master,
                              candidate4_same_title_summary_pub_date_but_different_ids):
     assert set(master.genre_form) == \
            set(['https://id.kb.se/term/swepub/ArtisticWork',
-                'https://id.kb.se/term/swepub/artistic-work'])
+                'https://id.kb.se/term/swepub/output/artistic-work'])
     assert set(candidate1_same_title_and_same_doi.genre_form) == \
            set(['https://id.kb.se/term/swepub/ArtisticWork',
-                'https://id.kb.se/term/swepub/artistic-work',
+                'https://id.kb.se/term/swepub/output/artistic-work',
                 'https://id.kb.se/term/swepub/Book'])
     assert set(candidate4_same_title_summary_pub_date_but_different_ids.genre_form) == \
-           set(['https://id.kb.se/term/swepub/artistic-work', 'https://id.kb.se/term/swepub/ArtisticWork'])
+           set(['https://id.kb.se/term/swepub/output/artistic-work', 'https://id.kb.se/term/swepub/ArtisticWork'])
 
     assert not master.has_same_genre_form(candidate1_same_title_and_same_doi)
     assert master.has_same_genre_form(candidate4_same_title_summary_pub_date_but_different_ids)

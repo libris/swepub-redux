@@ -27,12 +27,12 @@ REPORT_PUB_TYPES = [
     "https://id.kb.se/term/swepub/Report"
 ]
 EDT_OUTPUT_TYPES = [
-    "https://id.kb.se/term/swepub/publication/edited-book",
-    "https://id.kb.se/term/swepub/publication/journal-issue",
-    "https://id.kb.se/term/swepub/conference/proceeding"
+    "https://id.kb.se/term/swepub/output/publication/edited-book",
+    "https://id.kb.se/term/swepub/output/publication/journal-issue",
+    "https://id.kb.se/term/swepub/output/conference/proceeding"
 ]
 REPORT_OUTPUT_TYPES = [
-    "https://id.kb.se/term/swepub/publication/report"
+    "https://id.kb.se/term/swepub/output/publication/report"
 ]
 EDT_TYPES = EDT_PUB_TYPES + EDT_OUTPUT_TYPES
 REPORT_TYPES = REPORT_PUB_TYPES + REPORT_OUTPUT_TYPES

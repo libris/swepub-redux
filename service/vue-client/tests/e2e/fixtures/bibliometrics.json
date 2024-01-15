@@ -52,7 +52,7 @@
          ],
          "openAccess":false,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/book-chapter"
+            "https://id.kb.se/term/swepub/output/publication/book-chapter"
          ],
          "publicationChannel":"Keywords for Children\u2019s Literature",
          "publicationCount":1,
@@ -149,7 +149,7 @@
          ],
          "openAccess":false,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/edited-book"
+            "https://id.kb.se/term/swepub/output/publication/edited-book"
          ],
          "publicationChannel":null,
          "publicationCount":1,
@@ -235,7 +235,7 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/doctoral-thesis"
+            "https://id.kb.se/term/swepub/output/publication/doctoral-thesis"
          ],
          "publicationChannel":null,
          "publicationCount":1,
@@ -312,7 +312,7 @@
          ],
          "openAccess":false,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/book"
+            "https://id.kb.se/term/swepub/output/publication/book"
          ],
          "publicationChannel":null,
          "publicationCount":1,
@@ -475,7 +475,7 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/journal-article"
+            "https://id.kb.se/term/swepub/output/publication/journal-article"
          ],
          "publicationChannel":"Boreas",
          "publicationCount":1,
@@ -570,7 +570,7 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/journal-article"
+            "https://id.kb.se/term/swepub/output/publication/journal-article"
          ],
          "publicationChannel":"Journal of Applied Statistics",
          "publicationCount":1,
@@ -695,7 +695,7 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/journal-article"
+            "https://id.kb.se/term/swepub/output/publication/journal-article"
          ],
          "publicationChannel":"Journal of Vegetation Science",
          "publicationCount":1,
@@ -800,7 +800,7 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/review-article"
+            "https://id.kb.se/term/swepub/output/publication/review-article"
          ],
          "publicationChannel":"Wiley Interdisciplinary Reviews: Climate Change",
          "publicationCount":1,
@@ -889,7 +889,7 @@
          ],
          "openAccess":false,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/editorial-letter"
+            "https://id.kb.se/term/swepub/output/publication/editorial-letter"
          ],
          "publicationChannel":"Nerikes Allehanda",
          "publicationCount":1,
@@ -1113,7 +1113,7 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/journal-article"
+            "https://id.kb.se/term/swepub/output/publication/journal-article"
          ],
          "publicationChannel":"Molecular Ecology Resources",
          "publicationCount":1,
@@ -1215,7 +1215,7 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/journal-article"
+            "https://id.kb.se/term/swepub/output/publication/journal-article"
          ],
          "publicationChannel":"Journal of Marriage and Family",
          "publicationCount":1,
@@ -1343,7 +1343,7 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/journal-article"
+            "https://id.kb.se/term/swepub/output/publication/journal-article"
          ],
          "publicationChannel":"Oikos",
          "publicationCount":1,
@@ -1453,7 +1453,7 @@
          ],
          "openAccess":false,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/journal-article"
+            "https://id.kb.se/term/swepub/output/publication/journal-article"
          ],
          "publicationChannel":"Asymptotic Analysis",
          "publicationCount":1,
@@ -1556,7 +1556,7 @@
          ],
          "openAccess":false,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/edited-book"
+            "https://id.kb.se/term/swepub/output/publication/edited-book"
          ],
          "publicationChannel":null,
          "publicationCount":1,
@@ -1633,7 +1633,7 @@
          ],
          "openAccess":false,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/book"
+            "https://id.kb.se/term/swepub/output/publication/book"
          ],
          "publicationChannel":null,
          "publicationCount":1,
@@ -1712,7 +1712,7 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/journal-article"
+            "https://id.kb.se/term/swepub/output/publication/journal-article"
          ],
          "publicationChannel":"The Interpreter and Translator Trainer",
          "publicationCount":1,
@@ -1795,7 +1795,7 @@
          ],
          "openAccess":false,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/book-chapter"
+            "https://id.kb.se/term/swepub/output/publication/book-chapter"
          ],
          "publicationChannel":"Miscommunications: Errors, Mistakes, Media",
          "publicationCount":1,
@@ -1894,7 +1894,7 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/journal-article"
+            "https://id.kb.se/term/swepub/output/publication/journal-article"
          ],
          "publicationChannel":"Culture and Organization",
          "publicationCount":1,
@@ -1994,7 +1994,7 @@
          ],
          "openAccess":false,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/book-chapter"
+            "https://id.kb.se/term/swepub/output/publication/book-chapter"
          ],
          "publicationChannel":"Men, masculinities and intimate partner violence",
          "publicationCount":1,
@@ -2084,7 +2084,7 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/doctoral-thesis"
+            "https://id.kb.se/term/swepub/output/publication/doctoral-thesis"
          ],
          "publicationChannel":null,
          "publicationCount":1,
