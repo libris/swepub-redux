@@ -68,7 +68,7 @@ def master():
                            '{"@type": "Topic", "code": "28177", "prefLabel": "prefLabel1", "language": {"code": "swe"}},'
                            '{"@type": "Topic", "prefLabel": "prefLabel2"}',
                            '{"@id": "https://id.kb.se/term/swepub/ArtisticWork"},'
-                           '{"@id": "https://id.kb.se/term/swepub/artistic-work"}',
+                           '{"@id": "https://id.kb.se/term/swepub/output/artistic-work"}',
                            '{"@type": "CreatorCount", "label": "3"},'
                            '{"@type": "PublicationStatus", "@id": "https://id.kb.se/term/swepub/Published"},'
                            '{"@type": "Note", "label": "note1"},'
@@ -115,7 +115,7 @@ def candidate1_same_title_and_same_doi():
                            'Summary 1',
                            '{"@type": "Topic", "prefLabel": "prefLabel2"}',
                            '{"@id": "https://id.kb.se/term/swepub/ArtisticWork"},'
-                           '{"@id": "https://id.kb.se/term/swepub/artistic-work"},'
+                           '{"@id": "https://id.kb.se/term/swepub/output/artistic-work"},'
                            '{"@id": "https://id.kb.se/term/swepub/Book"}',
                            '{"@type": "CreatorCount", "label": "1"},'
                            '{"@type": "PublicationStatus", "@id": "https://id.kb.se/term/swepub/UnPublished"},'
@@ -216,7 +216,7 @@ def candidate4_same_title_summary_pub_date_but_different_ids():
                            'Summary 1',
                            '{"@type": "Topic", "code": "28177", "prefLabel": "prefLabel1_eng", "language": {"code": "eng"}}',
                            '{"@id": "https://id.kb.se/term/swepub/ArtisticWork"},'
-                           '{"@id": "https://id.kb.se/term/swepub/artistic-work"}',
+                           '{"@id": "https://id.kb.se/term/swepub/output/artistic-work"}',
                            '',
                            '',
                            'PMID_3',
@@ -249,7 +249,7 @@ def candidate5_updated_publication():
                            '{"@type": "Topic", "code": "28177", "prefLabel": "prefLabel1", "language": {"code": "swe"}},'
                            '{"@type": "Topic", "prefLabel": "prefLabel2"}',
                            '{"@id": "https://id.kb.se/term/swepub/ArtisticWork"},'
-                           '{"@id": "https://id.kb.se/term/swepub/artistic-work"}',
+                           '{"@id": "https://id.kb.se/term/swepub/output/artistic-work"}',
                            '{"@type": "CreatorCount", "label": "3"},'
                            '{"@type": "PublicationStatus", "@id": "https://id.kb.se/term/swepub/Published"},'
                            '{"@type": "Note", "label": "note1"},'

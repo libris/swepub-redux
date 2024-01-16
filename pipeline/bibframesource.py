@@ -77,45 +77,45 @@ class BibframeSource:
 
     # Output types for which role 'aut' and 'cre' is to be considered a creator.
     OUTPUT_TYPES_AUT_CRE = [
-        "https://id.kb.se/term/swepub/publication/book",
-        "https://id.kb.se/term/swepub/publication/book-chapter",
-        "https://id.kb.se/term/swepub/publication/foreword-afterword",
-        "https://id.kb.se/term/swepub/publication/report-chapter",
-        "https://id.kb.se/term/swepub/publication/encyclopedia-entry",
-        "https://id.kb.se/term/swepub/publication/review-article",
-        "https://id.kb.se/term/swepub/publication/doctoral-thesis",
-        "https://id.kb.se/term/swepub/publication/licentiate-thesis",
-        "https://id.kb.se/term/swepub/publication/book-review",
-        "https://id.kb.se/term/swepub/publication/journal-article",
-        "https://id.kb.se/term/swepub/publication/magazine-article",
-        "https://id.kb.se/term/swepub/publication/newspaper-article",
-        "https://id.kb.se/term/swepub/publication/editorial-letter",
-        "https://id.kb.se/term/swepub/conference/poster",
-        "https://id.kb.se/term/swepub/conference/paper",
-        "https://id.kb.se/term/swepub/conference/other",
-        "https://id.kb.se/term/swepub/intellectual-property",
-        "https://id.kb.se/term/swepub/intellectual-property/patent",
-        "https://id.kb.se/term/swepub/intellectual-property/other",
-        "https://id.kb.se/term/swepub/artistic-work/artistic-thesis",
-        "https://id.kb.se/term/swepub/publication/critical-edition",
-        "https://id.kb.se/term/swepub/publication/working-paper",
-        "https://id.kb.se/term/swepub/publication/preprint",
-        "https://id.kb.se/term/swepub/publication/other",
-        "https://id.kb.se/term/swepub/other",
-        "https://id.kb.se/term/swepub/other/data-set",
-        "https://id.kb.se/term/swepub/other/software",
-        "https://id.kb.se/term/swepub/artistic-work/original-creative-work",
-        "https://id.kb.se/term/swepub/artistic-work",
+        "https://id.kb.se/term/swepub/output/publication/book",
+        "https://id.kb.se/term/swepub/output/publication/book-chapter",
+        "https://id.kb.se/term/swepub/output/publication/foreword-afterword",
+        "https://id.kb.se/term/swepub/output/publication/report-chapter",
+        "https://id.kb.se/term/swepub/output/publication/encyclopedia-entry",
+        "https://id.kb.se/term/swepub/output/publication/review-article",
+        "https://id.kb.se/term/swepub/output/publication/doctoral-thesis",
+        "https://id.kb.se/term/swepub/output/publication/licentiate-thesis",
+        "https://id.kb.se/term/swepub/output/publication/book-review",
+        "https://id.kb.se/term/swepub/output/publication/journal-article",
+        "https://id.kb.se/term/swepub/output/publication/magazine-article",
+        "https://id.kb.se/term/swepub/output/publication/newspaper-article",
+        "https://id.kb.se/term/swepub/output/publication/editorial-letter",
+        "https://id.kb.se/term/swepub/output/conference/poster",
+        "https://id.kb.se/term/swepub/output/conference/paper",
+        "https://id.kb.se/term/swepub/output/conference/other",
+        "https://id.kb.se/term/swepub/output/intellectual-property",
+        "https://id.kb.se/term/swepub/output/intellectual-property/patent",
+        "https://id.kb.se/term/swepub/output/intellectual-property/other",
+        "https://id.kb.se/term/swepub/output/artistic-work/artistic-thesis",
+        "https://id.kb.se/term/swepub/output/publication/critical-edition",
+        "https://id.kb.se/term/swepub/output/publication/working-paper",
+        "https://id.kb.se/term/swepub/output/publication/preprint",
+        "https://id.kb.se/term/swepub/output/publication/other",
+        "https://id.kb.se/term/swepub/output/other",
+        "https://id.kb.se/term/swepub/output/other/data-set",
+        "https://id.kb.se/term/swepub/output/other/software",
+        "https://id.kb.se/term/swepub/output/artistic-work/original-creative-work",
+        "https://id.kb.se/term/swepub/output/artistic-work",
     ]
 
     # Output types for which role 'edt' is to be considered a creator.
     OUTPUT_TYPES_EDT = [
-        "https://id.kb.se/term/swepub/publication/edited-book",
-        "https://id.kb.se/term/swepub/conference/proceeding",
-        "https://id.kb.se/term/swepub/publication/journal-issue",
-        "https://id.kb.se/term/swepub/artistic-work",
-        "https://id.kb.se/term/swepub/artistic-work/artistic-thesis",
-        "https://id.kb.se/term/swepub/artistic-work/original-creative-work",
+        "https://id.kb.se/term/swepub/output/publication/edited-book",
+        "https://id.kb.se/term/swepub/output/conference/proceeding",
+        "https://id.kb.se/term/swepub/output/publication/journal-issue",
+        "https://id.kb.se/term/swepub/output/artistic-work",
+        "https://id.kb.se/term/swepub/output/artistic-work/artistic-thesis",
+        "https://id.kb.se/term/swepub/output/artistic-work/original-creative-work",
     ]
 
     # Output types for which to consider other output type (if present).
@@ -125,10 +125,10 @@ class BibframeSource:
     # For these, if only 'edt' is present then 'edt' should be considered the creator role.
     # Else 'aut' and 'cre' should be the creator roles.
     OUTPUT_TYPES_CREATOR_NOT_SPECIFIED = [
-        "https://id.kb.se/term/swepub/publication/report",
-        "https://id.kb.se/term/swepub/conference",
-        "https://id.kb.se/term/swepub/artistic-work",  # Also in OUTPUT_TYPES_CONSIDER_OTHER_TYPE
-        "https://id.kb.se/term/swepub/publication",
+        "https://id.kb.se/term/swepub/output/publication/report",
+        "https://id.kb.se/term/swepub/output/conference",
+        "https://id.kb.se/term/swepub/output/artistic-work",  # Also in OUTPUT_TYPES_CONSIDER_OTHER_TYPE
+        "https://id.kb.se/term/swepub/output/publication",
     ]
 
     AUT_CREATOR = "http://id.loc.gov/vocabulary/relators/aut"
@@ -220,9 +220,9 @@ class BibframeSource:
         genre_forms = self.bibframe_master.get("instanceOf", {}).get("genreForm")
         svep_url = "https://id.kb.se/term/swepub/svep/"
         swedish_list_url = "https://id.kb.se/term/swepub/swedishlist"
-        # Example output types: https://id.kb.se/term/swepub/publication/journal-article
-        # or https://id.kb.se/term/swepub/publication
-        output_type_re = r"^https://id\.kb\.se/term/swepub/[a-z_\-]+/*[a-z_\-]*$"
+        # Example output types: https://id.kb.se/term/swepub/output/publication/journal-article
+        # or https://id.kb.se/term/swepub/output/publication
+        output_type_re = r"^https://id\.kb\.se/term/swepub/output/[a-z_\-]+/*[a-z_\-]*$"
         output_types = []
         if genre_forms:
             for genre_form in genre_forms:

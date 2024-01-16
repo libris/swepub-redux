@@ -417,13 +417,13 @@
                         <string key="@id">https://id.kb.se/term/swepub/ArtisticWork</string>
                     </xsl:when>
                     <xsl:when test="../mods:genre[@type = 'outputType' and @authority = 'kb.se'] and text() = 'artistic-work/curated-exhibition-or-event'">
-                        <string key="@id">https://id.kb.se/term/swepub/artistic-work/original-creative-work</string>
+                        <string key="@id">https://id.kb.se/term/swepub/output/artistic-work/original-creative-work</string>
                     </xsl:when>
                     <xsl:when test="../mods:genre[@type = 'outputType' and @authority = 'kb.se'] and text() = 'publication/translation'">
-                        <string key="@id">https://id.kb.se/term/swepub/publication/critical-edition</string>
+                        <string key="@id">https://id.kb.se/term/swepub/output/publication/critical-edition</string>
                     </xsl:when>
                     <xsl:otherwise>
-                        <string key="@id">https://id.kb.se/term/swepub/<xsl:value-of select="."/></string>
+                        <string key="@id">https://id.kb.se/term/swepub/output/<xsl:value-of select="."/></string>
                     </xsl:otherwise>
                 </xsl:choose>
             </dict>
@@ -438,17 +438,17 @@
                         <xsl:choose>
                                 <xsl:when test="../mods:genre[@type = 'contentType' and @authority = 'svep'] = 'ref'">
                                      <dict>
-                                        <string key="@id">https://id.kb.se/term/swepub/publication/journal-article</string>
+                                        <string key="@id">https://id.kb.se/term/swepub/output/publication/journal-article</string>
                                     </dict>
                                 </xsl:when>
                                 <xsl:when test="../mods:genre[@type = 'contentType' and @authority = 'svep'] = 'vet'">
                                      <dict>
-                                        <string key="@id">https://id.kb.se/term/swepub/publication/magazine-article</string>
+                                        <string key="@id">https://id.kb.se/term/swepub/output/publication/magazine-article</string>
                                     </dict>
                                 </xsl:when>
                                 <xsl:when test="../mods:genre[@type = 'contentType' and @authority = 'svep'] = 'pop'">
                                      <dict>
-                                        <string key="@id">https://id.kb.se/term/swepub/publication/newspaper-article</string>
+                                        <string key="@id">https://id.kb.se/term/swepub/output/publication/newspaper-article</string>
                                     </dict>
                                 </xsl:when>
                         </xsl:choose>
@@ -460,7 +460,7 @@
                     </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/publication/book</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/publication/book</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
@@ -470,7 +470,7 @@
                     </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/conference</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/conference</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
@@ -480,7 +480,7 @@
                     </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/publication/book-chapter</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/publication/book-chapter</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
@@ -490,7 +490,7 @@
                     </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/publication/doctoral-thesis</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/publication/doctoral-thesis</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
@@ -500,7 +500,7 @@
                     </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/publication/report</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/publication/report</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
@@ -510,7 +510,7 @@
                     </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/publication/book-review</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/publication/book-review</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
@@ -520,7 +520,7 @@
                     </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/publication/edited-book</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/publication/edited-book</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
@@ -530,7 +530,7 @@
                     </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/publication/review-article</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/publication/review-article</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
@@ -540,7 +540,7 @@
                     </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/artistic-work</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/artistic-work</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
@@ -550,7 +550,7 @@
                     </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/publication/licentiate-thesis</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/publication/licentiate-thesis</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
@@ -560,7 +560,7 @@
                     </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/intellectual-property/patent</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/intellectual-property/patent</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
@@ -570,7 +570,7 @@
                     </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/conference/proceeding</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/conference/proceeding</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
@@ -580,7 +580,7 @@
                     </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/publication</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/publication</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>

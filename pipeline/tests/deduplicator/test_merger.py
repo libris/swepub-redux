@@ -181,7 +181,7 @@ def test_merge_has_notes_publication_status_unknown():
 def test_merge_genre_form(master, candidate1_same_title_and_same_doi):
     merged_master = merger._merge_genre_forms(master, candidate1_same_title_and_same_doi)
     assert set(merged_master.genre_form) == {'https://id.kb.se/term/swepub/ArtisticWork',
-                                             'https://id.kb.se/term/swepub/artistic-work',
+                                             'https://id.kb.se/term/swepub/output/artistic-work',
                                              'https://id.kb.se/term/swepub/Book'}
 
 

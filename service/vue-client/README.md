@@ -4,7 +4,7 @@ Developing the frontend locally requires [Node.js](https://nodejs.org) and runni
 ## Project setup
 Install dependencies
 ```
-yarn
+npm ci  # TODO: use yarn everywhere
 ```
 
 ### Compiles and hot-reloads for development

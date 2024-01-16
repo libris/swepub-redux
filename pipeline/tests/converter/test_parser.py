@@ -196,7 +196,7 @@ def test_parser(parser):
             "@type": "Text",
             "genreForm": [
                 {'@id': 'https://id.kb.se/term/swepub/svep/ref'},
-                {'@id': 'https://id.kb.se/term/swepub/publication/journal-article'},
+                {'@id': 'https://id.kb.se/term/swepub/output/publication/journal-article'},
                 {'@id': 'https://id.kb.se/term/swepub/JournalArticle'}
             ],
             "language": [
@@ -2021,7 +2021,7 @@ def test_affiliation_to_country(parser):
 
 def test_output_type_with_authority_kb_se_is_extracted(parser):
     raw_xml = MODS("""<genre authority="kb.se" type="outputType">dok</genre>""")
-    expected = [{'@id': 'https://id.kb.se/term/swepub/dok'}]
+    expected = [{'@id': 'https://id.kb.se/term/swepub/output/dok'}]
     actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
     assert actual == expected
 
@@ -2054,7 +2054,7 @@ def test_output_type_with_unknown_authority_is_ignored(parser):
 def test_publication_and_output_type(publicationtype, publicationtype_longform, contenttype, outputtype, parser):
     expected = [{'@id': 'https://id.kb.se/term/swepub/{}'.format(publicationtype_longform)},
                 {'@id': 'https://id.kb.se/term/swepub/svep/{}'.format(contenttype)},
-                {'@id': 'https://id.kb.se/term/swepub/{}'.format(outputtype)}]
+                {'@id': 'https://id.kb.se/term/swepub/output/{}'.format(outputtype)}]
 
     raw_xml_without_outputtype \
         = MODS(f"""<genre authority="svep" type="publicationType">{publicationtype}</genre>
@@ -2097,7 +2097,7 @@ def test_that_output_type_and_publication_type_can_be_used_together(parser):
     """)
     # If we get an outputType in the input, we don't map the publicationType
     expected = [
-        {'@id': 'https://id.kb.se/term/swepub/dok'},
+        {'@id': 'https://id.kb.se/term/swepub/output/dok'},
         {'@id': 'https://id.kb.se/term/swepub/OtherPublication'},
     ]
     actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
@@ -2869,9 +2869,9 @@ def test_newer_output_type_for_artistic_work_as_publication(parser):
 
     expected = [
         {'@id': 'https://id.kb.se/term/swepub/Book'},
-        {'@id': 'https://id.kb.se/term/swepub/publication/book'},
+        {'@id': 'https://id.kb.se/term/swepub/output/publication/book'},
         {'@id': 'https://id.kb.se/term/swepub/ArtisticWork'},
-        {'@id': 'https://id.kb.se/term/swepub/artistic-work'},
+        {'@id': 'https://id.kb.se/term/swepub/output/artistic-work'},
     ]
     actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
     assert actual == expected
@@ -2879,8 +2879,6 @@ def test_newer_output_type_for_artistic_work_as_publication(parser):
 
 @pytest.mark.parametrize("givenoutputtype, convertedoutputtype", [
     ('ArtisticPerformance/VisualArtworks', 'ArtisticWork'),
-    ('artistic-work/curated-exhibition-or-event', 'artistic-work/original-creative-work'),
-    ('publication/translation', 'publication/critical-edition'),
 ])
 def test_changed_outputtypes_are_converted(givenoutputtype, convertedoutputtype, parser):
     raw_xml = MODS(f"""
@@ -2894,11 +2892,27 @@ def test_changed_outputtypes_are_converted(givenoutputtype, convertedoutputtype,
     assert actual == expected
 
 
+@pytest.mark.parametrize("givenoutputtype, convertedoutputtype", [
+    ('artistic-work/curated-exhibition-or-event', 'artistic-work/original-creative-work'),
+    ('publication/translation', 'publication/critical-edition'),
+])
+def test_changed_outputtypes_are_converted_2(givenoutputtype, convertedoutputtype, parser):
+    raw_xml = MODS(f"""
+        <genre authority="kb.se" type="outputType">{givenoutputtype}</genre>
+    """)
+
+    expected = [
+        {'@id': 'https://id.kb.se/term/swepub/output/{}'.format(convertedoutputtype)}
+    ]
+    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
+    assert actual == expected
+
+
 def test_conferance_publication_type(parser):
     raw_xml = MODS("""<genre authority="svep" type="publicationType">kon</genre>""")
     expected = [
         {'@id': 'https://id.kb.se/term/swepub/ConferencePaper'},
-        {'@id': 'https://id.kb.se/term/swepub/conference'},
+        {'@id': 'https://id.kb.se/term/swepub/output/conference'},
     ]
     actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
     assert actual == expected
@@ -2908,7 +2922,7 @@ def test_conferance_publication_type(parser):
         <genre authority="kb.se" type="outputType">conference/paper</genre>
     """)
     expected = [
-        {'@id': 'https://id.kb.se/term/swepub/conference/paper'},
+        {'@id': 'https://id.kb.se/term/swepub/output/conference/paper'},
         {'@id': 'https://id.kb.se/term/swepub/ConferencePaper'},
     ]
     actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
