@@ -961,14 +961,21 @@
                             <string key="@type">Organization</string>
                         </xsl:otherwise>
                     </xsl:choose>
-                    <string key="name"><xsl:value-of select="$org"/></string>
-                    <xsl:if test="$org/@lang">
-                        <dict key="language">
-                            <string key="@type">Language</string>
-                            <string key="@id">https://id.kb.se/language/<xsl:value-of select="$org/@lang"/></string>
-                            <string key="code"><xsl:value-of select="$org/@lang"/></string>
-                        </dict>
-                    </xsl:if>
+                    <xsl:choose>
+                        <xsl:when test="$org/@lang">
+                            <dict key="nameByLang">
+                                <string>
+                                    <xsl:attribute name="key">
+                                           <xsl:value-of select="$org/@lang"/>
+                                    </xsl:attribute>
+                                    <xsl:value-of select="$org"/>
+                                </string>
+                            </dict>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <string key="name"><xsl:value-of select="$org"/></string>
+                        </xsl:otherwise>
+                    </xsl:choose>
                     <xsl:if test="$org/@valueURI and $org/@authority">
                         <array key="identifiedBy">
                             <xsl:choose>
@@ -982,6 +989,12 @@
                                 <xsl:when test="$org/@authority = 'kb.se/collaboration'">
                                     <xsl:call-template name="identifier">
                                         <xsl:with-param name="type">uri</xsl:with-param>
+                                        <xsl:with-param name="value" select="$org/@valueURI"/>
+                                    </xsl:call-template>
+                                </xsl:when>
+                                <xsl:when test="$org/@authority = 'ROR'">
+                                    <xsl:call-template name="identifier">
+                                        <xsl:with-param name="type">ROR</xsl:with-param>
                                         <xsl:with-param name="value" select="$org/@valueURI"/>
                                     </xsl:call-template>
                                 </xsl:when>
@@ -1398,6 +1411,9 @@
             </xsl:when>
             <xsl:when test="$type = 'grid'">
                 <string key="@type">GRID</string>
+            </xsl:when>
+            <xsl:when test="$type = 'ROR'">
+                <string key="@type">ROR</string>
             </xsl:when>
             <xsl:otherwise>
                 <string key="@type">Local</string>
