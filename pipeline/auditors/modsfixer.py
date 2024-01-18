@@ -1,5 +1,3 @@
-import re
-
 from pipeline.auditors import BaseAuditor
 
 
