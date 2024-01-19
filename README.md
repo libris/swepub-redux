@@ -172,8 +172,41 @@ This "OAI-PMH server" supports only the very bare minimum for `pipeline.harvest`
 in (non-incremental mode). Remember that if you run `misc.fetch_records` again, you need
 to restart `misc.oai_pmh_server` for it to pick up the changes.
 
-You can also download only specific records:
+You can also download only specific records (and when downloading specific records,
+the XML will be pretty-printed):
 
 ```bash
 python3 -m misc.fetch_records oai:DiVA.org:uniarts-1146 oai:DiVA.org:lnu-108145
+```
+
+
+## Testing XSLT->JSON-LD conversion
+
+Having downloaded the XML of a record (see "Working with local XML files" above):
+```bash
+python3 -m misc.fetch_records oai:DiVA.org:uniarts-1146
+```
+
+...you can then test conversion from Swepub MODS XML to KBV/JSON-LD like so:
+
+
+```bash
+python3 -m misc.mods_to_json resources/mods_to_xjsonld.xsl _xml/uniarts/oaiDiVA.orguniarts-1146.xml
+```
+
+Then you can edit `resources/mods_to_xjsonld.xsl` and/or `_xml/uniarts/oaiDiVA.orguniarts-1146.xml`,
+run `misc.mods_to_json` again, and see what happens.
+
+(With `xsltproc` you can also see the intermediary post-XSLT, pre-JSON-conversion XML:
+`xsltproc resources/mods_to_xjsonld.xsl _xml/uniarts/oaiDiVA.orguniarts-1146.xml`)
+
+
+## Testing changes to Swepub "legacy" export
+
+Install `mysql-server` or `mariadb-server`. Follow the instructions in `pipeline/legacy_sync.py`.
+Then, if you've set the relevant env vars (`SWEPUB_LEGACY_SEARCH_USER`, etc.), `pipeline.harvest`
+will update the MySQL database. You can then inspect the JSON data of a specific record:
+
+```bash
+mysql -u<user> -p<password> swepub_legacy -sN -e "select data from enriched where identifier = 'oai:DiVA.org:uniarts-1146';" | jq
 ```

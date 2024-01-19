@@ -81,7 +81,7 @@ LEGACY_SEARCH_DATABASE = environ.get("SWEPUB_LEGACY_SEARCH_DATABASE")
 #   `selective_harvesting` tinyint(1) NOT NULL DEFAULT '0',
 #   PRIMARY KEY (`server_id`),
 #   UNIQUE KEY `origin` (`origin`) USING BTREE
-# ) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8mb4
+# ) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8mb4;
 
 def _get_mysql_connection():
     try:
