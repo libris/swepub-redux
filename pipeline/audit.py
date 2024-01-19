@@ -1,5 +1,6 @@
 from functools import reduce
 
+from pipeline.auditors.modsfixer import ModsFixer
 from pipeline.auditors.swedishlist import SwedishListAuditor
 from pipeline.auditors.creatorcount import CreatorCountAuditor
 from pipeline.auditors.uka import UKAAuditor
@@ -12,6 +13,7 @@ from pipeline.auditors.crossref import CrossrefAuditor
 from pipeline.publication import Publication
 
 AUDITORS = [
+    ModsFixer(),
     SwedishListAuditor(),
     CreatorCountAuditor(),
     ContributorAuditor(),

@@ -1465,11 +1465,8 @@ def test_affiliation_is_split_up_by_language(parser):
     expected = [
         {
             "@type": "Organization",
-            "name": "Sektion 3",
-            "language": {
-                "@type": "Language",
-                "code": "swe",
-                '@id': 'https://id.kb.se/language/swe'
+            "nameByLang": {
+                "swe": "Sektion 3"
             },
             "identifiedBy": [
                 {
@@ -1484,11 +1481,8 @@ def test_affiliation_is_split_up_by_language(parser):
             "hasAffiliation": [
                 {
                     "@type": "Organization",
-                    "name": "Språk- och litteraturcentrum",
-                    "language": {
-                        "@type": "Language",
-                        "code": "swe",
-                        '@id': 'https://id.kb.se/language/swe'
+                    "nameByLang": {
+                        "swe": "Språk- och litteraturcentrum"
                     },
                     "identifiedBy": [
                         {
@@ -1503,11 +1497,8 @@ def test_affiliation_is_split_up_by_language(parser):
                     "hasAffiliation": [
                         {
                             "@type": "Organization",
-                            "name": "Institutioner",
-                            "language": {
-                                "@type": "Language",
-                                "code": "swe",
-                                '@id': 'https://id.kb.se/language/swe'
+                            "nameByLang": {
+                                "swe": "Institutioner"
                             },
                             "identifiedBy": [
                                 {
@@ -1526,11 +1517,8 @@ def test_affiliation_is_split_up_by_language(parser):
         },
         {
             "@type": "Organization",
-            "name": "Section 3",
-            "language": {
-                "@type": "Language",
-                "code": "eng",
-                '@id': 'https://id.kb.se/language/eng'
+            "nameByLang": {
+                "eng": "Section 3"
             },
             "identifiedBy": [
                 {
@@ -1545,11 +1533,8 @@ def test_affiliation_is_split_up_by_language(parser):
             "hasAffiliation": [
                 {
                     "@type": "Organization",
-                    "name": "Centre for Languages and Literature",
-                    "language": {
-                        "@type": "Language",
-                        "code": "eng",
-                        '@id': 'https://id.kb.se/language/eng'
+                    "nameByLang": {
+                        "eng": "Centre for Languages and Literature"
                     },
                     "identifiedBy": [
                         {
@@ -1564,11 +1549,8 @@ def test_affiliation_is_split_up_by_language(parser):
                     "hasAffiliation": [
                         {
                             "@type": "Organization",
-                            "name": "Departments",
-                            "language": {
-                                "@type": "Language",
-                                "code": "eng",
-                                '@id': 'https://id.kb.se/language/eng'
+                            "nameByLang": {
+                                "eng": "Departments"
                             },
                             "identifiedBy": [
                                 {
@@ -1670,11 +1652,8 @@ def test_affiliation_with_identified_by(parser):
     expected = [
         {
             "@type": "Organization",
-            "name": "Elektronik",
-            "language": {
-                "@id": "https://id.kb.se/language/swe",
-                "@type": "Language",
-                "code": "swe"
+            "nameByLang": {
+                "swe": "Elektronik"
             },
             "identifiedBy": [
                 {
@@ -1689,11 +1668,8 @@ def test_affiliation_with_identified_by(parser):
             "hasAffiliation": [
                 {
                     "@type": "Organization",
-                    "name": "KTH",
-                    "language": {
-                        "@id": "https://id.kb.se/language/swe",
-                        "@type": "Language",
-                        "code": "swe"
+                    "nameByLang": {
+                        "swe": "KTH"
                     },
                     "identifiedBy": [
                         {
@@ -1888,8 +1864,9 @@ def test_affiliation_language_is_extracted(parser):
     assert actual == [
         {
             '@type': 'Organization',
-            'name': 'Affiliation Name',
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'}
+            "nameByLang": {
+                "swe": "Affiliation Name"
+            },
         }
     ]
 
@@ -1986,11 +1963,8 @@ def test_affiliation_non_organizational(parser):
     expected_affiliations = [
         {
             "@type": "Collaboration",
-            "name": "Affiliation Name",
-            "language": {
-                "@type": "Language",
-                "code": "eng",
-                "@id": "https://id.kb.se/language/eng"
+            "nameByLang": {
+                "eng": "Affiliation Name"
             },
             "identifiedBy": [
                 {

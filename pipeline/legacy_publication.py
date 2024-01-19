@@ -532,7 +532,7 @@ class Publication:
 
 def _set_contribution_values(body, contribution, affiliation):
     if isinstance(affiliation, dict):
-        if affiliation.get("name") and affiliation.get("@type") == "Organization":
+        if (affiliation.get("name") or affiliation.get("nameByLang")) and affiliation.get("@type") == "Organization":
             _set_contribution_marc_affiliation(contribution, affiliation)
             _set_global_organizational_contribution_for_marc_field_710(body, affiliation)
         for key, value in affiliation.items():
@@ -547,28 +547,33 @@ def _set_contribution_marc_affiliation(contribution, affiliation):
         marc_affiliations_list = contribution.get("agent", {}).get("marc:affiliation").split(",")
     else:
         marc_affiliations_list = []
-    marc_affiliation = affiliation.get("name")
-    if marc_affiliation not in marc_affiliations_list:
-        if _is_kb_se_affiliation(affiliation):
-            marc_affiliations_list.insert(0, marc_affiliation)
-        else:
-            marc_affiliations_list.append(marc_affiliation)
+    # affiliations can have a single name *or* multiple names in nameByLang...
+    marc_affiliations = [affiliation.get("name"), affiliation.get("nameByLang", {}).get("swe"), affiliation.get("nameByLang", {}).get("eng")]
+
+    # ...so add each one of them
+    for marc_affiliation in [a for a in marc_affiliations if a is not None]:
+        if marc_affiliation not in marc_affiliations_list:
+            if _is_kb_se_affiliation(affiliation):
+                marc_affiliations_list.insert(0, marc_affiliation)
+            else:
+                marc_affiliations_list.append(marc_affiliation)
     contribution["agent"]["marc:affiliation"] = ",".join(str(s) for s in marc_affiliations_list)
 
 
 def _set_global_organizational_contribution_for_marc_field_710(body, affiliation):
+    affiliation_name = affiliation.get("name") or affiliation.get("nameByLang", {}).get("swe") or affiliation.get("nameByLang", {}).get("eng")
     if body.get("tmp_global_organizational_contribution"):
         agent = body.get("tmp_global_organizational_contribution").get("agent", {})
         agent_name = agent.get("name", {})
         is_part_of = agent.get("isPartOf", {})
-        if not is_part_of and agent_name != affiliation.get("name"):
+        if not is_part_of and agent_name != affiliation_name:
             is_part_of = {"@type": "Organization", "name": agent.pop("name")}
             agent["isPartOf"] = is_part_of
             if _is_kb_se_affiliation(affiliation):
                 marc_subordinate_unit = is_part_of.pop("name")
-                is_part_of["name"] = affiliation.get("name")
+                is_part_of["name"] = affiliation_name
             else:
-                marc_subordinate_unit = affiliation.get("name")
+                marc_subordinate_unit = affiliation_name
             marc_subordinate_units = agent.get("marc:subordinateUnit", [])
 
             if (
@@ -581,7 +586,7 @@ def _set_global_organizational_contribution_for_marc_field_710(body, affiliation
     else:
         body["tmp_global_organizational_contribution"] = {
             "@type": "Contribution",
-            "agent": {"@type": "Organization", "name": affiliation.get("name")},
+            "agent": {"@type": "Organization", "name": affiliation_name},
             "role": [{"@id": "https://id.kb.se/relator/org", "@type": "Role", "code": "org"}],
         }
 
