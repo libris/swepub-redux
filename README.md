@@ -180,7 +180,7 @@ python3 -m misc.fetch_records oai:DiVA.org:uniarts-1146 oai:DiVA.org:lnu-108145
 ```
 
 
-## Testing XSLT->JSON-LD conversion
+## Testing XML->JSON-LD conversion
 
 Having downloaded the XML of a record (see "Working with local XML files" above):
 ```bash
