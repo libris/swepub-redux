@@ -53,10 +53,6 @@ export default {
           <div class="MainFooter-linksWrap">
             <ul class="MainFooter-links">
               <li><a href="mailto:libris@kb.se">libris@kb.se</a></li>
-              <li>
-                <font-awesome-icon aria-label="Twitter icon"
-                class="MainFooter-icon" :icon="['fab', 'twitter']"/>
-                <a href="https://twitter.com/swepub">Swepub på Twitter</a></li>
             </ul>
           </div>
         </div>
