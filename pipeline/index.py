@@ -3,7 +3,7 @@ import orjson as json
 from pipeline.bibframesource import BibframeSource
 from pipeline.storage import get_connection, checkpoint
 
-OUTPUT_TYPE_PREFIX = "https://id.kb.se/term/swepub/"
+OUTPUT_TYPE_PREFIX = "https://id.kb.se/term/swepub/output/"
 
 
 def generate_search_tables():
