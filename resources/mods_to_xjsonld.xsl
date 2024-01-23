@@ -142,6 +142,9 @@
                             <xsl:when test="mods:note[@type = 'publicationStatus'] = 'Epub ahead of print/Online first'">
                                 <string key="@id">https://id.kb.se/term/swepub/EpubAheadOfPrintOnlineFirst</string>
                             </xsl:when>
+                            <xsl:when test="mods:note[@type = 'publicationStatus'] = 'Retracted'">
+                                <string key="@id">https://id.kb.se/term/swepub/Retracted</string>
+                            </xsl:when>
                         </xsl:choose>
                     </dict>
                     <xsl:for-each select="mods:note[not(@type)]">

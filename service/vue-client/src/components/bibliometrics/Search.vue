@@ -34,6 +34,7 @@ export default {
         { value: 'published', label: 'Publicerat' },
         { value: 'epub', label: 'Epub ahead of print/Online first' },
         { value: 'submitted', label: 'Submitted, Accepted, In print' },
+        { value: 'retracted', label: 'Retracted' },
       ],
       contentMarkings: [
         { value: 'ref', label: 'Sakkunniggranskat (ref)' },

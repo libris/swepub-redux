@@ -225,6 +225,9 @@ def test_has_higher_publication_status_ranking():
     preprinted_publication = Publication(
         {'instanceOf': {'hasNote': [{'@type': 'PublicationStatus', '@id': 'https://id.kb.se/term/swepub/Preprint'}]}})
 
+    retracted_publication = Publication(
+        {'instanceOf': {'hasNote': [{'@type': 'PublicationStatus', '@id': 'https://id.kb.se/term/swepub/Retracted'}]}})
+
     unknown_publication = Publication(
         {'instanceOf': {'hasNote': [{'@type': 'PublicationStatus', '@id': 'https://id.kb.se/term/swepub/FINNS_INTE'}]}})
 
@@ -234,6 +237,7 @@ def test_has_higher_publication_status_ranking():
     assert not published_publication.has_worse_publication_status_ranking(submitted_publication)
     assert not published_publication.has_worse_publication_status_ranking(preprinted_publication)
     assert not published_publication.has_worse_publication_status_ranking(unknown_publication)
+    assert not published_publication.has_worse_publication_status_ranking(retracted_publication)
     assert not published_publication.has_worse_publication_status_ranking(published_publication)
 
 

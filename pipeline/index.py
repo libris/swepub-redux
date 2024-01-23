@@ -119,6 +119,8 @@ def get_publication_status(doc):
         "https://id.kb.se/term/swepub/InPress",
     ]:
         return "submitted"
+    elif ps == "https://id.kb.se/term/swepub/Retracted":
+        return "retracted"
     return None
 
 

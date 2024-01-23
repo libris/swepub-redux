@@ -105,7 +105,7 @@
         <!--<xsl:variable name="pubyear" select="count(mods:originInfo[mods:dateIssued != ''])"/>-->
 
 		<!-- publication Status-->
-		<xsl:variable name="pubStatusNotPublished" select="count(mods:note[@type='publicationStatus'][. = 'Preprint' or . = 'Submitted' or . = 'Accepted' or . = 'In press' or . = 'Epub ahead of print/Online first'])"/>
+		<xsl:variable name="pubStatusNotPublished" select="count(mods:note[@type='publicationStatus'][. = 'Preprint' or . = 'Submitted' or . = 'Accepted' or . = 'In press' or . = 'Epub ahead of print/Online first' or . = 'Retracted'])"/>
 
         <!-- output type publication/preprint -->
         <xsl:variable name="publicationPreprint" select="count(mods:genre[@authority = 'kb.se' and @type = 'outputType'][. = 'publication/preprint'])"/>
