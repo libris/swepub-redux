@@ -62,7 +62,8 @@ class Publication:
         'https://id.kb.se/term/swepub/InPrint': 3,
         'https://id.kb.se/term/swepub/Accepted': 4,
         'https://id.kb.se/term/swepub/Submitted': 5,
-        'https://id.kb.se/term/swepub/Preprint': 6
+        'https://id.kb.se/term/swepub/Preprint': 6,
+        'https://id.kb.se/term/swepub/Retracted': 7,
     }
 
     def __init__(self, body):

@@ -2489,7 +2489,8 @@ def test_notes_with_different_types_can_be_mixed(parser):
     ('Submitted', 'Submitted'),
     ('Accepted', 'Accepted'),
     ('In press', 'InPress'),
-    ('Epub ahead of print/Online first', 'EpubAheadOfPrintOnlineFirst')
+    ('Epub ahead of print/Online first', 'EpubAheadOfPrintOnlineFirst'),
+    ('Retracted', 'Retracted'),
 ])
 def test_publication_status(mods_type, bibframe_type, parser):
     raw_xml = MODS("""<note type="publicationStatus">{}</note>""".format(mods_type))

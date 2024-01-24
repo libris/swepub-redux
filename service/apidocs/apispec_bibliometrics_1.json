@@ -421,7 +421,7 @@
                     "type": "array"
                   },
                   "publicationStatus": {
-                    "description": "Permitted values are 'published', 'epub' or 'submitted'",
+                    "description": "Permitted values are 'published', 'epub', 'submitted' or 'retracted'",
                     "items": {
                       "example": "published",
                       "type": "string"

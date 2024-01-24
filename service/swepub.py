@@ -203,7 +203,7 @@ def bibliometrics_api():
             ps.strip() for ps in query_data.get("publicationStatus", []) if len(ps.strip()) > 0
         ]
         if len(publication_status) > 0:
-            if not all(ps in ("published", "epub", "submitted") for ps in publication_status):
+            if not all(ps in ("published", "epub", "submitted", "retracted") for ps in publication_status):
                 _errors(errors=[f"Invalid value for publication status."], status_code=400)
 
         swedish_list = query_data.get("swedishList", None)
