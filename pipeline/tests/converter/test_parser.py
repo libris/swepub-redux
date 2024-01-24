@@ -1385,6 +1385,19 @@ def test_corporate_contribution_agent_with_authority_and_multiple_names(parser):
     assert actual == expected
 
 
+def test_corporate_contribution_agent_with_research_group(parser):
+    raw_xml = MODS("""<name type="corporate">
+    <namePart>Some research group</namePart>
+    <description>Research group</description>
+    </name> """)
+    actual = parser.parse_mods(raw_xml)['instanceOf']['contribution'][0]['agent']
+    expected = {
+        '@type': 'Collaboration',
+        'name': 'Some research group',
+    }
+    assert actual == expected
+
+
 def test_persons_are_is_extracted(parser):
     raw_xml = MODS("""
       <name type="personal" authority="lnu" xlink:href="kogoaa">
