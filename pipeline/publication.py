@@ -190,6 +190,14 @@ class Publication:
         return None
 
     @property
+    def copyright_date(self):
+        return self.body.get("copyright", [])
+
+    @copyright_date.setter
+    def copyright_date(self, copyright):
+        self.body["copyright"] = copyright
+
+    @property
     def issns(self):
         """Return a list of all ISSNs ordered by importance."""
         issns = set()

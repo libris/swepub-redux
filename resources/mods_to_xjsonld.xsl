@@ -550,6 +550,14 @@
                     </xsl:for-each>
                 </array>
             </xsl:if>
+            <xsl:if test="mods:originInfo/mods:copyrightDate">
+                <array key="copyright">
+                    <dict>
+                        <string key="@type">Copyright</string>
+                        <string key="date"><xsl:value-of select="mods:originInfo/mods:copyrightDate"/></string>
+                    </dict>
+                </array>
+            </xsl:if>
         </dict>
     </xsl:template>
 
