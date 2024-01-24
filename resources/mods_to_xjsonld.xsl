@@ -112,6 +112,11 @@
                     <xsl:call-template name="subjects"/>
                     <xsl:call-template name="uka_subjects"/>
                 </array>
+                <xsl:if test="mods:classification">
+                    <array key="classification">
+                        <xsl:apply-templates select="mods:classification"/>
+                    </array>
+                </xsl:if>
                 <array key="hasNote">
                     <xsl:if test="mods:note[@type = 'creatorCount']">
                         <dict>
@@ -1279,6 +1284,7 @@
     </xsl:template>
 
      <xsl:template name="uka_subjects">
+         <!-- TODO: remap to classification and rename to ssif? -->
         <xsl:for-each select="mods:subject[@authority = 'uka.se' and @xlink:href]">
             <dict>
                 <string key="@id">https://id.kb.se/term/uka/<xsl:value-of select="@xlink:href"/></string>
@@ -1352,6 +1358,43 @@
                 </xsl:if>
             </dict>
         </xsl:for-each>
+    </xsl:template>
+
+    <xsl:template match="mods:classification">
+        <dict>
+            <string key="@type">Classification</string>
+            <xsl:choose>
+                <xsl:when test="@xlink:href">
+                    <string key="@id"><xsl:value-of select="@xlink:href"/></string>
+                </xsl:when>
+                <xsl:otherwise>
+                    <string key="code"><xsl:value-of select="text()"/></string>
+                </xsl:otherwise>
+            </xsl:choose>
+            <xsl:if test="@authority">
+                <dict key="inScheme">
+                    <xsl:choose>
+                        <xsl:when test="@authority = 'ssif'">
+                            <string key="@id">
+                                <xsl:text>https://id.kb.se/term/ssif</xsl:text>
+                            </string>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <string key="@type">ConceptScheme</string>
+                            <string key="code"><xsl:value-of select="@authority"/></string>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </dict>
+            </xsl:if>
+            <xsl:if test="@generator">
+                <dict key="@annotation">
+                    <dict key="assigner">
+                        <string key="@type">SoftwareAgent</string>
+                        <string key="label"><xsl:value-of select="@generator"/></string>
+                    </dict>
+                </dict>
+            </xsl:if>
+        </dict>
     </xsl:template>
 
     <xsl:template name="broader">

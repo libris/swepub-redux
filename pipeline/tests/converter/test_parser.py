@@ -2527,6 +2527,24 @@ def test_uka_subjects_without_href_are_ignored(parser):
     assert actual == expected
 
 
+def test_ssif_classification(parser):
+    raw_xml = MODS("""
+        <classification authority="ssif" usage="primary" generator="GPT-4">60203</classification>
+      """)
+    expected = [
+        {
+            '@annotation': {
+                'assigner': {'@type': 'SoftwareAgent', 'label': 'GPT-4'}
+            },
+            '@type': 'Classification',
+            'code': '60203',
+            'inScheme': {'@id': 'https://id.kb.se/term/ssif'},
+        }
+    ]
+    actual = parser.parse_mods(raw_xml)['instanceOf']['classification']
+    assert actual == expected
+
+
 def test_single_title_element_is_converted_as_main_title(parser):
     raw_xml = MODS("""
     <titleInfo>
