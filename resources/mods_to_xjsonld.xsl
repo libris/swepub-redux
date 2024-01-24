@@ -1106,7 +1106,14 @@
                         </xsl:if>
                     </xsl:if>
                     <xsl:if test="@type = 'corporate'">
-                        <string key="@type">Organization</string>
+                        <xsl:choose>
+                            <xsl:when test="mods:description = 'Research group'">
+                                 <string key="@type">Collaboration</string>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                 <string key="@type">Organization</string>
+                            </xsl:otherwise>
+                        </xsl:choose>
                         <xsl:if test="mods:namePart != ''">
                             <xsl:if test="mods:namePart[@lang]">
                                 <dict key="nameByLang">
