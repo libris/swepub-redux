@@ -532,6 +532,22 @@ def test_merge_usage_and_access_policy():
     assert expected == merged_master.usage_and_access_policy
 
 
+def test_merge_copyright_from_candidate():
+    master_without_copyright = Publication({})
+    candidate_with_copyright = Publication({'copyright': [{'@type': 'Copyright', 'date': '1999'}]})
+
+    merged_master = merger._merge_copyright_date(master_without_copyright, candidate_with_copyright)
+    assert merged_master.copyright_date == [{'@type': 'Copyright', 'date': '1999'}]
+
+
+def test_merge_copyright_prefer_master():
+    master_with_copyright = Publication({'copyright': [{'@type': 'Copyright', 'date': '2010'}]})
+    candidate_with_copyright = Publication({'copyright': [{'@type': 'Copyright', 'date': '2020'}]})
+
+    merged_master = merger._merge_copyright_date(master_with_copyright, candidate_with_copyright)
+    assert merged_master.copyright_date == [{'@type': 'Copyright', 'date': '2010'}]
+
+
 def _get_master_is_part_of():
     return IsPartOf({
         'identifiedBy': [{'@type': 'ISSN', 'value': 'ispartof_1'}],

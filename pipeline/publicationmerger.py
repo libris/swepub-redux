@@ -144,6 +144,7 @@ class PublicationMerger:
         master = self._merge_is_part_of(master, candidate)
         master = self._merge_publication_information(master, candidate)
         master = self._merge_usage_and_access_policy(master, candidate)
+        master = self._merge_copyright_date(master, candidate)
         return master
 
     @staticmethod
@@ -398,6 +399,21 @@ class PublicationMerger:
                 others.append(other)
 
         master.usage_and_access_policy = access_policies + embargoes + links + others
+        return master
+
+    @staticmethod
+    def _merge_copyright_date(master, candidate):
+        master_copyright_date = master.copyright_date
+        candidate_copyright_date = candidate.copyright_date
+
+        if not candidate.copyright_date:
+            return master
+
+        if not master_copyright_date and candidate.copyright_date:
+            master_copyright_date = candidate_copyright_date
+
+        if master_copyright_date:
+            master.copyright_date = master_copyright_date
         return master
 
     @staticmethod

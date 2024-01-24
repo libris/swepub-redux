@@ -3668,3 +3668,41 @@ def test_complete_origin_info_3(parser):
     assert actual["publication"] == expected_publication
     assert actual["manufacture"] == expected_manufacture
     assert actual["provisionActivity"] == expected_provisionactivity
+
+
+def test_origininfo_copyrightdate(parser):
+    raw_xml = MODS("""
+        <originInfo>
+            <copyrightDate>1999</copyrightDate>
+        </originInfo>
+    """)
+
+    actual = parser.parse_mods(raw_xml)['copyright']
+    expected = [
+        {
+            '@type': 'Copyright',
+            'date': '1999'
+        }
+    ]
+
+    assert actual == expected
+
+
+# copyrightDate is not repeatable in Swepub MODS 4.0; use the first one
+def test_origininfo_copyrightdate(parser):
+    raw_xml = MODS("""
+        <originInfo>
+            <copyrightDate>1999</copyrightDate>
+            <copyrightDate>2000</copyrightDate>
+        </originInfo>
+    """)
+
+    actual = parser.parse_mods(raw_xml)['copyright']
+    expected = [
+        {
+            '@type': 'Copyright',
+            'date': '1999'
+        }
+    ]
+
+    assert actual == expected
