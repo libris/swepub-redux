@@ -110,11 +110,11 @@
                 </array>
                 <array key="subject">
                     <xsl:call-template name="subjects"/>
-                    <xsl:call-template name="uka_subjects"/>
                 </array>
-                <xsl:if test="mods:classification">
+                <xsl:if test="mods:classification | mods:subject[@authority = 'uka.se' and @xlink:href]">
                     <array key="classification">
                         <xsl:apply-templates select="mods:classification"/>
+                        <xsl:call-template name="uka_subjects_as_classification"/>
                     </array>
                 </xsl:if>
                 <array key="hasNote">
@@ -1283,26 +1283,29 @@
         </xsl:for-each>
     </xsl:template>
 
-     <xsl:template name="uka_subjects">
+     <xsl:template name="uka_subjects_as_classification">
          <!-- TODO: remap to classification and rename to ssif? -->
         <xsl:for-each select="mods:subject[@authority = 'uka.se' and @xlink:href]">
             <dict>
-                <string key="@id">https://id.kb.se/term/uka/<xsl:value-of select="@xlink:href"/></string>
-                <string key="@type">Topic</string>
+                <!--
+                <string key="@id">https://id.kb.se/term/ssif/<xsl:value-of select="@xlink:href"/></string>
+                -->
+                <string key="@type">Classification</string>
                 <string key="code"><xsl:value-of select="@xlink:href"/></string>
                 <string key="prefLabel"><xsl:value-of select="mods:topic[last()]"/></string>
                 <xsl:if test="@lang">
                     <dict key="language">
-                        <string key="@type">Language</string>
                         <string key="@id">https://id.kb.se/language/<xsl:value-of select="@lang"/></string>
+                        <!--
+                        <string key="@type">Language</string>
                         <string key="code"><xsl:value-of select="@lang"/></string>
+                        -->
                     </dict>
                 </xsl:if>
                 <dict key="inScheme">
-                    <string key="@id">https://id.kb.se/term/uka/</string>
-                    <string key="@type">ConceptScheme</string>
-                    <string key="code"><xsl:value-of select="@authority"/></string>
+                    <string key="@id">https://id.kb.se/term/ssif</string>
                 </dict>
+                <!--
                 <xsl:if test="count(mods:topic) > 1">
                     <dict key="broader">
                         <xsl:call-template name="broader">
@@ -1310,6 +1313,7 @@
                         </xsl:call-template>
                     </dict>
                 </xsl:if>
+                -->
             </dict>
         </xsl:for-each>
     </xsl:template>

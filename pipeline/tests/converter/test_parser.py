@@ -305,49 +305,33 @@ def test_parser(parser):
                     "language": {'@type': 'Language', 'code': 'eng', '@id': 'https://id.kb.se/language/eng'},
                     "prefLabel": "History",
                 },
+            ],
+            "classification": [
                 {
-                    "@id": "https://id.kb.se/term/uka/30220",
-                    "@type": "Topic",
+                    "@type": "Classification",
                     "code": "30220",
                     "prefLabel": "Obstetrics, Gynecology and Reproductive Medicine",
-                    "language": {
-                        "@type": "Language",
-                        "@id": "https://id.kb.se/language/eng",
-                        "code": "eng"
-                    },
-                    "inScheme": {
-                        "@id": "https://id.kb.se/term/uka/",
-                        "@type": "ConceptScheme",
-                        "code": "uka.se"
-                    },
-                    "broader": {
-                        "prefLabel": "Clinical Medicine",
-                        "broader": {
-                            "prefLabel": "Medical and Health Sciences",
-                        }
-                    }
+                    "language": {"@id": "https://id.kb.se/language/eng"},
+                    "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+                    #"broader": {
+                    #    "prefLabel": "Clinical Medicine",
+                    #    "broader": {
+                    #        "prefLabel": "Medical and Health Sciences",
+                    #    }
+                    #}
                 },
                 {
-                    "@id": "https://id.kb.se/term/uka/30305",
-                    "@type": "Topic",
+                    "@type": "Classification",
                     "code": "30305",
                     "prefLabel": "Nursing",
-                    "language": {
-                        "@type": "Language",
-                        "@id": "https://id.kb.se/language/eng",
-                        "code": "eng"
-                    },
-                    "inScheme": {
-                        "@id": "https://id.kb.se/term/uka/",
-                        "@type": "ConceptScheme",
-                        "code": "uka.se"
-                    },
-                    "broader": {
-                        "prefLabel": "Health Sciences",
-                        "broader": {
-                            "prefLabel": "Medical and Health Sciences",
-                        }
-                    }
+                    "language": {"@id": "https://id.kb.se/language/eng"},
+                    "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+                    #"broader": {
+                    #    "prefLabel": "Health Sciences",
+                    #    "broader": {
+                    #        "prefLabel": "Medical and Health Sciences",
+                    #    }
+                    #}
                 }
             ],
             "hasNote": [
@@ -2282,44 +2266,34 @@ def test_uka_subjects_with_href(parser):
       """)
     expected = [
         {
-            '@id': 'https://id.kb.se/term/uka/60203',
-            '@type': 'Topic',
+            '@type': 'Classification',
             'code': '60203',
-            'inScheme': {
-                '@id': 'https://id.kb.se/term/uka/',
-                '@type': 'ConceptScheme',
-                'code': 'uka.se'
-            },
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
+            "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+            'language': {'@id': 'https://id.kb.se/language/swe'},
             'prefLabel': 'Litteraturvetenskap',
-            "broader": {
-                "prefLabel": "Spr\u00e5k och litteratur",
-                "broader": {
-                    "prefLabel": "Humaniora",
-                }
-            }
+            #"broader": {
+            #    "prefLabel": "Spr\u00e5k och litteratur",
+            #    "broader": {
+            #        "prefLabel": "Humaniora",
+            #    }
+            #}
         },
         {
-            '@id': 'https://id.kb.se/term/uka/60203',
-            '@type': 'Topic',
+            '@type': 'Classification',
             'code': '60203',
-            'inScheme': {
-                '@id': 'https://id.kb.se/term/uka/',
-                '@type': 'ConceptScheme',
-                'code': 'uka.se'
-            },
-            'language': {'@type': 'Language', 'code': 'eng', '@id': 'https://id.kb.se/language/eng'},
+            "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+            'language': {'@id': 'https://id.kb.se/language/eng'},
             'prefLabel': 'Literature',
-            "broader": {
-                "prefLabel": "Languages and Literature",
-                "broader": {
-                    "prefLabel": "Humanities",
-                }
-            }
+            #"broader": {
+            #    "prefLabel": "Languages and Literature",
+            #    "broader": {
+            #        "prefLabel": "Humanities",
+            #    }
+            #}
         },
     ]
 
-    actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
+    actual = parser.parse_mods(raw_xml)['instanceOf']['classification']
     assert actual == expected
 
 
@@ -2337,44 +2311,29 @@ def test_uka_subject_once_per_level(parser):
       """)
     expected = [
         {
-            '@id': 'https://id.kb.se/term/uka/6',
-            '@type': 'Topic',
+            '@type': 'Classification',
             'code': '6',
-            'inScheme': {
-                '@id': 'https://id.kb.se/term/uka/',
-                '@type': 'ConceptScheme',
-                'code': 'uka.se'
-            },
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
+            "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+            'language': {'@id': 'https://id.kb.se/language/swe'},
             'prefLabel': 'Humaniora',
         },
         {
-            '@id': 'https://id.kb.se/term/uka/602',
-            '@type': 'Topic',
+            '@type': 'Classification',
             'code': '602',
-            'inScheme': {
-                '@id': 'https://id.kb.se/term/uka/',
-                '@type': 'ConceptScheme',
-                'code': 'uka.se'
-            },
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
+            "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+            'language': {'@id': 'https://id.kb.se/language/swe'},
             'prefLabel': 'Spr\u00e5k och litteratur',
         },
         {
-            '@id': 'https://id.kb.se/term/uka/60203',
-            '@type': 'Topic',
+            '@type': 'Classification',
             'code': '60203',
-            'inScheme': {
-                '@id': 'https://id.kb.se/term/uka/',
-                '@type': 'ConceptScheme',
-                'code': 'uka.se'
-            },
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
+            "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+            'language': {'@id': 'https://id.kb.se/language/swe'},
             'prefLabel': 'Litteraturvetenskap',
         },
     ]
 
-    actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
+    actual = parser.parse_mods(raw_xml)['instanceOf']['classification']
     assert actual == expected
 
 
