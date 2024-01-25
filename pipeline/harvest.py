@@ -875,17 +875,6 @@ if __name__ == "__main__":
     diff = round(t1 - t0, 2)
     log.info(f"Phase 6 (generate processing stats) ran for {diff} seconds")
 
-    if environ.get("SWEPUB_LEGACY_SEARCH_DATABASE"):
-        t0 = t1
-        if incremental:
-            legacy_sync(24)
-        else:
-            # If we're doing a full refresh, sync *all* records
-            legacy_sync(-1)
-        t1 = time.time()
-        diff = round(t1 - t0, 2)
-        log.info(f"Phase 7 (legacy search sync) ran for {diff} seconds")
-
     if harvest_cache and not args.purge:
         log.info(f'Sources harvested: {" ".join(harvest_cache["meta"]["sources_succeeded"])}')
         if harvest_cache["meta"]["sources_failed"]:
@@ -906,3 +895,10 @@ if __name__ == "__main__":
                 )
         except Exception as e:
             log.warning(f"Failed saving harvest ID cache to {ID_CACHE_FILE}: {e}")
+
+    if environ.get("SWEPUB_LEGACY_SEARCH_DATABASE"):
+        t0 = t1
+        legacy_sync()
+        t1 = time.time()
+        diff = round(t1 - t0, 2)
+        log.info(f"Phase 7 (legacy search sync) ran for {diff} seconds")

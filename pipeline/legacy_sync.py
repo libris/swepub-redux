@@ -131,19 +131,35 @@ def _mods(xml):
         return ""
 
 
-def _update_records(hours=24):
+def _update_records(hours=None):
     with get_connection() as con, _get_mysql_connection() as mysql_con:
         cur = con.cursor()
         cur.row_factory = dict_factory
         mysql_cur = mysql_con.cursor(prepared=True)
 
-        # Process records modified < `hours` ago. -1 = all records.
-        if hours == -1:
-            modified_since = 0
-            log.info("Syncing all records")
+        modified_since = 0
+        if isinstance(hours, int):
+            if hours == -1:
+                log.info("Syncing all records")
+            else:
+                modified_since = int(time.time()) - 60 * 60 * hours
+                log.info(f"Syncing records modified < {hours} hours ago")
         else:
-            modified_since = int(time.time()) - 60 * 60 * hours
-            log.info(f"Syncing records modified < {hours} hours ago")
+            cur.execute(
+                "SELECT sync_start FROM legacy_sync_history WHERE sync_succeeded = 1 ORDER BY id DESC LIMIT 1"
+            )
+            row = cur.fetchone()
+            if row:
+                modified_since = row["sync_start"]
+                log.info(f"Last successful sync started {datetime.fromtimestamp(modified_since).isoformat()} ({modified_since}); syncing records modified since then")
+            else:
+                log.info("No previous successful sync found; syncing all records")
+
+        legacy_sync_history_id = cur.execute(
+            "INSERT INTO legacy_sync_history DEFAULT VALUES"
+        ).lastrowid
+        con.commit()
+
 
         # We need to INSERT/UPDATE any records that have been modified since some time ago.
         # This is done by looking at the `modified` timestamp of everything in `converted`:
@@ -279,6 +295,11 @@ def _update_records(hours=24):
                 ),
             )
         mysql_con.commit()
+        cur.execute(
+            "UPDATE legacy_sync_history SET sync_completed = ?, sync_succeeded = 1, synced_records = ? WHERE id = ?",
+            (int(time.time()), counter, legacy_sync_history_id,)
+        )
+        con.commit()
         log.info(f"Inserted/updated {counter} records")
 
 
@@ -325,7 +346,7 @@ def _update_server_info():
     log.info("Finished updating server metadata")
 
 
-def legacy_sync(hours=24):
+def legacy_sync(hours=None):
     _update_records(hours)
     _update_server_info()
 
