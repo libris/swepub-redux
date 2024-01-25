@@ -2565,6 +2565,13 @@ def test_default_publication_status_is_published(parser):
     expected = [{'@type': 'PublicationStatus', '@id': 'https://id.kb.se/term/swepub/Published'}]
     assert actual == expected
 
+# If there's a valueURI it should have precedence
+def test_publication_status_valueuri(parser):
+    raw_xml = MODS("""<note type="publicationStatus" xsi:type="stringPlusLanguagePlusAuthority" valueURI="https://id.kb.se/term/swepub/Submitted">Preprint</note>""")
+    actual = parser.parse_mods(raw_xml)['instanceOf']['hasNote']
+    expected = [{'@type': 'PublicationStatus', '@id': 'https://id.kb.se/term/swepub/Submitted'}]
+    assert actual == expected
+
 
 def test_publication_place(parser):
     raw_xml = MODS("""
