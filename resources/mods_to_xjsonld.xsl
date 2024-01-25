@@ -122,8 +122,8 @@
                     <dict>
                         <string key="@type">PublicationStatus</string>
                         <xsl:choose>
-                            <xsl:when test="mods:note[@type = 'publicationStatus' and @xsi:type = 'stringPlusLanguagePlusAuthority' and @valueURI]">
-                                <string key="@id"><xsl:value-of select="mods:note[@type = 'publicationStatus' and @xsi:type = 'stringPlusLanguagePlusAuthority' and @valueURI]/@valueURI"/></string>
+                            <xsl:when test="mods:note[@type = 'publicationStatus' and @valueURI]">
+                                <string key="@id"><xsl:value-of select="mods:note[@type = 'publicationStatus' and @valueURI]/@valueURI"/></string>
                             </xsl:when>
                             <xsl:when test="mods:note[@type = 'publicationStatus'] = 'Published'">
                                 <string key="@id">https://id.kb.se/term/swepub/Published</string>
