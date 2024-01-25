@@ -564,10 +564,7 @@ def test_parser(parser):
             }
         ],
         'usageAndAccessPolicy': [
-            {
-                "@type": "AccessPolicy",
-                "label": "gratis"
-            }
+            {"@id": "https://id.kb.se/policy/oa/gratis"}
         ]
     }
 
@@ -3342,8 +3339,33 @@ def test_usage_and_access_policy_gratis(parser):
     """)
     expected_usage_and_access_policy = [
         {
-            "@type": "AccessPolicy",
-            "label": "gratis"
+            "@id": "https://id.kb.se/policy/oa/gratis"
+        }
+    ]
+    parsed_policy = parser.parse_mods(raw_xml)['usageAndAccessPolicy']
+    assert expected_usage_and_access_policy == parsed_policy
+
+
+def test_usage_and_access_policy_restricted(parser):
+    raw_xml = MODS("""
+    <accessCondition>restricted</accessCondition>
+    """)
+    expected_usage_and_access_policy = [
+        {
+            "@id": "https://id.kb.se/policy/oa/restricted"
+        }
+    ]
+    parsed_policy = parser.parse_mods(raw_xml)['usageAndAccessPolicy']
+    assert expected_usage_and_access_policy == parsed_policy
+
+
+def test_usage_and_access_policy_valueuri(parser):
+    raw_xml = MODS("""
+    <accessCondition valueURI="https://example.com">gratis</accessCondition>
+    """)
+    expected_usage_and_access_policy = [
+        {
+            "@id": "https://example.com"
         }
     ]
     parsed_policy = parser.parse_mods(raw_xml)['usageAndAccessPolicy']

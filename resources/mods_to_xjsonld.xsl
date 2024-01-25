@@ -545,6 +545,15 @@
                                         <string key="endDate"><xsl:value-of select="text()"/></string>
                                     </xsl:if>
                                 </xsl:when>
+                                <xsl:when test="@valueURI">
+                                    <string key="@id"><xsl:value-of select="@valueURI"/></string>
+                                </xsl:when>
+                                <xsl:when test="text() = 'gratis'">
+                                    <string key="@id">https://id.kb.se/policy/oa/gratis</string>
+                                </xsl:when>
+                                <xsl:when test="text() = 'restricted'">
+                                    <string key="@id">https://id.kb.se/policy/oa/restricted</string>
+                                </xsl:when>
                                 <xsl:otherwise>
                                     <string key="@type">AccessPolicy</string>
                                     <string key="label"><xsl:value-of select="text()"/></string>
