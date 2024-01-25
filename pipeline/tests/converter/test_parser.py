@@ -1259,6 +1259,32 @@ def test_empty_issn_is_part_of_identifier_does_not_create_bibframe_field(parser)
     assert identified_by == parser.parse_mods(raw_xml)['isPartOf'][0]['identifiedBy']
 
 
+def test_relateditem_genre_valueuri(parser):
+    raw_xml = MODS("""
+    <relatedItem type="host">
+        <genre valueURI="https://example.com">grantAgreement</genre>
+    </relatedItem>
+    """)
+    expected = [{'@id': 'https://example.com'}]
+    actual = parser.parse_mods(raw_xml)['isPartOf'][0]['genreForm']
+    assert actual == expected
+
+
+def test_relateditem_genre_valueuri_2(parser):
+    raw_xml = MODS("""
+    <relatedItem type="host">
+        <genre valueURI="https://example.com">grantAgreement</genre>
+        <genre authority="mserialpubtype" valueURI="https://whatever.com">something else</genre>
+    </relatedItem>
+    """)
+    expected = [
+        {'@id': 'https://example.com'},
+        {'@id': 'https://whatever.com'}
+    ]
+    actual = parser.parse_mods(raw_xml)['isPartOf'][0]['genreForm']
+    assert actual == expected
+
+
 def test_orcid_person_id_is_extracted(parser):
     raw_xml = MODS("""
       <name type="personal">
@@ -2016,6 +2042,27 @@ def test_output_type_with_authority_kb_se_is_extracted(parser):
 def test_output_type_with_unknown_authority_is_ignored(parser):
     raw_xml = MODS("""<genre authority="foo" type="outputType">dok</genre>""")
     expected = []
+    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
+    assert actual == expected
+
+
+def test_output_type_with_authority_kb_se_and_valueuri(parser):
+    raw_xml = MODS("""<genre authority="kb.se" type="outputType" valueURI="https://id.kb.se/foobar">dok</genre>""")
+    expected = [{'@id': 'https://id.kb.se/foobar'}]
+    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
+    assert actual == expected
+
+
+def test_publication_type_with_authority_svep_and_valueuri(parser):
+    raw_xml = MODS("""<genre authority="svep" type="publicationType" valueURI="https://example.com">for</genre>""")
+    expected = [{'@id': 'https://example.com'}]
+    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
+    assert actual == expected
+
+
+def test_content_type_with_authority_svep_and_valueuri(parser):
+    raw_xml = MODS("""<genre authority="svep" type="contentType" valueURI="https://example.com">ref</genre>""")
+    expected = [{'@id': 'https://example.com'}]
     actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
     assert actual == expected
 

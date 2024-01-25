@@ -62,6 +62,7 @@
                 <array key="genreForm">
                     <xsl:call-template name="content_type"/>
                     <xsl:call-template name="type"/>
+                    <xsl:call-template name="type_valueuri"/>
                 </array>
                 <array key="language">
                     <xsl:for-each select="mods:language/mods:languageTerm[@type = 'code']">
@@ -562,7 +563,7 @@
     </xsl:template>
 
     <xsl:template name="type">
-        <xsl:for-each select="mods:genre[@type = 'outputType' and @authority = 'kb.se']">
+        <xsl:for-each select="mods:genre[@type = 'outputType' and @authority = 'kb.se' and not(@valueURI)]">
             <dict>
                 <xsl:choose>
                     <xsl:when test="../mods:genre[@type = 'outputType' and @authority = 'kb.se'] and text() = 'ArtisticPerformance/VisualArtworks'">
@@ -580,29 +581,34 @@
                 </xsl:choose>
             </dict>
         </xsl:for-each>
-        <xsl:for-each select="mods:genre[@type = 'publicationType' and @authority = 'svep']">
+        <xsl:for-each select="mods:genre[@type = 'publicationType' and @authority = 'svep' and not(@valueURI)]">
             <xsl:choose>
+                <xsl:when test="current()/@valueURI">
+                    <dict>
+                        <string key="@id"><xsl:value-of select="current()/@valueURI"/></string>
+                    </dict>
+                </xsl:when>
                 <xsl:when test="text() = 'art'">
                     <dict>
                         <string key="@id">https://id.kb.se/term/swepub/JournalArticle</string>
                     </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <xsl:choose>
-                                <xsl:when test="../mods:genre[@type = 'contentType' and @authority = 'svep'] = 'ref'">
-                                     <dict>
-                                        <string key="@id">https://id.kb.se/term/swepub/output/publication/journal-article</string>
-                                    </dict>
-                                </xsl:when>
-                                <xsl:when test="../mods:genre[@type = 'contentType' and @authority = 'svep'] = 'vet'">
-                                     <dict>
-                                        <string key="@id">https://id.kb.se/term/swepub/output/publication/magazine-article</string>
-                                    </dict>
-                                </xsl:when>
-                                <xsl:when test="../mods:genre[@type = 'contentType' and @authority = 'svep'] = 'pop'">
-                                     <dict>
-                                        <string key="@id">https://id.kb.se/term/swepub/output/publication/newspaper-article</string>
-                                    </dict>
-                                </xsl:when>
+                            <xsl:when test="../mods:genre[@type = 'contentType' and @authority = 'svep'] = 'ref'">
+                                <dict>
+                                    <string key="@id">https://id.kb.se/term/swepub/output/publication/journal-article</string>
+                                </dict>
+                            </xsl:when>
+                            <xsl:when test="../mods:genre[@type = 'contentType' and @authority = 'svep'] = 'vet'">
+                                <dict>
+                                    <string key="@id">https://id.kb.se/term/swepub/output/publication/magazine-article</string>
+                                </dict>
+                            </xsl:when>
+                            <xsl:when test="../mods:genre[@type = 'contentType' and @authority = 'svep'] = 'pop'">
+                                <dict>
+                                    <string key="@id">https://id.kb.se/term/swepub/output/publication/newspaper-article</string>
+                                </dict>
+                            </xsl:when>
                         </xsl:choose>
                     </xsl:if>
                 </xsl:when>
@@ -741,11 +747,19 @@
     </xsl:template>
 
     <xsl:template name="content_type">
-            <xsl:if test="mods:genre[@type = 'contentType' and @authority = 'svep']">
+            <xsl:if test="mods:genre[@type = 'contentType' and @authority = 'svep' and not(@valueURI)]">
                 <dict>
-                    <string key="@id">https://id.kb.se/term/swepub/svep/<xsl:value-of select="mods:genre[@type = 'contentType' and @authority = 'svep']"/></string>
+                    <string key="@id">https://id.kb.se/term/swepub/svep/<xsl:value-of select="mods:genre[@type = 'contentType' and @authority = 'svep' and not(@valueURI)]"/></string>
                 </dict>
             </xsl:if>
+    </xsl:template>
+
+    <xsl:template name="type_valueuri">
+        <xsl:for-each select="mods:genre[@valueURI]">
+            <dict>
+                <string key="@id"><xsl:value-of select="current()/@valueURI"/></string>
+            </dict>
+        </xsl:for-each>
     </xsl:template>
 
     <xsl:template name="date">
@@ -763,10 +777,15 @@
                 <string key="@type">Work</string>
             </xsl:otherwise>
         </xsl:choose>
-        <xsl:if test="mods:genre = 'project' or mods:genre = 'programme' or mods:genre = 'grantAgreement' or mods:genre = 'initiative' or mods:genre = 'event'">
+        <xsl:if test="mods:genre = 'project' or mods:genre = 'programme' or mods:genre = 'grantAgreement' or mods:genre = 'initiative' or mods:genre = 'event' or mods:genre[@valueURI]">
             <array key="genreForm">
                 <xsl:for-each select="mods:genre">
                     <xsl:choose>
+                        <xsl:when test="current()/@valueURI">
+                            <dict>
+                                <string key="@id"><xsl:value-of select="current()/@valueURI"/></string>
+                            </dict>
+                        </xsl:when>
                         <xsl:when test="text() = 'project'">
                             <dict>
                                 <string key="@id">https://id.kb.se/term/swepub/project</string>
