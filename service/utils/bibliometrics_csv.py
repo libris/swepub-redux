@@ -22,7 +22,6 @@ column_name_label_dict = {
     "title": "title",
     "summary": "summary",
     "output_types": "outputTypes",
-    "publication_type": "publicationType",
     "content_marking": "contentMarking",
     "publication_year": "publicationYear",
     "publication_status": "publicationStatus",

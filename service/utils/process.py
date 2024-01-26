@@ -161,7 +161,6 @@ def build_export_result(pub, events, selected_flags, oai_id, mods_url):
         "record_id": oai_id,
         "source": source,
         "publication_year": pub_year,
-        "publication_type": pub_type,
         "output_type": output_type,
         "mods_url": mods_url,
         "flags": flags,

@@ -178,10 +178,6 @@
             "example": "https://id.kb.se/term/swepub/output/publication/book",
             "type": "string"
           },
-          "publication_type": {
-            "example": "https://id.kb.se/term/swepub/output/artistic-work",
-            "type": "string"
-          },
           "publication_year": {
             "example": "2019",
             "type": "string"

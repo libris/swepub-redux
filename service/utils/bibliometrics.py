@@ -56,7 +56,6 @@ def _build_hit(bibframe_record, fields):
         "publicationChannel": "publication_channel",
         "publicationCount": "publication_count",
         "publicationStatus": "publication_status",
-        "publicationType": "publication_type",
         "publicationYear": "publication_year",
         "publisher": "publisher",
         "recordId": "record_id",

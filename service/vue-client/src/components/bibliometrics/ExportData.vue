@@ -155,16 +155,6 @@ export default {
           group: 'publication',
         },
         {
-          key: 'publicationType',
-          label: 'Publikationstyp',
-          component: 'TableDataLink',
-          props: {
-            unshift: 'https://id.kb.se/term/swepub/',
-          },
-          selected: false,
-          group: 'publication',
-        },
-        {
           key: 'contentMarking',
           label: 'Innehållsmärkning',
           selected: true,
