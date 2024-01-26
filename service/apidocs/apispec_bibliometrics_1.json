@@ -151,9 +151,6 @@
           "publicationStatus": {
             "type": "string"
           },
-          "publicationType": {
-            "type": "string"
-          },
           "publicationYear": {
             "type": "integer"
           },
