@@ -564,10 +564,7 @@ def test_parser(parser):
             }
         ],
         'usageAndAccessPolicy': [
-            {
-                "@type": "AccessPolicy",
-                "label": "gratis"
-            }
+            {"@id": "https://id.kb.se/policy/oa/gratis"}
         ]
     }
 
@@ -1257,6 +1254,32 @@ def test_empty_issn_is_part_of_identifier_does_not_create_bibframe_field(parser)
     identified_by = []
 
     assert identified_by == parser.parse_mods(raw_xml)['isPartOf'][0]['identifiedBy']
+
+
+def test_relateditem_genre_valueuri(parser):
+    raw_xml = MODS("""
+    <relatedItem type="host">
+        <genre valueURI="https://example.com">grantAgreement</genre>
+    </relatedItem>
+    """)
+    expected = [{'@id': 'https://example.com'}]
+    actual = parser.parse_mods(raw_xml)['isPartOf'][0]['genreForm']
+    assert actual == expected
+
+
+def test_relateditem_genre_valueuri_2(parser):
+    raw_xml = MODS("""
+    <relatedItem type="host">
+        <genre valueURI="https://example.com">grantAgreement</genre>
+        <genre authority="mserialpubtype" valueURI="https://whatever.com">something else</genre>
+    </relatedItem>
+    """)
+    expected = [
+        {'@id': 'https://example.com'},
+        {'@id': 'https://whatever.com'}
+    ]
+    actual = parser.parse_mods(raw_xml)['isPartOf'][0]['genreForm']
+    assert actual == expected
 
 
 def test_orcid_person_id_is_extracted(parser):
@@ -2020,6 +2043,27 @@ def test_output_type_with_unknown_authority_is_ignored(parser):
     assert actual == expected
 
 
+def test_output_type_with_authority_kb_se_and_valueuri(parser):
+    raw_xml = MODS("""<genre authority="kb.se" type="outputType" valueURI="https://id.kb.se/foobar">dok</genre>""")
+    expected = [{'@id': 'https://id.kb.se/foobar'}]
+    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
+    assert actual == expected
+
+
+def test_publication_type_with_authority_svep_and_valueuri(parser):
+    raw_xml = MODS("""<genre authority="svep" type="publicationType" valueURI="https://example.com">for</genre>""")
+    expected = [{'@id': 'https://example.com'}]
+    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
+    assert actual == expected
+
+
+def test_content_type_with_authority_svep_and_valueuri(parser):
+    raw_xml = MODS("""<genre authority="svep" type="contentType" valueURI="https://example.com">ref</genre>""")
+    expected = [{'@id': 'https://example.com'}]
+    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
+    assert actual == expected
+
+
 @pytest.mark.parametrize("publicationtype, publicationtype_longform, contenttype, outputtype", [
     ('art', 'JournalArticle', 'ref', 'publication/journal-article'),
     ('art', 'JournalArticle', 'vet', 'publication/magazine-article'),
@@ -2516,6 +2560,13 @@ def test_default_publication_status_is_published(parser):
     raw_xml = MODS("""<originInfo/>""")
     actual = parser.parse_mods(raw_xml)['instanceOf']['hasNote']
     expected = [{'@type': 'PublicationStatus', '@id': 'https://id.kb.se/term/swepub/Published'}]
+    assert actual == expected
+
+# If there's a valueURI it should have precedence
+def test_publication_status_valueuri(parser):
+    raw_xml = MODS("""<note type="publicationStatus" xsi:type="stringPlusLanguagePlusAuthority" valueURI="https://id.kb.se/term/swepub/Submitted">Preprint</note>""")
+    actual = parser.parse_mods(raw_xml)['instanceOf']['hasNote']
+    expected = [{'@type': 'PublicationStatus', '@id': 'https://id.kb.se/term/swepub/Submitted'}]
     assert actual == expected
 
 
@@ -3288,8 +3339,33 @@ def test_usage_and_access_policy_gratis(parser):
     """)
     expected_usage_and_access_policy = [
         {
-            "@type": "AccessPolicy",
-            "label": "gratis"
+            "@id": "https://id.kb.se/policy/oa/gratis"
+        }
+    ]
+    parsed_policy = parser.parse_mods(raw_xml)['usageAndAccessPolicy']
+    assert expected_usage_and_access_policy == parsed_policy
+
+
+def test_usage_and_access_policy_restricted(parser):
+    raw_xml = MODS("""
+    <accessCondition>restricted</accessCondition>
+    """)
+    expected_usage_and_access_policy = [
+        {
+            "@id": "https://id.kb.se/policy/oa/restricted"
+        }
+    ]
+    parsed_policy = parser.parse_mods(raw_xml)['usageAndAccessPolicy']
+    assert expected_usage_and_access_policy == parsed_policy
+
+
+def test_usage_and_access_policy_valueuri(parser):
+    raw_xml = MODS("""
+    <accessCondition valueURI="https://example.com">gratis</accessCondition>
+    """)
+    expected_usage_and_access_policy = [
+        {
+            "@id": "https://example.com"
         }
     ]
     parsed_policy = parser.parse_mods(raw_xml)['usageAndAccessPolicy']
