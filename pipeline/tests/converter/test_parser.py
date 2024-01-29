@@ -2998,6 +2998,8 @@ def test_publication_identifier_with_display_label_is_extracted(display_label, p
     ('ocolc', 'WorldCatNumber'),
     ('worldcat', 'WorldCatNumber'),
     ('articleId', 'Local'),
+    ('ror', 'ROR'),
+    ('raid', 'RAiD'),
     ('foo', 'Local'),
 ])
 def test_mods_identifier_types_are_mapped_to_appropriate_identifier_subclasses_in_bibframe(mods_type, bibframe_type, parser):
