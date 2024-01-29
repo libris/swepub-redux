@@ -1281,6 +1281,49 @@ def test_relateditem_genre_valueuri_2(parser):
     assert actual == expected
 
 
+@pytest.mark.parametrize("authority, value, gf_id", [
+    ('mserialpubtype', 'journal', 'http://id.loc.gov/vocabulary/mserialpubtype/journal'),
+    ('mserialpubtype', 'magazine', 'http://id.loc.gov/vocabulary/mserialpubtype/mag'),
+    ('mserialpubtype', 'newspaper', 'http://id.loc.gov/vocabulary/mserialpubtype/newspaper'),
+    ('mserialpubtype', 'repository', 'http://id.loc.gov/vocabulary/mserialpubtype/repo'),
+    ('marcgt', 'book', 'http://id.loc.gov/vocabulary/marcgt/boo'),
+    ('marcgt', 'conference publication', 'http://id.loc.gov/vocabulary/marcgt/cpb'),
+    ('marcgt', 'technical report', 'http://id.loc.gov/vocabulary/marcgt/ter'),
+    ('marcgt', 'thesis', 'http://id.loc.gov/vocabulary/marcgt/the'),
+    ('marcgt', 'web site', 'http://id.loc.gov/vocabulary/marcgt/web'),
+])
+def test_host_relateditem_authority_mserialpubtype_marcgt(authority, value, gf_id, parser):
+    raw_xml = MODS(f"""
+      <relatedItem type="host">
+        <genre authority="{authority}">{value}</genre>
+      </relatedItem>
+    """)
+    expected = [
+        {
+            "@id": gf_id
+        }
+    ]
+
+    actual = parser.parse_mods(raw_xml)['isPartOf'][0]['genreForm']
+    assert actual == expected
+
+
+def test_host_relateditem_no_authority(parser):
+    raw_xml = MODS(f"""
+      <relatedItem type="host">
+        <genre>foobar</genre>
+      </relatedItem>
+    """)
+    expected = [
+        {
+            "label": "foobar"
+        }
+    ]
+
+    actual = parser.parse_mods(raw_xml)['isPartOf'][0]['genreForm']
+    assert actual == expected
+
+
 def test_orcid_person_id_is_extracted(parser):
     raw_xml = MODS("""
       <name type="personal">
