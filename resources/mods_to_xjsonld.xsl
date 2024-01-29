@@ -1423,7 +1423,7 @@
             <xsl:when test="$type = 'ror' or $type = 'ROR'">
                 <string key="@type">ROR</string>
             </xsl:when>
-            <xsl:when test="$type = 'raid' or $type = 'RAiD'">
+            <xsl:when test="$type = 'raid' or $type = 'RAiD' or $type = 'RAID'">
                 <string key="@type">RAiD</string>
             </xsl:when>
             <xsl:otherwise>
