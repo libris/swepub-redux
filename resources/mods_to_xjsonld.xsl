@@ -1239,16 +1239,17 @@
                 </xsl:if>
                 <xsl:if test="@authority">
                     <dict key="inScheme">
-                        <string key="@id">
-                            <xsl:choose>
-                                <xsl:when test="@lang">
-                                    <xsl:value-of select="concat(@authority, '/', @lang)"/>
-                                </xsl:when>
-                                <xsl:otherwise>
-                                    <xsl:value-of select="@authority"/>
-                                </xsl:otherwise>
-                            </xsl:choose>
-                        </string>
+                        <xsl:choose>
+                            <xsl:when test="@authority = 'sao'">
+                                <string key="@id">https://id.kb.se/term/sao</string>
+                            </xsl:when>
+                            <xsl:when test="@authority = 'lcsh'">
+                                <string key="@id">http://id.loc.gov/authorities/subjects</string>
+                            </xsl:when>
+                            <xsl:when test="@authority = 'sdg'">
+                                <string key="@id">http://metadata.un.org/sdg</string>
+                            </xsl:when>
+                        </xsl:choose>
                         <string key="@type">ConceptScheme</string>
                         <string key="code"><xsl:value-of select="@authority"/></string>
                     </dict>
