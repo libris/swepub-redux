@@ -276,7 +276,7 @@ def test_parser(parser):
                 {
                     "@type": "Topic",
                     "code": "60101",
-                    "inScheme": {"@id": "hsv/eng", "@type": "ConceptScheme", "code": "hsv"},
+                    "inScheme": {"@type": "ConceptScheme", "code": "hsv"},
                     "language": {'@type': 'Language', 'code': 'eng', '@id': 'https://id.kb.se/language/eng'},
                     "prefLabel": "History",
                     'broader': {'prefLabel': 'History and Archaeology',
@@ -285,7 +285,7 @@ def test_parser(parser):
                 {
                     "@type": "Topic",
                     "code": "60101",
-                    "inScheme": {"@id": "hsv/swe", "@type": "ConceptScheme", "code": "hsv"},
+                    "inScheme": {"@type": "ConceptScheme", "code": "hsv"},
                     "language": {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
                     "prefLabel": "Historia",
                     'broader': {'prefLabel': 'Historia och arkeologi',
@@ -294,14 +294,14 @@ def test_parser(parser):
                 {
                     "@type": "Topic",
                     "code": "7304",
-                    "inScheme": {"@id": "lnu/swe", "@type": "ConceptScheme", "code": "lnu"},
+                    "inScheme": {"@type": "ConceptScheme", "code": "lnu"},
                     "language": {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
                     "prefLabel": "Historia",
                 },
                 {
                     "@type": "Topic",
                     "code": '7304',
-                    "inScheme": {"@id": "lnu/eng", "@type": "ConceptScheme", "code": "lnu"},
+                    "inScheme": {"@type": "ConceptScheme", "code": "lnu"},
                     "language": {'@type': 'Language', 'code': 'eng', '@id': 'https://id.kb.se/language/eng'},
                     "prefLabel": "History",
                 },
@@ -2312,6 +2312,33 @@ def test_uka_subject_once_per_level(parser):
     assert actual == expected
 
 
+@pytest.mark.parametrize("authority, authority_id", [
+    ('sao', 'https://id.kb.se/term/sao'),
+    ('lcsh', 'http://id.loc.gov/authorities/subjects'),
+    ('sdg', 'http://metadata.un.org/sdg'),
+])
+def test_non_uka_but_hardcoded_authority_subject(authority, authority_id, parser):
+    raw_xml = MODS(f"""
+        <subject lang="swe" authority="{authority}">
+            <topic>Foobar</topic>
+        </subject>
+      """)
+    expected = [
+        {
+            '@type': 'Topic',
+            'inScheme': {
+                '@id': authority_id,
+                '@type': 'ConceptScheme',
+                'code': authority
+            },
+            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
+            'prefLabel': 'Foobar',
+        }
+    ]
+    actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
+    assert actual == expected
+
+
 def test_non_uka_subject(parser):
     raw_xml = MODS("""
         <subject lang="swe" authority="lnu.se" xlink:href="60203">
@@ -2323,7 +2350,6 @@ def test_non_uka_subject(parser):
             '@type': 'Topic',
             'code': '60203',
             'inScheme': {
-                '@id': 'lnu.se/swe',
                 '@type': 'ConceptScheme',
                 'code': 'lnu.se'
             },
@@ -2346,7 +2372,6 @@ def test_non_uka_subject_without_language_property(parser):
             '@type': 'Topic',
             'code': '60203',
             'inScheme': {
-                '@id': 'lnu.se',
                 '@type': 'ConceptScheme',
                 'code': 'lnu.se'
             },
@@ -2384,7 +2409,6 @@ def test_non_uka_subject_without_href(parser):
         {
             '@type': 'Topic',
             'inScheme': {
-                '@id': 'lnu.se/swe',
                 '@type': 'ConceptScheme',
                 'code': 'lnu.se'
             },
