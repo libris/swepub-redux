@@ -747,7 +747,7 @@
                 <string key="@type">Work</string>
             </xsl:otherwise>
         </xsl:choose>
-        <xsl:if test="mods:genre = 'project' or mods:genre = 'programme' or mods:genre = 'grantAgreement' or mods:genre = 'initiative' or mods:genre = 'event' or mods:genre[@valueURI]">
+        <xsl:if test="mods:genre = 'project' or mods:genre = 'programme' or mods:genre = 'grantAgreement' or mods:genre = 'initiative' or mods:genre = 'event' or (mods:genre and mods:authority[@authority = 'mserialpubtype' or @authority = 'marcgt']) or mods:genre[@valueURI] or (mods:genre and not(mods:genre = 'dataset'))">
             <array key="genreForm">
                 <xsl:for-each select="mods:genre">
                     <xsl:choose>
@@ -755,6 +755,77 @@
                             <dict>
                                 <string key="@id"><xsl:value-of select="current()/@valueURI"/></string>
                             </dict>
+                        </xsl:when>
+                        <xsl:when test="current()/@authority = 'mserialpubtype'">
+                            <xsl:choose>
+                                <xsl:when test="text() = 'journal'">
+                                    <dict>
+                                        <string key="@id">http://id.loc.gov/vocabulary/mserialpubtype/journal</string>
+                                    </dict>
+                                </xsl:when>
+                                <xsl:when test="text() = 'magazine'">
+                                    <dict>
+                                        <string key="@id">http://id.loc.gov/vocabulary/mserialpubtype/mag</string>
+                                    </dict>
+                                </xsl:when>
+                                <xsl:when test="text() = 'newspaper'">
+                                    <dict>
+                                        <string key="@id">http://id.loc.gov/vocabulary/mserialpubtype/newspaper</string>
+                                    </dict>
+                                </xsl:when>
+                                <xsl:when test="text() = 'repository'">
+                                    <dict>
+                                        <string key="@id">http://id.loc.gov/vocabulary/mserialpubtype/repo</string>
+                                    </dict>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <dict>
+                                        <string key="label"><xsl:value-of select="text()" /></string>
+                                        <dict key="inScheme">
+                                            <string key="@type">ConceptScheme</string>
+                                            <string key="code"><xsl:value-of select="@authority"/></string>
+                                        </dict>
+                                    </dict>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:when>
+                        <xsl:when test="current()/@authority = 'marcgt'">
+                            <xsl:choose>
+                                <xsl:when test="text() = 'book'">
+                                    <dict>
+                                        <string key="@id">http://id.loc.gov/vocabulary/marcgt/boo</string>
+                                    </dict>
+                                </xsl:when>
+                                <xsl:when test="text() = 'conference publication'">
+                                    <dict>
+                                        <string key="@id">http://id.loc.gov/vocabulary/marcgt/cpb</string>
+                                    </dict>
+                                </xsl:when>
+                                <xsl:when test="text() = 'technical report'">
+                                    <dict>
+                                        <string key="@id">http://id.loc.gov/vocabulary/marcgt/ter</string>
+                                    </dict>
+                                </xsl:when>
+                                <xsl:when test="text() = 'thesis'">
+                                    <dict>
+                                        <string key="@id">http://id.loc.gov/vocabulary/marcgt/the</string>
+                                    </dict>
+                                </xsl:when>
+                                <xsl:when test="text() = 'web site'">
+                                    <dict>
+                                        <string key="@id">http://id.loc.gov/vocabulary/marcgt/web</string>
+                                    </dict>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <dict>
+                                        <string key="label"><xsl:value-of select="text()" /></string>
+                                        <dict key="inScheme">
+                                            <string key="@type">ConceptScheme</string>
+                                            <string key="code"><xsl:value-of select="@authority"/></string>
+                                        </dict>
+                                    </dict>
+                                </xsl:otherwise>
+                            </xsl:choose>
                         </xsl:when>
                         <xsl:when test="text() = 'project'">
                             <dict>
@@ -781,6 +852,11 @@
                                 <string key="@id">https://id.kb.se/term/swepub/event</string>
                             </dict>
                         </xsl:when>
+                        <xsl:otherwise>
+                            <dict>
+                                <string key="label"><xsl:value-of select="text()" /></string>
+                            </dict>
+                        </xsl:otherwise>
                     </xsl:choose>
                 </xsl:for-each>
             </array>
