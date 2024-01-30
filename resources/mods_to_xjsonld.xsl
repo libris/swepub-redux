@@ -1313,6 +1313,9 @@
                 <xsl:if test="@xlink:href">
                     <string key="code"><xsl:value-of select="@xlink:href"/></string>
                 </xsl:if>
+                <xsl:if test="@valueURI">
+                    <string key="@id"><xsl:value-of select="@valueURI"/></string>
+                </xsl:if>
                 <xsl:if test="@authority">
                     <dict key="inScheme">
                         <xsl:choose>

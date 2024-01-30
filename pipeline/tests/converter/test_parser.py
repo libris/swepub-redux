@@ -2382,6 +2382,34 @@ def test_non_uka_but_hardcoded_authority_subject(authority, authority_id, parser
     assert actual == expected
 
 
+@pytest.mark.parametrize("authority, authority_id, valueuri, topic", [
+    ('sao', 'https://id.kb.se/term/sao', 'https://id.kb.se/term/sao/Monster', 'Monster'),
+    ('lcsh', 'http://id.loc.gov/authorities/subjects', 'http://id.loc.gov/authorities/subjects/sh00007656', 'Aviation'),
+    ('sdg', 'http://metadata.un.org/sdg', 'http://metadata.un.org/sdg/13', 'Take urgent action to combat climate change and its impacts'),
+])
+def test_non_uka_but_hardcoded_authority_subject_with_valueuri(authority, authority_id, valueuri, topic, parser):
+    raw_xml = MODS(f"""
+        <subject lang="swe" authority="{authority}" valueURI="{valueuri}">
+            <topic>{topic}</topic>
+        </subject>
+      """)
+    expected = [
+        {
+            '@type': 'Topic',
+            '@id': valueuri,
+            'inScheme': {
+                '@id': authority_id,
+                '@type': 'ConceptScheme',
+                'code': authority
+            },
+            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
+            'prefLabel': topic,
+        }
+    ]
+    actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
+    assert actual == expected
+
+
 def test_non_uka_subject(parser):
     raw_xml = MODS("""
         <subject lang="swe" authority="lnu.se" xlink:href="60203">
