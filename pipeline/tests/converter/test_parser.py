@@ -2106,6 +2106,29 @@ def test_content_type_with_authority_svep_and_valueuri(parser):
     assert actual == expected
 
 
+@pytest.mark.parametrize("contenttype", [
+    ('ref'),
+    ('vet'),
+    ('pop'),
+])
+def test_content_type_with_authority_svep_and_valid_value(contenttype, parser):
+    raw_xml = MODS(f"""<genre authority="svep" type="contentType">{contenttype}</genre>""")
+    expected = [{'@id': f"https://id.kb.se/term/swepub/svep/{contenttype}"}]
+    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
+    assert actual == expected
+
+
+@pytest.mark.parametrize("contenttype", [
+    ('xyz'),
+    (''),
+])
+def test_content_type_with_authority_svep_and_invalid_value(contenttype, parser):
+    raw_xml = MODS(f"""<genre authority="svep" type="contentType">{contenttype}</genre>""")
+    expected = []
+    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
+    assert actual == expected
+
+
 @pytest.mark.parametrize("publicationtype, publicationtype_longform, contenttype, outputtype", [
     ('art', 'JournalArticle', 'ref', 'publication/journal-article'),
     ('art', 'JournalArticle', 'vet', 'publication/magazine-article'),

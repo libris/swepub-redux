@@ -718,9 +718,11 @@
 
     <xsl:template name="content_type">
             <xsl:if test="mods:genre[@type = 'contentType' and @authority = 'svep' and not(@valueURI)]">
-                <dict>
-                    <string key="@id">https://id.kb.se/term/swepub/svep/<xsl:value-of select="mods:genre[@type = 'contentType' and @authority = 'svep' and not(@valueURI)]"/></string>
-                </dict>
+                <xsl:if test="mods:genre[@type = 'contentType' and @authority = 'svep'] = 'ref' or mods:genre[@type = 'contentType' and @authority = 'svep'] = 'vet' or mods:genre[@type = 'contentType' and @authority = 'svep'] = 'pop'">
+                    <dict>
+                        <string key="@id">https://id.kb.se/term/swepub/svep/<xsl:value-of select="mods:genre[@type = 'contentType' and @authority = 'svep' and not(@valueURI)]"/></string>
+                    </dict>
+                </xsl:if>
             </xsl:if>
     </xsl:template>
 
