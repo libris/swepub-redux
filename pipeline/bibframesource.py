@@ -3,7 +3,7 @@ from enum import Enum
 from datetime import date, datetime
 from dateutil.parser import parse as dateutil_parse
 
-from pipeline.util import Level
+from pipeline.util import Level, SSIF_BASE, is_ssif_classification, is_autoclassified
 
 
 CREATOR_FIELDS = [
@@ -614,7 +614,6 @@ class BibframeSource:
 
     @property
     def uka_subjects(self):
-
         subjects = dict()
         should_include_one_digit_topics = False
         should_include_three_digit_topics = False
@@ -648,12 +647,9 @@ class BibframeSource:
         if should_include_five_digit_topics:
             subjects.update({"fiveDigitTopics": []})
 
-        for subject in self.bibframe_master.get("instanceOf", {}).get("subject", []):
-            if (
-                subject.get("inScheme", {}).get("code", "") == "uka.se"
-                and subject.get("@type", "") == "Topic"
-            ):
-                subject_code = subject.get("code", "").strip()
+        for term in self.bibframe_master.get("instanceOf", {}).get("classification", []):
+            if is_ssif_classification(term):
+                subject_code = term.get("code", "").strip()
                 if len(subject_code) == 1:
                     if should_include_one_digit_topics:
                         if subject_code not in subjects["oneDigitTopics"]:
@@ -818,11 +814,8 @@ class BibframeSource:
     @property
     def ssif_1_codes(self):
         uka_subject_codes = []
-        for subject in self.bibframe_master.get("instanceOf", {}).get("subject", []):
-            if (
-                subject.get("inScheme", {}).get("code", "") == "uka.se"
-                and subject.get("@type", "") == "Topic"
-            ):
+        for subject in self.bibframe_master.get("instanceOf", {}).get("classification", []):
+            if is_ssif_classification(term):
                 subject_code = subject.get("code", "").strip()
                 if subject_code:
                     uka_subject_codes.append(subject_code[0])
@@ -832,8 +825,8 @@ class BibframeSource:
 
     @property
     def autoclassified(self):
-        for subject in self.bibframe_master.get("instanceOf", {}).get("subject", []):
-            for note in subject.get("hasNote", []):
-                if note.get("label", "") == "Autoclassified by Swepub":
-                    return True
+        for term in self.bibframe_master.get("instanceOf", {}).get("classification", []):
+            if is_autoclassified(term):
+                return True
+
         return False

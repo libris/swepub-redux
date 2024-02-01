@@ -100,6 +100,9 @@ Unit tests:
 ```bash
 # Make sure you're in the virtualenv created above
 pytest
+
+# Also test embedded doctests:
+pytest --doctest-modules
 ```
 
 To harvest specific test records, first start the mock API server:
@@ -200,6 +203,17 @@ run `misc.mods_to_json` again, and see what happens.
 (With `xsltproc` you can also see the intermediary post-XSLT, pre-JSON-conversion XML:
 `xsltproc resources/mods_to_xjsonld.xsl _xml/uniarts/oaiDiVA.orguniarts-1146.xml`)
 
+## Testing conversion, enrichment and "legacy" export pipeline
+
+```bash
+python3 -m misc.testpipe _xml/sometestfile.xml /tmp/swepub-testpipe/
+```
+Produces 3 files corresponding to conversion, audit and legacy steps:
+```bash
+/tmp/swepub-testpipe/sometestfile-out-1.jsonld
+/tmp/swepub-testpipe/sometestfile-out-2-audited.jsonld
+/tmp/swepub-testpipe/sometestfile-out-3-legacy.jsonld
+```
 
 ## Testing changes to Swepub "legacy" export
 
@@ -210,3 +224,7 @@ will update the MySQL database. You can then inspect the JSON data of a specific
 ```bash
 mysql -u<user> -p<password> swepub_legacy -sN -e "select data from enriched where identifier = 'oai:DiVA.org:uniarts-1146';" | jq
 ```
+
+## Updating Resources
+
+Some resources are generated from external data, and may eventually become stale and in need of a refresh. See `resources/Makefile`.

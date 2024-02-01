@@ -2,7 +2,8 @@
 import json
 import orjson
 from functools import wraps
-from os import path, getenv
+from os import getenv
+from pathlib import Path
 import requests
 
 from datetime import datetime
@@ -29,59 +30,47 @@ from collections import Counter
 from tempfile import NamedTemporaryFile
 from simplemma.langdetect import lang_detector
 
+from pipeline.convert import ModsParser
+from pipeline.util import Enrichment, Normalization, Validation, ENRICHING_AUDITORS_CODES
+
 from service.utils import bibliometrics
 from service.utils.common import *
 from service.utils.process import *
 from service.utils.process_csv import export as process_csv_export
 from service.utils.bibliometrics_csv import export as bibliometrics_csv_export
 from service.utils.classify import enrich_subject
+from service.utils import ssif
 
-from pipeline.convert import ModsParser
-from pipeline.util import Enrichment, Normalization, Validation, ENRICHING_AUDITORS_CODES
-
-FILE_PATH = path.dirname(path.abspath(__file__))
+MODULE_DIR = Path(__file__).parent
+PROJECT_ROOT = MODULE_DIR.parent
 
 # sqlite DB path defaults to file in parent directory of swepub.py directory if SWEPUB_DB_READONLY not set
-SWEPUB_DB_READONLY = getenv(
-    "SWEPUB_DB_READONLY",
-    path.join(path.dirname(path.abspath(__file__)), "../swepub.sqlite3"),
-)
+SWEPUB_DB_READONLY = getenv("SWEPUB_DB_READONLY") or str(PROJECT_ROOT / "swepub.sqlite3")
 
-SSIF_LABELS = {
-    1: "1 Naturvetenskap",
-    2: "2 Teknik",
-    3: "3 Medicin och hälsovetenskap",
-    4: "4 Lantbruksvetenskap och veterinärmedicin",
-    5: "5 Samhällsvetenskap",
-    6: "6 Humaniora och konst",
-}
+with (PROJECT_ROOT / "resources" / "ssif.jsonld").open() as f:
+    SSIF_DATA = json.load(f)
 
-INFO_API_MAPPINGS = sort_mappings(
-    json.load(
-        open(
-            path.join(
-                FILE_PATH,
-                "../resources/ssif_research_subjects.json",
-            )
-        )
-    )
-)
-INFO_API_OUTPUT_TYPES = json.load(open(path.join(FILE_PATH, "../resources/output_types.json")))
+SSIF_MAPPINGS = ssif.make_mappings(SSIF_DATA)
+SSIF_TREE = ssif.build_tree_form(SSIF_MAPPINGS)
+SSIF_LABELS = ssif.get_top_labels(SSIF_TREE)
+
+with (PROJECT_ROOT / "resources" / "output_types.json").open() as f:
+    INFO_API_OUTPUT_TYPES = json.load(f)
 
 
-DEFAULT_SWEPUB_SOURCE_FILE = path.join(FILE_PATH, "../resources/sources.json")
+DEFAULT_SWEPUB_SOURCE_FILE = PROJECT_ROOT / "resources" / "sources.json"
 SWEPUB_SOURCE_FILE = getenv("SWEPUB_SOURCE_FILE", DEFAULT_SWEPUB_SOURCE_FILE)
 
 INFO_API_SOURCE_ORG_MAPPING = json.load(open(SWEPUB_SOURCE_FILE))
-CATEGORIES = json.load(open(path.join(FILE_PATH, "../resources/categories.json")))
 
-DEFAULT_XSLT = "\n".join(
-    [
-        x.strip("\n\r")
-        for x in open(path.join(FILE_PATH, "../resources/mods_to_xjsonld.xsl")).readlines()
-        if x.strip(" \t\n\r")
-    ]
-)
+with (PROJECT_ROOT / "resources" / "mods_to_xjsonld.xsl").open() as f:
+    DEFAULT_XSLT = "\n".join(
+        [
+            x.strip("\n\r")
+            for x in f
+            if x.strip(" \t\n\r")
+        ]
+    )
 
 ANNIF_EN_URL = getenv("ANNIF_EN_URL", "http://127.0.0.1:8083/v1/projects/swepub-en")
 ANNIF_SV_URL = getenv("ANNIF_SV_URL", "http://127.0.0.1:8083/v1/projects/swepub-sv")
@@ -467,7 +456,7 @@ def classify():
     return {
         "abstract": abstract,
         "status": status,
-        "suggestions": enrich_subject(subjects[:5], CATEGORIES),
+        "suggestions": enrich_subject(subjects[:5], SSIF_MAPPINGS),
     }
 
 
@@ -680,7 +669,7 @@ def datastatus_validations_source(source=None):
 
 @app.route("/api/v1/info/research-subjects", methods=["GET"])
 def info_research_subjects():
-    return jsonify(INFO_API_MAPPINGS)
+    return jsonify(SSIF_TREE)
 
 
 @app.route("/api/v1/info/output-types", methods=["GET"])
