@@ -2330,8 +2330,7 @@ def test_non_uka_but_hardcoded_authority_subject(authority, authority_id, parser
                 '@type': 'ConceptScheme',
                 'code': authority
             },
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-            'prefLabel': 'Foobar',
+            'prefLabelByLang': {'sv': 'Foobar'},
         }
     ]
     actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
@@ -2358,8 +2357,7 @@ def test_non_uka_but_hardcoded_authority_subject_with_valueuri(authority, author
                 '@type': 'ConceptScheme',
                 'code': authority
             },
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-            'prefLabel': topic,
+            'prefLabelByLang': {'sv': topic},
         }
     ]
     actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
