@@ -12,7 +12,7 @@ class UKAAuditor(BaseAuditor):
         self.name = UKAAuditor.__name__
 
     def audit(self, publication, audit_events, _harvest_cache, _session):
-        comprehensive = any(_is_one_digit(code) for code in codes)
+        comprehensive = any(_is_one_digit(code) for code in publication.ukas())
         audit_events.add_event(self.name, "UKA_comprehensive_check", comprehensive)
 
         return publication, audit_events

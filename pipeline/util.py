@@ -594,7 +594,7 @@ class RandomisedRetry(Retry):
 
 
 def is_autoclassified(term):
-    annot in term.get("@annotation", {})
+    annot = term.get("@annotation", {})
     return annot.get("assigner", {}).get("@id") == SWEPUB_CLASSIFIER_ID
 
 

@@ -815,7 +815,7 @@ class BibframeSource:
     def ssif_1_codes(self):
         uka_subject_codes = []
         for subject in self.bibframe_master.get("instanceOf", {}).get("classification", []):
-            if is_ssif_classification(term):
+            if is_ssif_classification(subject):
                 subject_code = subject.get("code", "").strip()
                 if subject_code:
                     uka_subject_codes.append(subject_code[0])
