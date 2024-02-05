@@ -156,6 +156,9 @@
                             <xsl:when test="mods:note[@type = 'publicationStatus'] = 'Retracted'">
                                 <string key="@id">https://id.kb.se/term/swepub/Retracted</string>
                             </xsl:when>
+                            <xsl:when test="mods:note[@type = 'publicationStatus']">
+                                <string key="label"><xsl:value-of select="."/></string>
+                            </xsl:when>
                         </xsl:choose>
                     </dict>
                     <xsl:for-each select="mods:note[not(@type)]">
