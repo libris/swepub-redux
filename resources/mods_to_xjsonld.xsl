@@ -157,7 +157,7 @@
                                 <string key="@id">https://id.kb.se/term/swepub/Retracted</string>
                             </xsl:when>
                             <xsl:when test="mods:note[@type = 'publicationStatus']">
-                                <string key="label"><xsl:value-of select="."/></string>
+                                <string key="label"><xsl:value-of select="mods:note[@type = 'publicationStatus']"/></string>
                             </xsl:when>
                         </xsl:choose>
                     </dict>
