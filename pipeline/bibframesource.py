@@ -676,6 +676,9 @@ class BibframeSource:
             pref_label = subject.get("prefLabel")
             if pref_label:
                 subj_list.append(pref_label)
+            pref_labels_by_lang = subject.get("prefLabelByLang", {})
+            for pref_label_by_lang in list(pref_labels_by_lang.values()):
+                subj_list.append(pref_label_by_lang)
         return subj_list
 
     @property
