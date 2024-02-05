@@ -354,7 +354,7 @@ class Publication:
                 pref_label = subj.get("prefLabel")
 
             if pref_label:
-                keywords.append(prefLabel)
+                keywords.append(pref_label)
 
         return keywords
 

@@ -17,7 +17,7 @@ for ldfile in LD_CACHE_FILES:
 
 
 def get_description(id):
-    _item_map.get(id)
+    return _item_map.get(id)
 
 
 def embellish(item, relations=["broader"]):

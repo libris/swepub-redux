@@ -31,7 +31,7 @@ def _eligible_for_autoclassification(publication):
 
 
 def _create_classification(code):
-    classification = get_description(code).copy()
+    classification = get_description(f"https://id.kb.se/term/ssif/{code}").copy()
     classification["@annotation"] = {
         "assigner": {"@id": SWEPUB_CLASSIFIER_ID}
     }
@@ -130,7 +130,7 @@ class AutoclassifierAuditor(BaseAuditor):
 
         publication.body.setdefault("instanceOf", {}).setdefault(
             "classification", []
-        ).extend(items)
+        ).extend(classifications)
 
         value = _get_uka_swe_classification_list(publication.classifications)
         audit_events.add_event(self.name, "auto_classify", True, initial_value, value)
