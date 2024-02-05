@@ -32,6 +32,7 @@ from simplemma.langdetect import lang_detector
 
 from pipeline.convert import ModsParser
 from pipeline.util import Enrichment, Normalization, Validation, ENRICHING_AUDITORS_CODES
+from pipeline.legacy_publication import Publication as LegacyPublication
 
 from service.utils import bibliometrics
 from service.utils.common import *
@@ -382,6 +383,10 @@ def bibliometrics_get_record(record_id):
     if not row:
         _errors(["Not Found"], status_code=404)
     doc = json.loads(row[0])
+
+    if request.args.get("_legacy") is not None:
+        doc = LegacyPublication(doc).body_with_required_legacy_search_fields
+
     # TODO: Don't store the following in the actual document
     doc.pop("_publication_ids", None)
     doc.pop("_publication_orgs", None)
@@ -708,6 +713,8 @@ def process_get_publication(record_id=None):
     if not row:
         _errors(["Not Found"], status_code=404)
     data = json.loads(row[0])
+    if request.args.get("_legacy") is not None:
+        data = LegacyPublication(data).body_with_required_legacy_search_fields
     if request.args.get("_debug") is not None:
         data["meta"]["_harvest_time"] = datetime.fromtimestamp(row[1]).isoformat()
     return Response(json.dumps(data), mimetype="application/ld+json")
