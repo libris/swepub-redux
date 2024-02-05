@@ -456,6 +456,8 @@ class BibframeSource:
             return False
         ua_policies = self.bibframe_master.get("usageAndAccessPolicy", [])
         for policy in ua_policies:
+            if policy.get("@id", "") == "https://id.kb.se/policy/oa/gratis":
+                return True
             if policy.get("@type", "") == "AccessPolicy":
                 label = policy.get("label", "")
                 if "gratis" in label:
