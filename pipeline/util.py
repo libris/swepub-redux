@@ -603,3 +603,9 @@ def is_ssif_classification(term):
         term.get("@id", "").startswith(SSIF_BASE)
         and term.get("@type", "") == "Classification"
     )
+
+
+def remove_prefix(string, prefix):
+    if string.startswith(prefix):
+        return string[len(prefix):]
+    return string

@@ -15,7 +15,6 @@ CREATOR_FIELDS = [
     "affiliation",
     "freetext_affiliations",
 ]
-SUBJECT_FIELDS = ["oneDigitTopics", "threeDigitTopics", "fiveDigitTopics"]
 
 
 def _create_title_string(title_dict):
@@ -649,23 +648,34 @@ class BibframeSource:
         if should_include_five_digit_topics:
             subjects.update({"fiveDigitTopics": []})
 
+        # TODO: Previously each SSIF level was its own subject; now we use proper 'broader' relationships.
+        # This is a quick solution to get all levels; can be improved upon.
         for term in self.bibframe_master.get("instanceOf", {}).get("classification", []):
             if is_ssif_classification(term):
-                subject_code = term.get("code", "").strip()
-                if len(subject_code) == 1:
-                    if should_include_one_digit_topics:
-                        if subject_code not in subjects["oneDigitTopics"]:
-                            subjects["oneDigitTopics"].append(subject_code)
-                            continue
-                if len(subject_code) == 3:
-                    if should_include_three_digit_topics:
-                        if subject_code not in subjects["threeDigitTopics"]:
-                            subjects["threeDigitTopics"].append(subject_code)
-                            continue
-                if len(subject_code) == 5:
-                    if should_include_five_digit_topics:
-                        if subject_code not in subjects["fiveDigitTopics"]:
-                            subjects["fiveDigitTopics"].append(subject_code)
+                ssif_codes = set()
+                ssif_code = term.get("code", "").strip()
+                ssif_codes.add(ssif_code)
+                if len(ssif_code) == 5:
+                    ssif_codes.add(ssif_code[:3])
+                    ssif_codes.add(ssif_code[:1])
+                elif len(ssif_code) == 3:
+                    ssif_codes.add(ssif_code[:1])
+
+                for subject_code in ssif_codes:
+                    if len(subject_code) == 1:
+                        if should_include_one_digit_topics:
+                            if subject_code not in subjects["oneDigitTopics"]:
+                                subjects["oneDigitTopics"].append(subject_code)
+                                continue
+                    if len(subject_code) == 3:
+                        if should_include_three_digit_topics:
+                            if subject_code not in subjects["threeDigitTopics"]:
+                                subjects["threeDigitTopics"].append(subject_code)
+                                continue
+                    if len(subject_code) == 5:
+                        if should_include_five_digit_topics:
+                            if subject_code not in subjects["fiveDigitTopics"]:
+                                subjects["fiveDigitTopics"].append(subject_code)
         return subjects
 
     @property

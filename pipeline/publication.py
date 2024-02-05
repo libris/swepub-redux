@@ -524,8 +524,11 @@ class Publication:
             if skip_autoclassified and is_autoclassified(term):
                 continue
 
-            if isinstance(term, dict) and term.get("inScheme", {}).get("@id") == SSIF_SCHEME:
-                codes.add(term.get("code") or term.get("@id", "").removeprefix(SSIF_BASE))
+            if isinstance(term, dict):
+                if term.get("inScheme", {}).get("@id") == SSIF_SCHEME:
+                    codes.add(term.get("code") or remove_prefix(term.get("@id", ""), SSIF_BASE))
+                elif term.get("@id", "".startswith(SSIF_BASE)):
+                    codes.add(remove_prefix(term.get("@id", ""), SSIF_BASE))
 
         return [code for code in codes if code]
 
