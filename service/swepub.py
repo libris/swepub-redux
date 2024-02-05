@@ -1213,4 +1213,5 @@ def xsl_editor():
 
 
 if __name__ == "__main__":
-    app.run()
+    port = getenv("SWEPUB_SERVICE_PORT", 5000)
+    app.run(port=int(port))

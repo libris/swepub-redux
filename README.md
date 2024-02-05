@@ -88,6 +88,8 @@ python3 -m service.swepub
 
 Then visit http://localhost:5000. API docs are available on http://localhost:5000/api/v1/apidocs.
 
+To use port other than 5000, set `SWEPUB_SERVICE_PORT`.
+
 
 ## Training/updating Annif
 See https://github.com/libris/swepub-annif
