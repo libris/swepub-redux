@@ -27,6 +27,6 @@ if __name__ == "__main__":
         print(f"Usage: in swepub-redux: python3 -m misc.mods_to_json <path-to-xsl> <path-record-in-MODS-xml>")
         sys.exit(1)
 
-    process(sys.argv[1], sys.argv[2])
+    result = process(sys.argv[1], sys.argv[2])
 
     print(json.dumps({"result": result["publication"], "error": result["errors"]}, indent=4))
