@@ -65,35 +65,6 @@ def get_issuance_type(publication_type):
     return publication_type_to_issuance_type.get(publication_type)
 
 
-top_subject_mappings_eng = {
-    "1": "NATURAL SCIENCES",
-    "2": "ENGINEERING AND TECHNOLOGY",
-    "3": "MEDICAL AND HEALTH SCIENCES",
-    "4": "AGRICULTURAL SCIENCES",
-    "5": "SOCIAL SCIENCES",
-    "6": "HUMANITIES",
-}
-
-top_subject_mappings_swe = {
-    "1": "NATURVETENSKAP",
-    "2": "TEKNIK OCH TEKNOLOGIER",
-    "3": "MEDICIN OCH HÄLSOVETENSKAP",
-    "4": "LANTBRUKSVETENSKAPER",
-    "5": "SAMHÄLLSVETENSKAP",
-    "6": "HUMANIORA",
-}
-
-
-def get_top_subject_mapping(language, code):
-    if code and len(code) > 0:
-        pos_1 = code[0]
-        if language == "eng":
-            return top_subject_mappings_eng.get(pos_1)
-        elif language == "swe":
-            return top_subject_mappings_swe.get(pos_1)
-    return None
-
-
 class Publication:
     """Abstract publication format and API to access its properties"""
 
@@ -401,19 +372,44 @@ class Publication:
 
     def add_instance_of_subject_650(self):
         """
-        Remakes uka.se instanceOf.subject, represents marc field 650
+        Remakes SSIF instanceOf.classification, represents marc field 650
         1. Rename @id to '(SwePub)'+code, 650_0
         2. Rename inScheme.code to 'hsv//'+ language.code, 650_2
         3. Create termComponentList, 650_a and 650_x
         """
         body = self.body
-        if body.get("instanceOf", {}).get("subject"):
-            for s in body.get("instanceOf", {}).get("subject"):
-                if _is_uka_subject(s):
-                    s["@id"] = "(SwePub)" + s.get("code", "")
-                    s["@type"] = "ComplexSubject"
-                    s["inScheme"]["code"] = "hsv//" + s.get("language", {}).get("code", "")
-                    _set_term_component_list(s)
+        work = body.setdefault("instanceOf", {})
+
+        subjects = work.setdefault("subject", [])
+
+        kept_classifications = []
+
+        for term in work.get("classification", []):
+            if is_ssif_classification(term):
+                for lang, pref_label in term.get("prefLabelByLang").items():
+                    langcode = 'eng' if lang == 'en' else 'swe'
+                    newterm = {
+                        "@id": "(SwePub)" + term.get("code", ""),
+                        "inScheme": {"code": f"hsv//{langcode}"},
+                    }
+                    if "broader" in term:
+                        newterm["@type"] = "ComplexSubject"
+                        newterm["termComponentList"] = _get_term_components(
+                            term["broader"], pref_label, lang
+                        )
+                    else:
+                        newterm["@type"] = "Topic"
+                        newterm["prefLabel"] = pref_label
+
+                    subjects.append(newterm)
+            else:
+                kept_classifications.append(term)
+
+        if "classification" in work:
+            if kept_classifications:
+                work["classification"] = kept_classifications
+            else:
+                del work["classification"]
 
     def add_instance_of_subject_653(self):
         """
@@ -422,10 +418,11 @@ class Publication:
         (label is used determine if it should be added to 653 instead of 650)
         """
         body = self.body
-        if body.get("instanceOf", {}).get("subject"):
-            for s in body.get("instanceOf", {}).get("subject"):
-                if not _is_uka_subject(s) and s.get("prefLabel"):
-                    s["label"] = s.pop("prefLabel")
+        for s in body.get("instanceOf", {}).get("subject", []):
+            if not is_ssif_classification(s):
+                for key, value in _find_by_lang(s, "prefLabel"):
+                    s.pop(key)
+                    s["label"] = value
 
     def add_is_part_of_773(self):
         """
@@ -611,41 +608,31 @@ def _is_kb_se_affiliation(affiliation):
     return False
 
 
-def _set_term_component_list(subject):
-    language = subject.get("language", {}).get("code", "")
-    code = subject.get("code", "")
-    pref_label = subject.get("prefLabel")
-    if not subject.get("broader"):
-        if get_top_subject_mapping(language, code):
-            pref_label = get_top_subject_mapping(language, code)
+def _get_term_components(broader, pref_label, lang):
+    term_components =  []
 
-        subject["termComponentList"] = [{"@type": "Topic", "prefLabel": pref_label}]
+    for component in _find_components(broader, lang):
+        term_components.append(component)
+
+    term_components.append(
+        {"@type": "TopicSubdivision", "prefLabel": pref_label}
+    )
+
+    return term_components
+
+
+def _find_components(broader, lang):
+    for key, value in _find_by_lang(broader, "prefLabel", [lang]):
+        pref_label = value
+        break
     else:
-        _set_broader_term_component_list(subject, subject.get("broader"))
-        topic_sub_division = {"@type": "TopicSubdivision", "prefLabel": pref_label}
-        if topic_sub_division not in subject.get("termComponentList"):
-            subject.get("termComponentList").append(
-                {"@type": "TopicSubdivision", "prefLabel": pref_label}
-            )
+        return
 
-
-def _set_broader_term_component_list(subject, broader):
-    if not subject.get("termComponentList"):
-        subject["termComponentList"] = []
     if not broader.get("broader"):
-        pref_label = broader.get("prefLabel")
-        language = subject.get("language", {}).get("code", "")
-        code = subject.get("code", "")
-        if get_top_subject_mapping(language, code):
-            pref_label = get_top_subject_mapping(language, code)
-        topic = {"@type": "Topic", "prefLabel": pref_label}
-        if topic not in subject.get("termComponentList"):
-            subject.get("termComponentList", []).insert(0, topic)
+        yield {"@type": "Topic", "prefLabel": pref_label.upper()}
     else:
-        topic_sub_division = {"@type": "TopicSubdivision", "prefLabel": broader.get("prefLabel")}
-        if topic_sub_division not in subject.get("termComponentList"):
-            subject.get("termComponentList", []).append(topic_sub_division)
-        _set_broader_term_component_list(subject, broader.get("broader"))
+        yield from _find_components(broader.get("broader"), lang)
+        yield {"@type": "TopicSubdivision", "prefLabel": pref_label}
 
 
 def _get_assigner_from_urn(url):
@@ -668,8 +655,8 @@ def _get_provision_activity_statement(body):
     return provision_activity_statement
 
 
-def _is_uka_subject(subject):
-    return subject.get("inScheme", {}).get("@id") == "https://id.kb.se/term/uka/"
+def is_ssif_classification(term):
+    return term.get("inScheme", {}).get("@id") == "https://id.kb.se/term/ssif"
 
 
 def _format_date_as_year(date):
@@ -686,3 +673,29 @@ def _format_date_as_year(date):
     if year is None:
         year = datetime.today().year
     return str(year)
+
+
+def _find_by_lang(item, key, by_lang_pref_order=['sv', 'en']):
+    bylangkey = f"{key}ByLang"
+    bylang = item.get(bylangkey)
+
+    if bylang:
+        for lang in by_lang_pref_order:
+            if lang in bylang:
+                yield bylangkey, bylang[lang]
+                return
+        for value in bylang.values():
+            yield bylangkey, value
+            return
+
+    if key in item:
+        yield key, item[key]
+
+
+if __name__ == '__main__':
+    import json
+    import sys
+
+    indata = json.load(sys.stdin)['result']
+    outdata = Publication(indata).body_with_required_legacy_search_fields
+    json.dump(outdata, sys.stdout, indent=2, ensure_ascii=False)

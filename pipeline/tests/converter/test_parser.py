@@ -255,30 +255,25 @@ def test_parser(parser):
             "subject": [
                 {
                     "@type": "Topic",
-                    "language": {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-                    "prefLabel": "Typografer",
+                    "prefLabelByLang": {"sv": "Typografer"},
                 },
                 {
                     "@type": "Topic",
-                    "language": {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-                    "prefLabel": "Sverige",
+                    "prefLabelByLang": {"sv": "Sverige"},
                 },
                 {
                     "@type": "Topic",
-                    "language": {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-                    "prefLabel": "1800-talet",
+                    "prefLabelByLang": {"sv": "1800-talet"},
                 },
                 {
                     "@type": "Topic",
-                    "language": {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-                    "prefLabel": "1900-talet",
+                    "prefLabelByLang": {"sv": "1900-talet"},
                 },
                 {
                     "@type": "Topic",
                     "code": "60101",
                     "inScheme": {"@type": "ConceptScheme", "code": "hsv"},
-                    "language": {'@type': 'Language', 'code': 'eng', '@id': 'https://id.kb.se/language/eng'},
-                    "prefLabel": "History",
+                    "prefLabelByLang": {"en": "History"},
                     'broader': {'prefLabel': 'History and Archaeology',
                                 'broader': {'prefLabel': 'Humanities and the Arts'}},
                 },
@@ -286,8 +281,7 @@ def test_parser(parser):
                     "@type": "Topic",
                     "code": "60101",
                     "inScheme": {"@type": "ConceptScheme", "code": "hsv"},
-                    "language": {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-                    "prefLabel": "Historia",
+                    "prefLabelByLang": {"sv": "Historia"},
                     'broader': {'prefLabel': 'Historia och arkeologi',
                                 'broader': {'prefLabel': 'Humaniora och konst'}},
                 },
@@ -295,59 +289,35 @@ def test_parser(parser):
                     "@type": "Topic",
                     "code": "7304",
                     "inScheme": {"@type": "ConceptScheme", "code": "lnu"},
-                    "language": {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-                    "prefLabel": "Historia",
+                    "prefLabelByLang": {"sv": "Historia"},
                 },
                 {
                     "@type": "Topic",
                     "code": '7304',
                     "inScheme": {"@type": "ConceptScheme", "code": "lnu"},
-                    "language": {'@type': 'Language', 'code': 'eng', '@id': 'https://id.kb.se/language/eng'},
-                    "prefLabel": "History",
+                    "prefLabelByLang": {"en": "History"},
                 },
+            ],
+            "classification": [
                 {
-                    "@id": "https://id.kb.se/term/uka/30220",
-                    "@type": "Topic",
+                    "@id": "https://id.kb.se/term/ssif/30220",
+                    "@type": "Classification",
                     "code": "30220",
-                    "prefLabel": "Obstetrics, Gynecology and Reproductive Medicine",
-                    "language": {
-                        "@type": "Language",
-                        "@id": "https://id.kb.se/language/eng",
-                        "code": "eng"
-                    },
-                    "inScheme": {
-                        "@id": "https://id.kb.se/term/uka/",
-                        "@type": "ConceptScheme",
-                        "code": "uka.se"
-                    },
-                    "broader": {
-                        "prefLabel": "Clinical Medicine",
-                        "broader": {
-                            "prefLabel": "Medical and Health Sciences",
-                        }
-                    }
+                    "prefLabelByLang": {"en": "Obstetrics, Gynecology and Reproductive Medicine"},
+                    "inScheme": {"@id": "https://id.kb.se/term/ssif", "@type": "ConceptScheme"},
+                    #"broader": {
+                    #    "prefLabel": "Clinical Medicine",
+                    #    "broader": {
+                    #        "prefLabel": "Medical and Health Sciences",
+                    #    }
+                    #}
                 },
                 {
-                    "@id": "https://id.kb.se/term/uka/30305",
-                    "@type": "Topic",
+                    "@id": "https://id.kb.se/term/ssif/30305",
+                    "@type": "Classification",
                     "code": "30305",
-                    "prefLabel": "Nursing",
-                    "language": {
-                        "@type": "Language",
-                        "@id": "https://id.kb.se/language/eng",
-                        "code": "eng"
-                    },
-                    "inScheme": {
-                        "@id": "https://id.kb.se/term/uka/",
-                        "@type": "ConceptScheme",
-                        "code": "uka.se"
-                    },
-                    "broader": {
-                        "prefLabel": "Health Sciences",
-                        "broader": {
-                            "prefLabel": "Medical and Health Sciences",
-                        }
-                    }
+                    "prefLabelByLang": {"en": "Nursing"},
+                    "inScheme": {"@id": "https://id.kb.se/term/ssif", "@type": "ConceptScheme"},
                 }
             ],
             "hasNote": [
@@ -2282,44 +2252,22 @@ def test_uka_subjects_with_href(parser):
       """)
     expected = [
         {
-            '@id': 'https://id.kb.se/term/uka/60203',
-            '@type': 'Topic',
+            "@id": "https://id.kb.se/term/ssif/60203",
+            '@type': 'Classification',
             'code': '60203',
-            'inScheme': {
-                '@id': 'https://id.kb.se/term/uka/',
-                '@type': 'ConceptScheme',
-                'code': 'uka.se'
-            },
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-            'prefLabel': 'Litteraturvetenskap',
-            "broader": {
-                "prefLabel": "Spr\u00e5k och litteratur",
-                "broader": {
-                    "prefLabel": "Humaniora",
-                }
-            }
+            "inScheme": {"@id": "https://id.kb.se/term/ssif", "@type": "ConceptScheme"},
+            "prefLabelByLang": {"sv": "Litteraturvetenskap"},
         },
         {
-            '@id': 'https://id.kb.se/term/uka/60203',
-            '@type': 'Topic',
+            "@id": "https://id.kb.se/term/ssif/60203",
+            '@type': 'Classification',
             'code': '60203',
-            'inScheme': {
-                '@id': 'https://id.kb.se/term/uka/',
-                '@type': 'ConceptScheme',
-                'code': 'uka.se'
-            },
-            'language': {'@type': 'Language', 'code': 'eng', '@id': 'https://id.kb.se/language/eng'},
-            'prefLabel': 'Literature',
-            "broader": {
-                "prefLabel": "Languages and Literature",
-                "broader": {
-                    "prefLabel": "Humanities",
-                }
-            }
+            "inScheme": {"@id": "https://id.kb.se/term/ssif", "@type": "ConceptScheme"},
+            "prefLabelByLang": {"en": "Literature"},
         },
     ]
 
-    actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
+    actual = parser.parse_mods(raw_xml)['instanceOf']['classification']
     assert actual == expected
 
 
@@ -2337,44 +2285,29 @@ def test_uka_subject_once_per_level(parser):
       """)
     expected = [
         {
-            '@id': 'https://id.kb.se/term/uka/6',
-            '@type': 'Topic',
+            "@id": "https://id.kb.se/term/ssif/6",
+            '@type': 'Classification',
             'code': '6',
-            'inScheme': {
-                '@id': 'https://id.kb.se/term/uka/',
-                '@type': 'ConceptScheme',
-                'code': 'uka.se'
-            },
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-            'prefLabel': 'Humaniora',
+            "inScheme": {"@id": "https://id.kb.se/term/ssif", "@type": "ConceptScheme"},
+            "prefLabelByLang": {"sv": "Humaniora"},
         },
         {
-            '@id': 'https://id.kb.se/term/uka/602',
-            '@type': 'Topic',
+            "@id": "https://id.kb.se/term/ssif/602",
+            '@type': 'Classification',
             'code': '602',
-            'inScheme': {
-                '@id': 'https://id.kb.se/term/uka/',
-                '@type': 'ConceptScheme',
-                'code': 'uka.se'
-            },
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-            'prefLabel': 'Spr\u00e5k och litteratur',
+            "inScheme": {"@id": "https://id.kb.se/term/ssif", "@type": "ConceptScheme"},
+            "prefLabelByLang": {"sv": "Spr\u00e5k och litteratur"},
         },
         {
-            '@id': 'https://id.kb.se/term/uka/60203',
-            '@type': 'Topic',
+            "@id": "https://id.kb.se/term/ssif/60203",
+            '@type': 'Classification',
             'code': '60203',
-            'inScheme': {
-                '@id': 'https://id.kb.se/term/uka/',
-                '@type': 'ConceptScheme',
-                'code': 'uka.se'
-            },
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-            'prefLabel': 'Litteraturvetenskap',
+            "inScheme": {"@id": "https://id.kb.se/term/ssif", "@type": "ConceptScheme"},
+            "prefLabelByLang": {"sv": "Litteraturvetenskap"},
         },
     ]
 
-    actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
+    actual = parser.parse_mods(raw_xml)['instanceOf']['classification']
     assert actual == expected
 
 
@@ -2397,8 +2330,7 @@ def test_non_uka_but_hardcoded_authority_subject(authority, authority_id, parser
                 '@type': 'ConceptScheme',
                 'code': authority
             },
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-            'prefLabel': 'Foobar',
+            'prefLabelByLang': {'sv': 'Foobar'},
         }
     ]
     actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
@@ -2425,8 +2357,7 @@ def test_non_uka_but_hardcoded_authority_subject_with_valueuri(authority, author
                 '@type': 'ConceptScheme',
                 'code': authority
             },
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-            'prefLabel': topic,
+            'prefLabelByLang': {'sv': topic},
         }
     ]
     actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
@@ -2447,8 +2378,7 @@ def test_non_uka_subject(parser):
                 '@type': 'ConceptScheme',
                 'code': 'lnu.se'
             },
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-            'prefLabel': 'Humaniora',
+            "prefLabelByLang": {"sv": "Humaniora"},
         }
     ]
     actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
@@ -2485,8 +2415,7 @@ def test_non_uka_subject_without_href_or_authority_extract_only_basic_informatio
     expected = [
         {
             '@type': 'Topic',
-            'prefLabel': 'Humaniora',
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'}
+            "prefLabelByLang": {"sv": "Humaniora"},
         }
     ]
     actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
@@ -2506,8 +2435,7 @@ def test_non_uka_subject_without_href(parser):
                 '@type': 'ConceptScheme',
                 'code': 'lnu.se'
             },
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-            'prefLabel': 'Humaniora',
+            "prefLabelByLang": {"sv": "Humaniora"},
         }
     ]
     actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
@@ -2524,6 +2452,22 @@ def test_uka_subjects_without_href_are_ignored(parser):
       """)
     expected = []
     actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
+    assert actual == expected
+
+
+def test_ssif_classification(parser):
+    raw_xml = MODS("""
+        <classification authority="ssif" usage="primary" generator="GPT-4">60203</classification>
+      """)
+    expected = [
+        {
+            '@annotation': {
+                'assigner': {'@type': 'SoftwareAgent', 'label': 'GPT-4'}
+            },
+            '@id': 'https://id.kb.se/term/ssif/60203',
+        }
+    ]
+    actual = parser.parse_mods(raw_xml)['instanceOf']['classification']
     assert actual == expected
 
 

@@ -1,5 +1,3 @@
-from pipeline.util import *
-
 import itertools
 import datetime
 from dateutil.parser import parse as parse_date
@@ -8,6 +6,8 @@ from html import unescape
 from simplemma.langdetect import lang_detector
 from bs4 import BeautifulSoup
 from unidecode import unidecode
+
+from pipeline.util import *
 
 
 """Max length in characters to compare text"""
@@ -310,42 +310,53 @@ class Publication:
     @property
     def is_classified(self):
         """Return True if publication has at least one 3 or 5 level UKA subject."""
-        SUBJECT_PREFIX = 'https://id.kb.se/term/uka/'
-        for code in self.subject_codes:
-            if not code.startswith(SUBJECT_PREFIX):
+        for term in self.classifications:
+            if not is_ssif_classification(term):
                 continue
-            short = code[len(SUBJECT_PREFIX):]
+
+            short = term.get("@id", "")[len(SSIF_BASE):]
             if len(short) == 3 or len(short) == 5:
                 return True
+
         return False
 
     @property
     def is_autoclassified(self):
-        for subject in self.subjects:
-            for note in subject.get("hasNote", []):
-                if note.get("label", "") == "Autoclassified by Swepub":
-                    return True
+        for term in self.classifications:
+            if is_autoclassified(term):
+                return True
+
         return False
 
-    # language: e.g. https://id.kb.se/language/swe or https://id.kb.se/language/eng
-    def keywords(self, language=None):
-        subjects = self.subjects
+    def keywords(self, langtag=None):
+        """
+        Return a list of uncontrolled subjects in the given langtag (sv or en).
+        """
         keywords = []
-        for subj in subjects:
-            if language and subj.get("language", {}).get("@id", "") != language:
-                continue
+        for subj in self.subjects:
+            pref_label = None
+
             if "inScheme" in subj and "code" in subj["inScheme"]:
                 code = subj["inScheme"]["code"]
                 if code == "hsv" or code == "uka.se":
                     continue
-            if "prefLabel" in subj:
-                keywords.append(subj["prefLabel"])
-        return keywords
 
-    @property
-    def subject_codes(self):
-        """Return a list of all subject identifiers."""
-        return [subj['@id'] for subj in self.subjects if '@id' in subj]
+            if langtag:
+                if "prefLabelByLang" in subj:
+                    pref_label = subj["prefLabelByLang"].get(langtag)
+                else:
+                    langcode = "swe" if langtag == "sv" else "eng"
+                    language_id = f"https://id.kb.se/language/{langcode}"
+                    if subj.get("language", {}).get("@id", "") != language_id:
+                        continue
+
+            if not pref_label:
+                pref_label = subj.get("prefLabel")
+
+            if pref_label:
+                keywords.append(prefLabel)
+
+        return keywords
 
     @property
     def subjects(self):
@@ -360,15 +371,15 @@ class Publication:
         """ Sets array of subjects for instanceOf.subject """
         self._body['instanceOf']['subject'] = subjects
 
-    def add_subjects(self, subjects):
-        """Add a list of subjects to the publication.
+    @property
+    def classifications(self):
+        """ Return array of classifications from instanceOf.classifications """
+        return self.body.get('instanceOf', {}).get('classification', [])
 
-        Each subject is flagged with "Autoclassified by Swepub"."""
-        if "instanceOf" not in self._body:
-            self._body["instanceOf"] = {}
-        if "subject" not in self.body["instanceOf"]:
-            self._body["instanceOf"]["subject"] = []
-        self._body["instanceOf"]["subject"].extend(subjects)
+    @classifications.setter
+    def classifications(self, items):
+        """ Sets array of subjects for instanceOf.subject """
+        self._body['instanceOf']['classification'] = items
 
     @property
     def creator_count(self):
@@ -507,16 +518,16 @@ class Publication:
         return publication
 
     def ukas(self, skip_autoclassified=False):
-        """Return a unique list of all UKAs"""
-        ukas = set()
-        for uka in self.body.get('instanceOf', {}).get('subject', []):
-            if skip_autoclassified:
-                for note in uka.get("hasNote", []):
-                    if note.get("label", "") == "Autoclassified by Swepub":
-                        continue
-            if isinstance(uka, dict) and uka.get("inScheme", {}).get("code", "") == "uka.se":
-                ukas.add(uka.get("code"))
-        return list([uka for uka in ukas if uka])
+        """Return a unique list of all SSIF codes"""
+        codes = set()
+        for term in self.classifications:
+            if skip_autoclassified and is_autoclassified(term):
+                continue
+
+            if isinstance(term, dict) and term.get("inScheme", {}).get("@id") == SSIF_SCHEME:
+                codes.add(term.get("code") or term.get("@id", "").removeprefix(SSIF_BASE))
+
+        return [code for code in codes if code]
 
     @property
     def has_duplicate_contributor_persons(self):
@@ -621,28 +632,6 @@ class Publication:
         publication_status = [note.get('@id') for note in notes if
                               note.get('@type') and note.get('@type') == 'PublicationStatus']
         return publication_status
-
-    @property
-    def uka_swe_classification_list(self):
-        """Returns a list of all uka classifications in Swedish with code and prefLabel for each"""
-        classification_list = []
-        uka_prefix = "https://id.kb.se/term/uka/"
-        swe_lang_id = "https://id.kb.se/language/swe"
-        for subj in self.body.get("instanceOf", {}).get("subject", {}):
-            if subj.get("@type", "") == "Topic":
-                code = subj.get("@id")
-                if not code:
-                    continue
-                if not code.startswith(uka_prefix):
-                    continue
-                if subj.get("language", {}).get("@id", "") == swe_lang_id:
-                    code = subj.get("code")
-                    label = subj.get("prefLabel")
-                    cl_string = f"{code}" if code else ""
-                    cl_string += f" {label}" if label else ""
-                    if cl_string:
-                        classification_list.append(cl_string)
-        return classification_list
 
     @property
     def identifiedby_isbns(self):

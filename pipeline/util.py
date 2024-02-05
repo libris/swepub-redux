@@ -37,6 +37,11 @@ ENRICHING_AUDITORS_CODES = [
     "add_license",
 ]
 
+SWEPUB_CLASSIFIER_ID = "https://id.kb.se/generator/swepub-classifier"
+
+SSIF_SCHEME = 'https://id.kb.se/term/ssif'
+SSIF_BASE = f'{SSIF_SCHEME}/'
+
 
 class Validation(Enum):
     INVALID = 0
@@ -586,3 +591,15 @@ def get_summary_by_language(publication, language):
 class RandomisedRetry(Retry):
     def get_backoff_time(self):
         return random() * super().get_backoff_time()
+
+
+def is_autoclassified(term):
+    annot = term.get("@annotation", {})
+    return annot.get("assigner", {}).get("@id") == SWEPUB_CLASSIFIER_ID
+
+
+def is_ssif_classification(term):
+    return (
+        term.get("@id", "").startswith(SSIF_BASE)
+        and term.get("@type", "") == "Classification"
+    )

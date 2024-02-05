@@ -40,9 +40,10 @@ class Sickle(object):
 
     Use it like this::
 
-        >>> sickle = Sickle('http://elis.da.ulcc.ac.uk/cgi/oai2')
-        >>> records = sickle.ListRecords(metadataPrefix='oai_dc')
-        >>> records.next()
+        >>> def get_records():
+        ...     sickle = Sickle('http://elis.da.ulcc.ac.uk/cgi/oai2')
+        ...     return sickle.ListRecords(metadataPrefix='oai_dc')
+        >>> get_records().next()  # doctest: +SKIP
         <Record oai:eprints.rclis.org:3780>
 
     :param endpoint: The endpoint of the OAI interface.

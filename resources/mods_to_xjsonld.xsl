@@ -11,6 +11,8 @@
 
     <xsl:output indent="yes" encoding="UTF-8"/>
 
+    <xsl:variable name="langmap" select="document('langmap.xml')/langmap/lang"/>
+
     <xsl:template match="/">
         <xsl:apply-templates select="*"/>
     </xsl:template>
@@ -110,8 +112,13 @@
                 </array>
                 <array key="subject">
                     <xsl:call-template name="subjects"/>
-                    <xsl:call-template name="uka_subjects"/>
                 </array>
+                <xsl:if test="mods:classification | mods:subject[@authority = 'uka.se' and @xlink:href]">
+                    <array key="classification">
+                        <xsl:apply-templates select="mods:classification"/>
+                        <xsl:call-template name="uka_subjects_as_classification"/>
+                    </array>
+                </xsl:if>
                 <array key="hasNote">
                     <xsl:if test="mods:note[@type = 'creatorCount']">
                         <dict>
@@ -1044,7 +1051,7 @@
                             <dict key="nameByLang">
                                 <string>
                                     <xsl:attribute name="key">
-                                           <xsl:value-of select="$org/@lang"/>
+                                        <xsl:value-of select="$org/@lang"/>
                                     </xsl:attribute>
                                     <xsl:value-of select="$org"/>
                                 </string>
@@ -1278,32 +1285,32 @@
         </xsl:for-each>
     </xsl:template>
 
-     <xsl:template name="uka_subjects">
+    <xsl:template name="uka_subjects_as_classification">
         <xsl:for-each select="mods:subject[@authority = 'uka.se' and @xlink:href]">
             <dict>
-                <string key="@id">https://id.kb.se/term/uka/<xsl:value-of select="@xlink:href"/></string>
-                <string key="@type">Topic</string>
+                <string key="@id">
+                    <xsl:text>https://id.kb.se/term/ssif/</xsl:text>
+                    <xsl:value-of select="@xlink:href"/>
+                </string>
+                <string key="@type">Classification</string>
                 <string key="code"><xsl:value-of select="@xlink:href"/></string>
-                <string key="prefLabel"><xsl:value-of select="mods:topic[last()]"/></string>
-                <xsl:if test="@lang">
-                    <dict key="language">
-                        <string key="@type">Language</string>
-                        <string key="@id">https://id.kb.se/language/<xsl:value-of select="@lang"/></string>
-                        <string key="code"><xsl:value-of select="@lang"/></string>
-                    </dict>
-                </xsl:if>
+                <xsl:choose>
+                    <xsl:when test="@lang">
+                        <xsl:variable name="langtag" select="$langmap[@code=current()/@lang]/@tag"/>
+                        <dict key="prefLabelByLang">
+                            <string key="{$langtag | @lang[not($langtag)]}">
+                                <xsl:value-of select="mods:topic[last()]"/>
+                            </string>
+                        </dict>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <string key="prefLabel"><xsl:value-of select="mods:topic[last()]"/></string>
+                    </xsl:otherwise>
+                </xsl:choose>
                 <dict key="inScheme">
-                    <string key="@id">https://id.kb.se/term/uka/</string>
                     <string key="@type">ConceptScheme</string>
-                    <string key="code"><xsl:value-of select="@authority"/></string>
+                    <string key="@id">https://id.kb.se/term/ssif</string>
                 </dict>
-                <xsl:if test="count(mods:topic) > 1">
-                    <dict key="broader">
-                        <xsl:call-template name="broader">
-                            <xsl:with-param name="topic" select="count(mods:topic) - 1"/>
-                        </xsl:call-template>
-                    </dict>
-                </xsl:if>
             </dict>
         </xsl:for-each>
     </xsl:template>
@@ -1335,14 +1342,19 @@
                         <string key="code"><xsl:value-of select="@authority"/></string>
                     </dict>
                 </xsl:if>
-                <xsl:if test="@lang">
-                    <dict key="language">
-                        <string key="@type">Language</string>
-                        <string key="@id">https://id.kb.se/language/<xsl:value-of select="@lang"/></string>
-                        <string key="code"><xsl:value-of select="@lang"/></string>
-                    </dict>
-                </xsl:if>
-                <string key="prefLabel"><xsl:value-of select="mods:topic[last()]"/></string>
+                <xsl:choose>
+                    <xsl:when test="@lang">
+                        <xsl:variable name="langtag" select="$langmap[@code=current()/@lang]/@tag"/>
+                        <dict key="prefLabelByLang">
+                            <string key="{$langtag | @lang[not($langtag)]}">
+                                <xsl:value-of select="mods:topic[last()]"/>
+                            </string>
+                        </dict>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <string key="prefLabel"><xsl:value-of select="mods:topic[last()]"/></string>
+                    </xsl:otherwise>
+                </xsl:choose>
                 <xsl:if test="count(mods:topic) > 1">
                     <dict key="broader">
                         <xsl:call-template name="broader">
@@ -1352,6 +1364,51 @@
                 </xsl:if>
             </dict>
         </xsl:for-each>
+    </xsl:template>
+
+    <xsl:template match="mods:classification">
+        <dict>
+            <xsl:choose>
+                <xsl:when test="@authority = 'ssif'">
+                    <string key="@id">
+                        <xsl:text>https://id.kb.se/term/ssif/</xsl:text>
+                        <xsl:choose>
+                            <xsl:when test="@xlink:href">
+                                <xsl:value-of select="@xlink:href"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of select="text()"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </string>
+                </xsl:when>
+                <xsl:otherwise>
+                    <string key="@type">Classification</string>
+                    <xsl:choose>
+                        <xsl:when test="@xlink:href">
+                            <string key="@id"><xsl:value-of select="@xlink:href"/></string>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <string key="code"><xsl:value-of select="text()"/></string>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                    <xsl:if test="@authority">
+                        <dict key="inScheme">
+                            <string key="@type">ConceptScheme</string>
+                            <string key="code"><xsl:value-of select="@authority"/></string>
+                        </dict>
+                    </xsl:if>
+                </xsl:otherwise>
+            </xsl:choose>
+            <xsl:if test="@generator">
+                <dict key="@annotation">
+                    <dict key="assigner">
+                        <string key="@type">SoftwareAgent</string>
+                        <string key="label"><xsl:value-of select="@generator"/></string>
+                    </dict>
+                </dict>
+            </xsl:if>
+        </dict>
     </xsl:template>
 
     <xsl:template name="broader">
