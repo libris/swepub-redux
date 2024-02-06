@@ -110,9 +110,11 @@
                 <array key="contribution">
                     <xsl:call-template name="names"/>
                 </array>
-                <array key="subject">
-                    <xsl:call-template name="subjects"/>
-                </array>
+                <xsl:if test="mods:subject[(@authority != 'uka.se') or not(@authority)]">
+                    <array key="subject">
+                        <xsl:call-template name="subjects"/>
+                    </array>
+                </xsl:if>
                 <xsl:if test="mods:classification | mods:subject[@authority = 'uka.se' and @xlink:href]">
                     <array key="classification">
                         <xsl:apply-templates select="mods:classification"/>
