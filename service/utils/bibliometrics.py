@@ -63,7 +63,7 @@ def _build_hit(bibframe_record, fields):
         "series": "series",
         "seriesTitle": "series_title",
         "source": "source_org",
-        "subjects": "uka_subjects",
+        "subjects": "ssif_subjects",
         "summary": "summary",
         "swedishList": "swedish_list",
         "title": "title",

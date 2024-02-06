@@ -3,7 +3,7 @@
      "ISSN_missing_check":{
         "valid":621
      },
-     "UKA_comprehensive_check":{
+     "SSIF_comprehensive_check":{
         "invalid":4,
         "valid":617
      },
@@ -36,7 +36,7 @@
         "pending":4,
         "unchanged":371
      },
-     "UKA":{
+     "SSIF":{
         "pending":621
      },
      "URI":{
@@ -77,7 +77,7 @@
         "normalized":371,
         "unchanged":4
      },
-     "UKA":{
+     "SSIF":{
         "unchanged":621
      },
      "URI":{
@@ -116,7 +116,7 @@
         "pending":4,
         "valid":371
      },
-     "UKA":{
+     "SSIF":{
         "pending":10,
         "valid":611
      },

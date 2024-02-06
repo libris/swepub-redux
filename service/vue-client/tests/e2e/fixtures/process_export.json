@@ -77,7 +77,7 @@
      {
         "flags":{
            "audit":{
-              "UKA_comprehensive_check":{
+              "SSIF_comprehensive_check":{
                  "result":"invalid"
               }
            },
@@ -107,7 +107,7 @@
      {
         "flags":{
            "audit":{
-              "UKA_comprehensive_check":{
+              "SSIF_comprehensive_check":{
                  "result":"invalid"
               }
            }
@@ -142,7 +142,7 @@
      {
         "flags":{
            "audit":{
-              "UKA_comprehensive_check":{
+              "SSIF_comprehensive_check":{
                  "result":"invalid"
               }
            },
@@ -182,7 +182,7 @@
      {
         "flags":{
            "audit":{
-              "UKA_comprehensive_check":{
+              "SSIF_comprehensive_check":{
                  "result":"invalid"
               }
            }
@@ -196,7 +196,7 @@
      }
   ],
   "query":{
-     "audit_flags":"UKA_comprehensive_check_invalid",
+     "audit_flags":"SSIF_comprehensive_check_invalid",
      "enrichment_flags":"DOI_enriched,ISSN_enriched,auto_classify_enriched",
      "from":"2019",
      "limit":"20",

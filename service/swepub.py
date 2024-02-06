@@ -899,7 +899,7 @@ def process_get_rejected_publications(harvest_id):
 def process_get_stats(source=None):
     audit_labels_to_include = [
         "ISSN_missing_check",
-        "UKA_comprehensive_check",
+        "SSIF_comprehensive_check",
         "contributor_duplicate_check",
         "creator_count_check",
     ]

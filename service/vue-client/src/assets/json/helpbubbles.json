@@ -54,7 +54,7 @@
       "title": "Duplicate",
       "text": "Upphovspersoner med samma personID och roll kan inte vara angivna dubbelt."
     },
-    "validation_flags_UKA": {
+    "validation_flags_SSIF": {
       "title": "SSIF",
       "text": "Ämnesklassificering enligt Standard för Svensk Indelning av Forskningsämnen (SSIF) ska anges minst på 3-siffernivå (forskningsämnesgrupp)."
     },
@@ -98,7 +98,7 @@
       "title": "ORCID",
       "text": "ORCID har tvättats från övriga tecken. Ett saknat 0 har lagts till. Ogiltigt ORCID har censurerats."
     },
-    "enrichment_flags_UKA": {
+    "enrichment_flags_SSIF": {
       "title": "SSIF",
       "text": "Maskinellt genererad ämnesklassificering enligt Standard för svensk indelning av forskningsämnen (SSIF) på 3-siffernivå (forskningsämnesgrupp) baserad på textanalys av abstract, nyckelord och titel har lagts till. För mer information, se <a href='#'>Swepub ämnesklassificering</a>."
     },
@@ -158,8 +158,8 @@
       "title": "Motstridiga data",
       "text": "Data som av Swepub märkts upp när flera fält korrelerar med varandra men innehåller motstridiga eller oförväntade data. Här ingår motstridigheter i upphovsantal och upphov samt saknade ISSN, upphovsantal och ämnesklassificering."
     },
-    "audit_flags_UKA_comprehensive_check": {
-      "title": "UKÄ ofullständig",
+    "audit_flags_SSIF_comprehensive_check": {
+      "title": "SSIF ofullständig",
       "text": "Ämnesklassificering enligt Standard för svensk indelning av forskningsämnen (SSIF, tidigare UKÄ) på 3- eller 5-siffernivå saknas. Klassificering på 3-siffernivån är den nivå som rekommenderas av Swepub."
     },
     "audit_flags_contributor_duplicate_check": {

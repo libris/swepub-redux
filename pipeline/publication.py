@@ -309,7 +309,7 @@ class Publication:
 
     @property
     def is_classified(self):
-        """Return True if publication has at least one 3 or 5 level UKA subject."""
+        """Return True if publication has at least one 3 or 5 level SSIF subject."""
         for term in self.classifications:
             if not is_ssif_classification(term):
                 continue
@@ -336,10 +336,8 @@ class Publication:
         for subj in self.subjects:
             pref_label = None
 
-            if "inScheme" in subj and "code" in subj["inScheme"]:
-                code = subj["inScheme"]["code"]
-                if code == "hsv" or code == "uka.se":
-                    continue
+            if (term.get("inScheme", {}).get("@id") == SSIF_SCHEME) or (term.get("@id", "".startswith(SSIF_BASE))):
+                continue
 
             if langtag:
                 if "prefLabelByLang" in subj:
@@ -517,7 +515,7 @@ class Publication:
         publication['instanceOf']['genreForm'] = new_gforms
         return publication
 
-    def ukas(self, skip_autoclassified=False):
+    def ssifs(self, skip_autoclassified=False):
         """Return a unique list of all SSIF codes"""
         codes = set()
         for term in self.classifications:

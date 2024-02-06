@@ -3,9 +3,9 @@
     "swe": "ISSN saknas",
     "en": "ISSN missing"
   },
-  "UKA_comprehensive_check": {
-    "swe": "UKÄ ofullständig",
-    "en": "UKA comprehensive"
+  "SSIF_comprehensive_check": {
+    "swe": "SSIF ofullständig",
+    "en": "SSIF comprehensive"
   },
   "contributor_duplicate_check": {
     "swe": "Upphov dubblerat",
@@ -31,9 +31,9 @@
     "swe": "Utgivningsår",
     "en": "Publication year"
   },
-  "UKA": {
-    "swe": "UKÄ",
-    "en": "UKA"
+  "SSIF": {
+    "swe": "SSIF",
+    "en": "SSIF"
   },
   "add_oa": {
     "swe": "Öppen tillgång",

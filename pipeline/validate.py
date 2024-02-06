@@ -14,7 +14,7 @@ from pipeline.validators.issn import validate_issn
 from pipeline.validators.isbn import validate_isbn
 from pipeline.validators.isi import validate_isi
 from pipeline.validators.orcid import validate_orcid
-from pipeline.validators.uka import validate_uka
+from pipeline.validators.ssif import validate_ssif
 from pipeline.validators.uri import validate_uri
 from pipeline.validators.creator import validate_creator_count
 
@@ -59,7 +59,7 @@ PATHS = {
         'instanceOf.subject[?(@.@type=="Topic")].prefLabel',
         'instanceOf.hasNote[?(@.@type=="Note")].label',
     ),
-    "UKA": ('instanceOf.subject[?(@.inScheme.code=="uka.se")].code',),
+    "SSIF": ('instanceOf.classification[?(@.inScheme.@id=="https://id.kb.se/term/ssif")].code',),
 }
 
 PRECOMPILED_PATHS = {k: [parse(p) for p in v] for k, v in PATHS.items()}
@@ -131,8 +131,8 @@ def validate_stuff(field_events, session, harvest_cache, body, source, cached_pa
                     validate_date_time(field)
                 if field.id_type == "creator_count":
                     validate_creator_count(field)
-                if field.id_type == "UKA":
-                    validate_uka(field)
+                if field.id_type == "SSIF":
+                    validate_ssif(field)
                 if field.id_type == "free_text":
                     field.validation_status = Validation.VALID  # formerly "AcceptingValidator"
 

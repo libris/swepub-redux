@@ -59,7 +59,7 @@ def generate_search_tables():
                         (finalized_id, gf_shortened),
                     )
 
-                for subject in [item for sublist in doc.uka_subjects.values() for item in sublist]:
+                for subject in [item for sublist in doc.ssif_subjects.values() for item in sublist]:
                     third_cursor.execute(
                         "INSERT INTO search_subject (finalized_id, value) VALUES (?, ?)",
                         (finalized_id, subject),

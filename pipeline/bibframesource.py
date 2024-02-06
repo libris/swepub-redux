@@ -614,7 +614,7 @@ class BibframeSource:
         return None
 
     @property
-    def uka_subjects(self):
+    def ssif_subjects(self):
         subjects = dict()
         should_include_one_digit_topics = False
         should_include_three_digit_topics = False
@@ -828,14 +828,14 @@ class BibframeSource:
 
     @property
     def ssif_1_codes(self):
-        uka_subject_codes = []
+        ssif_subject_codes = []
         for subject in self.bibframe_master.get("instanceOf", {}).get("classification", []):
             if is_ssif_classification(subject):
                 subject_code = subject.get("code", "").strip()
                 if subject_code:
-                    uka_subject_codes.append(subject_code[0])
+                    ssif_subject_codes.append(subject_code[0])
 
-        return list(set(uka_subject_codes))
+        return list(set(ssif_subject_codes))
 
 
     @property

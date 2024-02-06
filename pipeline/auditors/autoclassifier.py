@@ -70,11 +70,11 @@ class AutoclassifierAuditor(BaseAuditor):
             return publication, audit_events, False
 
         title = get_title_by_language(publication, language)
-        current_codes = set(publication.ukas())
+        current_codes = set(publication.ssifs())
 
         annif_url = getenv("ANNIF_SV_URL" if language == "sv" else "ANNIF_EN_URL")
 
-        # Get non-UKA keywords in the target language
+        # Get non-SSIF keywords in the target language
         keywords = " ".join(publication.keywords(langtag=language))
 
         try:
@@ -103,7 +103,7 @@ class AutoclassifierAuditor(BaseAuditor):
         for suggestion in [
             d for d in suggestions if d["uri"].split("/")[-1] not in current_codes
         ]:
-            # Extract UKA code from URI
+            # Extract SSIF code from URI
             code = suggestion["uri"].split("/")[-1]
             # Skip sugggested level 1
             if len(code) == 1:
@@ -124,7 +124,7 @@ class AutoclassifierAuditor(BaseAuditor):
         if not new_codes:
             return publication, audit_events, False
 
-        initial_value = _get_uka_swe_classification_list(publication.classifications)
+        initial_value = _get_ssif_swe_classification_list(publication.classifications)
 
         classifications = [_create_classification(code) for code in new_codes]
 
@@ -132,17 +132,17 @@ class AutoclassifierAuditor(BaseAuditor):
             "classification", []
         ).extend(classifications)
 
-        value = _get_uka_swe_classification_list(publication.classifications)
+        value = _get_ssif_swe_classification_list(publication.classifications)
         audit_events.add_event(self.name, "auto_classify", True, initial_value, value)
 
         return publication, audit_events, True
 
 
-def _get_uka_swe_classification_list(classifications):
+def _get_ssif_swe_classification_list(classifications):
     """
     Returns a list of all SSIF classifications in Swedish with code and prefLabel for each
 
-    >>> _get_uka_swe_classification_list([
+    >>> _get_ssif_swe_classification_list([
     ...     {"@type": "Classification", "code": "1", "prefLabel": "Ett"},
     ...     {"@id": "https://id.kb.se/term/ssif/1", "@type": "Classification",
     ...      "code": "1", "prefLabel": "Ett"},
