@@ -304,7 +304,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, cached_paths, b
     num_deleted = 0
 
     with requests.Session() as session:
-        adapter = requests.adapters.HTTPAdapter(max_retries=RandomisedRetry(total=3, backoff_factor=2))
+        adapter = requests.adapters.HTTPAdapter(max_retries=RandomisedRetry(total=4, backoff_factor=2))
         session.mount('http://', adapter)
         session.mount('https://', adapter)
         with get_connection() as read_only_connection:
