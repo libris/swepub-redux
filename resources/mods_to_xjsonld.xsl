@@ -220,6 +220,17 @@
                     </xsl:for-each>
                 </array>
             </xsl:if>
+            <xsl:if test="mods:relatedItem[@type = 'constituent']">
+                <array key="hasPart">
+                    <xsl:for-each select="mods:relatedItem[@type = 'constituent']">
+                        <dict>
+                            <xsl:call-template name="relatedItem">
+                                <xsl:with-param name="relatedItem" select="." />
+                            </xsl:call-template>
+                        </dict>
+                    </xsl:for-each>
+                </array>
+            </xsl:if>
             <xsl:if test="mods:recordInfo">
                 <dict key="meta">
                     <string key="@type">AdminMetadata</string>
@@ -754,6 +765,9 @@
         <xsl:choose>
             <xsl:when test="mods:genre = 'dataset'">
                 <string key="@type">Dataset</string>
+            </xsl:when>
+            <xsl:when test="@type = 'constituent'">
+                <string key="@type">Resource</string>
             </xsl:when>
             <xsl:otherwise>
                 <string key="@type">Work</string>

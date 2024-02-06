@@ -1294,6 +1294,28 @@ def test_host_relateditem_no_authority(parser):
     assert actual == expected
 
 
+def test_constituent_relateditem(parser):
+    raw_xml = MODS(f"""
+      <relatedItem type="constituent">
+          <identifier type="uri">http://example.org/article/table-1</identifier>
+      </relatedItem>
+    """)
+    expected = [
+        {
+            "@type": "Resource",
+            "identifiedBy": [
+                {
+                    "@type": "URI",
+                    "value": "http://example.org/article/table-1"
+                }
+            ]
+        }
+    ]
+
+    actual = parser.parse_mods(raw_xml)['hasPart']
+    assert actual == expected
+
+
 def test_orcid_person_id_is_extracted(parser):
     raw_xml = MODS("""
       <name type="personal">
