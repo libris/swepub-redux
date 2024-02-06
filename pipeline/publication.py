@@ -336,7 +336,7 @@ class Publication:
         for subj in self.subjects:
             pref_label = None
 
-            if (term.get("inScheme", {}).get("@id") == SSIF_SCHEME) or (term.get("@id", "".startswith(SSIF_BASE))):
+            if (subj.get("inScheme", {}).get("@id") == SSIF_SCHEME) or (subj.get("@id", "".startswith(SSIF_BASE))):
                 continue
 
             if langtag:
