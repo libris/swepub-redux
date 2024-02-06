@@ -11,7 +11,7 @@ lxml==4.9.3
 psutil==5.9.5
 gunicorn==21.2.0
 orjson==3.9.7
-mysql-connector-python==8.1.0
+mysql-connector-python==8.0.33
 pytest==7.4.2
 mock>=1.0.1
 Levenshtein==0.22.0
