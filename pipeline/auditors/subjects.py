@@ -27,7 +27,8 @@ class SubjectsAuditor(BaseAuditor):
             if embellished is not item:
                 is_missing = True
 
-        publication.classifications = new_items
+        if new_items:
+            publication.classifications = new_items
 
         audit_events.add_event(self.name, "expand_research_subjects", is_missing)
 
