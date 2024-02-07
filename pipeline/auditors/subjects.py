@@ -19,8 +19,13 @@ class SubjectsAuditor(BaseAuditor):
         is_missing = False
 
         new_items = []
+        seen = set()
 
         for item in publication.classifications:
+            if item["@id"] in seen:
+                continue
+            seen.add(item["@id"])
+
             embellished = embellish(item, ["broader"])
             new_items.append(embellished)
 
