@@ -1,6 +1,5 @@
 import json
 from pathlib import Path
-import re
 
 from lxml.etree import LxmlError
 
@@ -24,7 +23,7 @@ if __name__ == "__main__":
     import sys
 
     if len(sys.argv) < 3:
-        print(f"Usage: in swepub-redux: python3 -m misc.mods_to_json <path-to-xsl> <path-record-in-MODS-xml>")
+        print(f"Usage: in swepub-redux: python3 -m misc.mods_to_json <path-to-xsl> <path-to-record-in-MODS-xml>")
         sys.exit(1)
 
     result = process(sys.argv[1], sys.argv[2])
