@@ -192,19 +192,21 @@ export default {
             </tr>
             <tr v-for="(suggestion, index) in result.suggestions" :key="index" class="Result-row">
               <td class="Result-cell"
-                v-if="suggestion[language] && suggestion[language].code">
-                {{ suggestion[language].code }}</td>
+                v-if="suggestion && suggestion.code">
+                {{ suggestion.code }}</td>
               <td v-else></td>
               <td class="Result-cell"
-                v-if="suggestion.swe && suggestion.swe.hasOwnProperty('prefLabel')">
-                {{ suggestion.swe.prefLabel }}</td>
+                v-if="suggestion.prefLabelByLang
+                && suggestion.prefLabelByLang.hasOwnProperty('sv')">
+                {{ suggestion.prefLabelByLang.sv }}</td>
               <td v-else></td>
               <td class="Result-cell"
-                v-if="suggestion.eng && suggestion.eng.hasOwnProperty('prefLabel')">
-                {{ suggestion.eng.prefLabel }}</td>
+                v-if="suggestion.prefLabelByLang
+                && suggestion.prefLabelByLang.hasOwnProperty('en')">
+                {{ suggestion.prefLabelByLang.en }}</td>
               <td v-else></td>
-              <td class="Result-cell" v-if="suggestion.hasOwnProperty('score')">
-                {{ suggestion.score }}</td>
+              <td class="Result-cell" v-if="suggestion.hasOwnProperty('_score')">
+                {{ suggestion._score }}</td>
               <td v-else></td>
             </tr>
           </table>

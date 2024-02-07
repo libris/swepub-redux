@@ -33,13 +33,13 @@ from simplemma.langdetect import lang_detector
 from pipeline.convert import ModsParser
 from pipeline.util import Enrichment, Normalization, Validation, ENRICHING_AUDITORS_CODES
 from pipeline.legacy_publication import Publication as LegacyPublication
+from pipeline.ldcache import embellish
 
 from service.utils import bibliometrics
 from service.utils.common import *
 from service.utils.process import *
 from service.utils.process_csv import export as process_csv_export
 from service.utils.bibliometrics_csv import export as bibliometrics_csv_export
-from service.utils.classify import enrich_subject
 from service.utils import ssif
 
 MODULE_DIR = Path(__file__).parent
@@ -400,8 +400,7 @@ def bibliometrics_get_record(record_id):
 # ╚██████╗███████╗██║  ██║███████║███████║██║██║        ██║
 #  ╚═════╝╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝╚═╝        ╚═╝
 
-undesired_binary_chars_table = dict.fromkeys(map(ord, '-–_'), None)
-undesired_unary_chars_table = dict.fromkeys(map(ord, ',.;:!?"\'@#$\u00a0'), ' ')
+
 @app.route("/api/v1/classify", methods=["POST"], strict_slashes=False)
 def classify():
     if request.content_type != "application/json":
@@ -458,10 +457,12 @@ def classify():
     else:
         status = "no match"
 
+    suggestions = [dict(embellish({"@id": f"https://id.kb.se/term/ssif/{code}"}, ["broader"]), **{"_score": score}) for code, score in subjects[:5]]
+
     return {
         "abstract": abstract,
         "status": status,
-        "suggestions": enrich_subject(subjects[:5], SSIF_MAPPINGS),
+        "suggestions": suggestions,
     }
 
 
