@@ -40,7 +40,7 @@ describe('Datastatus', () => {
     cy.wait('@ssif').then((xhr) => {
       expect(xhr.method).to.eq('GET');
     });
-    cy.get('#subjects-heading').should('be.visible');
+    cy.get('#classifications-heading').should('be.visible');
   });
 
   it('loads the validation stats by default', () => {

@@ -296,43 +296,43 @@ export default {
           group: 'channel',
         },
         {
-          key: 'subjects',
+          key: 'classifications',
           label: 'SSIF 1-siffrig',
           component: 'TableDataList',
           props: {
             targetKeys: ['oneDigitTopics'],
-            renderFn: this.extractSubject,
+            renderFn: this.extractClassification,
           },
           selected: false,
-          group: 'subject',
+          group: 'classification',
         },
         {
-          key: 'subjects',
+          key: 'classifications',
           label: 'SSIF 3-siffrig',
           component: 'TableDataList',
           props: {
             targetKeys: ['threeDigitTopics'],
-            renderFn: this.extractSubject,
+            renderFn: this.extractClassification,
           },
           selected: true,
-          group: 'subject',
+          group: 'classification',
         },
         {
-          key: 'subjects',
+          key: 'classifications',
           label: 'SSIF 5-siffrig',
           component: 'TableDataList',
           props: {
             targetKeys: ['fiveDigitTopics'],
-            renderFn: this.extractSubject,
+            renderFn: this.extractClassification,
           },
           selected: false,
-          group: 'subject',
+          group: 'classification',
         },
         {
           key: 'autoclassified',
           label: 'Autoklassning',
           selected: false,
-          group: 'subject',
+          group: 'classification',
           component: 'TableDataBoolean',
         },
         {
@@ -389,7 +389,7 @@ export default {
           indeterminate: false,
         },
         {
-          id: 'subject',
+          id: 'classification',
           label: 'Forskningsämne',
           selected: false,
           indeterminate: false,
@@ -501,7 +501,7 @@ export default {
       });
       return selectedKeys;
     },
-    extractSubject(props) {
+    extractClassification(props) {
       let arr = [];
       Object.keys(props.tdValue).forEach((el) => {
         props.targetKeys.forEach((key) => {

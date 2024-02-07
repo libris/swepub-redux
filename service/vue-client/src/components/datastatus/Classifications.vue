@@ -6,7 +6,7 @@ import palettes from '@/assets/json/chartPalettes.json';
 const DoughnutContainer = () => import('@/components/datastatus/DoughnutContainer');
 
 export default {
-  name: 'datastatus-subjects',
+  name: 'datastatus-classifications',
   components: {
     HelpBubble,
     DoughnutContainer,
@@ -27,7 +27,7 @@ export default {
   computed: {
     chartData() {
       if (this.data && this.data.hasOwnProperty('ssif')) {
-        const subjects = this.data.ssif;
+        const classifications = this.data.ssif;
         const totalArr = [];
         const labelArr = [];
         const codeArr = [];
@@ -35,10 +35,10 @@ export default {
         const percentageArr = [];
 
         // sort by number of posts desc
-        const sorted = Object.keys(subjects)
+        const sorted = Object.keys(classifications)
           .sort((a, b) => {
-            const totA = subjects[a].total;
-            const totB = subjects[b].total;
+            const totA = classifications[a].total;
+            const totB = classifications[b].total;
             if (totA > totB) {
               return -1;
             } if (totA < totB) {
@@ -47,13 +47,13 @@ export default {
           });
 
         sorted.forEach((el, index) => {
-          if (subjects[el].total > 0) {
+          if (classifications[el].total > 0) {
             // remove 0 cases flags
-            totalArr.push(subjects[el].total);
-            percentageArr.push(subjects[el].percentage);
+            totalArr.push(classifications[el].total);
+            percentageArr.push(classifications[el].percentage);
             labelArr.push(el);
             codeArr.push(el);
-            colorArr.push(palettes.subjects.oneDigit[index]);
+            colorArr.push(palettes.classifications.oneDigit[index]);
           }
         });
 
@@ -91,19 +91,19 @@ export default {
     },
   },
   methods: {
-    fetchSubjects() {
+    fetchClassifications() {
       if (this.apiQuery) {
         this.fetchData(this.apiQuery);
       }
     },
   },
   mounted() {
-    this.fetchSubjects();
+    this.fetchClassifications();
   },
   watch: {
     // eslint-disable-next-line func-names
     '$route.fullPath': function () {
-      this.fetchSubjects();
+      this.fetchClassifications();
     },
   },
 };
@@ -112,8 +112,8 @@ export default {
 <template>
   <div class="TopicChart" v-if="loading || error || (data && data.total > 0)">
     <div class="TopicChart-heading">
-      <h2 id="subjects-heading" class="heading heading-md">Forskningsämne (SSIF)</h2>
-      <help-bubble bubbleKey="subjects"/>
+      <h2 id="classifications-heading" class="heading heading-md">Forskningsämne (SSIF)</h2>
+      <help-bubble bubbleKey="classifications"/>
     </div>
     <vue-simple-spinner class="TopicChart-loading" size="large" v-if="loading"/>
     <p v-if="error" role="alert" aria-atomic="true">
@@ -127,9 +127,9 @@ export default {
       <div class="TopicChart-chartWrap">
         <doughnut-container :chartData="chartData"
           :chartStyles="chartStyles"
-          chartId="subjects-doughnut"
+          chartId="classifications-doughnut"
           :linked="false"
-          describedbyId="subjects-heading"/>
+          describedbyId="classifications-heading"/>
       </div>
     </div>
   </div>

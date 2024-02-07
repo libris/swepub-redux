@@ -39,7 +39,7 @@ beforeEach(() => {
       $route,
       $store,
     },
-    stubs: ['SelectSource', 'YearPicker', 'ShortStats', 'DatastatusSummary', 'DatastatusValidations', 'DatastatusSubjects', 'router-link'],
+    stubs: ['SelectSource', 'YearPicker', 'ShortStats', 'DatastatusSummary', 'DatastatusValidations', 'DatastatusClassifications', 'router-link'],
   });
 });
 

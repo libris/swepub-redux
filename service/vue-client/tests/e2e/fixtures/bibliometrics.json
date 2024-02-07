@@ -65,7 +65,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -161,7 +161,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                "60101"
             ],
@@ -246,7 +246,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                "60101"
             ],
@@ -322,7 +322,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -484,7 +484,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -578,7 +578,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                "10106"
             ],
@@ -702,7 +702,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -806,7 +806,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -894,7 +894,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                "50502"
             ],
@@ -1117,7 +1117,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -1218,7 +1218,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -1345,7 +1345,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -1454,7 +1454,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                "10101"
             ],
@@ -1556,7 +1556,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -1632,7 +1632,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                "60201"
             ],
@@ -1710,7 +1710,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -1792,7 +1792,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                "50801"
             ],
@@ -1890,7 +1890,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -1989,7 +1989,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                "50901",
                "50902"
@@ -2078,7 +2078,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                "10603"
             ],
@@ -2112,7 +2112,7 @@
       "publicationStatus":[
          
       ],
-      "subject":[
+      "classification":[
          
       ],
       "swedishList":false,

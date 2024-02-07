@@ -176,7 +176,7 @@
     }
   },
   "Bibliometrics": {
-    "subject": {
+    "classification": {
       "title": "Forskningsämne (SSIF)",
       "text": "Ämnesklassificering enligt Standard för svensk indelning av forskningsämnen (SSIF). Tänk på att inte alla poster i Swepub  är ämnesklassificerade. Dessutom är ämnesklassificering på 3-siffernivå genomgående mer förekommande än på 5-siffernivå."
     },
@@ -206,7 +206,7 @@
       "title": "Öppen tillgång",
       "text": "Output som är fritt tillgänglig enligt den information som har angetts i metadata från posten eller hämtats från de externa datakällorna Unpaywall och Directory of Open Access Books - DOAB."
     },
-    "subjects": {
+    "classifications": {
       "title": "Forskningsämne (SSIF)",
       "text": "Fördelning av samtliga poster med ämnesklassificering på nivå 1 enligt Standard för svensk indelning av forskningsämnen (SSIF)."
     },

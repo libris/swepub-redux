@@ -242,7 +242,7 @@
             },
             "type": "array"
           },
-          "subjects": {
+          "classifications": {
             "properties": {
               "fiveDigitTopics": {
                 "items": {
@@ -425,7 +425,7 @@
                     },
                     "type": "array"
                   },
-                  "subject": {
+                  "classification": {
                     "description": "SSIF codes, 3 or 5 digits.",
                     "example": [
                       "101",

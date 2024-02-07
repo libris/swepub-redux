@@ -2,7 +2,7 @@
 import SelectBase from '@/components/shared/SelectBase';
 
 export default {
-  name: 'select-subject',
+  name: 'select-classification',
   extends: SelectBase,
   components: {},
   props: {},
@@ -18,18 +18,18 @@ export default {
   computed: {
   },
   methods: {
-    transformOptions(subjects) {
-      const sortedSubjects = [];
+    transformOptions(classifications) {
+      const sortedClassifications = [];
       const lang = this.settings.language;
 
-      function addSubject(key, value) {
-        sortedSubjects.push({ label: `${key} - ${value[lang]}`, id: key });
+      function addClassification(key, value) {
+        sortedClassifications.push({ label: `${key} - ${value[lang]}`, id: key });
       }
 
       function traverseSubcats(obj) {
         Object.keys(obj).forEach((key) => {
           if (key !== 'statusCode') {
-            addSubject(key, obj[key]);
+            addClassification(key, obj[key]);
           }
           if (obj[key].hasOwnProperty('subcategories')) {
             traverseSubcats(obj[key].subcategories);
@@ -37,8 +37,8 @@ export default {
         });
       }
 
-      traverseSubcats(subjects);
-      return sortedSubjects;
+      traverseSubcats(classifications);
+      return sortedClassifications;
     },
   },
   mounted() {

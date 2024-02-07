@@ -9,7 +9,7 @@ import ShortStats from '@/components/datastatus/ShortStats';
 const HelpBubble = () => import('@/components/shared/HelpBubble');
 const DatastatusSummary = () => import('@/components/datastatus/Summary');
 const DatastatusValidations = () => import('@/components/datastatus/Validations');
-const DatastatusSubjects = () => import('@/components/datastatus/Subjects');
+const DatastatusClassifications = () => import('@/components/datastatus/Classifications');
 
 export default {
   // eslint-disable-next-line
@@ -22,7 +22,7 @@ export default {
     DatastatusSummary,
     ShortStats,
     DatastatusValidations,
-    DatastatusSubjects,
+    DatastatusClassifications,
   },
   props: {
     params: {
@@ -70,11 +70,11 @@ export default {
         queryYears = `?from=${this.query.from}&to=${this.query.to}`;
       }
       // summary query needs to be based on current selection (is pushed),
-      // validation & subject on present url params/query
+      // validation & classification on present url params/query
       return {
         summary: `/datastatus${selectedSource || selectedYears ? '/' : ''}${selectedSource}${selectedYears}`,
         validations: `/datastatus/validations${paramSource ? '/' : ''}${paramSource}${queryYears}`,
-        subjects: `/datastatus/ssif${paramSource ? '/' : ''}${paramSource}${queryYears}`,
+        classifications: `/datastatus/ssif${paramSource ? '/' : ''}${paramSource}${queryYears}`,
       };
     },
     selectedChanged() {
@@ -198,7 +198,7 @@ export default {
     </transition>
     <transition name="fade">
       <section class="Datastatus-chartContainer horizontal-wrapper flex">
-        <datastatus-subjects :apiQuery="apiQuery.subjects"/>
+        <datastatus-classifications :apiQuery="apiQuery.classifications"/>
         <datastatus-validations :apiQuery="apiQuery.validations"/>
       </section>
     </transition>
