@@ -16,6 +16,45 @@
             "example": "Classification",
             "type": "string"
           },
+          "broader": {
+            "type": "object",
+            "properties": {
+              "@id": {
+                "example": "https://id.kb.se/term/sssif/1",
+                "type": "string"
+              },
+              "@type": {
+                "example": "Classification",
+                "type": "string"
+              },
+              "code": {
+                "example": 1,
+                "type": "integer"
+              },
+              "inScheme": {
+                "properties": {
+                  "@id": {
+                    "example": "https://id.kb.se/term/ssif",
+                    "type": "string"
+                  },
+                },
+                "type": "object"
+              },
+              "prefLabelByLang": {
+                "properties": {
+                  "sv": {
+                    "example": "Naturvetenskap",
+                    "type": "string"
+                  },
+                  "en": {
+                    "example": "Natural Sciences",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          },
           "code": {
             "example": 101,
             "type": "integer"
@@ -23,7 +62,7 @@
           "inScheme": {
             "properties": {
               "@id": {
-                "example": "https://id.kb.se/term/ssif/",
+                "example": "https://id.kb.se/term/ssif",
                 "type": "string"
               },
             },
