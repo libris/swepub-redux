@@ -86,7 +86,7 @@ To start the Swepub service (which provides the API and serves the static fronte
 python3 -m service.swepub
 ```
 
-Then visit http://localhost:5000. API docs are available on http://localhost:5000/api/v1/apidocs.
+Then visit http://localhost:5000. API docs are available on http://localhost:5000/api/v2/apidocs.
 
 To use port other than 5000, set `SWEPUB_SERVICE_PORT`.
 

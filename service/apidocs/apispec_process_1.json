@@ -839,7 +839,7 @@
   },
   "servers": [
     {
-      "url": "/api/v1/process"
+      "url": "/api/v2/process"
     }
   ]
 }

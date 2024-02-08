@@ -577,7 +577,7 @@
   },
   "servers": [
     {
-      "url": "/api/v1/datastatus"
+      "url": "/api/v2/datastatus"
     }
   ]
 }

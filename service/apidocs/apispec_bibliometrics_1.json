@@ -626,7 +626,7 @@
   },
   "servers": [
     {
-      "url": "/api/v1/bibliometrics"
+      "url": "/api/v2/bibliometrics"
     }
   ]
 }

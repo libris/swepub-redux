@@ -145,6 +145,7 @@ def catch_all(_path):
 
 
 @app.route("/api/v1/bibliometrics", methods=["POST"], strict_slashes=False)
+@app.route("/api/v2/bibliometrics", methods=["POST"], strict_slashes=False)
 def bibliometrics_api():
     if request.content_type != "application/json":
         _errors(errors=['Content-Type must be "application/json"'])
@@ -374,6 +375,7 @@ def bibliometrics_api():
 
 
 @app.route("/api/v1/bibliometrics/publications/<path:record_id>", methods=["GET"])
+@app.route("/api/v2/bibliometrics/publications/<path:record_id>", methods=["GET"])
 def bibliometrics_get_record(record_id):
     if record_id is None:
         _errors(['Missing parameter: "record_id"'], status_code=400)
@@ -475,11 +477,13 @@ def classify():
 
 
 @app.route("/api/v1/datastatus", methods=["GET"], strict_slashes=False)
+@app.route("/api/v2/datastatus", methods=["GET"], strict_slashes=False)
 def datastatus():
     return datastatus_source(source=None)
 
 
 @app.route("/api/v1/datastatus/<source>", methods=["GET"], strict_slashes=False)
+@app.route("/api/v2/datastatus/<source>", methods=["GET"], strict_slashes=False)
 @check_from_to
 def datastatus_source(source):
     stats_converted = Table("stats_converted")
@@ -554,11 +558,13 @@ def datastatus_source(source):
 
 
 @app.route("/api/v1/datastatus/ssif")
+@app.route("/api/v2/datastatus/ssif")
 def datastatus_ssif_endpoint():
     return datastatus_ssif_source_api(None)
 
 
 @app.route("/api/v1/datastatus/ssif/<source>")
+@app.route("/api/v2/datastatus/ssif/<source>")
 @check_from_to
 def datastatus_ssif_source_api(source=None):
     stats_ssif_1, stats_converted = Tables("stats_ssif_1", "stats_converted")
@@ -607,11 +613,13 @@ def datastatus_ssif_source_api(source=None):
 
 
 @app.route("/api/v1/datastatus/validations", methods=["GET"])
+@app.route("/api/v2/datastatus/validations", methods=["GET"])
 def datastatus_validations():
     return datastatus_validations_source(source=None)
 
 
 @app.route("/api/v1/datastatus/validations/<source>", methods=["GET"])
+@app.route("/api/v2/datastatus/validations/<source>", methods=["GET"])
 @check_from_to
 def datastatus_validations_source(source=None):
     stats_field_events = Table("stats_field_events")
@@ -674,16 +682,19 @@ def datastatus_validations_source(source=None):
 
 
 @app.route("/api/v1/info/research-subjects", methods=["GET"])
+@app.route("/api/v2/info/research-subjects", methods=["GET"])
 def info_research_subjects():
     return jsonify(SSIF_TREE)
 
 
 @app.route("/api/v1/info/output-types", methods=["GET"])
+@app.route("/api/v2/info/output-types", methods=["GET"])
 def info_output_types():
     return jsonify(INFO_API_OUTPUT_TYPES)
 
 
 @app.route("/api/v1/info/sources", methods=["GET"])
+@app.route("/api/v2/info/sources", methods=["GET"])
 def info_sources():
     cur = get_db().cursor()
     cur.row_factory = lambda cursor, row: row[0]
@@ -703,6 +714,7 @@ def info_sources():
 
 
 @app.route("/api/v1/process/publications/<path:record_id>", methods=["GET"])
+@app.route("/api/v2/process/publications/<path:record_id>", methods=["GET"])
 def process_get_publication(record_id=None):
     if record_id is None:
         _errors(['Missing parameter: "record_id"'], status_code=400)
@@ -722,6 +734,7 @@ def process_get_publication(record_id=None):
 
 
 @app.route("/api/v1/process/publications/<path:record_id>/original", methods=["GET"])
+@app.route("/api/v2/process/publications/<path:record_id>/original", methods=["GET"])
 def process_get_original_publication(record_id=None):
     if record_id is None:
         _errors(['Missing parameter: "record_id"'], status_code=400)
@@ -734,6 +747,7 @@ def process_get_original_publication(record_id=None):
 
 
 @app.route("/api/v1/process/<source>/status")
+@app.route("/api/v2/process/<source>/status")
 def process_get_harvest_status(source):
     cur = get_db().cursor()
     cur.row_factory = dict_factory
@@ -777,6 +791,7 @@ def process_get_harvest_status(source):
 
 
 @app.route("/api/v1/process/<source>/status/history")
+@app.route("/api/v2/process/<source>/status/history")
 def process_get_harvest_status_history(source):
     result = {
         "harvest_history": [],
@@ -824,6 +839,7 @@ def process_get_harvest_status_history(source):
 
 
 @app.route("/api/v1/process/<harvest_id>/rejected")
+@app.route("/api/v2/process/<harvest_id>/rejected")
 def process_get_rejected_publications(harvest_id):
     limit = request.args.get("limit")
     offset = request.args.get("offset")
@@ -896,6 +912,7 @@ def process_get_rejected_publications(harvest_id):
 
 
 @app.route("/api/v1/process/<source>", methods=["GET"])
+@app.route("/api/v2/process/<source>", methods=["GET"])
 @check_from_to
 def process_get_stats(source=None):
     audit_labels_to_include = [
@@ -1008,6 +1025,7 @@ def process_get_stats(source=None):
 
 
 @app.route("/api/v1/process/<source>/export", methods=["GET"])
+@app.route("/api/v2/process/<source>/export", methods=["GET"])
 @check_from_to
 def process_get_export(source=None):
     export_as_csv, export_mimetype, csv_flavor = export_options(request)
@@ -1177,7 +1195,7 @@ def process_get_export(source=None):
 # ╚═╝     ╚═╝╚═╝╚══════╝ ╚═════╝╚═╝
 
 
-@app.route("/api/v1/apidocs", methods=["GET"], strict_slashes=False)
+@app.route("/api/v2/apidocs", methods=["GET"], strict_slashes=False)
 def api_docs():
     return send_from_directory(app.root_path, "apidocs/index.html")
 

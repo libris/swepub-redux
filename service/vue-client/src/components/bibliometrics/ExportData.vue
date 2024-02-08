@@ -59,7 +59,7 @@ export default {
           component: 'TableDataList',
           props: {
             renderComponent: 'TableDataLink',
-            base: '/api/v1/process/publications/',
+            base: '/api/v2/process/publications/',
           },
           label: 'Sammanslagna ID',
           selected: true,

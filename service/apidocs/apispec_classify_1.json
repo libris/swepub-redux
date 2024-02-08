@@ -175,7 +175,7 @@
   },
   "servers": [
     {
-      "url": "/api/v1/classify"
+      "url": "/api/v2/classify"
     }
   ]
 }
