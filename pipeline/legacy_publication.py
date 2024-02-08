@@ -390,16 +390,38 @@ class Publication:
                     langcode = 'eng' if lang == 'en' else 'swe'
                     newterm = {
                         "@id": "(SwePub)" + term.get("code", ""),
-                        "inScheme": {"code": f"hsv//{langcode}"},
+                        "code": term.get("code", ""),
+                        "prefLabel": term.get("prefLabelByLang", {}).get(lang, ""),
+                        "language": {
+                            "@type": "Language",
+                            "@id": f"https://id.kb.se/language/{langcode}",
+                            "code": langcode
+                        },
+                        "inScheme": {
+                            "@id": "https://id.kb.se/term/uka/",
+                            "@type": "ConceptScheme",
+                            "code": f"hsv//{langcode}"
+                        },
                     }
                     if "broader" in term:
                         newterm["@type"] = "ComplexSubject"
                         newterm["termComponentList"] = _get_term_components(
                             term["broader"], pref_label, lang
                         )
+
+                        # SSIF has three levels, so we can have two "broader" at most, so let's
+                        # keep it simple here.
+                        # TODO: Is still still necessary?
+                        broader = {
+                            "prefLabel": term.get("broader", {}).get("prefLabelByLang", {}).get(lang, "")
+                        }
+                        if term.get("broader", {}).get("broader"):
+                            broader["broader"] = {
+                                "prefLabel": term.get("broader", {}).get("broader", {}).get("prefLabelByLang", {}).get(lang, "")
+                            }
+                        newterm["broader"] = broader
                     else:
                         newterm["@type"] = "Topic"
-                        newterm["prefLabel"] = pref_label
 
                     subjects.append(newterm)
             else:
@@ -420,6 +442,15 @@ class Publication:
         body = self.body
         for s in body.get("instanceOf", {}).get("subject", []):
             if not is_ssif_classification(s):
+                langs = s.get("prefLabelByLang", {}).keys()
+                for lang in langs:  # should only be one at ths point
+                    langcode = "eng" if lang == "en" else "swe"
+                    s["language"] = {
+                        "@type": "Language",
+                        "@id": f"https://id.kb.se/language/{langcode}",
+                        "code": langcode
+                    }
+
                 for key, value in _find_by_lang(s, "prefLabel"):
                     s.pop(key)
                     s["label"] = value
@@ -656,7 +687,7 @@ def _get_provision_activity_statement(body):
 
 
 def is_ssif_classification(term):
-    return term.get("inScheme", {}).get("@id") == "https://id.kb.se/term/ssif"
+    return term.get("inScheme", {}).get("@id", "").startswith(("https://id.kb.se/term/ssif", "https://id.kb.se/term/uka"))
 
 
 def _format_date_as_year(date):
