@@ -189,12 +189,14 @@ class Publication:
         2. publication type determined by get_publication_types and added as swepub-publicationtype
         """
         body = self.body
+        if not body.get("instanceOf", {}).get("subject"):
+            body["instanceOf"]["subject"] = []
         subjects = body.get("instanceOf", {}).get("subject", [])
         genre_forms = body.get("instanceOf", {}).get("genreForm", [])
         for gf in genre_forms:
             if gf.get("@id"):
                 id = gf.get("@id")
-                if id and id.startswith("https://id.kb.se/term/swepub/svep/"):
+                if id and id.startswith("https://id.kb.se/term/swepub/svep"):
                     label = id.split("/")[-1]
                     code = "swepub-contenttype"
                     contenttype = {
@@ -443,7 +445,7 @@ class Publication:
         for s in body.get("instanceOf", {}).get("subject", []):
             if not is_ssif_classification(s):
                 langs = s.get("prefLabelByLang", {}).keys()
-                for lang in langs:  # should only be one at ths point
+                for lang in langs:  # should only be one at this point
                     langcode = "eng" if lang == "en" else "swe"
                     s["language"] = {
                         "@type": "Language",
