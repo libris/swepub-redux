@@ -680,16 +680,22 @@ class BibframeSource:
 
     @property
     def keywords(self):
-        subj_list = []
-        subjects = self.bibframe_master.get("instanceOf", {}).get("subject", [])
+        subjects = self.bibframe_master.get("instanceOf", {}).get("subject", []) + self.bibframe_master.get("instanceOf", {}).get("classification", [])
+        return self._get_keywords(subjects)
+
+    def _get_keywords(self, subjects):
+        keywords = []
         for subject in subjects:
-            pref_label = subject.get("prefLabel")
-            if pref_label:
-                subj_list.append(pref_label)
+            if subject.get("prefLabel"):
+                keywords.append(subject.get("prefLabel"))
+
             pref_labels_by_lang = subject.get("prefLabelByLang", {})
             for pref_label_by_lang in list(pref_labels_by_lang.values()):
-                subj_list.append(pref_label_by_lang)
-        return subj_list
+                keywords.append(pref_label_by_lang)
+
+            if subject.get("broader", {}):
+                keywords.extend(self._get_keywords([subject.get("broader")]))
+        return keywords
 
     @property
     def languages(self):
