@@ -56,15 +56,23 @@ publication_type_to_issuance_type = {
     "sam": "Monograph",
 }
 
-# TODO: Remove the need for this ugly workaround (currently used by add_instance_of_subject_650())
-top_subject_custom_mappings = {
+# TODO: Remove the need for this ugly workaround
+top_subject_mappings = {
         "en": {
-            "Agricultural and Veterinary sciences": "Agricultural sciences",
-            "Humanities and the Arts": "Humanities"
+            "1": "NATURAL SCIENCES",
+            "2": "ENGINEERING AND TECHNOLOGY",
+            "3": "MEDICAL AND HEALTH SCIENCES",
+            "4": "AGRICULTURAL SCIENCES",
+            "5": "SOCIAL SCIENCES",
+            "6": "HUMANITIES"
         },
         "sv": {
-            "Lantbruksvetenskap och veterinärmedicin": "Lantbruksvetenskaper",
-            "Humaniora och konst": "Humaniora"
+            "1": "NATURVETENSKAP",
+            "2": "TEKNIK OCH TEKNOLOGIER",
+            "3": "MEDICIN OCH HÄLSOVETENSKAP",
+            "4": "LANTBRUKSVETENSKAPER",
+            "5": "SAMHÄLLSVETENSKAP",
+            "6": "HUMANIORA"
         }
     }
 
@@ -440,7 +448,7 @@ class Publication:
                         newterm["termComponentList"] = [
                             {
                                 "@type": "Topic",
-                                "prefLabel": top_subject_custom_mappings[lang].get(pref_label, pref_label).upper()
+                                "prefLabel": top_subject_mappings.get(lang, {}).get(term.get("code"), pref_label)
                             }
                         ]
                     subjects.append(newterm)
@@ -674,13 +682,13 @@ def _get_term_components(broader, pref_label, lang):
 
 def _find_components(broader, lang):
     for key, value in _find_by_lang(broader, "prefLabel", [lang]):
-        pref_label = top_subject_custom_mappings[lang].get(value, value)
+        pref_label = top_subject_mappings.get(lang, {}).get(broader.get("code"), value)
         break
     else:
         return
 
     if not broader.get("broader"):
-        yield {"@type": "Topic", "prefLabel": pref_label.upper()}
+        yield {"@type": "Topic", "prefLabel": pref_label}
     else:
         yield from _find_components(broader.get("broader"), lang)
         yield {"@type": "TopicSubdivision", "prefLabel": pref_label}
