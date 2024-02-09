@@ -513,7 +513,8 @@
       {
         "url": "https://hhs.alma.exlibrisgroup.com/view/oai/46SSOE_INST/request",
         "subset": "HHS_SWEPUB",
-        "metadata_prefix": "swepub_mods"
+        "metadata_prefix": "swepub_mods",
+        "envs": ["DEV", "QA"]
       }
     ]
   },
