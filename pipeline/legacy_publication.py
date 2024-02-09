@@ -56,6 +56,18 @@ publication_type_to_issuance_type = {
     "sam": "Monograph",
 }
 
+# TODO: Remove the need for this ugly workaround (currently used by add_instance_of_subject_650())
+top_subject_custom_mappings = {
+        "en": {
+            "Agricultural and Veterinary sciences": "Agricultural sciences",
+            "Humanities and the Arts": "Humanities"
+        },
+        "sv": {
+            "Lantbruksvetenskap och veterinärmedicin": "Lantbruksvetenskaper",
+            "Humaniora och konst": "Humaniora"
+        }
+    }
+
 
 def get_publication_types(genre_form):
     return genre_form_publication_mappings.get(genre_form, [])
@@ -405,8 +417,8 @@ class Publication:
                             "code": f"hsv//{langcode}"
                         },
                     }
+                    newterm["@type"] = "ComplexSubject"
                     if "broader" in term:
-                        newterm["@type"] = "ComplexSubject"
                         newterm["termComponentList"] = _get_term_components(
                             term["broader"], pref_label, lang
                         )
@@ -423,8 +435,14 @@ class Publication:
                             }
                         newterm["broader"] = broader
                     else:
-                        newterm["@type"] = "Topic"
-
+                        # For legacy reasons it appears we need to add a termComponentList also for top-level
+                        # subjects and use @type ComplexSubject.
+                        newterm["termComponentList"] = [
+                            {
+                                "@type": "Topic",
+                                "prefLabel": top_subject_custom_mappings[lang].get(pref_label, pref_label).upper()
+                            }
+                        ]
                     subjects.append(newterm)
             else:
                 kept_classifications.append(term)
@@ -656,7 +674,7 @@ def _get_term_components(broader, pref_label, lang):
 
 def _find_components(broader, lang):
     for key, value in _find_by_lang(broader, "prefLabel", [lang]):
-        pref_label = value
+        pref_label = top_subject_custom_mappings[lang].get(value, value)
         break
     else:
         return
