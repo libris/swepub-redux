@@ -404,6 +404,7 @@ def bibliometrics_get_record(record_id):
 
 
 @app.route("/api/v1/classify", methods=["POST"], strict_slashes=False)
+@app.route("/api/v2/classify", methods=["POST"], strict_slashes=False)
 def classify():
     if request.content_type != "application/json":
         _errors('Content-Type must be "application/json"')
