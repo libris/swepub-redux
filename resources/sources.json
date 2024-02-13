@@ -536,8 +536,7 @@
       {
         "url": "https://ivl.diva-portal.org/dice/oai",
         "subset": "SwePub-ivl",
-        "metadata_prefix": "swepub_mods",
-        "envs": ["DEV", "QA"]
+        "metadata_prefix": "swepub_mods"
       }
     ]
   }
