@@ -11,6 +11,8 @@
 
     <xsl:output indent="yes" encoding="UTF-8"/>
 
+    <xsl:variable name="langmap" select="document('langmap.xml')/langmap/lang"/>
+
     <xsl:template match="/">
         <xsl:apply-templates select="*"/>
     </xsl:template>
@@ -62,6 +64,7 @@
                 <array key="genreForm">
                     <xsl:call-template name="content_type"/>
                     <xsl:call-template name="type"/>
+                    <xsl:call-template name="type_valueuri"/>
                 </array>
                 <array key="language">
                     <xsl:for-each select="mods:language/mods:languageTerm[@type = 'code']">
@@ -107,10 +110,17 @@
                 <array key="contribution">
                     <xsl:call-template name="names"/>
                 </array>
-                <array key="subject">
-                    <xsl:call-template name="subjects"/>
-                    <xsl:call-template name="uka_subjects"/>
-                </array>
+                <xsl:if test="mods:subject[(@authority != 'uka.se') or not(@authority)]">
+                    <array key="subject">
+                        <xsl:call-template name="subjects"/>
+                    </array>
+                </xsl:if>
+                <xsl:if test="mods:classification | mods:subject[@authority = 'uka.se' and @xlink:href]">
+                    <array key="classification">
+                        <xsl:apply-templates select="mods:classification"/>
+                        <xsl:call-template name="uka_subjects_as_classification"/>
+                    </array>
+                </xsl:if>
                 <array key="hasNote">
                     <xsl:if test="mods:note[@type = 'creatorCount']">
                         <dict>
@@ -121,6 +131,9 @@
                     <dict>
                         <string key="@type">PublicationStatus</string>
                         <xsl:choose>
+                            <xsl:when test="mods:note[@type = 'publicationStatus' and @valueURI]">
+                                <string key="@id"><xsl:value-of select="mods:note[@type = 'publicationStatus' and @valueURI]/@valueURI"/></string>
+                            </xsl:when>
                             <xsl:when test="mods:note[@type = 'publicationStatus'] = 'Published'">
                                 <string key="@id">https://id.kb.se/term/swepub/Published</string>
                             </xsl:when>
@@ -142,6 +155,12 @@
                             <xsl:when test="mods:note[@type = 'publicationStatus'] = 'Epub ahead of print/Online first'">
                                 <string key="@id">https://id.kb.se/term/swepub/EpubAheadOfPrintOnlineFirst</string>
                             </xsl:when>
+                            <xsl:when test="mods:note[@type = 'publicationStatus'] = 'Retracted'">
+                                <string key="@id">https://id.kb.se/term/swepub/Retracted</string>
+                            </xsl:when>
+                            <xsl:when test="mods:note[@type = 'publicationStatus']">
+                                <string key="label"><xsl:value-of select="mods:note[@type = 'publicationStatus']"/></string>
+                            </xsl:when>
                         </xsl:choose>
                     </dict>
                     <xsl:for-each select="mods:note[not(@type)]">
@@ -162,7 +181,7 @@
             <xsl:call-template name="identifiers"/>
 
             <xsl:if test="mods:relatedItem[@type = 'host'] and mods:relatedItem[@type = 'series']" >
-                <array key="partOf">
+                <array key="isPartOf">
                     <xsl:for-each select="mods:relatedItem[@type = 'host']">
                         <dict>
                             <xsl:call-template name="relatedItem">
@@ -182,7 +201,7 @@
                 </array>
             </xsl:if>
             <xsl:if test="mods:relatedItem[@type = 'host'] and not(mods:relatedItem[@type = 'series'])">
-                <array key="partOf">
+                <array key="isPartOf">
                     <xsl:for-each select="mods:relatedItem[@type = 'host']">
                         <dict>
                             <xsl:call-template name="relatedItem">
@@ -195,6 +214,17 @@
             <xsl:if test="mods:relatedItem[@type = 'series'] and not(mods:relatedItem[@type = 'host'])">
                 <array key="hasSeries">
                     <xsl:for-each select="mods:relatedItem[@type = 'series']">
+                        <dict>
+                            <xsl:call-template name="relatedItem">
+                                <xsl:with-param name="relatedItem" select="." />
+                            </xsl:call-template>
+                        </dict>
+                    </xsl:for-each>
+                </array>
+            </xsl:if>
+            <xsl:if test="mods:relatedItem[@type = 'constituent']">
+                <array key="hasPart">
+                    <xsl:for-each select="mods:relatedItem[@type = 'constituent']">
                         <dict>
                             <xsl:call-template name="relatedItem">
                                 <xsl:with-param name="relatedItem" select="." />
@@ -246,33 +276,173 @@
                     </xsl:if>
                 </dict>
             </xsl:if>
+
             <xsl:if test="mods:originInfo">
-                <xsl:if test="mods:originInfo/mods:publisher or mods:originInfo/mods:place or mods:originInfo/mods:dateIssued">
+                <!-- If originInfo has *no* attributes *and* certain elements, *or* the attribute eventType='publication' and certain elements, consider it to be a publication -->
+                <xsl:if test="(mods:originInfo[not(@*)] and (mods:originInfo/mods:publisher or mods:originInfo/mods:place or mods:originInfo/mods:dateIssued)) or (mods:originInfo[@eventType = 'publication'] and (mods:originInfo/mods:agent/mods:role/mods:roleTerm[.='pbl'] or mods:originInfo/mods:agent/mods:role/mods:roleTerm[@valueURI = 'http://id.loc.gov/vocabulary/relators/pbl']))">
                     <array key="publication">
-                        <dict>
-                            <string key="@type">Publication</string>
-                            <xsl:if test="mods:originInfo/mods:publisher">
-                                <dict key="agent">
-                                    <string key="@type">Agent</string>
-                                    <string key="label"><xsl:value-of select="mods:originInfo/mods:publisher"/></string>
+                        <xsl:for-each select="mods:originInfo[not(@*) or @eventType = 'publication']">
+                            <xsl:if test="mods:publisher or mods:place or mods:dateIssued or (@eventType = 'publication' and (mods:agent/mods:role/mods:roleTerm[.='pbl'] or mods:agent/mods:role/mods:roleTerm[@valueURI = 'http://id.loc.gov/vocabulary/relators/pbl']))">
+                                <dict>
+                                    <string key="@type">Publication</string>
+                                    <xsl:if test="mods:publisher">
+                                        <dict key="agent">
+                                            <string key="@type">Agent</string>
+                                            <string key="label"><xsl:value-of select="mods:publisher"/></string>
+                                        </dict>
+                                    </xsl:if>
+                                    <xsl:if test="mods:agent/mods:namePart">
+                                        <dict key="agent">
+                                            <string key="@type">Agent</string>
+                                            <string key="label"><xsl:value-of select="mods:agent/mods:namePart"/></string>
+                                        </dict>
+                                    </xsl:if>
+                                    <xsl:if test="mods:place/mods:placeTerm">
+                                        <dict key="place">
+                                            <string key="@type">Place</string>
+                                            <string key="label"><xsl:value-of select="mods:place/mods:placeTerm"/></string>
+                                        </dict>
+                                    </xsl:if>
+                                    <xsl:if test="mods:dateIssued">
+                                        <string key="date">
+                                            <xsl:call-template name="date">
+                                                <xsl:with-param name="date" select="mods:dateIssued" />
+                                            </xsl:call-template>
+                                        </string>
+                                    </xsl:if>
                                 </dict>
                             </xsl:if>
-                            <xsl:if test="mods:originInfo/mods:place/mods:placeTerm">
-                                <dict key="place">
-                                    <string key="@type">Place</string>
-                                    <string key="label"><xsl:value-of select="mods:originInfo/mods:place/mods:placeTerm"/></string>
-                                </dict>
-                            </xsl:if>
-                            <xsl:if test="mods:originInfo/mods:dateIssued">
-                                <string key="date">
-                                    <xsl:call-template name="date">
-                                        <xsl:with-param name="date" select="mods:originInfo/mods:dateIssued" />
-                                    </xsl:call-template>
-                                </string>
-                            </xsl:if>
-                        </dict>
-                    </array>>
+                        </xsl:for-each>
+                    </array>
                 </xsl:if>
+
+                <xsl:if test="mods:originInfo[@eventType = 'manufacture'] and (mods:originInfo/mods:agent/mods:role/mods:roleTerm[.='mfr'] or mods:originInfo/mods:agent/mods:role/mods:roleTerm[@valueURI = 'http://id.loc.gov/vocabulary/relators/mfr'])">
+                    <array key="manufacture">
+                        <xsl:for-each select="mods:originInfo[@eventType = 'manufacture']">
+                            <xsl:if test="mods:agent/mods:role/mods:roleTerm[.='mfr'] or mods:agent/mods:role/mods:roleTerm[@valueURI = 'http://id.loc.gov/vocabulary/relators/mfr']">
+                                <dict>
+                                    <string key="@type">Manufacture</string>
+                                    <xsl:if test="mods:agent/mods:namePart">
+                                        <dict key="agent">
+                                            <string key="@type">Agent</string>
+                                            <string key="label"><xsl:value-of select="mods:agent/mods:namePart"/></string>
+                                        </dict>
+                                    </xsl:if>
+                                    <xsl:if test="mods:place/mods:placeTerm">
+                                        <dict key="place">
+                                            <string key="@type">Place</string>
+                                            <string key="label"><xsl:value-of select="mods:place/mods:placeTerm"/></string>
+                                        </dict>
+                                    </xsl:if>
+                                </dict>
+                            </xsl:if>
+                        </xsl:for-each>
+                    </array>
+                </xsl:if>
+
+                <xsl:if test="mods:originInfo[@eventType = 'distribution'] and (mods:originInfo/mods:agent/mods:role/mods:roleTerm[.='dst'] or mods:originInfo/mods:agent/mods:role/mods:roleTerm[@valueURI = 'http://id.loc.gov/vocabulary/relators/dst'])">
+                    <array key="distribution">
+                        <xsl:for-each select="mods:originInfo[@eventType = 'distribution']">
+                            <xsl:if test="mods:agent/mods:role/mods:roleTerm[.='dst'] or mods:agent/mods:role/mods:roleTerm[@valueURI = 'http://id.loc.gov/vocabulary/relators/dst']">
+                                <dict>
+                                    <string key="@type">Distribution</string>
+                                    <xsl:if test="mods:agent/mods:namePart">
+                                        <dict key="agent">
+                                            <string key="@type">Agent</string>
+                                            <string key="label"><xsl:value-of select="mods:agent/mods:namePart"/></string>
+                                        </dict>
+                                    </xsl:if>
+                                    <xsl:if test="mods:place/mods:placeTerm">
+                                        <dict key="place">
+                                            <string key="@type">Place</string>
+                                            <string key="label"><xsl:value-of select="mods:place/mods:placeTerm"/></string>
+                                        </dict>
+                                    </xsl:if>
+                                </dict>
+                            </xsl:if>
+                        </xsl:for-each>
+                    </array>
+                </xsl:if>
+
+                <xsl:if test="mods:originInfo[@eventType = 'production'] and (mods:originInfo/mods:agent/mods:role/mods:roleTerm[.='pro'] or mods:originInfo/mods:agent/mods:role/mods:roleTerm[@valueURI = 'http://id.loc.gov/vocabulary/relators/pro'])">
+                    <array key="production">
+                        <xsl:for-each select="mods:originInfo[@eventType = 'production']">
+                            <xsl:if test="mods:agent/mods:role/mods:roleTerm[.='pro'] or mods:agent/mods:role/mods:roleTerm[@valueURI = 'http://id.loc.gov/vocabulary/relators/pro']">
+                                <dict>
+                                    <string key="@type">Production</string>
+                                    <xsl:if test="mods:agent/mods:namePart">
+                                        <dict key="agent">
+                                            <string key="@type">Agent</string>
+                                            <string key="label"><xsl:value-of select="mods:agent/mods:namePart"/></string>
+                                        </dict>
+                                    </xsl:if>
+                                    <xsl:if test="mods:place/mods:placeTerm">
+                                        <dict key="place">
+                                            <string key="@type">Place</string>
+                                            <string key="label"><xsl:value-of select="mods:place/mods:placeTerm"/></string>
+                                        </dict>
+                                    </xsl:if>
+                                </dict>
+                            </xsl:if>
+                        </xsl:for-each>
+                    </array>
+                </xsl:if>
+
+                <!-- Yes, this is a mess. -->
+                <xsl:variable name="hasContribution">
+                    <xsl:for-each select="mods:originInfo">
+                        <xsl:variable name="roleTerm" select="mods:agent/mods:role/mods:roleTerm" />
+                        <xsl:variable name="roleTermValueURI" select="mods:agent/mods:role/mods:roleTerm[@valueURI]" />
+                        <xsl:if test="
+                            mods:agent/mods:role/mods:roleTerm
+                            and not($roleTerm = 'pbl' or $roleTerm = 'mfr' or $roleTerm = 'dst' or $roleTerm = 'pro')
+                            and not($roleTermValueURI = 'http://id.loc.gov/vocabulary/relators/pbl' or $roleTermValueURI = 'http://id.loc.gov/vocabulary/relators/mfr' or $roleTermValueURI = 'http://id.loc.gov/vocabulary/relators/dst' or $roleTermValueURI = 'http://id.loc.gov/vocabulary/relators/pro')
+                        ">
+                            <xsl:value-of select="'true'"/>
+                        </xsl:if>
+                    </xsl:for-each>
+                </xsl:variable>
+
+                <xsl:if test="$hasContribution = 'true'">
+                    <array key="contribution">
+                        <xsl:for-each select="mods:originInfo">
+                            <xsl:variable name="roleTerm" select="mods:agent/mods:role/mods:roleTerm" />
+                            <xsl:variable name="roleTermValueURI" select="mods:agent/mods:role/mods:roleTerm[@valueURI]" />
+                            <xsl:if test="
+                                mods:agent/mods:role/mods:roleTerm
+                                and not($roleTerm = 'pbl' or $roleTerm = 'mfr' or $roleTerm = 'dst' or $roleTerm = 'pro')
+                                and not($roleTermValueURI = 'http://id.loc.gov/vocabulary/relators/pbl' or $roleTermValueURI = 'http://id.loc.gov/vocabulary/relators/mfr' or $roleTermValueURI = 'http://id.loc.gov/vocabulary/relators/dst' or $roleTermValueURI = 'http://id.loc.gov/vocabulary/relators/pro')
+                            ">
+                                <dict>
+                                    <string key="@type">Contribution</string>
+                                    <xsl:if test="mods:agent/mods:namePart">
+                                        <dict key="agent">
+                                            <string key="@type">Agent</string>
+                                            <string key="label"><xsl:value-of select="mods:agent/mods:namePart"/></string>
+                                            <array key="role">
+                                                <dict>
+                                                    <xsl:if test="mods:agent/mods:role/mods:roleTerm">
+                                                        <string key="@id">http://id.loc.gov/vocabulary/relators/<xsl:value-of select="mods:agent/mods:role/mods:roleTerm"/></string>
+                                                    </xsl:if>
+                                                    <xsl:if test="mods:agent/mods:role/mods:roleTerm[@valueURI]">
+                                                        <string key="@id"><xsl:value-of select="mods:agent/mods:role/mods:roleTerm/@valueURI"/></string>
+                                                    </xsl:if>
+                                                </dict>
+                                            </array>
+                                        </dict>
+                                    </xsl:if>
+                                    <xsl:if test="mods:place/mods:placeTerm">
+                                        <dict key="place">
+                                            <string key="@type">Place</string>
+                                            <string key="label"><xsl:value-of select="mods:place/mods:placeTerm"/></string>
+                                        </dict>
+                                    </xsl:if>
+                                </dict>
+                            </xsl:if>
+                        </xsl:for-each>
+                    </array>
+                </xsl:if>
+
                 <xsl:if test="mods:originInfo/mods:dateOther">
                     <xsl:for-each select="mods:originInfo/mods:dateOther[@type = 'defence']">
                         <array key="dissertation">
@@ -331,6 +501,7 @@
                     </string>
                 </xsl:if>
             </xsl:if>
+
             <xsl:if test="mods:location">
                   <array key="electronicLocator">
                     <xsl:for-each select="mods:location/*">
@@ -397,6 +568,15 @@
                                         <string key="endDate"><xsl:value-of select="text()"/></string>
                                     </xsl:if>
                                 </xsl:when>
+                                <xsl:when test="@valueURI">
+                                    <string key="@id"><xsl:value-of select="@valueURI"/></string>
+                                </xsl:when>
+                                <xsl:when test="text() = 'gratis'">
+                                    <string key="@id">https://id.kb.se/policy/oa/gratis</string>
+                                </xsl:when>
+                                <xsl:when test="text() = 'restricted'">
+                                    <string key="@id">https://id.kb.se/policy/oa/restricted</string>
+                                </xsl:when>
                                 <xsl:otherwise>
                                     <string key="@type">AccessPolicy</string>
                                     <string key="label"><xsl:value-of select="text()"/></string>
@@ -406,181 +586,152 @@
                     </xsl:for-each>
                 </array>
             </xsl:if>
+            <xsl:if test="mods:originInfo/mods:copyrightDate">
+                <array key="copyright">
+                    <dict>
+                        <string key="@type">Copyright</string>
+                        <string key="date"><xsl:value-of select="mods:originInfo/mods:copyrightDate"/></string>
+                    </dict>
+                </array>
+            </xsl:if>
         </dict>
     </xsl:template>
 
     <xsl:template name="type">
-        <xsl:for-each select="mods:genre[@type = 'outputType' and @authority = 'kb.se']">
+        <xsl:for-each select="mods:genre[@type = 'outputType' and @authority = 'kb.se' and not(@valueURI)]">
             <dict>
                 <xsl:choose>
                     <xsl:when test="../mods:genre[@type = 'outputType' and @authority = 'kb.se'] and text() = 'ArtisticPerformance/VisualArtworks'">
                         <string key="@id">https://id.kb.se/term/swepub/ArtisticWork</string>
                     </xsl:when>
                     <xsl:when test="../mods:genre[@type = 'outputType' and @authority = 'kb.se'] and text() = 'artistic-work/curated-exhibition-or-event'">
-                        <string key="@id">https://id.kb.se/term/swepub/artistic-work/original-creative-work</string>
+                        <string key="@id">https://id.kb.se/term/swepub/output/artistic-work/original-creative-work</string>
                     </xsl:when>
                     <xsl:when test="../mods:genre[@type = 'outputType' and @authority = 'kb.se'] and text() = 'publication/translation'">
-                        <string key="@id">https://id.kb.se/term/swepub/publication/critical-edition</string>
+                        <string key="@id">https://id.kb.se/term/swepub/output/publication/critical-edition</string>
                     </xsl:when>
                     <xsl:otherwise>
-                        <string key="@id">https://id.kb.se/term/swepub/<xsl:value-of select="."/></string>
+                        <string key="@id">https://id.kb.se/term/swepub/output/<xsl:value-of select="."/></string>
                     </xsl:otherwise>
                 </xsl:choose>
             </dict>
         </xsl:for-each>
-        <xsl:for-each select="mods:genre[@type = 'publicationType' and @authority = 'svep']">
+        <xsl:for-each select="mods:genre[@type = 'publicationType' and @authority = 'svep' and not(@valueURI)]">
             <xsl:choose>
-                <xsl:when test="text() = 'art'">
+                <xsl:when test="current()/@valueURI">
                     <dict>
-                        <string key="@id">https://id.kb.se/term/swepub/JournalArticle</string>
+                        <string key="@id"><xsl:value-of select="current()/@valueURI"/></string>
                     </dict>
+                </xsl:when>
+                <xsl:when test="text() = 'art'">
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <xsl:choose>
-                                <xsl:when test="../mods:genre[@type = 'contentType' and @authority = 'svep'] = 'ref'">
-                                     <dict>
-                                        <string key="@id">https://id.kb.se/term/swepub/publication/journal-article</string>
-                                    </dict>
-                                </xsl:when>
-                                <xsl:when test="../mods:genre[@type = 'contentType' and @authority = 'svep'] = 'vet'">
-                                     <dict>
-                                        <string key="@id">https://id.kb.se/term/swepub/publication/magazine-article</string>
-                                    </dict>
-                                </xsl:when>
-                                <xsl:when test="../mods:genre[@type = 'contentType' and @authority = 'svep'] = 'pop'">
-                                     <dict>
-                                        <string key="@id">https://id.kb.se/term/swepub/publication/newspaper-article</string>
-                                    </dict>
-                                </xsl:when>
+                            <xsl:when test="../mods:genre[@type = 'contentType' and @authority = 'svep'] = 'ref'">
+                                <dict>
+                                    <string key="@id">https://id.kb.se/term/swepub/output/publication/journal-article</string>
+                                </dict>
+                            </xsl:when>
+                            <xsl:when test="../mods:genre[@type = 'contentType' and @authority = 'svep'] = 'vet'">
+                                <dict>
+                                    <string key="@id">https://id.kb.se/term/swepub/output/publication/magazine-article</string>
+                                </dict>
+                            </xsl:when>
+                            <xsl:when test="../mods:genre[@type = 'contentType' and @authority = 'svep'] = 'pop'">
+                                <dict>
+                                    <string key="@id">https://id.kb.se/term/swepub/output/publication/newspaper-article</string>
+                                </dict>
+                            </xsl:when>
                         </xsl:choose>
                     </xsl:if>
                 </xsl:when>
                 <xsl:when test="text() = 'bok'">
-                    <dict>
-                        <string key="@id">https://id.kb.se/term/swepub/Book</string>
-                    </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/publication/book</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/publication/book</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
                 <xsl:when test="text() = 'kon'">
-                    <dict>
-                        <string key="@id">https://id.kb.se/term/swepub/ConferencePaper</string>
-                    </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/conference</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/conference</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
                 <xsl:when test="text() = 'kap'">
-                    <dict>
-                        <string key="@id">https://id.kb.se/term/swepub/BookChapter</string>
-                    </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/publication/book-chapter</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/publication/book-chapter</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
                 <xsl:when test="text() = 'dok'">
-                    <dict>
-                        <string key="@id">https://id.kb.se/term/swepub/DoctoralThesis</string>
-                    </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/publication/doctoral-thesis</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/publication/doctoral-thesis</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
                 <xsl:when test="text() = 'rap'">
-                    <dict>
-                        <string key="@id">https://id.kb.se/term/swepub/Report</string>
-                    </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/publication/report</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/publication/report</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
                 <xsl:when test="text() = 'rec'">
-                    <dict>
-                        <string key="@id">https://id.kb.se/term/swepub/Review</string>
-                    </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/publication/book-review</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/publication/book-review</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
                 <xsl:when test="text() = 'sam'">
-                    <dict>
-                        <string key="@id">https://id.kb.se/term/swepub/EditorialCollection</string>
-                    </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/publication/edited-book</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/publication/edited-book</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
                 <xsl:when test="text() = 'for'">
-                    <dict>
-                        <string key="@id">https://id.kb.se/term/swepub/ResearchReview</string>
-                    </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/publication/review-article</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/publication/review-article</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
                 <xsl:when test="text() = 'kfu'">
-                    <dict>
-                        <string key="@id">https://id.kb.se/term/swepub/ArtisticWork</string>
-                    </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/artistic-work</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/artistic-work</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
                 <xsl:when test="text() = 'lic'">
-                    <dict>
-                        <string key="@id">https://id.kb.se/term/swepub/LicentiateThesis</string>
-                    </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/publication/licentiate-thesis</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/publication/licentiate-thesis</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
                 <xsl:when test="text() = 'pat'">
-                    <dict>
-                        <string key="@id">https://id.kb.se/term/swepub/Patent</string>
-                    </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/intellectual-property/patent</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/intellectual-property/patent</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
                 <xsl:when test="text() = 'pro'">
-                    <dict>
-                        <string key="@id">https://id.kb.se/term/swepub/EditorialProceedings</string>
-                    </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/conference/proceeding</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/conference/proceeding</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
                 <xsl:when test="text() = 'ovr'">
-                    <dict>
-                        <string key="@id">https://id.kb.se/term/swepub/OtherPublication</string>
-                    </dict>
                     <xsl:if test="not(../mods:genre[@type = 'outputType' and @authority = 'kb.se'])">
                         <dict>
-                            <string key="@id">https://id.kb.se/term/swepub/publication</string>
+                            <string key="@id">https://id.kb.se/term/swepub/output/publication</string>
                         </dict>
                     </xsl:if>
                 </xsl:when>
@@ -589,11 +740,21 @@
     </xsl:template>
 
     <xsl:template name="content_type">
-            <xsl:if test="mods:genre[@type = 'contentType' and @authority = 'svep']">
-                <dict>
-                    <string key="@id">https://id.kb.se/term/swepub/svep/<xsl:value-of select="mods:genre[@type = 'contentType' and @authority = 'svep']"/></string>
-                </dict>
+            <xsl:if test="mods:genre[@type = 'contentType' and @authority = 'svep' and not(@valueURI)]">
+                <xsl:if test="mods:genre[@type = 'contentType' and @authority = 'svep'] = 'ref' or mods:genre[@type = 'contentType' and @authority = 'svep'] = 'vet' or mods:genre[@type = 'contentType' and @authority = 'svep'] = 'pop'">
+                    <dict>
+                        <string key="@id">https://id.kb.se/term/swepub/svep/<xsl:value-of select="mods:genre[@type = 'contentType' and @authority = 'svep' and not(@valueURI)]"/></string>
+                    </dict>
+                </xsl:if>
             </xsl:if>
+    </xsl:template>
+
+    <xsl:template name="type_valueuri">
+        <xsl:for-each select="mods:genre[@valueURI]">
+            <dict>
+                <string key="@id"><xsl:value-of select="current()/@valueURI"/></string>
+            </dict>
+        </xsl:for-each>
     </xsl:template>
 
     <xsl:template name="date">
@@ -607,14 +768,93 @@
             <xsl:when test="mods:genre = 'dataset'">
                 <string key="@type">Dataset</string>
             </xsl:when>
+            <xsl:when test="@type = 'constituent'">
+                <string key="@type">Resource</string>
+            </xsl:when>
             <xsl:otherwise>
                 <string key="@type">Work</string>
             </xsl:otherwise>
         </xsl:choose>
-        <xsl:if test="mods:genre = 'project' or mods:genre = 'programme' or mods:genre = 'grantAgreement' or mods:genre = 'initiative' or mods:genre = 'event'">
+        <xsl:if test="mods:genre = 'project' or mods:genre = 'programme' or mods:genre = 'grantAgreement' or mods:genre = 'initiative' or mods:genre = 'event' or (mods:genre and mods:authority[@authority = 'mserialpubtype' or @authority = 'marcgt']) or mods:genre[@valueURI] or (mods:genre and not(mods:genre = 'dataset'))">
             <array key="genreForm">
                 <xsl:for-each select="mods:genre">
                     <xsl:choose>
+                        <xsl:when test="current()/@valueURI">
+                            <dict>
+                                <string key="@id"><xsl:value-of select="current()/@valueURI"/></string>
+                            </dict>
+                        </xsl:when>
+                        <xsl:when test="current()/@authority = 'mserialpubtype'">
+                            <xsl:choose>
+                                <xsl:when test="text() = 'journal'">
+                                    <dict>
+                                        <string key="@id">http://id.loc.gov/vocabulary/mserialpubtype/journal</string>
+                                    </dict>
+                                </xsl:when>
+                                <xsl:when test="text() = 'magazine'">
+                                    <dict>
+                                        <string key="@id">http://id.loc.gov/vocabulary/mserialpubtype/mag</string>
+                                    </dict>
+                                </xsl:when>
+                                <xsl:when test="text() = 'newspaper'">
+                                    <dict>
+                                        <string key="@id">http://id.loc.gov/vocabulary/mserialpubtype/newspaper</string>
+                                    </dict>
+                                </xsl:when>
+                                <xsl:when test="text() = 'repository'">
+                                    <dict>
+                                        <string key="@id">http://id.loc.gov/vocabulary/mserialpubtype/repo</string>
+                                    </dict>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <dict>
+                                        <string key="label"><xsl:value-of select="text()" /></string>
+                                        <dict key="inScheme">
+                                            <string key="@type">ConceptScheme</string>
+                                            <string key="code"><xsl:value-of select="@authority"/></string>
+                                        </dict>
+                                    </dict>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:when>
+                        <xsl:when test="current()/@authority = 'marcgt'">
+                            <xsl:choose>
+                                <xsl:when test="text() = 'book'">
+                                    <dict>
+                                        <string key="@id">http://id.loc.gov/vocabulary/marcgt/boo</string>
+                                    </dict>
+                                </xsl:when>
+                                <xsl:when test="text() = 'conference publication'">
+                                    <dict>
+                                        <string key="@id">http://id.loc.gov/vocabulary/marcgt/cpb</string>
+                                    </dict>
+                                </xsl:when>
+                                <xsl:when test="text() = 'technical report'">
+                                    <dict>
+                                        <string key="@id">http://id.loc.gov/vocabulary/marcgt/ter</string>
+                                    </dict>
+                                </xsl:when>
+                                <xsl:when test="text() = 'thesis'">
+                                    <dict>
+                                        <string key="@id">http://id.loc.gov/vocabulary/marcgt/the</string>
+                                    </dict>
+                                </xsl:when>
+                                <xsl:when test="text() = 'web site'">
+                                    <dict>
+                                        <string key="@id">http://id.loc.gov/vocabulary/marcgt/web</string>
+                                    </dict>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <dict>
+                                        <string key="label"><xsl:value-of select="text()" /></string>
+                                        <dict key="inScheme">
+                                            <string key="@type">ConceptScheme</string>
+                                            <string key="code"><xsl:value-of select="@authority"/></string>
+                                        </dict>
+                                    </dict>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:when>
                         <xsl:when test="text() = 'project'">
                             <dict>
                                 <string key="@id">https://id.kb.se/term/swepub/project</string>
@@ -640,6 +880,11 @@
                                 <string key="@id">https://id.kb.se/term/swepub/event</string>
                             </dict>
                         </xsl:when>
+                        <xsl:otherwise>
+                            <dict>
+                                <string key="label"><xsl:value-of select="text()" /></string>
+                            </dict>
+                        </xsl:otherwise>
                     </xsl:choose>
                 </xsl:for-each>
             </array>
@@ -820,14 +1065,21 @@
                             <string key="@type">Organization</string>
                         </xsl:otherwise>
                     </xsl:choose>
-                    <string key="name"><xsl:value-of select="$org"/></string>
-                    <xsl:if test="$org/@lang">
-                        <dict key="language">
-                            <string key="@type">Language</string>
-                            <string key="@id">https://id.kb.se/language/<xsl:value-of select="$org/@lang"/></string>
-                            <string key="code"><xsl:value-of select="$org/@lang"/></string>
-                        </dict>
-                    </xsl:if>
+                    <xsl:choose>
+                        <xsl:when test="$org/@lang">
+                            <dict key="nameByLang">
+                                <string>
+                                    <xsl:attribute name="key">
+                                        <xsl:value-of select="$org/@lang"/>
+                                    </xsl:attribute>
+                                    <xsl:value-of select="$org"/>
+                                </string>
+                            </dict>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <string key="name"><xsl:value-of select="$org"/></string>
+                        </xsl:otherwise>
+                    </xsl:choose>
                     <xsl:if test="$org/@valueURI and $org/@authority">
                         <array key="identifiedBy">
                             <xsl:choose>
@@ -841,6 +1093,12 @@
                                 <xsl:when test="$org/@authority = 'kb.se/collaboration'">
                                     <xsl:call-template name="identifier">
                                         <xsl:with-param name="type">uri</xsl:with-param>
+                                        <xsl:with-param name="value" select="$org/@valueURI"/>
+                                    </xsl:call-template>
+                                </xsl:when>
+                                <xsl:when test="$org/@authority = 'ROR'">
+                                    <xsl:call-template name="identifier">
+                                        <xsl:with-param name="type">ROR</xsl:with-param>
                                         <xsl:with-param name="value" select="$org/@valueURI"/>
                                     </xsl:call-template>
                                 </xsl:when>
@@ -941,7 +1199,14 @@
                         </xsl:if>
                     </xsl:if>
                     <xsl:if test="@type = 'corporate'">
-                        <string key="@type">Organization</string>
+                        <xsl:choose>
+                            <xsl:when test="mods:description = 'Research group'">
+                                 <string key="@type">Collaboration</string>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                 <string key="@type">Organization</string>
+                            </xsl:otherwise>
+                        </xsl:choose>
                         <xsl:if test="mods:namePart != ''">
                             <xsl:if test="mods:namePart[@lang]">
                                 <dict key="nameByLang">
@@ -1039,32 +1304,32 @@
         </xsl:for-each>
     </xsl:template>
 
-     <xsl:template name="uka_subjects">
+    <xsl:template name="uka_subjects_as_classification">
         <xsl:for-each select="mods:subject[@authority = 'uka.se' and @xlink:href]">
             <dict>
-                <string key="@id">https://id.kb.se/term/uka/<xsl:value-of select="@xlink:href"/></string>
-                <string key="@type">Topic</string>
+                <string key="@id">
+                    <xsl:text>https://id.kb.se/term/ssif/</xsl:text>
+                    <xsl:value-of select="@xlink:href"/>
+                </string>
+                <string key="@type">Classification</string>
                 <string key="code"><xsl:value-of select="@xlink:href"/></string>
-                <string key="prefLabel"><xsl:value-of select="mods:topic[last()]"/></string>
-                <xsl:if test="@lang">
-                    <dict key="language">
-                        <string key="@type">Language</string>
-                        <string key="@id">https://id.kb.se/language/<xsl:value-of select="@lang"/></string>
-                        <string key="code"><xsl:value-of select="@lang"/></string>
-                    </dict>
-                </xsl:if>
+                <xsl:choose>
+                    <xsl:when test="@lang">
+                        <xsl:variable name="langtag" select="$langmap[@code=current()/@lang]/@tag"/>
+                        <dict key="prefLabelByLang">
+                            <string key="{$langtag | @lang[not($langtag)]}">
+                                <xsl:value-of select="mods:topic[last()]"/>
+                            </string>
+                        </dict>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <string key="prefLabel"><xsl:value-of select="mods:topic[last()]"/></string>
+                    </xsl:otherwise>
+                </xsl:choose>
                 <dict key="inScheme">
-                    <string key="@id">https://id.kb.se/term/uka/</string>
                     <string key="@type">ConceptScheme</string>
-                    <string key="code"><xsl:value-of select="@authority"/></string>
+                    <string key="@id">https://id.kb.se/term/ssif</string>
                 </dict>
-                <xsl:if test="count(mods:topic) > 1">
-                    <dict key="broader">
-                        <xsl:call-template name="broader">
-                            <xsl:with-param name="topic" select="count(mods:topic) - 1"/>
-                        </xsl:call-template>
-                    </dict>
-                </xsl:if>
             </dict>
         </xsl:for-each>
     </xsl:template>
@@ -1076,30 +1341,39 @@
                 <xsl:if test="@xlink:href">
                     <string key="code"><xsl:value-of select="@xlink:href"/></string>
                 </xsl:if>
+                <xsl:if test="@valueURI">
+                    <string key="@id"><xsl:value-of select="@valueURI"/></string>
+                </xsl:if>
                 <xsl:if test="@authority">
                     <dict key="inScheme">
-                        <string key="@id">
-                            <xsl:choose>
-                                <xsl:when test="@lang">
-                                    <xsl:value-of select="concat(@authority, '/', @lang)"/>
-                                </xsl:when>
-                                <xsl:otherwise>
-                                    <xsl:value-of select="@authority"/>
-                                </xsl:otherwise>
-                            </xsl:choose>
-                        </string>
+                        <xsl:choose>
+                            <xsl:when test="@authority = 'sao'">
+                                <string key="@id">https://id.kb.se/term/sao</string>
+                            </xsl:when>
+                            <xsl:when test="@authority = 'lcsh'">
+                                <string key="@id">http://id.loc.gov/authorities/subjects</string>
+                            </xsl:when>
+                            <xsl:when test="@authority = 'sdg'">
+                                <string key="@id">http://metadata.un.org/sdg</string>
+                            </xsl:when>
+                        </xsl:choose>
                         <string key="@type">ConceptScheme</string>
                         <string key="code"><xsl:value-of select="@authority"/></string>
                     </dict>
                 </xsl:if>
-                <xsl:if test="@lang">
-                    <dict key="language">
-                        <string key="@type">Language</string>
-                        <string key="@id">https://id.kb.se/language/<xsl:value-of select="@lang"/></string>
-                        <string key="code"><xsl:value-of select="@lang"/></string>
-                    </dict>
-                </xsl:if>
-                <string key="prefLabel"><xsl:value-of select="mods:topic[last()]"/></string>
+                <xsl:choose>
+                    <xsl:when test="@lang">
+                        <xsl:variable name="langtag" select="$langmap[@code=current()/@lang]/@tag"/>
+                        <dict key="prefLabelByLang">
+                            <string key="{$langtag | @lang[not($langtag)]}">
+                                <xsl:value-of select="mods:topic[last()]"/>
+                            </string>
+                        </dict>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <string key="prefLabel"><xsl:value-of select="mods:topic[last()]"/></string>
+                    </xsl:otherwise>
+                </xsl:choose>
                 <xsl:if test="count(mods:topic) > 1">
                     <dict key="broader">
                         <xsl:call-template name="broader">
@@ -1109,6 +1383,51 @@
                 </xsl:if>
             </dict>
         </xsl:for-each>
+    </xsl:template>
+
+    <xsl:template match="mods:classification">
+        <dict>
+            <xsl:choose>
+                <xsl:when test="@authority = 'ssif'">
+                    <string key="@id">
+                        <xsl:text>https://id.kb.se/term/ssif/</xsl:text>
+                        <xsl:choose>
+                            <xsl:when test="@xlink:href">
+                                <xsl:value-of select="@xlink:href"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of select="text()"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </string>
+                </xsl:when>
+                <xsl:otherwise>
+                    <string key="@type">Classification</string>
+                    <xsl:choose>
+                        <xsl:when test="@xlink:href">
+                            <string key="@id"><xsl:value-of select="@xlink:href"/></string>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <string key="code"><xsl:value-of select="text()"/></string>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                    <xsl:if test="@authority">
+                        <dict key="inScheme">
+                            <string key="@type">ConceptScheme</string>
+                            <string key="code"><xsl:value-of select="@authority"/></string>
+                        </dict>
+                    </xsl:if>
+                </xsl:otherwise>
+            </xsl:choose>
+            <xsl:if test="@generator">
+                <dict key="@annotation">
+                    <dict key="assigner">
+                        <string key="@type">SoftwareAgent</string>
+                        <string key="label"><xsl:value-of select="@generator"/></string>
+                    </dict>
+                </dict>
+            </xsl:if>
+        </dict>
     </xsl:template>
 
     <xsl:template name="broader">
@@ -1193,9 +1512,17 @@
             <xsl:when test="$type = 'isbn'">
                 <string key="@type">ISBN</string>
             </xsl:when>
+            <xsl:when test="$type = 'ocolc'">
+                <string key="@type">WorldCatNumber</string>
+            </xsl:when>
+            <!-- "worldcat" has been changed to "ocolc"; "worldcat" kept for backwards compatibility" -->
             <xsl:when test="$type = 'worldcat'">
                 <string key="@type">WorldCatNumber</string>
             </xsl:when>
+            <xsl:when test="$type = 'se-libr'">
+                <string key="@type">LibrisNumber</string>
+            </xsl:when>
+             <!-- "libris" has been changed to "se-libr"; "libris" kept for backwards compatibility" -->
             <xsl:when test="$type = 'libris'">
                 <string key="@type">LibrisNumber</string>
             </xsl:when>
@@ -1249,6 +1576,12 @@
             </xsl:when>
             <xsl:when test="$type = 'grid'">
                 <string key="@type">GRID</string>
+            </xsl:when>
+            <xsl:when test="$type = 'ror' or $type = 'ROR'">
+                <string key="@type">ROR</string>
+            </xsl:when>
+            <xsl:when test="$type = 'raid' or $type = 'RAiD' or $type = 'RAID'">
+                <string key="@type">RAiD</string>
             </xsl:when>
             <xsl:otherwise>
                 <string key="@type">Local</string>

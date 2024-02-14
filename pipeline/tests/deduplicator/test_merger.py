@@ -4,7 +4,7 @@ from pipeline.publicationmerger import PublicationMerger
 
 from pipeline.publication import Publication
 from pipeline.publication import Contribution
-from pipeline.publication import PartOf
+from pipeline.publication import IsPartOf
 
 from flexmock import flexmock
 
@@ -181,7 +181,7 @@ def test_merge_has_notes_publication_status_unknown():
 def test_merge_genre_form(master, candidate1_same_title_and_same_doi):
     merged_master = merger._merge_genre_forms(master, candidate1_same_title_and_same_doi)
     assert set(merged_master.genre_form) == {'https://id.kb.se/term/swepub/ArtisticWork',
-                                             'https://id.kb.se/term/swepub/artistic-work',
+                                             'https://id.kb.se/term/swepub/output/artistic-work',
                                              'https://id.kb.se/term/swepub/Book'}
 
 
@@ -284,161 +284,161 @@ def test_merge_electronic_locator_different_locator(master, candidate4_same_titl
                                                    {"@type": "Note", "noteType": "URL usage", "label": "primary"}]
 
 
-def test_merge_part_of(master, candidate2_different_title_and_same_pmid,
+def test_merge_is_part_of(master, candidate2_different_title_and_same_pmid,
                        candidate3_same_title_different_ids_summary):
-    part_of_master = master.part_of[0]
-    assert len(part_of_master.has_series) == 1
-    part_of_candidate2 = candidate2_different_title_and_same_pmid.part_of[0]
-    assert len(part_of_candidate2.has_series) == 1
-    merged_master = merger._merge_part_of(master, candidate2_different_title_and_same_pmid)
-    assert len(merged_master.part_of) == 1
-    merged_master_part_of = merged_master.part_of[0]
-    assert len(merged_master_part_of.has_series) == 2
-    assert part_of_master.has_series[0] in merged_master_part_of.has_series
-    assert part_of_candidate2.has_series[0] in merged_master_part_of.has_series
+    is_part_of_master = master.is_part_of[0]
+    assert len(is_part_of_master.has_series) == 1
+    is_part_of_candidate2 = candidate2_different_title_and_same_pmid.is_part_of[0]
+    assert len(is_part_of_candidate2.has_series) == 1
+    merged_master = merger._merge_is_part_of(master, candidate2_different_title_and_same_pmid)
+    assert len(merged_master.is_part_of) == 1
+    merged_master_is_part_of = merged_master.is_part_of[0]
+    assert len(merged_master_is_part_of.has_series) == 2
+    assert is_part_of_master.has_series[0] in merged_master_is_part_of.has_series
+    assert is_part_of_candidate2.has_series[0] in merged_master_is_part_of.has_series
 
-    part_of_candidate3 = candidate3_same_title_different_ids_summary.part_of[0]
-    assert part_of_master != part_of_candidate3
-    merged_master = merger._merge_part_of(master, candidate3_same_title_different_ids_summary)
-    assert len(merged_master.part_of) == 2
-    assert part_of_master in merged_master.part_of
-    assert part_of_candidate3 in merged_master.part_of
+    is_part_of_candidate3 = candidate3_same_title_different_ids_summary.is_part_of[0]
+    assert is_part_of_master != is_part_of_candidate3
+    merged_master = merger._merge_is_part_of(master, candidate3_same_title_different_ids_summary)
+    assert len(merged_master.is_part_of) == 2
+    assert is_part_of_master in merged_master.is_part_of
+    assert is_part_of_candidate3 in merged_master.is_part_of
 
 
-def test_merge_part_of_if_title_and_subtitle_are_similar():
-    part_of_master = _get_master_part_of()
+def test_merge_is_part_of_if_title_and_subtitle_are_similar():
+    is_part_of_master = _get_master_is_part_of()
 
-    part_of_candidate = PartOf({
-        'identifiedBy': [{'@type': 'ISSN', 'value': 'partof_2'}],
+    is_part_of_candidate = IsPartOf({
+        'identifiedBy': [{'@type': 'ISSN', 'value': 'ispartof_2'}],
         'hasTitle': [{'@type': 'Title', 'mainTitle': 'beyond professional Monologue.',
                       'subtitle': 'Rendering Oppressed Voices', 'volumeNumber': '28', 'issueNumber': '4'}],
     })
-    # Same part_ofs since mainTitle, subtitle, volume_number and issue_number are the same
-    assert part_of_master == part_of_candidate
-    mocked_master_publication = flexmock(part_of=[part_of_master])
-    mocked_candidate_publication = flexmock(part_of=[part_of_candidate])
-    merged_master = merger._merge_part_of(mocked_master_publication, mocked_candidate_publication)
-    assert len(merged_master.part_of) == 1
-    part_of_merged_master = merged_master.part_of[0]
-    assert part_of_master.main_title == part_of_merged_master.main_title
-    assert part_of_master.sub_title == part_of_merged_master.sub_title
-    assert not part_of_candidate.main_title == part_of_merged_master.main_title
-    assert not part_of_candidate.sub_title == part_of_merged_master.main_title
+    # Same is_part_ofs since mainTitle, subtitle, volume_number and issue_number are the same
+    assert is_part_of_master == is_part_of_candidate
+    mocked_master_publication = flexmock(is_part_of=[is_part_of_master])
+    mocked_candidate_publication = flexmock(is_part_of=[is_part_of_candidate])
+    merged_master = merger._merge_is_part_of(mocked_master_publication, mocked_candidate_publication)
+    assert len(merged_master.is_part_of) == 1
+    is_part_of_merged_master = merged_master.is_part_of[0]
+    assert is_part_of_master.main_title == is_part_of_merged_master.main_title
+    assert is_part_of_master.sub_title == is_part_of_merged_master.sub_title
+    assert not is_part_of_candidate.main_title == is_part_of_merged_master.main_title
+    assert not is_part_of_candidate.sub_title == is_part_of_merged_master.main_title
 
 
-def test_merge_part_of_not_merged_when_title_differ():
-    part_of_master = _get_master_part_of()
-    part_of_candidate_different_title = PartOf({
-        'identifiedBy': [{'@type': 'ISSN', 'value': 'partof_2'}],
+def test_merge_is_part_of_not_merged_when_title_differ():
+    is_part_of_master = _get_master_is_part_of()
+    is_part_of_candidate_different_title = IsPartOf({
+        'identifiedBy': [{'@type': 'ISSN', 'value': 'ispartof_2'}],
         'hasTitle': [{'@type': 'Title', 'mainTitle': 'Before amateur dialogue.',
                       'subtitle': 'Rendering Oppressed Voices', 'volumeNumber': '28', 'issueNumber': '4'}],
     })
-    # Different part_ofs since mainTitle not the same
-    assert part_of_master != part_of_candidate_different_title
-    mocked_master_publication = flexmock(part_of=[part_of_master])
-    mocked_candidate_publication = flexmock(part_of=[part_of_candidate_different_title])
-    merged_master = merger._merge_part_of(mocked_master_publication, mocked_candidate_publication)
-    assert len(merged_master.part_of) == 2
-    part_of_1_merged_master = merged_master.part_of[0]
-    part_of_2_merged_master = merged_master.part_of[1]
-    assert part_of_master.main_title == part_of_1_merged_master.main_title
-    assert part_of_master.sub_title == part_of_1_merged_master.sub_title
-    assert part_of_candidate_different_title.main_title == part_of_2_merged_master.main_title
-    assert part_of_candidate_different_title.sub_title == part_of_2_merged_master.sub_title
+    # Different is_part_ofs since mainTitle not the same
+    assert is_part_of_master != is_part_of_candidate_different_title
+    mocked_master_publication = flexmock(is_part_of=[is_part_of_master])
+    mocked_candidate_publication = flexmock(is_part_of=[is_part_of_candidate_different_title])
+    merged_master = merger._merge_is_part_of(mocked_master_publication, mocked_candidate_publication)
+    assert len(merged_master.is_part_of) == 2
+    is_part_of_1_merged_master = merged_master.is_part_of[0]
+    is_part_of_2_merged_master = merged_master.is_part_of[1]
+    assert is_part_of_master.main_title == is_part_of_1_merged_master.main_title
+    assert is_part_of_master.sub_title == is_part_of_1_merged_master.sub_title
+    assert is_part_of_candidate_different_title.main_title == is_part_of_2_merged_master.main_title
+    assert is_part_of_candidate_different_title.sub_title == is_part_of_2_merged_master.sub_title
 
 
-def test_merge_part_of_identified_bys():
-    part_of_master = _get_master_part_of()
-    part_of_candidate_additional_identified_bys = PartOf({
-        'identifiedBy': [{'@type': 'ISSN', 'value': 'partof_1', 'qualifier': 'print'},
-                         {'@type': 'ISSN', 'value': 'partof_2'},
+def test_merge_is_part_of_identified_bys():
+    is_part_of_master = _get_master_is_part_of()
+    is_part_of_candidate_additional_identified_bys = IsPartOf({
+        'identifiedBy': [{'@type': 'ISSN', 'value': 'ispartof_1', 'qualifier': 'print'},
+                         {'@type': 'ISSN', 'value': 'ispartof_2'},
                          {'@type': 'ISBN', 'value': 'isbn_1'}],
         'hasTitle': [{'@type': 'Title', 'mainTitle': 'Before amateur dialogue.',
                       'subtitle': 'Rendering Oppressed Voices', 'volumeNumber': '28', 'issueNumber': '4'}],
     })
-    # Same part_ofs since issn partof_1 are the same
-    assert part_of_master == part_of_candidate_additional_identified_bys
-    mocked_master_publication = flexmock(part_of=[part_of_master])
-    mocked_candidate_publication = flexmock(part_of=[part_of_candidate_additional_identified_bys])
-    merged_master = merger._merge_part_of(mocked_master_publication, mocked_candidate_publication)
-    assert len(merged_master.part_of) == 1
-    part_of_merged_master = merged_master.part_of[0]
-    assert {'@type': 'ISSN', 'value': 'partof_1', 'qualifier': 'print'} in part_of_merged_master.body['identifiedBy']
-    assert {'@type': 'ISSN', 'value': 'partof_2'} in part_of_merged_master.body['identifiedBy']
-    # assert {'@type': 'ISBN', 'value': 'isbn_1'} in part_of_merged_master.issns
+    # Same is_part_ofs since issn ispartof_1 are the same
+    assert is_part_of_master == is_part_of_candidate_additional_identified_bys
+    mocked_master_publication = flexmock(is_part_of=[is_part_of_master])
+    mocked_candidate_publication = flexmock(is_part_of=[is_part_of_candidate_additional_identified_bys])
+    merged_master = merger._merge_is_part_of(mocked_master_publication, mocked_candidate_publication)
+    assert len(merged_master.is_part_of) == 1
+    is_part_of_merged_master = merged_master.is_part_of[0]
+    assert {'@type': 'ISSN', 'value': 'ispartof_1', 'qualifier': 'print'} in is_part_of_merged_master.body['identifiedBy']
+    assert {'@type': 'ISSN', 'value': 'ispartof_2'} in is_part_of_merged_master.body['identifiedBy']
+    # assert {'@type': 'ISBN', 'value': 'isbn_1'} in is_part_of_merged_master.issns
 
 
-def test_merge_part_of_has_series_same_title():
-    part_of_master = _get_master_part_of()
-    part_of_candidate_same_hasseries_title = PartOf({
-        'identifiedBy': [{'@type': 'ISSN', 'value': 'partof_2'}],
+def test_merge_is_part_of_has_series_same_title():
+    is_part_of_master = _get_master_is_part_of()
+    is_part_of_candidate_same_hasseries_title = IsPartOf({
+        'identifiedBy': [{'@type': 'ISSN', 'value': 'ispartof_2'}],
         'hasTitle': [{'@type': 'Title', 'mainTitle': 'Beyond professional monologue',
                       'subtitle': 'Rendering Oppressed Voices', 'volumeNumber': '28', 'issueNumber': '4'}],
         'hasSeries': [{'@type': 'Work',
-                       'hasTitle': [{'@type': 'Title', 'mainTitle': 'part_of_serie_title_master'}]}]
+                       'hasTitle': [{'@type': 'Title', 'mainTitle': 'is_part_of_serie_title_master'}]}]
     })
-    # Same part_ofs since mainTitle, subtitle, volume_number and issue_number are the same
-    assert part_of_master == part_of_candidate_same_hasseries_title
-    mocked_master_publication = flexmock(part_of=[part_of_master])
-    mocked_candidate_publication = flexmock(part_of=[part_of_candidate_same_hasseries_title])
-    merged_master = merger._merge_part_of(mocked_master_publication, mocked_candidate_publication)
-    assert len(merged_master.part_of) == 1
-    part_of_merged_master = merged_master.part_of[0]
-    # Same hasSerie (partOf) since same mainTitle
-    assert len(part_of_merged_master.has_series) == 1
-    part_of_merged_master_has_series = part_of_merged_master.has_series[0]
-    assert part_of_master.has_series[0].main_title == part_of_merged_master_has_series.main_title
+    # Same is_part_ofs since mainTitle, subtitle, volume_number and issue_number are the same
+    assert is_part_of_master == is_part_of_candidate_same_hasseries_title
+    mocked_master_publication = flexmock(is_part_of=[is_part_of_master])
+    mocked_candidate_publication = flexmock(is_part_of=[is_part_of_candidate_same_hasseries_title])
+    merged_master = merger._merge_is_part_of(mocked_master_publication, mocked_candidate_publication)
+    assert len(merged_master.is_part_of) == 1
+    is_part_of_merged_master = merged_master.is_part_of[0]
+    # Same hasSerie (isPartOf) since same mainTitle
+    assert len(is_part_of_merged_master.has_series) == 1
+    is_part_of_merged_master_has_series = is_part_of_merged_master.has_series[0]
+    assert is_part_of_master.has_series[0].main_title == is_part_of_merged_master_has_series.main_title
 
 
-def test_merge_part_of_has_series_same_issn():
-    part_of_master = _get_master_part_of()
-    part_of_candidate_same_hasseries_issn_and_issue_number = PartOf({
-        'identifiedBy': [{'@type': 'ISSN', 'value': 'partof_2'}],
+def test_merge_is_part_of_has_series_same_issn():
+    is_part_of_master = _get_master_is_part_of()
+    is_part_of_candidate_same_hasseries_issn_and_issue_number = IsPartOf({
+        'identifiedBy': [{'@type': 'ISSN', 'value': 'ispartof_2'}],
         'hasTitle': [{'@type': 'Title', 'mainTitle': 'Beyond professional monologue',
                       'subtitle': 'Rendering Oppressed Voices', 'volumeNumber': '28', 'issueNumber': '4'}],
         'hasSeries': [{'@type': 'Work',
-                       'hasTitle': [{'@type': 'Title', 'mainTitle': 'part_of_serie_title_candidate',
+                       'hasTitle': [{'@type': 'Title', 'mainTitle': 'is_part_of_serie_title_candidate',
                                      'partNumber': 'issue_numer_1'}],
                        'identifiedBy': [{'@type': 'ISSN', 'value': 'has_serie_issn_1'}]
                        }
                       ]
     })
-    # Same part_ofs since mainTitle, subtitle, volume_number and issue_number are the same
-    assert part_of_master == part_of_candidate_same_hasseries_issn_and_issue_number
-    mocked_master_publication = flexmock(part_of=[part_of_master])
-    mocked_candidate_publication = flexmock(part_of=[part_of_candidate_same_hasseries_issn_and_issue_number])
-    merged_master = merger._merge_part_of(mocked_master_publication, mocked_candidate_publication)
-    assert len(merged_master.part_of) == 1
-    part_of_merged_master = merged_master.part_of[0]
-    # Same hasSerie (partOf) since same same issn (different mainTitle)
-    assert len(part_of_merged_master.has_series) == 1
-    part_of_merged_master_has_series = part_of_merged_master.has_series[0]
-    assert part_of_master.has_series[0].main_title == part_of_merged_master_has_series.main_title
+    # Same is_part_ofs since mainTitle, subtitle, volume_number and issue_number are the same
+    assert is_part_of_master == is_part_of_candidate_same_hasseries_issn_and_issue_number
+    mocked_master_publication = flexmock(is_part_of=[is_part_of_master])
+    mocked_candidate_publication = flexmock(is_part_of=[is_part_of_candidate_same_hasseries_issn_and_issue_number])
+    merged_master = merger._merge_is_part_of(mocked_master_publication, mocked_candidate_publication)
+    assert len(merged_master.is_part_of) == 1
+    is_part_of_merged_master = merged_master.is_part_of[0]
+    # Same hasSerie (isPartOf) since same same issn (different mainTitle)
+    assert len(is_part_of_merged_master.has_series) == 1
+    is_part_of_merged_master_has_series = is_part_of_merged_master.has_series[0]
+    assert is_part_of_master.has_series[0].main_title == is_part_of_merged_master_has_series.main_title
 
 
-def test_merge_part_of_has_series_not_merged_when_title_and_issn_differ():
-    part_of_master = _get_master_part_of()
-    part_of_candidate_different_hasseries_issn = PartOf({
-        'identifiedBy': [{'@type': 'ISSN', 'value': 'partof_2'}],
+def test_merge_is_part_of_has_series_not_merged_when_title_and_issn_differ():
+    is_part_of_master = _get_master_is_part_of()
+    is_part_of_candidate_different_hasseries_issn = IsPartOf({
+        'identifiedBy': [{'@type': 'ISSN', 'value': 'ispartof_2'}],
         'hasTitle': [{'@type': 'Title', 'mainTitle': 'Beyond professional monologue',
                       'subtitle': 'Rendering Oppressed Voices', 'volumeNumber': '28', 'issueNumber': '4'}],
         'hasSeries': [{'@type': 'Work',
-                       'hasTitle': [{'@type': 'Title', 'mainTitle': 'part_of_serie_title_candidate',
+                       'hasTitle': [{'@type': 'Title', 'mainTitle': 'is_part_of_serie_title_candidate',
                                      'partNumber': 'issue_numer_1'}],
                        'identifiedBy': [{'@type': 'ISSN', 'value': 'has_serie_issn_2'}]
                        }
                       ]
     })
-    # Same part_ofs since mainTitle, subtitle, volume_number and issue_number are the same
-    assert part_of_master == part_of_candidate_different_hasseries_issn
-    mocked_master_publication = flexmock(part_of=[part_of_master])
-    mocked_candidate_publication = flexmock(part_of=[part_of_candidate_different_hasseries_issn])
-    merged_master = merger._merge_part_of(mocked_master_publication, mocked_candidate_publication)
-    assert len(merged_master.part_of) == 1
-    part_of_merged_master = merged_master.part_of[0]
-    assert len(part_of_merged_master.has_series) == 2
-    assert part_of_master.has_series[0].main_title == part_of_merged_master.has_series[0].main_title
-    assert part_of_candidate_different_hasseries_issn.has_series[0].main_title == part_of_merged_master.has_series[1].main_title
+    # Same is_part_ofs since mainTitle, subtitle, volume_number and issue_number are the same
+    assert is_part_of_master == is_part_of_candidate_different_hasseries_issn
+    mocked_master_publication = flexmock(is_part_of=[is_part_of_master])
+    mocked_candidate_publication = flexmock(is_part_of=[is_part_of_candidate_different_hasseries_issn])
+    merged_master = merger._merge_is_part_of(mocked_master_publication, mocked_candidate_publication)
+    assert len(merged_master.is_part_of) == 1
+    is_part_of_merged_master = merged_master.is_part_of[0]
+    assert len(is_part_of_merged_master.has_series) == 2
+    assert is_part_of_master.has_series[0].main_title == is_part_of_merged_master.has_series[0].main_title
+    assert is_part_of_candidate_different_hasseries_issn.has_series[0].main_title == is_part_of_merged_master.has_series[1].main_title
 
 
 def test_merge_publication_information_place_from_candidate():
@@ -532,13 +532,29 @@ def test_merge_usage_and_access_policy():
     assert expected == merged_master.usage_and_access_policy
 
 
-def _get_master_part_of():
-    return PartOf({
-        'identifiedBy': [{'@type': 'ISSN', 'value': 'partof_1'}],
+def test_merge_copyright_from_candidate():
+    master_without_copyright = Publication({})
+    candidate_with_copyright = Publication({'copyright': [{'@type': 'Copyright', 'date': '1999'}]})
+
+    merged_master = merger._merge_copyright_date(master_without_copyright, candidate_with_copyright)
+    assert merged_master.copyright_date == [{'@type': 'Copyright', 'date': '1999'}]
+
+
+def test_merge_copyright_prefer_master():
+    master_with_copyright = Publication({'copyright': [{'@type': 'Copyright', 'date': '2010'}]})
+    candidate_with_copyright = Publication({'copyright': [{'@type': 'Copyright', 'date': '2020'}]})
+
+    merged_master = merger._merge_copyright_date(master_with_copyright, candidate_with_copyright)
+    assert merged_master.copyright_date == [{'@type': 'Copyright', 'date': '2010'}]
+
+
+def _get_master_is_part_of():
+    return IsPartOf({
+        'identifiedBy': [{'@type': 'ISSN', 'value': 'ispartof_1'}],
         'hasTitle': [{'@type': 'Title', 'mainTitle': 'Beyond professional monologue',
                       'subtitle': 'rendering oppressed voices', 'volumeNumber': '28', 'issueNumber': '4'}],
         'hasSeries': [{'@type': 'Work',
-                       'hasTitle': [{'@type': 'Title', 'mainTitle': 'part_of_serie_title_master',
+                       'hasTitle': [{'@type': 'Title', 'mainTitle': 'is_part_of_serie_title_master',
                                      'partNumber': 'issue_numer_1'}],
                        'identifiedBy': [{'@type': 'ISSN', 'value': 'has_serie_issn_1'}]
                        }

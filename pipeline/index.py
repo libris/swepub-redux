@@ -3,7 +3,7 @@ import orjson as json
 from pipeline.bibframesource import BibframeSource
 from pipeline.storage import get_connection, checkpoint
 
-OUTPUT_TYPE_PREFIX = "https://id.kb.se/term/swepub/"
+OUTPUT_TYPE_PREFIX = "https://id.kb.se/term/swepub/output/"
 
 
 def generate_search_tables():
@@ -59,7 +59,7 @@ def generate_search_tables():
                         (finalized_id, gf_shortened),
                     )
 
-                for subject in [item for sublist in doc.uka_subjects.values() for item in sublist]:
+                for subject in [item for sublist in doc.ssif_subjects.values() for item in sublist]:
                     third_cursor.execute(
                         "INSERT INTO search_subject (finalized_id, value) VALUES (?, ?)",
                         (finalized_id, subject),
@@ -119,6 +119,8 @@ def get_publication_status(doc):
         "https://id.kb.se/term/swepub/InPress",
     ]:
         return "submitted"
+    elif ps == "https://id.kb.se/term/swepub/Retracted":
+        return "retracted"
     return None
 
 

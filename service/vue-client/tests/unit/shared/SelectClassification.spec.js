@@ -1,7 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import SelectSubject from '@/components/shared/SelectSubject.vue';
-
 import { enableFetchMocks } from 'jest-fetch-mock';
+import SelectClassification from '@/components/shared/SelectClassification.vue';
 
 enableFetchMocks();
 
@@ -95,7 +94,7 @@ const $store = {
 beforeEach(() => {
   fetch.resetMocks();
   fetch.mockResponse(JSON.stringify(apiReponse));
-  wrapper = shallowMount(SelectSubject, {
+  wrapper = shallowMount(SelectClassification, {
     propsData: {
       apiEndpoint: null,
     },
@@ -110,7 +109,7 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe('SelectSubject', () => {
+describe('SelectClassification', () => {
   it('transforms the options correctly', async () => {
     await wrapper.vm.$nextTick();
     expect(JSON.stringify(transformed))

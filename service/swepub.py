@@ -2,7 +2,8 @@
 import json
 import orjson
 from functools import wraps
-from os import path, getenv
+from os import getenv
+from pathlib import Path
 import requests
 
 from datetime import datetime
@@ -29,59 +30,48 @@ from collections import Counter
 from tempfile import NamedTemporaryFile
 from simplemma.langdetect import lang_detector
 
+from pipeline.convert import ModsParser
+from pipeline.util import Enrichment, Normalization, Validation, ENRICHING_AUDITORS_CODES
+from pipeline.legacy_publication import Publication as LegacyPublication
+from pipeline.ldcache import embellish
+
 from service.utils import bibliometrics
 from service.utils.common import *
 from service.utils.process import *
 from service.utils.process_csv import export as process_csv_export
 from service.utils.bibliometrics_csv import export as bibliometrics_csv_export
-from service.utils.classify import enrich_subject
+from service.utils import ssif
 
-from pipeline.convert import ModsParser
-from pipeline.util import Enrichment, Normalization, Validation, ENRICHING_AUDITORS_CODES
-
-FILE_PATH = path.dirname(path.abspath(__file__))
+MODULE_DIR = Path(__file__).parent
+PROJECT_ROOT = MODULE_DIR.parent
 
 # sqlite DB path defaults to file in parent directory of swepub.py directory if SWEPUB_DB_READONLY not set
-SWEPUB_DB_READONLY = getenv(
-    "SWEPUB_DB_READONLY",
-    path.join(path.dirname(path.abspath(__file__)), "../swepub.sqlite3"),
-)
+SWEPUB_DB_READONLY = getenv("SWEPUB_DB_READONLY") or str(PROJECT_ROOT / "swepub.sqlite3")
 
-SSIF_LABELS = {
-    1: "1 Naturvetenskap",
-    2: "2 Teknik",
-    3: "3 Medicin och hälsovetenskap",
-    4: "4 Lantbruksvetenskap och veterinärmedicin",
-    5: "5 Samhällsvetenskap",
-    6: "6 Humaniora och konst",
-}
+with (PROJECT_ROOT / "resources" / "ssif.jsonld").open() as f:
+    SSIF_DATA = json.load(f)
 
-INFO_API_MAPPINGS = sort_mappings(
-    json.load(
-        open(
-            path.join(
-                FILE_PATH,
-                "../resources/ssif_research_subjects.json",
-            )
-        )
-    )
-)
-INFO_API_OUTPUT_TYPES = json.load(open(path.join(FILE_PATH, "../resources/output_types.json")))
+SSIF_MAPPINGS = ssif.make_mappings(SSIF_DATA)
+SSIF_TREE = ssif.build_tree_form(SSIF_MAPPINGS)
+SSIF_LABELS = ssif.get_top_labels(SSIF_TREE)
+
+with (PROJECT_ROOT / "resources" / "output_types.json").open() as f:
+    INFO_API_OUTPUT_TYPES = json.load(f)
 
 
-DEFAULT_SWEPUB_SOURCE_FILE = path.join(FILE_PATH, "../resources/sources.json")
+DEFAULT_SWEPUB_SOURCE_FILE = PROJECT_ROOT / "resources" / "sources.json"
 SWEPUB_SOURCE_FILE = getenv("SWEPUB_SOURCE_FILE", DEFAULT_SWEPUB_SOURCE_FILE)
 
 INFO_API_SOURCE_ORG_MAPPING = json.load(open(SWEPUB_SOURCE_FILE))
-CATEGORIES = json.load(open(path.join(FILE_PATH, "../resources/categories.json")))
 
-DEFAULT_XSLT = "\n".join(
-    [
-        x.strip("\n\r")
-        for x in open(path.join(FILE_PATH, "../resources/mods_to_xjsonld.xsl")).readlines()
-        if x.strip(" \t\n\r")
-    ]
-)
+with (PROJECT_ROOT / "resources" / "mods_to_xjsonld.xsl").open() as f:
+    DEFAULT_XSLT = "\n".join(
+        [
+            x.strip("\n\r")
+            for x in f
+            if x.strip(" \t\n\r")
+        ]
+    )
 
 ANNIF_EN_URL = getenv("ANNIF_EN_URL", "http://127.0.0.1:8083/v1/projects/swepub-en")
 ANNIF_SV_URL = getenv("ANNIF_SV_URL", "http://127.0.0.1:8083/v1/projects/swepub-sv")
@@ -155,6 +145,7 @@ def catch_all(_path):
 
 
 @app.route("/api/v1/bibliometrics", methods=["POST"], strict_slashes=False)
+@app.route("/api/v2/bibliometrics", methods=["POST"], strict_slashes=False)
 def bibliometrics_api():
     if request.content_type != "application/json":
         _errors(errors=['Content-Type must be "application/json"'])
@@ -203,7 +194,7 @@ def bibliometrics_api():
             ps.strip() for ps in query_data.get("publicationStatus", []) if len(ps.strip()) > 0
         ]
         if len(publication_status) > 0:
-            if not all(ps in ("published", "epub", "submitted") for ps in publication_status):
+            if not all(ps in ("published", "epub", "submitted", "retracted") for ps in publication_status):
                 _errors(errors=[f"Invalid value for publication status."], status_code=400)
 
         swedish_list = query_data.get("swedishList", None)
@@ -384,6 +375,7 @@ def bibliometrics_api():
 
 
 @app.route("/api/v1/bibliometrics/publications/<path:record_id>", methods=["GET"])
+@app.route("/api/v2/bibliometrics/publications/<path:record_id>", methods=["GET"])
 def bibliometrics_get_record(record_id):
     if record_id is None:
         _errors(['Missing parameter: "record_id"'], status_code=400)
@@ -393,6 +385,10 @@ def bibliometrics_get_record(record_id):
     if not row:
         _errors(["Not Found"], status_code=404)
     doc = json.loads(row[0])
+
+    if request.args.get("_legacy") is not None:
+        doc = LegacyPublication(doc).body_with_required_legacy_search_fields
+
     # TODO: Don't store the following in the actual document
     doc.pop("_publication_ids", None)
     doc.pop("_publication_orgs", None)
@@ -406,9 +402,9 @@ def bibliometrics_get_record(record_id):
 # ╚██████╗███████╗██║  ██║███████║███████║██║██║        ██║
 #  ╚═════╝╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝╚═╝        ╚═╝
 
-undesired_binary_chars_table = dict.fromkeys(map(ord, '-–_'), None)
-undesired_unary_chars_table = dict.fromkeys(map(ord, ',.;:!?"\'@#$\u00a0'), ' ')
+
 @app.route("/api/v1/classify", methods=["POST"], strict_slashes=False)
+@app.route("/api/v2/classify", methods=["POST"], strict_slashes=False)
 def classify():
     if request.content_type != "application/json":
         _errors('Content-Type must be "application/json"')
@@ -464,10 +460,12 @@ def classify():
     else:
         status = "no match"
 
+    suggestions = [dict(embellish({"@id": f"https://id.kb.se/term/ssif/{code}"}, ["broader"]), **{"_score": score}) for code, score in subjects[:5]]
+
     return {
         "abstract": abstract,
         "status": status,
-        "suggestions": enrich_subject(subjects[:5], CATEGORIES),
+        "suggestions": suggestions,
     }
 
 
@@ -480,11 +478,13 @@ def classify():
 
 
 @app.route("/api/v1/datastatus", methods=["GET"], strict_slashes=False)
+@app.route("/api/v2/datastatus", methods=["GET"], strict_slashes=False)
 def datastatus():
     return datastatus_source(source=None)
 
 
 @app.route("/api/v1/datastatus/<source>", methods=["GET"], strict_slashes=False)
+@app.route("/api/v2/datastatus/<source>", methods=["GET"], strict_slashes=False)
 @check_from_to
 def datastatus_source(source):
     stats_converted = Table("stats_converted")
@@ -559,11 +559,13 @@ def datastatus_source(source):
 
 
 @app.route("/api/v1/datastatus/ssif")
+@app.route("/api/v2/datastatus/ssif")
 def datastatus_ssif_endpoint():
     return datastatus_ssif_source_api(None)
 
 
 @app.route("/api/v1/datastatus/ssif/<source>")
+@app.route("/api/v2/datastatus/ssif/<source>")
 @check_from_to
 def datastatus_ssif_source_api(source=None):
     stats_ssif_1, stats_converted = Tables("stats_ssif_1", "stats_converted")
@@ -612,11 +614,13 @@ def datastatus_ssif_source_api(source=None):
 
 
 @app.route("/api/v1/datastatus/validations", methods=["GET"])
+@app.route("/api/v2/datastatus/validations", methods=["GET"])
 def datastatus_validations():
     return datastatus_validations_source(source=None)
 
 
 @app.route("/api/v1/datastatus/validations/<source>", methods=["GET"])
+@app.route("/api/v2/datastatus/validations/<source>", methods=["GET"])
 @check_from_to
 def datastatus_validations_source(source=None):
     stats_field_events = Table("stats_field_events")
@@ -679,16 +683,19 @@ def datastatus_validations_source(source=None):
 
 
 @app.route("/api/v1/info/research-subjects", methods=["GET"])
+@app.route("/api/v2/info/research-subjects", methods=["GET"])
 def info_research_subjects():
-    return jsonify(INFO_API_MAPPINGS)
+    return jsonify(SSIF_TREE)
 
 
 @app.route("/api/v1/info/output-types", methods=["GET"])
+@app.route("/api/v2/info/output-types", methods=["GET"])
 def info_output_types():
     return jsonify(INFO_API_OUTPUT_TYPES)
 
 
 @app.route("/api/v1/info/sources", methods=["GET"])
+@app.route("/api/v2/info/sources", methods=["GET"])
 def info_sources():
     cur = get_db().cursor()
     cur.row_factory = lambda cursor, row: row[0]
@@ -708,20 +715,27 @@ def info_sources():
 
 
 @app.route("/api/v1/process/publications/<path:record_id>", methods=["GET"])
+@app.route("/api/v2/process/publications/<path:record_id>", methods=["GET"])
 def process_get_publication(record_id=None):
     if record_id is None:
         _errors(['Missing parameter: "record_id"'], status_code=400)
 
     cur = get_db().cursor()
     row = cur.execute(
-        "SELECT data FROM converted WHERE oai_id = ? AND deleted = 0", [record_id]
+        "SELECT data, modified FROM converted WHERE oai_id = ? AND deleted = 0", [record_id]
     ).fetchone()
     if not row:
         _errors(["Not Found"], status_code=404)
-    return Response(row[0], mimetype="application/ld+json")
+    data = json.loads(row[0])
+    if request.args.get("_legacy") is not None:
+        data = LegacyPublication(data).body_with_required_legacy_search_fields
+    if request.args.get("_debug") is not None:
+        data["meta"]["_harvest_time"] = datetime.fromtimestamp(row[1]).isoformat()
+    return Response(json.dumps(data), mimetype="application/ld+json")
 
 
 @app.route("/api/v1/process/publications/<path:record_id>/original", methods=["GET"])
+@app.route("/api/v2/process/publications/<path:record_id>/original", methods=["GET"])
 def process_get_original_publication(record_id=None):
     if record_id is None:
         _errors(['Missing parameter: "record_id"'], status_code=400)
@@ -734,6 +748,7 @@ def process_get_original_publication(record_id=None):
 
 
 @app.route("/api/v1/process/<source>/status")
+@app.route("/api/v2/process/<source>/status")
 def process_get_harvest_status(source):
     cur = get_db().cursor()
     cur.row_factory = dict_factory
@@ -777,6 +792,7 @@ def process_get_harvest_status(source):
 
 
 @app.route("/api/v1/process/<source>/status/history")
+@app.route("/api/v2/process/<source>/status/history")
 def process_get_harvest_status_history(source):
     result = {
         "harvest_history": [],
@@ -824,6 +840,7 @@ def process_get_harvest_status_history(source):
 
 
 @app.route("/api/v1/process/<harvest_id>/rejected")
+@app.route("/api/v2/process/<harvest_id>/rejected")
 def process_get_rejected_publications(harvest_id):
     limit = request.args.get("limit")
     offset = request.args.get("offset")
@@ -896,11 +913,12 @@ def process_get_rejected_publications(harvest_id):
 
 
 @app.route("/api/v1/process/<source>", methods=["GET"])
+@app.route("/api/v2/process/<source>", methods=["GET"])
 @check_from_to
 def process_get_stats(source=None):
     audit_labels_to_include = [
         "ISSN_missing_check",
-        "UKA_comprehensive_check",
+        "SSIF_comprehensive_check",
         "contributor_duplicate_check",
         "creator_count_check",
     ]
@@ -1008,6 +1026,7 @@ def process_get_stats(source=None):
 
 
 @app.route("/api/v1/process/<source>/export", methods=["GET"])
+@app.route("/api/v2/process/<source>/export", methods=["GET"])
 @check_from_to
 def process_get_export(source=None):
     export_as_csv, export_mimetype, csv_flavor = export_options(request)
@@ -1177,7 +1196,7 @@ def process_get_export(source=None):
 # ╚═╝     ╚═╝╚═╝╚══════╝ ╚═════╝╚═╝
 
 
-@app.route("/api/v1/apidocs", methods=["GET"], strict_slashes=False)
+@app.route("/api/v2/apidocs", methods=["GET"], strict_slashes=False)
 def api_docs():
     return send_from_directory(app.root_path, "apidocs/index.html")
 
@@ -1221,4 +1240,5 @@ def xsl_editor():
 
 
 if __name__ == "__main__":
-    app.run()
+    port = getenv("SWEPUB_SERVICE_PORT", 5000)
+    app.run(port=int(port))

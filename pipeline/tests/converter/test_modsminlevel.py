@@ -73,6 +73,21 @@ def test_name_correct_with_person():
     assert 'nameViolation' not in errors
 
 
+def test_post_name_validation():
+    create_mods_post = MODS("")
+    errors = _get_error_names(create_mods_post)
+    assert 'nameViolation' in errors
+
+
+def test_name_name_validation_exemption():
+    create_mods_post = MODS(
+        """
+        <genre authority="kb.se" type="outputType">artistic-work</genre>
+        """)
+    errors = _get_error_names(create_mods_post)
+    assert 'nameViolation' not in errors
+
+
 def test_name_correct_with_organization():
     allowed_role_terms = ['aut', 'edt', 'cre', 'pbl', 'org']
     create_mods_post = MODS(

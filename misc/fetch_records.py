@@ -10,6 +10,8 @@ import time
 from concurrent.futures import ProcessPoolExecutor
 import sys
 import traceback
+import lxml.etree as etree
+import io
 
 import pipeline.sickle as sickle
 from pipeline.oai import RecordIterator
@@ -93,7 +95,8 @@ def _fetch_individual_records(oai_ids, sources):
             record = sickle_client.GetRecord(**get_record_params)
             file_path = path / f"{sanitize_filename(record.header.identifier)}.xml"
             with file_path.open("w") as f:
-                f.write(record.raw)
+                parsed_xml = etree.parse(io.StringIO(record.raw))
+                f.write(etree.tostring(parsed_xml, pretty_print=True).decode("utf-8"))
             count += 1
         except Exception as e:
             log.warning(f"FAILED retching record {oai_id}: {e}")

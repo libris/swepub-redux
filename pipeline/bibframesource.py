@@ -3,7 +3,7 @@ from enum import Enum
 from datetime import date, datetime
 from dateutil.parser import parse as dateutil_parse
 
-from pipeline.util import Level
+from pipeline.util import Level, SSIF_BASE, is_ssif_classification, is_autoclassified
 
 
 CREATOR_FIELDS = [
@@ -15,7 +15,6 @@ CREATOR_FIELDS = [
     "affiliation",
     "freetext_affiliations",
 ]
-SUBJECT_FIELDS = ["oneDigitTopics", "threeDigitTopics", "fiveDigitTopics"]
 
 
 def _create_title_string(title_dict):
@@ -77,56 +76,58 @@ class BibframeSource:
 
     # Output types for which role 'aut' and 'cre' is to be considered a creator.
     OUTPUT_TYPES_AUT_CRE = [
-        "https://id.kb.se/term/swepub/publication/book",
-        "https://id.kb.se/term/swepub/publication/book-chapter",
-        "https://id.kb.se/term/swepub/publication/foreword-afterword",
-        "https://id.kb.se/term/swepub/publication/report-chapter",
-        "https://id.kb.se/term/swepub/publication/encyclopedia-entry",
-        "https://id.kb.se/term/swepub/publication/review-article",
-        "https://id.kb.se/term/swepub/publication/doctoral-thesis",
-        "https://id.kb.se/term/swepub/publication/licentiate-thesis",
-        "https://id.kb.se/term/swepub/publication/book-review",
-        "https://id.kb.se/term/swepub/publication/journal-article",
-        "https://id.kb.se/term/swepub/publication/magazine-article",
-        "https://id.kb.se/term/swepub/publication/newspaper-article",
-        "https://id.kb.se/term/swepub/publication/editorial-letter",
-        "https://id.kb.se/term/swepub/conference/poster",
-        "https://id.kb.se/term/swepub/conference/paper",
-        "https://id.kb.se/term/swepub/conference/other",
-        "https://id.kb.se/term/swepub/intellectual-property",
-        "https://id.kb.se/term/swepub/intellectual-property/patent",
-        "https://id.kb.se/term/swepub/intellectual-property/other",
-        "https://id.kb.se/term/swepub/artistic-work/artistic-thesis",
-        "https://id.kb.se/term/swepub/publication/critical-edition",
-        "https://id.kb.se/term/swepub/publication/working-paper",
-        "https://id.kb.se/term/swepub/publication/preprint",
-        "https://id.kb.se/term/swepub/publication/other",
-        "https://id.kb.se/term/swepub/other",
-        "https://id.kb.se/term/swepub/other/data-set",
-        "https://id.kb.se/term/swepub/other/software",
-        "https://id.kb.se/term/swepub/artistic-work/original-creative-work",  # Also in OUTPUT_TYPES_CONSIDER_OTHER_TYPE
+        "https://id.kb.se/term/swepub/output/publication/book",
+        "https://id.kb.se/term/swepub/output/publication/book-chapter",
+        "https://id.kb.se/term/swepub/output/publication/foreword-afterword",
+        "https://id.kb.se/term/swepub/output/publication/report-chapter",
+        "https://id.kb.se/term/swepub/output/publication/encyclopedia-entry",
+        "https://id.kb.se/term/swepub/output/publication/review-article",
+        "https://id.kb.se/term/swepub/output/publication/doctoral-thesis",
+        "https://id.kb.se/term/swepub/output/publication/licentiate-thesis",
+        "https://id.kb.se/term/swepub/output/publication/book-review",
+        "https://id.kb.se/term/swepub/output/publication/journal-article",
+        "https://id.kb.se/term/swepub/output/publication/magazine-article",
+        "https://id.kb.se/term/swepub/output/publication/newspaper-article",
+        "https://id.kb.se/term/swepub/output/publication/editorial-letter",
+        "https://id.kb.se/term/swepub/output/conference/poster",
+        "https://id.kb.se/term/swepub/output/conference/paper",
+        "https://id.kb.se/term/swepub/output/conference/other",
+        "https://id.kb.se/term/swepub/output/intellectual-property",
+        "https://id.kb.se/term/swepub/output/intellectual-property/patent",
+        "https://id.kb.se/term/swepub/output/intellectual-property/other",
+        "https://id.kb.se/term/swepub/output/artistic-work/artistic-thesis",
+        "https://id.kb.se/term/swepub/output/publication/critical-edition",
+        "https://id.kb.se/term/swepub/output/publication/working-paper",
+        "https://id.kb.se/term/swepub/output/publication/preprint",
+        "https://id.kb.se/term/swepub/output/publication/other",
+        "https://id.kb.se/term/swepub/output/other",
+        "https://id.kb.se/term/swepub/output/other/data-set",
+        "https://id.kb.se/term/swepub/output/other/software",
+        "https://id.kb.se/term/swepub/output/artistic-work/original-creative-work",
+        "https://id.kb.se/term/swepub/output/artistic-work",
     ]
 
     # Output types for which role 'edt' is to be considered a creator.
     OUTPUT_TYPES_EDT = [
-        "https://id.kb.se/term/swepub/publication/edited-book",
-        "https://id.kb.se/term/swepub/conference/proceeding",
-        "https://id.kb.se/term/swepub/publication/journal-issue",
+        "https://id.kb.se/term/swepub/output/publication/edited-book",
+        "https://id.kb.se/term/swepub/output/conference/proceeding",
+        "https://id.kb.se/term/swepub/output/publication/journal-issue",
+        "https://id.kb.se/term/swepub/output/artistic-work",
+        "https://id.kb.se/term/swepub/output/artistic-work/artistic-thesis",
+        "https://id.kb.se/term/swepub/output/artistic-work/original-creative-work",
     ]
 
     # Output types for which to consider other output type (if present).
     OUTPUT_TYPES_CONSIDER_OTHER_TYPE = [
-        "https://id.kb.se/term/swepub/artistic-work/original-creative-work",  # Also in CREATORS_AUT_CRE
-        "https://id.kb.se/term/swepub/artistic-work",  # Also in OUTPUT_TYPES_NOT_SPECIFIED
     ]
 
     # For these, if only 'edt' is present then 'edt' should be considered the creator role.
     # Else 'aut' and 'cre' should be the creator roles.
     OUTPUT_TYPES_CREATOR_NOT_SPECIFIED = [
-        "https://id.kb.se/term/swepub/publication/report",
-        "https://id.kb.se/term/swepub/conference",
-        "https://id.kb.se/term/swepub/artistic-work",  # Also in OUTPUT_TYPES_CONSIDER_OTHER_TYPE
-        "https://id.kb.se/term/swepub/publication",
+        "https://id.kb.se/term/swepub/output/publication/report",
+        "https://id.kb.se/term/swepub/output/conference",
+        "https://id.kb.se/term/swepub/output/artistic-work",  # Also in OUTPUT_TYPES_CONSIDER_OTHER_TYPE
+        "https://id.kb.se/term/swepub/output/publication",
     ]
 
     AUT_CREATOR = "http://id.loc.gov/vocabulary/relators/aut"
@@ -218,9 +219,9 @@ class BibframeSource:
         genre_forms = self.bibframe_master.get("instanceOf", {}).get("genreForm")
         svep_url = "https://id.kb.se/term/swepub/svep/"
         swedish_list_url = "https://id.kb.se/term/swepub/swedishlist"
-        # Example output types: https://id.kb.se/term/swepub/publication/journal-article
-        # or https://id.kb.se/term/swepub/publication
-        output_type_re = r"^https://id\.kb\.se/term/swepub/[a-z_\-]+/*[a-z_\-]*$"
+        # Example output types: https://id.kb.se/term/swepub/output/publication/journal-article
+        # or https://id.kb.se/term/swepub/output/publication
+        output_type_re = r"^https://id\.kb\.se/term/swepub/output/[a-z_\-]+/*[a-z_\-]*$"
         output_types = []
         if genre_forms:
             for genre_form in genre_forms:
@@ -454,6 +455,8 @@ class BibframeSource:
             return False
         ua_policies = self.bibframe_master.get("usageAndAccessPolicy", [])
         for policy in ua_policies:
+            if policy.get("@id", "") == "https://id.kb.se/policy/oa/gratis":
+                return True
             if policy.get("@type", "") == "AccessPolicy":
                 label = policy.get("label", "")
                 if "gratis" in label:
@@ -566,12 +569,12 @@ class BibframeSource:
             "https://id.kb.se/term/swepub/grantAgreement",
             "https://id.kb.se/term/swepub/initiative",
         ]
-        part_ofs = self.bibframe_master.get("partOf", [])
-        for part_of in part_ofs:
-            part_of_type = part_of.get("@type")
-            if part_of_type and part_of_type == "Dataset":
+        is_part_ofs = self.bibframe_master.get("isPartOf", [])
+        for is_part_of in is_part_ofs:
+            is_part_of_type = is_part_of.get("@type")
+            if is_part_of_type and is_part_of_type == "Dataset":
                 continue
-            genreforms = part_of.get("genreForm", [])
+            genreforms = is_part_of.get("genreForm", [])
             found_blacklisted_gf = False
             for gf in genreforms:
                 gf_id = gf.get("@id")
@@ -579,7 +582,7 @@ class BibframeSource:
                     found_blacklisted_gf = True
             if found_blacklisted_gf:
                 continue
-            for title in part_of.get("hasTitle", []):
+            for title in is_part_of.get("hasTitle", []):
                 if title.get("@type", "") == "Title":
                     return _create_title_string(title)
         return None
@@ -611,8 +614,7 @@ class BibframeSource:
         return None
 
     @property
-    def uka_subjects(self):
-
+    def ssif_subjects(self):
         subjects = dict()
         should_include_one_digit_topics = False
         should_include_three_digit_topics = False
@@ -646,37 +648,54 @@ class BibframeSource:
         if should_include_five_digit_topics:
             subjects.update({"fiveDigitTopics": []})
 
-        for subject in self.bibframe_master.get("instanceOf", {}).get("subject", []):
-            if (
-                subject.get("inScheme", {}).get("code", "") == "uka.se"
-                and subject.get("@type", "") == "Topic"
-            ):
-                subject_code = subject.get("code", "").strip()
-                if len(subject_code) == 1:
-                    if should_include_one_digit_topics:
-                        if subject_code not in subjects["oneDigitTopics"]:
-                            subjects["oneDigitTopics"].append(subject_code)
-                            continue
-                if len(subject_code) == 3:
-                    if should_include_three_digit_topics:
-                        if subject_code not in subjects["threeDigitTopics"]:
-                            subjects["threeDigitTopics"].append(subject_code)
-                            continue
-                if len(subject_code) == 5:
-                    if should_include_five_digit_topics:
-                        if subject_code not in subjects["fiveDigitTopics"]:
-                            subjects["fiveDigitTopics"].append(subject_code)
+        # TODO: Previously each SSIF level was its own subject; now we use proper 'broader' relationships.
+        # This is a quick solution to get all levels; can be improved upon.
+        for term in self.bibframe_master.get("instanceOf", {}).get("classification", []):
+            if is_ssif_classification(term):
+                ssif_codes = set()
+                ssif_code = term.get("code", "").strip()
+                ssif_codes.add(ssif_code)
+                if len(ssif_code) == 5:
+                    ssif_codes.add(ssif_code[:3])
+                    ssif_codes.add(ssif_code[:1])
+                elif len(ssif_code) == 3:
+                    ssif_codes.add(ssif_code[:1])
+
+                for subject_code in ssif_codes:
+                    if len(subject_code) == 1:
+                        if should_include_one_digit_topics:
+                            if subject_code not in subjects["oneDigitTopics"]:
+                                subjects["oneDigitTopics"].append(subject_code)
+                                continue
+                    if len(subject_code) == 3:
+                        if should_include_three_digit_topics:
+                            if subject_code not in subjects["threeDigitTopics"]:
+                                subjects["threeDigitTopics"].append(subject_code)
+                                continue
+                    if len(subject_code) == 5:
+                        if should_include_five_digit_topics:
+                            if subject_code not in subjects["fiveDigitTopics"]:
+                                subjects["fiveDigitTopics"].append(subject_code)
         return subjects
 
     @property
     def keywords(self):
-        subj_list = []
-        subjects = self.bibframe_master.get("instanceOf", {}).get("subject", [])
+        subjects = self.bibframe_master.get("instanceOf", {}).get("subject", []) + self.bibframe_master.get("instanceOf", {}).get("classification", [])
+        return self._get_keywords(subjects)
+
+    def _get_keywords(self, subjects):
+        keywords = []
         for subject in subjects:
-            pref_label = subject.get("prefLabel")
-            if pref_label:
-                subj_list.append(pref_label)
-        return subj_list
+            if subject.get("prefLabel"):
+                keywords.append(subject.get("prefLabel"))
+
+            pref_labels_by_lang = subject.get("prefLabelByLang", {})
+            for pref_label_by_lang in list(pref_labels_by_lang.values()):
+                keywords.append(pref_label_by_lang)
+
+            if subject.get("broader", {}):
+                keywords.extend(self._get_keywords([subject.get("broader")]))
+        return keywords
 
     @property
     def languages(self):
@@ -714,9 +733,9 @@ class BibframeSource:
         for identifier in ids:
             if identifier.get("@type", "") == "DOI":
                 doi_list.append(identifier.get("value"))
-        part_ofs = self.bibframe_master.get("partOf", [])
-        for part_of in part_ofs:
-            ids = part_of.get("identifiedBy", [])
+        is_part_ofs = self.bibframe_master.get("isPartOf", [])
+        for is_part_of in is_part_ofs:
+            ids = is_part_of.get("identifiedBy", [])
             for identifier in ids:
                 if identifier.get("@type", "") == "DOI":
                     doi_list.append(identifier.get("value"))
@@ -733,11 +752,11 @@ class BibframeSource:
     def _get_ISSN_or_ISBN(self, id_type):
         id_list = []
         id_list.extend(
-            _get_root_dict_ids(root_dict=self.bibframe_master, label="partOf", id_type=id_type)
+            _get_root_dict_ids(root_dict=self.bibframe_master, label="isPartOf", id_type=id_type)
         )
-        for part_of in self.bibframe_master.get("partOf", []):
+        for is_part_of in self.bibframe_master.get("isPartOf", []):
             id_list.extend(
-                _get_root_dict_ids(root_dict=part_of, label="hasSeries", id_type=id_type)
+                _get_root_dict_ids(root_dict=is_part_of, label="hasSeries", id_type=id_type)
             )
         id_list.extend(
             _get_root_dict_ids(root_dict=self.bibframe_master, label="hasSeries", id_type=id_type)
@@ -757,8 +776,8 @@ class BibframeSource:
     @property
     def series_title(self):
         serials = self.bibframe_master.get("hasSeries", [])
-        for part_of in self.bibframe_master.get("partOf", []):
-            for serial in part_of.get("hasSeries", []):
+        for is_part_of in self.bibframe_master.get("isPartOf", []):
+            for serial in is_part_of.get("hasSeries", []):
                 serials.append(serial)
         for serial in serials:
             titles = serial.get("hasTitle", [])
@@ -772,8 +791,8 @@ class BibframeSource:
         _series = []
         serials = self.bibframe_master.get("hasSeries", [])
 
-        for part_of in self.bibframe_master.get("partOf", []):
-            for serial in part_of.get("hasSeries", []):
+        for is_part_of in self.bibframe_master.get("isPartOf", []):
+            for serial in is_part_of.get("hasSeries", []):
                 serials.append(serial)
 
         for serial in serials:
@@ -815,23 +834,20 @@ class BibframeSource:
 
     @property
     def ssif_1_codes(self):
-        uka_subject_codes = []
-        for subject in self.bibframe_master.get("instanceOf", {}).get("subject", []):
-            if (
-                subject.get("inScheme", {}).get("code", "") == "uka.se"
-                and subject.get("@type", "") == "Topic"
-            ):
+        ssif_subject_codes = []
+        for subject in self.bibframe_master.get("instanceOf", {}).get("classification", []):
+            if is_ssif_classification(subject):
                 subject_code = subject.get("code", "").strip()
                 if subject_code:
-                    uka_subject_codes.append(subject_code[0])
+                    ssif_subject_codes.append(subject_code[0])
 
-        return list(set(uka_subject_codes))
+        return list(set(ssif_subject_codes))
 
 
     @property
     def autoclassified(self):
-        for subject in self.bibframe_master.get("instanceOf", {}).get("subject", []):
-            for note in subject.get("hasNote", []):
-                if note.get("label", "") == "Autoclassified by Swepub":
-                    return True
+        for term in self.bibframe_master.get("instanceOf", {}).get("classification", []):
+            if is_autoclassified(term):
+                return True
+
         return False

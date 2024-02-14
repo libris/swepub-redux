@@ -1,7 +1,7 @@
 const path = require('path');
 process.env.VUE_APP_VERSION = require('./package.json').version;
 
-process.env.VUE_APP_API_PATH = '/api/v1';
+process.env.VUE_APP_API_PATH = '/api/v2';
 // TODO: https://jira.kb.se/browse/SWEPUB2-619
 // process.env.VUE_APP_SWEPUB_VERSION = require('./swepub.json').version;
 
@@ -57,7 +57,7 @@ module.exports = {
   },
   devServer: {
     proxy: {
-      '^/api/v1': {
+      '^/api/v2': {
         target: 'http://127.0.0.1:5000',
         changeOrigin: true,
       },

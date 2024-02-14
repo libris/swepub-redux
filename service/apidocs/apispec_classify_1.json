@@ -2,15 +2,58 @@
   "components": {
     "schemas": {
       "Classification": {
-        "description": "An object describing a research subject, in Swedish or English",
+        "description": "An object describing a research subject, in Swedish and English",
         "properties": {
+          "_score": {
+            "example": 0.89,
+            "type": "integer"
+          },
           "@id": {
-            "example": "https://id.kb.se/term/uka/101",
+            "example": "https://id.kb.se/term/sssif/101",
             "type": "string"
           },
           "@type": {
-            "example": "Type",
+            "example": "Classification",
             "type": "string"
+          },
+          "broader": {
+            "type": "object",
+            "properties": {
+              "@id": {
+                "example": "https://id.kb.se/term/sssif/1",
+                "type": "string"
+              },
+              "@type": {
+                "example": "Classification",
+                "type": "string"
+              },
+              "code": {
+                "example": 1,
+                "type": "integer"
+              },
+              "inScheme": {
+                "properties": {
+                  "@id": {
+                    "example": "https://id.kb.se/term/ssif",
+                    "type": "string"
+                  },
+                },
+                "type": "object"
+              },
+              "prefLabelByLang": {
+                "properties": {
+                  "sv": {
+                    "example": "Naturvetenskap",
+                    "type": "string"
+                  },
+                  "en": {
+                    "example": "Natural Sciences",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
           },
           "code": {
             "example": 101,
@@ -19,36 +62,24 @@
           "inScheme": {
             "properties": {
               "@id": {
-                "example": "https://id.kb.se/term/uka/",
+                "example": "https://id.kb.se/term/ssif",
                 "type": "string"
               },
-              "@type": {
-                "example": "ConceptScheme",
-                "type": "string"
-              }
             },
             "type": "object"
           },
-          "language": {
+          "prefLabelByLang": {
             "properties": {
-              "@id": {
-                "example": "https://id.kb.se/language/swe",
+              "sv": {
+                "example": "Matematik",
                 "type": "string"
               },
-              "@type": {
-                "example": "Language",
-                "type": "string"
-              },
-              "code": {
-                "example": "swe",
+              "en": {
+                "example": "Mathematics",
                 "type": "string"
               }
             },
             "type": "object"
-          },
-          "prefLabel": {
-            "example": "Matematik",
-            "type": "string"
           }
         },
         "type": "object"
@@ -122,20 +153,7 @@
                     },
                     "suggestions": {
                       "items": {
-                        "properties": {
-                          "eng": {
-                            "$ref": "#/components/schemas/Classification"
-                          },
-                          "score": {
-                            "description": "Classification score (higher is better)",
-                            "example": 2341,
-                            "type": "integer"
-                          },
-                          "swe": {
-                            "$ref": "#/components/schemas/Classification"
-                          }
-                        },
-                        "type": "object"
+                        "$ref": "#/components/schemas/Classification"
                       },
                       "type": "array"
                     }
@@ -157,7 +175,7 @@
   },
   "servers": [
     {
-      "url": "/api/v1/classify"
+      "url": "/api/v2/classify"
     }
   ]
 }

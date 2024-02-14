@@ -1,8 +1,8 @@
 from pipeline.publication import Contribution
 from pipeline.publication import Publication
 from pipeline.publication import HasSeries
-from pipeline.publication import PartOfHasSeries
-from pipeline.publication import PartOf
+from pipeline.publication import IsPartOfHasSeries
+from pipeline.publication import IsPartOf
 from pipeline.deduplicate import _has_same_publication_date
 from pipeline.util import empty_string, has_same_ids
 
@@ -47,16 +47,16 @@ def test_publication_date_old_version():
 
 def test_genre_form(master):
     assert set(master.genre_form) == {'https://id.kb.se/term/swepub/ArtisticWork',
-                                      'https://id.kb.se/term/swepub/artistic-work'}
+                                      'https://id.kb.se/term/swepub/output/artistic-work'}
     master.add_genre_form(['https://somewhere'])
     assert set(master.genre_form) == {'https://id.kb.se/term/swepub/ArtisticWork',
-                                      'https://id.kb.se/term/swepub/artistic-work',
+                                      'https://id.kb.se/term/swepub/output/artistic-work',
                                       'https://somewhere'}
-    master.add_genre_form(['https://id.kb.se/term/swepub/publication/book-chapter'])
+    master.add_genre_form(['https://id.kb.se/term/swepub/output/publication/book-chapter'])
     assert set(master.genre_form) == {'https://id.kb.se/term/swepub/ArtisticWork',
-                                      'https://id.kb.se/term/swepub/artistic-work',
+                                      'https://id.kb.se/term/swepub/output/artistic-work',
                                       'https://somewhere',
-                                      'https://id.kb.se/term/swepub/publication/book-chapter'}
+                                      'https://id.kb.se/term/swepub/output/publication/book-chapter'}
 
 
 def test_has_same_title(master,
@@ -97,13 +97,13 @@ def test_has_same_genre_form(master,
                              candidate4_same_title_summary_pub_date_but_different_ids):
     assert set(master.genre_form) == \
            set(['https://id.kb.se/term/swepub/ArtisticWork',
-                'https://id.kb.se/term/swepub/artistic-work'])
+                'https://id.kb.se/term/swepub/output/artistic-work'])
     assert set(candidate1_same_title_and_same_doi.genre_form) == \
            set(['https://id.kb.se/term/swepub/ArtisticWork',
-                'https://id.kb.se/term/swepub/artistic-work',
+                'https://id.kb.se/term/swepub/output/artistic-work',
                 'https://id.kb.se/term/swepub/Book'])
     assert set(candidate4_same_title_summary_pub_date_but_different_ids.genre_form) == \
-           set(['https://id.kb.se/term/swepub/artistic-work', 'https://id.kb.se/term/swepub/ArtisticWork'])
+           set(['https://id.kb.se/term/swepub/output/artistic-work', 'https://id.kb.se/term/swepub/ArtisticWork'])
 
     assert not master.has_same_genre_form(candidate1_same_title_and_same_doi)
     assert master.has_same_genre_form(candidate4_same_title_summary_pub_date_but_different_ids)
@@ -225,6 +225,9 @@ def test_has_higher_publication_status_ranking():
     preprinted_publication = Publication(
         {'instanceOf': {'hasNote': [{'@type': 'PublicationStatus', '@id': 'https://id.kb.se/term/swepub/Preprint'}]}})
 
+    retracted_publication = Publication(
+        {'instanceOf': {'hasNote': [{'@type': 'PublicationStatus', '@id': 'https://id.kb.se/term/swepub/Retracted'}]}})
+
     unknown_publication = Publication(
         {'instanceOf': {'hasNote': [{'@type': 'PublicationStatus', '@id': 'https://id.kb.se/term/swepub/FINNS_INTE'}]}})
 
@@ -234,6 +237,7 @@ def test_has_higher_publication_status_ranking():
     assert not published_publication.has_worse_publication_status_ranking(submitted_publication)
     assert not published_publication.has_worse_publication_status_ranking(preprinted_publication)
     assert not published_publication.has_worse_publication_status_ranking(unknown_publication)
+    assert not published_publication.has_worse_publication_status_ranking(retracted_publication)
     assert not published_publication.has_worse_publication_status_ranking(published_publication)
 
 
@@ -292,32 +296,32 @@ def test_add_notes_to_electronic_locator(master):
                                                {'@type': 'Note', 'noteType': 'URL usage', 'label': 'primary'}]
 
 
-def test_part_of(master, candidate2_different_title_and_same_pmid,
+def test_is_part_of(master, candidate2_different_title_and_same_pmid,
                  candidate4_same_title_summary_pub_date_but_different_ids):
-    part_of_master = master.part_of[0]
-    assert part_of_master.main_title == 'Beyond professional monologue'
-    assert part_of_master.volume_number == '28'
-    assert part_of_master.issue_number == '4'
-    assert part_of_master.issns == ['partof_1']
-    assert len(part_of_master.has_series) == 1
-    part_of_has_serie = part_of_master.has_series[0]
-    assert part_of_has_serie.main_title == 'part_of_serie_title'
-    assert part_of_has_serie.issue_number == "1"
-    candidate2_part_of = candidate2_different_title_and_same_pmid.part_of[0]
-    assert candidate2_part_of.issns == ['partof_1']
-    assert candidate2_part_of.isbns == ['partof_2', 'partof_3']
-    assert part_of_master == candidate2_part_of
-    part_of_candidate4 = candidate4_same_title_summary_pub_date_but_different_ids.part_of[0]
-    assert part_of_master == part_of_candidate4
+    is_part_of_master = master.is_part_of[0]
+    assert is_part_of_master.main_title == 'Beyond professional monologue'
+    assert is_part_of_master.volume_number == '28'
+    assert is_part_of_master.issue_number == '4'
+    assert is_part_of_master.issns == ['ispartof_1']
+    assert len(is_part_of_master.has_series) == 1
+    is_part_of_has_serie = is_part_of_master.has_series[0]
+    assert is_part_of_has_serie.main_title == 'part_of_serie_title'
+    assert is_part_of_has_serie.issue_number == "1"
+    candidate2_is_part_of = candidate2_different_title_and_same_pmid.is_part_of[0]
+    assert candidate2_is_part_of.issns == ['ispartof_1']
+    assert candidate2_is_part_of.isbns == ['ispartof_2', 'ispartof_3']
+    assert is_part_of_master == candidate2_is_part_of
+    is_part_of_candidate4 = candidate4_same_title_summary_pub_date_but_different_ids.is_part_of[0]
+    assert is_part_of_master == is_part_of_candidate4
 
 
-def test_set_part_of(master, candidate3_same_title_different_ids_summary):
-    master.part_of = candidate3_same_title_different_ids_summary.part_of
-    part_of_master = master.part_of[0]
-    assert part_of_master.main_title == 'partof_maintitle_not_the_same_as_master'
-    assert part_of_master.volume_number is None
-    assert part_of_master.issue_number is None
-    assert part_of_master.issns == ['partof_2']
+def test_set_is_part_of(master, candidate3_same_title_different_ids_summary):
+    master.is_part_of = candidate3_same_title_different_ids_summary.is_part_of
+    is_part_of_master = master.is_part_of[0]
+    assert is_part_of_master.main_title == 'ispartof_maintitle_not_the_same_as_master'
+    assert is_part_of_master.volume_number is None
+    assert is_part_of_master.issue_number is None
+    assert is_part_of_master.issns == ['ispartof_2']
 
 
 def test_contribution_names():
@@ -522,80 +526,80 @@ def test_agent_identified_by():
            } in agent_with_identified_by.identified_bys
 
 
-def test_part_of_add_issn():
-    part_of = PartOf({
+def test_is_part_of_add_issn():
+    is_part_of = IsPartOf({
         'identifiedBy': [{'@type': 'ISSN', 'value': 'issn_1'}]
     })
 
-    part_of_with_new_issn = PartOf({
+    is_part_of_with_new_issn = IsPartOf({
         'identifiedBy': [{'@type': 'ISSN', 'value': 'issn_2'}]
     })
-    part_of.add_issns(part_of_with_new_issn)
-    assert {'@type': 'ISSN', 'value': 'issn_1'} in part_of.body['identifiedBy']
-    assert {'@type': 'ISSN', 'value': 'issn_2'} in part_of.body['identifiedBy']
+    is_part_of.add_issns(is_part_of_with_new_issn)
+    assert {'@type': 'ISSN', 'value': 'issn_1'} in is_part_of.body['identifiedBy']
+    assert {'@type': 'ISSN', 'value': 'issn_2'} in is_part_of.body['identifiedBy']
 
-    part_of_with_qualifier = PartOf({
+    is_part_of_with_qualifier = IsPartOf({
         'identifiedBy': [{'@type': 'ISSN', 'value': 'issn_1', 'qualifier': 'print'}]
     })
-    part_of.add_issns(part_of_with_qualifier)
-    assert {'@type': 'ISSN', 'value': 'issn_1', 'qualifier': 'print'} in part_of.body['identifiedBy']
+    is_part_of.add_issns(is_part_of_with_qualifier)
+    assert {'@type': 'ISSN', 'value': 'issn_1', 'qualifier': 'print'} in is_part_of.body['identifiedBy']
 
-    part_of_without_qualifier = PartOf({
+    is_part_of_without_qualifier = IsPartOf({
         'identifiedBy': [{'@type': 'ISSN', 'value': 'issn_1'}]
     })
     #Checks that existing qualifier is not removed
-    part_of.add_issns(part_of_without_qualifier)
-    assert {'@type': 'ISSN', 'value': 'issn_1', 'qualifier': 'print'} in part_of.body['identifiedBy']
+    is_part_of.add_issns(is_part_of_without_qualifier)
+    assert {'@type': 'ISSN', 'value': 'issn_1', 'qualifier': 'print'} in is_part_of.body['identifiedBy']
 
 
-def test_part_of_add_isbn():
-    part_of = PartOf({
+def test_is_part_of_add_isbn():
+    is_part_of = IsPartOf({
         'identifiedBy': [{'@type': 'ISBN', 'value': 'isbn_1'}]
     })
 
-    part_of_with_new_isbn = PartOf({
+    is_part_of_with_new_isbn = IsPartOf({
         'identifiedBy': [{'@type': 'ISBN', 'value': 'isbn_2'}]
     })
-    part_of.add_isbns(part_of_with_new_isbn)
-    assert {'@type': 'ISBN', 'value': 'isbn_1'} in part_of.body['identifiedBy']
-    assert {'@type': 'ISBN', 'value': 'isbn_2'} in part_of.body['identifiedBy']
+    is_part_of.add_isbns(is_part_of_with_new_isbn)
+    assert {'@type': 'ISBN', 'value': 'isbn_1'} in is_part_of.body['identifiedBy']
+    assert {'@type': 'ISBN', 'value': 'isbn_2'} in is_part_of.body['identifiedBy']
 
-    part_of_with_qualifier = PartOf({
+    is_part_of_with_qualifier = IsPartOf({
         'identifiedBy': [{'@type': 'ISBN', 'value': 'isbn_1', 'qualifier': 'print'}]
     })
-    part_of.add_isbns(part_of_with_qualifier)
-    assert {'@type': 'ISBN', 'value': 'isbn_1', 'qualifier': 'print'} in part_of.body['identifiedBy']
+    is_part_of.add_isbns(is_part_of_with_qualifier)
+    assert {'@type': 'ISBN', 'value': 'isbn_1', 'qualifier': 'print'} in is_part_of.body['identifiedBy']
 
-    part_of_without_qualifier = PartOf({
+    is_part_of_without_qualifier = IsPartOf({
         'identifiedBy': [{'@type': 'ISBN', 'value': 'isbn_1'}]
     })
     #Checks that existing qualifier is not removed
-    part_of.add_isbns(part_of_without_qualifier)
-    assert {'@type': 'ISBN', 'value': 'isbn_1', 'qualifier': 'print'} in part_of.body['identifiedBy']
+    is_part_of.add_isbns(is_part_of_without_qualifier)
+    assert {'@type': 'ISBN', 'value': 'isbn_1', 'qualifier': 'print'} in is_part_of.body['identifiedBy']
 
 
-def test_part_of_empty_issn_and_isbn():
-    empty_part_of = PartOf({})
+def test_is_part_of_empty_issn_and_isbn():
+    empty_is_part_of = IsPartOf({})
 
-    part_of_issn = PartOf({
+    is_part_of_issn = IsPartOf({
         'identifiedBy': [{'@type': 'ISSN', 'value': 'issn_1'}]
     })
-    part_of_issn.add_issns(empty_part_of)
-    assert len(part_of_issn.body['identifiedBy']) == 1
+    is_part_of_issn.add_issns(empty_is_part_of)
+    assert len(is_part_of_issn.body['identifiedBy']) == 1
 
-    part_of_isbn = PartOf({
+    is_part_of_isbn = IsPartOf({
         'identifiedBy': [{'@type': 'ISBN', 'value': 'isbn_1'}]
     })
-    empty_part_of.add_isbns(part_of_isbn)
-    assert len(empty_part_of.body['identifiedBy']) == 1
+    empty_is_part_of.add_isbns(is_part_of_isbn)
+    assert len(empty_is_part_of.body['identifiedBy']) == 1
 
 
-def test_part_of_empty_titles():
-    empty_part_of = PartOf({})
+def test_is_part_of_empty_titles():
+    empty_is_part_of = IsPartOf({})
     # Main title must exist for us to match on it
-    assert not empty_part_of.has_same_main_title(empty_part_of)
+    assert not empty_is_part_of.has_same_main_title(empty_is_part_of)
     # Sub title comparison is less strict
-    assert empty_part_of.has_same_sub_title(empty_part_of)
+    assert empty_is_part_of.has_same_sub_title(empty_is_part_of)
 
 
 def test_has_series():
@@ -627,34 +631,34 @@ def test_has_series():
     assert has_series == has_series_different_title_same_part_number_and_issn
 
 
-def test_part_of_has_series():
-    part_of_has_series = \
-        PartOfHasSeries(_get_test_data_has_serie_dict(mainTitle='mainTitle',
+def test_is_part_of_has_series():
+    is_part_of_has_series = \
+        IsPartOfHasSeries(_get_test_data_has_serie_dict(mainTitle='mainTitle',
                                                       partNumber='partNumber_1',
                                                       identifiedBys=[{'@type': 'ISSN', 'value': 'isnn_1'}]))
-    part_of_has_series_same_title = \
-        PartOfHasSeries(_get_test_data_has_serie_dict(mainTitle='mainTitle'))
+    is_part_of_has_series_same_title = \
+        IsPartOfHasSeries(_get_test_data_has_serie_dict(mainTitle='mainTitle'))
 
-    part_of_has_series_different_title = \
-        PartOfHasSeries(_get_test_data_has_serie_dict(mainTitle='different'))
+    is_part_of_has_series_different_title = \
+        IsPartOfHasSeries(_get_test_data_has_serie_dict(mainTitle='different'))
 
-    part_of_has_series_different_title_same_part_number = \
-        PartOfHasSeries(_get_test_data_has_serie_dict(mainTitle='different',
+    is_part_of_has_series_different_title_same_part_number = \
+        IsPartOfHasSeries(_get_test_data_has_serie_dict(mainTitle='different',
                                                       partNumber='partNumber_1'))
-    part_of_has_series_different_title_same_issn = \
-        PartOfHasSeries(_get_test_data_has_serie_dict(mainTitle='different',
+    is_part_of_has_series_different_title_same_issn = \
+        IsPartOfHasSeries(_get_test_data_has_serie_dict(mainTitle='different',
                                                       identifiedBys=[{'@type': 'ISSN', 'value': 'isnn_1'}]))
-    part_of_has_series_different_title_same_part_number_and_issn = \
-        PartOfHasSeries(_get_test_data_has_serie_dict(mainTitle='different',
+    is_part_of_has_series_different_title_same_part_number_and_issn = \
+        IsPartOfHasSeries(_get_test_data_has_serie_dict(mainTitle='different',
                                                       partNumber='partNumber_1',
                                                       identifiedBys=[{'@type': 'ISSN', 'value': 'isnn_1'}]))
 
-    assert part_of_has_series == part_of_has_series_same_title
-    assert not part_of_has_series == part_of_has_series_different_title
-    assert not part_of_has_series == part_of_has_series_different_title_same_part_number
-    # Same ISSN enough for two PartOfHasSeries to be equal
-    assert part_of_has_series == part_of_has_series_different_title_same_issn
-    assert part_of_has_series == part_of_has_series_different_title_same_part_number_and_issn
+    assert is_part_of_has_series == is_part_of_has_series_same_title
+    assert not is_part_of_has_series == is_part_of_has_series_different_title
+    assert not is_part_of_has_series == is_part_of_has_series_different_title_same_part_number
+    # Same ISSN enough for two IsPartOfHasSeries to be equal
+    assert is_part_of_has_series == is_part_of_has_series_different_title_same_issn
+    assert is_part_of_has_series == is_part_of_has_series_different_title_same_part_number_and_issn
 
 
 def test_right_has_serie_is_returned():
@@ -665,7 +669,7 @@ def test_right_has_serie_is_returned():
                                               partNumber='partNumber_1',
                                               identifiedBys=[{'@type': 'ISSN', 'value': 'isnn_1'}])
             ],
-            'partOf': [{
+            'isPartOf': [{
                 'hasSeries': [
                     _get_test_data_has_serie_dict(mainTitle='Publication hasSerie',
                                                   partNumber='partNumber_1',
@@ -675,12 +679,12 @@ def test_right_has_serie_is_returned():
         }
     )
     has_serie_from_publication = publication.has_series[0]
-    has_serie_from_part_of = publication.part_of[0].has_series[0]
+    has_serie_from_is_part_of = publication.is_part_of[0].has_series[0]
     assert isinstance(has_serie_from_publication, HasSeries)
-    assert isinstance(has_serie_from_part_of, PartOfHasSeries)
-    # Since PartOfHasSeries inherit from HasSeries
-    assert isinstance(has_serie_from_part_of, HasSeries)
-    assert not isinstance(has_serie_from_publication, PartOfHasSeries)
+    assert isinstance(has_serie_from_is_part_of, IsPartOfHasSeries)
+    # Since IsPartOfHasSeries inherit from HasSeries
+    assert isinstance(has_serie_from_is_part_of, HasSeries)
+    assert not isinstance(has_serie_from_publication, IsPartOfHasSeries)
 
 
 def test_add_series_publication():
@@ -717,10 +721,10 @@ def test_add_series_publication():
     assert len(publication.has_series) == 2
 
 
-def test_add_series_part_of():
+def test_add_series_is_part_of():
     publication = Publication(
         {
-            'partOf': [{
+            'isPartOf': [{
                 'hasSeries': [
                     _get_test_data_has_serie_dict(mainTitle='Publication hasSerie',
                                                   partNumber='partNumber_1',
@@ -731,7 +735,7 @@ def test_add_series_part_of():
 
     publication_same_serie = Publication(
         {
-            'partOf': [{
+            'isPartOf': [{
                 'hasSeries': [
                     _get_test_data_has_serie_dict(mainTitle='different',
                                                   partNumber='different',
@@ -739,22 +743,22 @@ def test_add_series_part_of():
                 ]
             }]
         })
-    assert len(publication.part_of[0].has_series) == 1
-    publication.part_of[0].add_series(publication_same_serie.part_of[0])
-    # Ignoring partNumber for hasSeries in part_of
-    assert len(publication.part_of[0].has_series) == 1
+    assert len(publication.is_part_of[0].has_series) == 1
+    publication.is_part_of[0].add_series(publication_same_serie.is_part_of[0])
+    # Ignoring partNumber for hasSeries in is_part_of
+    assert len(publication.is_part_of[0].has_series) == 1
 
     publication_different_serie = Publication(
         {
-            'partOf': [{
+            'isPartOf': [{
                 'hasSeries': [
                     _get_test_data_has_serie_dict(mainTitle='different',
                                                   identifiedBys=[{'@type': 'ISSN', 'value': 'isnn_2'}])
                 ]
             }]
         })
-    publication.part_of[0].add_series(publication_different_serie.part_of[0])
-    assert len(publication.part_of[0].has_series) == 2
+    publication.is_part_of[0].add_series(publication_different_serie.is_part_of[0])
+    assert len(publication.is_part_of[0].has_series) == 2
 
 
 def _get_test_data_has_serie_dict(mainTitle='', partNumber='', identifiedBys=[]):

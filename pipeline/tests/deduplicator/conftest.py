@@ -23,7 +23,7 @@ BODY = """
       ],
   "indirectlyIdentifiedBy": [{{"@type": "ISSN", "value": "{}"}}],
   "publication": [{{"@type": "Publication", "date": "{}"}}],
-  "partOf": [{}]
+  "isPartOf": [{}]
 }}
 """.format
 
@@ -68,7 +68,7 @@ def master():
                            '{"@type": "Topic", "code": "28177", "prefLabel": "prefLabel1", "language": {"code": "swe"}},'
                            '{"@type": "Topic", "prefLabel": "prefLabel2"}',
                            '{"@id": "https://id.kb.se/term/swepub/ArtisticWork"},'
-                           '{"@id": "https://id.kb.se/term/swepub/artistic-work"}',
+                           '{"@id": "https://id.kb.se/term/swepub/output/artistic-work"}',
                            '{"@type": "CreatorCount", "label": "3"},'
                            '{"@type": "PublicationStatus", "@id": "https://id.kb.se/term/swepub/Published"},'
                            '{"@type": "Note", "label": "note1"},'
@@ -82,7 +82,7 @@ def master():
                            'ISSN1_1',
                            '2016-02-01',
                            '{'
-                           ' "identifiedBy": [{"@type": "ISSN", "value": "partof_1"}],'
+                           ' "identifiedBy": [{"@type": "ISSN", "value": "ispartof_1"}],'
                            ' "hasTitle": [{"@type": "Title", "mainTitle": "Beyond professional monologue", "subtitle": "rendering oppressed voices", "volumeNumber": "28", "issueNumber": "4"}],'
                            ' "hasSeries": [{"@type": "Work", "hasTitle": [{"@type": "Title", "mainTitle": "part_of_serie_title", "partNumber":"1"}]}]'
                            '}'
@@ -115,7 +115,7 @@ def candidate1_same_title_and_same_doi():
                            'Summary 1',
                            '{"@type": "Topic", "prefLabel": "prefLabel2"}',
                            '{"@id": "https://id.kb.se/term/swepub/ArtisticWork"},'
-                           '{"@id": "https://id.kb.se/term/swepub/artistic-work"},'
+                           '{"@id": "https://id.kb.se/term/swepub/output/artistic-work"},'
                            '{"@id": "https://id.kb.se/term/swepub/Book"}',
                            '{"@type": "CreatorCount", "label": "1"},'
                            '{"@type": "PublicationStatus", "@id": "https://id.kb.se/term/swepub/UnPublished"},'
@@ -130,7 +130,7 @@ def candidate1_same_title_and_same_doi():
                            'ISSN2_2',
                            '2016-02-01',
                            '{'
-                           ' "identifiedBy": [{"@type": "ISSN", "value": "partof_2"}]'
+                           ' "identifiedBy": [{"@type": "ISSN", "value": "ispartof_2"}]'
                            '}'
                            ))
 
@@ -172,7 +172,7 @@ def candidate2_different_title_and_same_pmid():
                                        'ISSN3_2',
                                        '2017',
                                        '{'
-                                       ' "identifiedBy": [{"@type": "ISSN", "value": "partof_1"}, {"@type": "ISBN", "value": "partof_2"}, {"@type": "ISBN", "value": "partof_3"}],'
+                                       ' "identifiedBy": [{"@type": "ISSN", "value": "ispartof_1"}, {"@type": "ISBN", "value": "ispartof_2"}, {"@type": "ISBN", "value": "ispartof_3"}],'
                                        ' "hasSeries": [{"@type": "Work", "hasTitle": [{"@type": "Title", "mainTitle": "differenet part_of_serie_title", "partNumber":"2"}]}]'
 
                                        '}'
@@ -201,8 +201,8 @@ def candidate3_same_title_different_ids_summary():
                                        'ISSN2_3',
                                        '2018',
                                        '{'
-                                       ' "identifiedBy": [{"@type": "ISSN", "value": "partof_2"}],'
-                                       ' "hasTitle": [{"@type": "Title", "mainTitle": "partof_maintitle_not_the_same_as_master"}]'
+                                       ' "identifiedBy": [{"@type": "ISSN", "value": "ispartof_2"}],'
+                                       ' "hasTitle": [{"@type": "Title", "mainTitle": "ispartof_maintitle_not_the_same_as_master"}]'
                                        '}'
                                        )))
 
@@ -216,7 +216,7 @@ def candidate4_same_title_summary_pub_date_but_different_ids():
                            'Summary 1',
                            '{"@type": "Topic", "code": "28177", "prefLabel": "prefLabel1_eng", "language": {"code": "eng"}}',
                            '{"@id": "https://id.kb.se/term/swepub/ArtisticWork"},'
-                           '{"@id": "https://id.kb.se/term/swepub/artistic-work"}',
+                           '{"@id": "https://id.kb.se/term/swepub/output/artistic-work"}',
                            '',
                            '',
                            'PMID_3',
@@ -227,7 +227,7 @@ def candidate4_same_title_summary_pub_date_but_different_ids():
                            'ISSN2_3',
                            '2016',
                            '{'
-                           ' "identifiedBy": [{"@type": "ISSN", "value": "partof_2"}],'
+                           ' "identifiedBy": [{"@type": "ISSN", "value": "ispartof_2"}],'
                            ' "hasTitle": [{"@type": "Title", "mainTitle": "Beyond Professional Monologue.", "subtitle": "Rendering Oppressed Voices", "volumeNumber": "28", "issueNumber": "4"}]'
                            '}'
                            ))
@@ -249,7 +249,7 @@ def candidate5_updated_publication():
                            '{"@type": "Topic", "code": "28177", "prefLabel": "prefLabel1", "language": {"code": "swe"}},'
                            '{"@type": "Topic", "prefLabel": "prefLabel2"}',
                            '{"@id": "https://id.kb.se/term/swepub/ArtisticWork"},'
-                           '{"@id": "https://id.kb.se/term/swepub/artistic-work"}',
+                           '{"@id": "https://id.kb.se/term/swepub/output/artistic-work"}',
                            '{"@type": "CreatorCount", "label": "3"},'
                            '{"@type": "PublicationStatus", "@id": "https://id.kb.se/term/swepub/Published"},'
                            '{"@type": "Note", "label": "note1"},'
@@ -263,7 +263,7 @@ def candidate5_updated_publication():
                            'ISSN1_1',
                            '2016-02-01',
                            '{'
-                           ' "identifiedBy": [{"@type": "ISSN", "value": "partof_1"}],'
+                           ' "identifiedBy": [{"@type": "ISSN", "value": "ispartof_1"}],'
                            ' "hasTitle": [{"@type": "Title", "mainTitle": "Beyond professional monologue", "subtitle": "rendering oppressed voices", "volumeNumber": "28", "issueNumber": "4"}],'
                            ' "hasSeries": [{"@type": "Work", "hasTitle": [{"@type": "Title", "mainTitle": "part_of_serie_title", "partNumber":"1"}]}]'
                            '}'

@@ -10,26 +10,25 @@
                     "code":"recovery",
                     "new_value":"22128271",
                     "old_value":"2212 - 8271",
-                    "path":"partOf.[0].hasSeries.[0].identifiedBy.[0].value"
+                    "path":"isPartOf.[0].hasSeries.[0].identifiedBy.[0].value"
                  },
                  {
                     "code":"recovery",
                     "new_value":"22128271",
                     "old_value":"2212 - 8271",
-                    "path":"partOf.[1].hasSeries.[0].identifiedBy.[0].value"
+                    "path":"isPartOf.[1].hasSeries.[0].identifiedBy.[0].value"
                  },
                  {
                     "code":"recovery",
                     "new_value":"22128271",
                     "old_value":"2212 - 8271",
-                    "path":"partOf.[2].hasSeries.[0].identifiedBy.[0].value"
+                    "path":"isPartOf.[2].hasSeries.[0].identifiedBy.[0].value"
                  }
               ]
            }
         },
-        "mods_url":"http://swepub-dev.kb.se/api/v1/process/publications/oai:DiVA.org:bth-17939/original",
-        "output_type":"https://id.kb.se/term/swepub/conference/other",
-        "publication_type":null,
+        "mods_url":"http://swepub-dev.kb.se/api/v2/process/publications/oai:DiVA.org:bth-17939/original",
+        "output_type":"https://id.kb.se/term/swepub/output/conference/other",
         "publication_year":"2019",
         "record_id":"oai:DiVA.org:bth-17939",
         "repository_url":"http://urn.kb.se/resolve?urn=urn:nbn:se:bth-17939",
@@ -51,26 +50,25 @@
                     "code":"recovery",
                     "new_value":"2212-8271",
                     "old_value":"2212- 8271",
-                    "path":"partOf.[0].hasSeries.[0].identifiedBy.[0].value"
+                    "path":"isPartOf.[0].hasSeries.[0].identifiedBy.[0].value"
                  },
                  {
                     "code":"recovery",
                     "new_value":"2212-8271",
                     "old_value":"2212- 8271",
-                    "path":"partOf.[1].hasSeries.[0].identifiedBy.[0].value"
+                    "path":"isPartOf.[1].hasSeries.[0].identifiedBy.[0].value"
                  },
                  {
                     "code":"recovery",
                     "new_value":"2212-8271",
                     "old_value":"2212- 8271",
-                    "path":"partOf.[2].hasSeries.[0].identifiedBy.[0].value"
+                    "path":"isPartOf.[2].hasSeries.[0].identifiedBy.[0].value"
                  }
               ]
            }
         },
-        "mods_url":"http://swepub-dev.kb.se/api/v1/process/publications/oai:DiVA.org:bth-17940/original",
-        "output_type":"https://id.kb.se/term/swepub/conference/other",
-        "publication_type":null,
+        "mods_url":"http://swepub-dev.kb.se/api/v2/process/publications/oai:DiVA.org:bth-17940/original",
+        "output_type":"https://id.kb.se/term/swepub/output/conference/other",
         "publication_year":"2019",
         "record_id":"oai:DiVA.org:bth-17940",
         "repository_url":"http://urn.kb.se/resolve?urn=urn:nbn:se:bth-17940",
@@ -79,7 +77,7 @@
      {
         "flags":{
            "audit":{
-              "UKA_comprehensive_check":{
+              "SSIF_comprehensive_check":{
                  "result":"invalid"
               }
            },
@@ -99,9 +97,8 @@
               ]
            }
         },
-        "mods_url":"http://swepub-dev.kb.se/api/v1/process/publications/oai:DiVA.org:bth-20780/original",
-        "output_type":"https://id.kb.se/term/swepub/conference/other",
-        "publication_type":null,
+        "mods_url":"http://swepub-dev.kb.se/api/v2/process/publications/oai:DiVA.org:bth-20780/original",
+        "output_type":"https://id.kb.se/term/swepub/output/conference/other",
         "publication_year":"2020",
         "record_id":"oai:DiVA.org:bth-20780",
         "repository_url":"http://urn.kb.se/resolve?urn=urn:nbn:se:bth-20780",
@@ -110,14 +107,13 @@
      {
         "flags":{
            "audit":{
-              "UKA_comprehensive_check":{
+              "SSIF_comprehensive_check":{
                  "result":"invalid"
               }
            }
         },
-        "mods_url":"http://swepub-dev.kb.se/api/v1/process/publications/oai:DiVA.org:bth-20589/original",
-        "output_type":"https://id.kb.se/term/swepub/publication/journal-article",
-        "publication_type":null,
+        "mods_url":"http://swepub-dev.kb.se/api/v2/process/publications/oai:DiVA.org:bth-20589/original",
+        "output_type":"https://id.kb.se/term/swepub/output/publication/journal-article",
         "publication_year":"2020",
         "record_id":"oai:DiVA.org:bth-20589",
         "repository_url":"http://urn.kb.se/resolve?urn=urn:nbn:se:bth-20589",
@@ -136,9 +132,8 @@
               ]
            }
         },
-        "mods_url":"http://swepub-dev.kb.se/api/v1/process/publications/oai:DiVA.org:bth-20718/original",
-        "output_type":"https://id.kb.se/term/swepub/conference/other",
-        "publication_type":null,
+        "mods_url":"http://swepub-dev.kb.se/api/v2/process/publications/oai:DiVA.org:bth-20718/original",
+        "output_type":"https://id.kb.se/term/swepub/output/conference/other",
         "publication_year":"2020",
         "record_id":"oai:DiVA.org:bth-20718",
         "repository_url":"http://urn.kb.se/resolve?urn=urn:nbn:se:bth-20718",
@@ -147,7 +142,7 @@
      {
         "flags":{
            "audit":{
-              "UKA_comprehensive_check":{
+              "SSIF_comprehensive_check":{
                  "result":"invalid"
               }
            },
@@ -170,16 +165,15 @@
               "ISSN":[
                  {
                     "code":"checksum",
-                    "path":"partOf.[0].hasSeries.[0].identifiedBy.[0].value",
+                    "path":"isPartOf.[0].hasSeries.[0].identifiedBy.[0].value",
                     "result":"invalid",
                     "value":"2633-7763"
                  }
               ]
            }
         },
-        "mods_url":"http://swepub-dev.kb.se/api/v1/process/publications/oai:DiVA.org:bth-20799/original",
-        "output_type":"https://id.kb.se/term/swepub/conference/other",
-        "publication_type":null,
+        "mods_url":"http://swepub-dev.kb.se/api/v2/process/publications/oai:DiVA.org:bth-20799/original",
+        "output_type":"https://id.kb.se/term/swepub/output/conference/other",
         "publication_year":"2020",
         "record_id":"oai:DiVA.org:bth-20799",
         "repository_url":"http://urn.kb.se/resolve?urn=urn:nbn:se:bth-20799",
@@ -188,14 +182,13 @@
      {
         "flags":{
            "audit":{
-              "UKA_comprehensive_check":{
+              "SSIF_comprehensive_check":{
                  "result":"invalid"
               }
            }
         },
-        "mods_url":"http://swepub-dev.kb.se/api/v1/process/publications/oai:DiVA.org:bth-20864/original",
-        "output_type":"https://id.kb.se/term/swepub/publication/licentiate-thesis",
-        "publication_type":null,
+        "mods_url":"http://swepub-dev.kb.se/api/v2/process/publications/oai:DiVA.org:bth-20864/original",
+        "output_type":"https://id.kb.se/term/swepub/output/publication/licentiate-thesis",
         "publication_year":"2021",
         "record_id":"oai:DiVA.org:bth-20864",
         "repository_url":"http://urn.kb.se/resolve?urn=urn:nbn:se:bth-20864",
@@ -203,7 +196,7 @@
      }
   ],
   "query":{
-     "audit_flags":"UKA_comprehensive_check_invalid",
+     "audit_flags":"SSIF_comprehensive_check_invalid",
      "enrichment_flags":"DOI_enriched,ISSN_enriched,auto_classify_enriched",
      "from":"2019",
      "limit":"20",

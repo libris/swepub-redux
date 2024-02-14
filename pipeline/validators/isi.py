@@ -6,7 +6,7 @@ from pipeline.util import make_event, Validation, Enrichment
 
 # flake8: noqa W504
 isi_regex = re.compile(
-    "((000)[0-9]{12})"
+    "((00[01])[0-9]{12})"
     + "|"  # 000 prefix contains only numbers
     + "(([Aa]19)"  # Or
     + "[0-9a-zA-Z]{12})"  # Prefix A19 followed by  # Allows 0-9 and A-Z for the following 12 characters

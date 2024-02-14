@@ -12,7 +12,7 @@ const $store = {
   getters: {
     settings: {
       language: 'swe',
-      apiPath: '/api/v1',
+      apiPath: '/api/v2',
     },
   },
 };

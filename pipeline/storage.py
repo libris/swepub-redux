@@ -1,5 +1,6 @@
 import sqlite3
 import os
+import time
 from enum import Enum
 
 import orjson as json
@@ -74,6 +75,22 @@ def store_original(
             "DELETE FROM original WHERE oai_id = ?",
             (oai_id,),
         )
+    else:
+        # If we're doing a full harvest from scratch, we still need to store the fact
+        # that a certain record was marked as deleted, otherwise it can happen - during
+        # certain circumstances - that the legacy search db never learns about the deletion.
+        if deleted:
+            cur.execute(
+                """
+            INSERT INTO
+                converted(oai_id, data, deleted)
+            VALUES
+                (?, null, 1)
+            ON CONFLICT(oai_id) DO UPDATE SET
+                oai_id = excluded.oai_id, data = null, deleted = 1, modified = ?
+            """,
+                (oai_id, int(time.time()),)
+            )
 
     if deleted:
         connection.commit()

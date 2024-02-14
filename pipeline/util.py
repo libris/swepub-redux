@@ -7,7 +7,8 @@ import Levenshtein
 import hashlib
 from simplemma.langdetect import lang_detector
 from unidecode import unidecode
-from requests.packages.urllib3.util.retry import Retry
+
+from requests.adapters import Retry
 from random import random
 
 from pipeline.swepublog import logger as log
@@ -35,6 +36,11 @@ ENRICHING_AUDITORS_CODES = [
     "add_summary",
     "add_license",
 ]
+
+SWEPUB_CLASSIFIER_ID = "https://id.kb.se/generator/swepub-classifier"
+
+SSIF_SCHEME = 'https://id.kb.se/term/ssif'
+SSIF_BASE = f'{SSIF_SCHEME}/'
 
 
 class Validation(Enum):
@@ -209,9 +215,9 @@ def get_common_json_paths():
         paths_to_cache.append(f"instanceOf.contribution.[{i}].agent.identifiedBy")
         paths_to_cache.append(f"instanceOf.contribution.[{i}].agent.identifiedBy.[0]")
         paths_to_cache.append(f"instanceOf.contribution.[{i}].agent.identifiedBy.[1]")
-        paths_to_cache.append(f"partOf.[{i}].identifiedBy")
-        paths_to_cache.append(f"partOf.[{i}].identifiedBy.[0]")
-        paths_to_cache.append(f"partOf.[{i}].identifiedBy.[1]")
+        paths_to_cache.append(f"isPartOf.[{i}].identifiedBy")
+        paths_to_cache.append(f"isPartOf.[{i}].identifiedBy.[0]")
+        paths_to_cache.append(f"isPartOf.[{i}].identifiedBy.[1]")
     cached_paths = {}
 
     for path in paths_to_cache:
@@ -419,15 +425,15 @@ def get_combined_title(body):
     return ""
 
 
-def get_part_of(body):
-    """ Return array of PartOf objects from partOf """
-    part_of = []
-    part_of_json_array = body.get('partOf', [])
-    if part_of_json_array is not None:
-        for p in part_of_json_array:
+def get_is_part_of(body):
+    """ Return array of IsPartOf objects from isPartOf """
+    is_part_of = []
+    is_part_of_json_array = body.get('isPartOf', [])
+    if is_part_of_json_array is not None:
+        for p in is_part_of_json_array:
             if isinstance(p, dict):
-                part_of.append(p)
-    return part_of
+                is_part_of.append(p)
+    return is_part_of
 
 
 def part_of_main_title(body):
@@ -585,3 +591,21 @@ def get_summary_by_language(publication, language):
 class RandomisedRetry(Retry):
     def get_backoff_time(self):
         return random() * super().get_backoff_time()
+
+
+def is_autoclassified(term):
+    annot = term.get("@annotation", {})
+    return annot.get("assigner", {}).get("@id") == SWEPUB_CLASSIFIER_ID
+
+
+def is_ssif_classification(term):
+    return (
+        term.get("@id", "").startswith(SSIF_BASE)
+        and term.get("@type", "") == "Classification"
+    )
+
+
+def remove_prefix(string, prefix):
+    if string.startswith(prefix):
+        return string[len(prefix):]
+    return string

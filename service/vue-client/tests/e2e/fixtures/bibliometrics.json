@@ -52,12 +52,11 @@
          ],
          "openAccess":false,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/book-chapter"
+            "https://id.kb.se/term/swepub/output/publication/book-chapter"
          ],
          "publicationChannel":"Keywords for Children\u2019s Literature",
          "publicationCount":1,
          "publicationStatus":"https://id.kb.se/term/swepub/Published",
-         "publicationType":null,
          "publicationYear":"2021",
          "publisher":"New York University Press",
          "recordId":"oai:DiVA.org:su-165410",
@@ -66,7 +65,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -149,12 +148,11 @@
          ],
          "openAccess":false,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/edited-book"
+            "https://id.kb.se/term/swepub/output/publication/edited-book"
          ],
          "publicationChannel":null,
          "publicationCount":1,
          "publicationStatus":"https://id.kb.se/term/swepub/Published",
-         "publicationType":null,
          "publicationYear":"2021",
          "publisher":"Lexington Books",
          "recordId":"oai:DiVA.org:su-179742",
@@ -163,7 +161,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                "60101"
             ],
@@ -235,12 +233,11 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/doctoral-thesis"
+            "https://id.kb.se/term/swepub/output/publication/doctoral-thesis"
          ],
          "publicationChannel":null,
          "publicationCount":1,
          "publicationStatus":"https://id.kb.se/term/swepub/Published",
-         "publicationType":null,
          "publicationYear":"2021",
          "publisher":"Historiska Institutionen, Stockholms universitet",
          "recordId":"oai:DiVA.org:su-186722",
@@ -249,7 +246,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                "60101"
             ],
@@ -312,12 +309,11 @@
          ],
          "openAccess":false,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/book"
+            "https://id.kb.se/term/swepub/output/publication/book"
          ],
          "publicationChannel":null,
          "publicationCount":1,
          "publicationStatus":"https://id.kb.se/term/swepub/Published",
-         "publicationType":null,
          "publicationYear":"2021",
          "publisher":"Anthem Press",
          "recordId":"oai:DiVA.org:su-187783",
@@ -326,7 +322,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -475,12 +471,11 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/journal-article"
+            "https://id.kb.se/term/swepub/output/publication/journal-article"
          ],
          "publicationChannel":"Boreas",
          "publicationCount":1,
          "publicationStatus":"https://id.kb.se/term/swepub/EpubAheadOfPrintOnlineFirst",
-         "publicationType":null,
          "publicationYear":"2021",
          "publisher":null,
          "recordId":"oai:DiVA.org:su-188123",
@@ -489,7 +484,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -570,12 +565,11 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/journal-article"
+            "https://id.kb.se/term/swepub/output/publication/journal-article"
          ],
          "publicationChannel":"Journal of Applied Statistics",
          "publicationCount":1,
          "publicationStatus":"https://id.kb.se/term/swepub/EpubAheadOfPrintOnlineFirst",
-         "publicationType":null,
          "publicationYear":"2021",
          "publisher":null,
          "recordId":"oai:DiVA.org:su-186688",
@@ -584,7 +578,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                "10106"
             ],
@@ -695,12 +689,11 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/journal-article"
+            "https://id.kb.se/term/swepub/output/publication/journal-article"
          ],
          "publicationChannel":"Journal of Vegetation Science",
          "publicationCount":1,
          "publicationStatus":"https://id.kb.se/term/swepub/EpubAheadOfPrintOnlineFirst",
-         "publicationType":null,
          "publicationYear":"2021",
          "publisher":null,
          "recordId":"oai:DiVA.org:su-188112",
@@ -709,7 +702,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -800,12 +793,11 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/review-article"
+            "https://id.kb.se/term/swepub/output/publication/review-article"
          ],
          "publicationChannel":"Wiley Interdisciplinary Reviews: Climate Change",
          "publicationCount":1,
          "publicationStatus":"https://id.kb.se/term/swepub/EpubAheadOfPrintOnlineFirst",
-         "publicationType":null,
          "publicationYear":"2021",
          "publisher":null,
          "recordId":"oai:DiVA.org:su-188118",
@@ -814,7 +806,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -889,12 +881,11 @@
          ],
          "openAccess":false,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/editorial-letter"
+            "https://id.kb.se/term/swepub/output/publication/editorial-letter"
          ],
          "publicationChannel":"Nerikes Allehanda",
          "publicationCount":1,
          "publicationStatus":"https://id.kb.se/term/swepub/Published",
-         "publicationType":null,
          "publicationYear":"2021",
          "publisher":null,
          "recordId":"oai:DiVA.org:su-188321",
@@ -903,7 +894,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                "50502"
             ],
@@ -1113,12 +1104,11 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/journal-article"
+            "https://id.kb.se/term/swepub/output/publication/journal-article"
          ],
          "publicationChannel":"Molecular Ecology Resources",
          "publicationCount":1,
          "publicationStatus":"https://id.kb.se/term/swepub/EpubAheadOfPrintOnlineFirst",
-         "publicationType":null,
          "publicationYear":"2021",
          "publisher":null,
          "recordId":"oai:DiVA.org:su-188132",
@@ -1127,7 +1117,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -1215,12 +1205,11 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/journal-article"
+            "https://id.kb.se/term/swepub/output/publication/journal-article"
          ],
          "publicationChannel":"Journal of Marriage and Family",
          "publicationCount":1,
          "publicationStatus":"https://id.kb.se/term/swepub/EpubAheadOfPrintOnlineFirst",
-         "publicationType":null,
          "publicationYear":"2021",
          "publisher":null,
          "recordId":"oai:DiVA.org:su-188124",
@@ -1229,7 +1218,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -1343,12 +1332,11 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/journal-article"
+            "https://id.kb.se/term/swepub/output/publication/journal-article"
          ],
          "publicationChannel":"Oikos",
          "publicationCount":1,
          "publicationStatus":"https://id.kb.se/term/swepub/EpubAheadOfPrintOnlineFirst",
-         "publicationType":null,
          "publicationYear":"2021",
          "publisher":null,
          "recordId":"oai:DiVA.org:su-188156",
@@ -1357,7 +1345,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -1453,12 +1441,11 @@
          ],
          "openAccess":false,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/journal-article"
+            "https://id.kb.se/term/swepub/output/publication/journal-article"
          ],
          "publicationChannel":"Asymptotic Analysis",
          "publicationCount":1,
          "publicationStatus":"https://id.kb.se/term/swepub/Published",
-         "publicationType":null,
          "publicationYear":"2021",
          "publisher":null,
          "recordId":"oai:DiVA.org:su-179448",
@@ -1467,7 +1454,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                "10101"
             ],
@@ -1556,12 +1543,11 @@
          ],
          "openAccess":false,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/edited-book"
+            "https://id.kb.se/term/swepub/output/publication/edited-book"
          ],
          "publicationChannel":null,
          "publicationCount":1,
          "publicationStatus":"https://id.kb.se/term/swepub/Published",
-         "publicationType":null,
          "publicationYear":"2021",
          "publisher":"Cambridge Scholars Publishing",
          "recordId":"oai:DiVA.org:su-188273",
@@ -1570,7 +1556,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -1633,12 +1619,11 @@
          ],
          "openAccess":false,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/book"
+            "https://id.kb.se/term/swepub/output/publication/book"
          ],
          "publicationChannel":null,
          "publicationCount":1,
          "publicationStatus":"https://id.kb.se/term/swepub/Published",
-         "publicationType":null,
          "publicationYear":"2021",
          "publisher":"Routledge",
          "recordId":"oai:DiVA.org:su-188694",
@@ -1647,7 +1632,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                "60201"
             ],
@@ -1712,12 +1697,11 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/journal-article"
+            "https://id.kb.se/term/swepub/output/publication/journal-article"
          ],
          "publicationChannel":"The Interpreter and Translator Trainer",
          "publicationCount":1,
          "publicationStatus":"https://id.kb.se/term/swepub/Published",
-         "publicationType":null,
          "publicationYear":"2021",
          "publisher":"Routledge",
          "recordId":"oai:DiVA.org:su-188684",
@@ -1726,7 +1710,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -1795,12 +1779,11 @@
          ],
          "openAccess":false,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/book-chapter"
+            "https://id.kb.se/term/swepub/output/publication/book-chapter"
          ],
          "publicationChannel":"Miscommunications: Errors, Mistakes, Media",
          "publicationCount":1,
          "publicationStatus":"https://id.kb.se/term/swepub/Published",
-         "publicationType":null,
          "publicationYear":"2021",
          "publisher":"Bloomsbury Academic",
          "recordId":"oai:DiVA.org:su-185761",
@@ -1809,7 +1792,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                "50801"
             ],
@@ -1894,12 +1877,11 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/journal-article"
+            "https://id.kb.se/term/swepub/output/publication/journal-article"
          ],
          "publicationChannel":"Culture and Organization",
          "publicationCount":1,
          "publicationStatus":"https://id.kb.se/term/swepub/Published",
-         "publicationType":null,
          "publicationYear":"2021",
          "publisher":null,
          "recordId":"oai:DiVA.org:su-171160",
@@ -1908,7 +1890,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                
             ],
@@ -1994,12 +1976,11 @@
          ],
          "openAccess":false,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/book-chapter"
+            "https://id.kb.se/term/swepub/output/publication/book-chapter"
          ],
          "publicationChannel":"Men, masculinities and intimate partner violence",
          "publicationCount":1,
          "publicationStatus":"https://id.kb.se/term/swepub/Published",
-         "publicationType":null,
          "publicationYear":"2021",
          "publisher":"Routledge",
          "recordId":"oai:DiVA.org:su-186251",
@@ -2008,7 +1989,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                "50901",
                "50902"
@@ -2084,12 +2065,11 @@
          ],
          "openAccess":true,
          "outputTypes":[
-            "https://id.kb.se/term/swepub/publication/doctoral-thesis"
+            "https://id.kb.se/term/swepub/output/publication/doctoral-thesis"
          ],
          "publicationChannel":null,
          "publicationCount":1,
          "publicationStatus":"https://id.kb.se/term/swepub/Published",
-         "publicationType":null,
          "publicationYear":"2021",
          "publisher":"Department of Biochemistry and Biophysics, Stockholm University",
          "recordId":"oai:DiVA.org:su-186770",
@@ -2098,7 +2078,7 @@
          "source":[
             "su"
          ],
-         "subjects":{
+         "classifications":{
             "fiveDigitTopics":[
                "10603"
             ],
@@ -2132,7 +2112,7 @@
       "publicationStatus":[
          
       ],
-      "subject":[
+      "classification":[
          
       ],
       "swedishList":false,

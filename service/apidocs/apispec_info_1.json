@@ -83,7 +83,7 @@
   "openapi": "3.0.3",
   "servers": [
     {
-      "url": "/api/v1/info"
+      "url": "/api/v2/info"
     }
   ],
   "components": {

@@ -2,41 +2,41 @@ import dateutil.parser
 from datetime import datetime
 
 genre_form_publication_mappings = {
-    "https://id.kb.se/term/swepub/publication/editorial-letter": ["art"],
-    "https://id.kb.se/term/swepub/publication/journal-article": ["art"],
-    "https://id.kb.se/term/swepub/publication/magazine-article": ["art"],
-    "https://id.kb.se/term/swepub/publication/newspaper-article": ["art"],
-    "https://id.kb.se/term/swepub/publication/book": ["bok"],
-    "https://id.kb.se/term/swepub/publication/doctoral-thesis": ["dok"],
-    "https://id.kb.se/term/swepub/publication/review-article": ["for"],
-    "https://id.kb.se/term/swepub/publication/book-chapter": ["kap"],
-    "https://id.kb.se/term/swepub/publication/encyclopedia-entry": ["kap"],
-    "https://id.kb.se/term/swepub/publication/foreword-afterword": ["kap"],
-    "https://id.kb.se/term/swepub/publication/report-chapter": ["kap"],
-    "https://id.kb.se/term/swepub/artistic-work": ["kfu"],
-    "https://id.kb.se/term/swepub/artistic-work/original-creative-work": ["kfu"],
-    "https://id.kb.se/term/swepub/artistic-work/artistic-thesis": ["kfu", "dok"],
-    "https://id.kb.se/term/swepub/conference": ["kon"],
-    "https://id.kb.se/term/swepub/conference/other": ["kon"],
-    "https://id.kb.se/term/swepub/conference/paper": ["kon"],
-    "https://id.kb.se/term/swepub/conference/poster": ["kon"],
-    "https://id.kb.se/term/swepub/publication/licentiate-thesis": ["lic"],
-    "https://id.kb.se/term/swepub/other": ["ovr"],
-    "https://id.kb.se/term/swepub/other/data-set": ["ovr"],
-    "https://id.kb.se/term/swepub/other/software": ["ovr"],
-    "https://id.kb.se/term/swepub/publication": ["ovr"],
-    "https://id.kb.se/term/swepub/publication/critical-edition": ["ovr"],
-    "https://id.kb.se/term/swepub/publication/journal-issue": ["ovr"],
-    "https://id.kb.se/term/swepub/publication/other": ["ovr"],
-    "https://id.kb.se/term/swepub/publication/preprint": ["ovr"],
-    "https://id.kb.se/term/swepub/publication/working-paper": ["ovr"],
-    "https://id.kb.se/term/swepub/intellectual-property": ["pat"],
-    "https://id.kb.se/term/swepub/intellectual-property/other": ["pat"],
-    "https://id.kb.se/term/swepub/intellectual-property/patent": ["pat"],
-    "https://id.kb.se/term/swepub/conference/proceeding": ["pro"],
-    "https://id.kb.se/term/swepub/publication/report": ["rap"],
-    "https://id.kb.se/term/swepub/publication/book-review": ["rec"],
-    "https://id.kb.se/term/swepub/publication/edited-book": ["sam"],
+    "https://id.kb.se/term/swepub/output/publication/editorial-letter": ["art"],
+    "https://id.kb.se/term/swepub/output/publication/journal-article": ["art"],
+    "https://id.kb.se/term/swepub/output/publication/magazine-article": ["art"],
+    "https://id.kb.se/term/swepub/output/publication/newspaper-article": ["art"],
+    "https://id.kb.se/term/swepub/output/publication/book": ["bok"],
+    "https://id.kb.se/term/swepub/output/publication/doctoral-thesis": ["dok"],
+    "https://id.kb.se/term/swepub/output/publication/review-article": ["for"],
+    "https://id.kb.se/term/swepub/output/publication/book-chapter": ["kap"],
+    "https://id.kb.se/term/swepub/output/publication/encyclopedia-entry": ["kap"],
+    "https://id.kb.se/term/swepub/output/publication/foreword-afterword": ["kap"],
+    "https://id.kb.se/term/swepub/output/publication/report-chapter": ["kap"],
+    "https://id.kb.se/term/swepub/output/artistic-work": ["kfu"],
+    "https://id.kb.se/term/swepub/output/artistic-work/original-creative-work": ["kfu"],
+    "https://id.kb.se/term/swepub/output/artistic-work/artistic-thesis": ["kfu", "dok"],
+    "https://id.kb.se/term/swepub/output/conference": ["kon"],
+    "https://id.kb.se/term/swepub/output/conference/other": ["kon"],
+    "https://id.kb.se/term/swepub/output/conference/paper": ["kon"],
+    "https://id.kb.se/term/swepub/output/conference/poster": ["kon"],
+    "https://id.kb.se/term/swepub/output/publication/licentiate-thesis": ["lic"],
+    "https://id.kb.se/term/swepub/output/other": ["ovr"],
+    "https://id.kb.se/term/swepub/output/other/data-set": ["ovr"],
+    "https://id.kb.se/term/swepub/output/other/software": ["ovr"],
+    "https://id.kb.se/term/swepub/output/publication": ["ovr"],
+    "https://id.kb.se/term/swepub/output/publication/critical-edition": ["ovr"],
+    "https://id.kb.se/term/swepub/output/publication/journal-issue": ["ovr"],
+    "https://id.kb.se/term/swepub/output/publication/other": ["ovr"],
+    "https://id.kb.se/term/swepub/output/publication/preprint": ["ovr"],
+    "https://id.kb.se/term/swepub/output/publication/working-paper": ["ovr"],
+    "https://id.kb.se/term/swepub/output/intellectual-property": ["pat"],
+    "https://id.kb.se/term/swepub/output/intellectual-property/other": ["pat"],
+    "https://id.kb.se/term/swepub/output/intellectual-property/patent": ["pat"],
+    "https://id.kb.se/term/swepub/output/conference/proceeding": ["pro"],
+    "https://id.kb.se/term/swepub/output/publication/report": ["rap"],
+    "https://id.kb.se/term/swepub/output/publication/book-review": ["rec"],
+    "https://id.kb.se/term/swepub/output/publication/edited-book": ["sam"],
 }
 
 publication_type_to_issuance_type = {
@@ -56,6 +56,26 @@ publication_type_to_issuance_type = {
     "sam": "Monograph",
 }
 
+# TODO: Remove the need for this ugly workaround
+top_subject_mappings = {
+        "en": {
+            "1": "NATURAL SCIENCES",
+            "2": "ENGINEERING AND TECHNOLOGY",
+            "3": "MEDICAL AND HEALTH SCIENCES",
+            "4": "AGRICULTURAL SCIENCES",
+            "5": "SOCIAL SCIENCES",
+            "6": "HUMANITIES"
+        },
+        "sv": {
+            "1": "NATURVETENSKAP",
+            "2": "TEKNIK OCH TEKNOLOGIER",
+            "3": "MEDICIN OCH HÄLSOVETENSKAP",
+            "4": "LANTBRUKSVETENSKAPER",
+            "5": "SAMHÄLLSVETENSKAP",
+            "6": "HUMANIORA"
+        }
+    }
+
 
 def get_publication_types(genre_form):
     return genre_form_publication_mappings.get(genre_form, [])
@@ -63,35 +83,6 @@ def get_publication_types(genre_form):
 
 def get_issuance_type(publication_type):
     return publication_type_to_issuance_type.get(publication_type)
-
-
-top_subject_mappings_eng = {
-    "1": "NATURAL SCIENCES",
-    "2": "ENGINEERING AND TECHNOLOGY",
-    "3": "MEDICAL AND HEALTH SCIENCES",
-    "4": "AGRICULTURAL SCIENCES",
-    "5": "SOCIAL SCIENCES",
-    "6": "HUMANITIES",
-}
-
-top_subject_mappings_swe = {
-    "1": "NATURVETENSKAP",
-    "2": "TEKNIK OCH TEKNOLOGIER",
-    "3": "MEDICIN OCH HÄLSOVETENSKAP",
-    "4": "LANTBRUKSVETENSKAPER",
-    "5": "SAMHÄLLSVETENSKAP",
-    "6": "HUMANIORA",
-}
-
-
-def get_top_subject_mapping(language, code):
-    if code and len(code) > 0:
-        pos_1 = code[0]
-        if language == "eng":
-            return top_subject_mappings_eng.get(pos_1)
-        elif language == "swe":
-            return top_subject_mappings_swe.get(pos_1)
-    return None
 
 
 class Publication:
@@ -137,7 +128,7 @@ class Publication:
         self.add_instance_of_subject_650()
         self.add_instance_of_subject_653()
         self.add_instance_of_contribution_100_and_700_710()
-        self.add_part_of_773()
+        self.add_is_part_of_773()
         self.add_electronic_locator_and_identified_by_856()
         return self.body
 
@@ -218,12 +209,14 @@ class Publication:
         2. publication type determined by get_publication_types and added as swepub-publicationtype
         """
         body = self.body
+        if not body.get("instanceOf", {}).get("subject"):
+            body["instanceOf"]["subject"] = []
         subjects = body.get("instanceOf", {}).get("subject", [])
         genre_forms = body.get("instanceOf", {}).get("genreForm", [])
         for gf in genre_forms:
             if gf.get("@id"):
                 id = gf.get("@id")
-                if id and id.startswith("https://id.kb.se/term/swepub/svep/"):
+                if id and id.startswith("https://id.kb.se/term/swepub/svep"):
                     label = id.split("/")[-1]
                     code = "swepub-contenttype"
                     contenttype = {
@@ -401,19 +394,72 @@ class Publication:
 
     def add_instance_of_subject_650(self):
         """
-        Remakes uka.se instanceOf.subject, represents marc field 650
+        Remakes SSIF instanceOf.classification, represents marc field 650
         1. Rename @id to '(SwePub)'+code, 650_0
         2. Rename inScheme.code to 'hsv//'+ language.code, 650_2
         3. Create termComponentList, 650_a and 650_x
         """
         body = self.body
-        if body.get("instanceOf", {}).get("subject"):
-            for s in body.get("instanceOf", {}).get("subject"):
-                if _is_uka_subject(s):
-                    s["@id"] = "(SwePub)" + s.get("code", "")
-                    s["@type"] = "ComplexSubject"
-                    s["inScheme"]["code"] = "hsv//" + s.get("language", {}).get("code", "")
-                    _set_term_component_list(s)
+        work = body.setdefault("instanceOf", {})
+
+        subjects = work.setdefault("subject", [])
+
+        kept_classifications = []
+
+        for term in work.get("classification", []):
+            if is_ssif_classification(term):
+                for lang, pref_label in term.get("prefLabelByLang").items():
+                    langcode = 'eng' if lang == 'en' else 'swe'
+                    newterm = {
+                        "@id": "(SwePub)" + term.get("code", ""),
+                        "code": term.get("code", ""),
+                        "prefLabel": term.get("prefLabelByLang", {}).get(lang, ""),
+                        "language": {
+                            "@type": "Language",
+                            "@id": f"https://id.kb.se/language/{langcode}",
+                            "code": langcode
+                        },
+                        "inScheme": {
+                            "@id": "https://id.kb.se/term/uka/",
+                            "@type": "ConceptScheme",
+                            "code": f"hsv//{langcode}"
+                        },
+                    }
+                    newterm["@type"] = "ComplexSubject"
+                    if "broader" in term:
+                        newterm["termComponentList"] = _get_term_components(
+                            term["broader"], pref_label, lang
+                        )
+
+                        # SSIF has three levels, so we can have two "broader" at most, so let's
+                        # keep it simple here.
+                        # TODO: Is still still necessary?
+                        broader = {
+                            "prefLabel": term.get("broader", {}).get("prefLabelByLang", {}).get(lang, "")
+                        }
+                        if term.get("broader", {}).get("broader"):
+                            broader["broader"] = {
+                                "prefLabel": term.get("broader", {}).get("broader", {}).get("prefLabelByLang", {}).get(lang, "")
+                            }
+                        newterm["broader"] = broader
+                    else:
+                        # For legacy reasons it appears we need to add a termComponentList also for top-level
+                        # subjects and use @type ComplexSubject.
+                        newterm["termComponentList"] = [
+                            {
+                                "@type": "Topic",
+                                "prefLabel": top_subject_mappings.get(lang, {}).get(term.get("code"), pref_label)
+                            }
+                        ]
+                    subjects.append(newterm)
+            else:
+                kept_classifications.append(term)
+
+        if "classification" in work:
+            if kept_classifications:
+                work["classification"] = kept_classifications
+            else:
+                del work["classification"]
 
     def add_instance_of_subject_653(self):
         """
@@ -422,33 +468,40 @@ class Publication:
         (label is used determine if it should be added to 653 instead of 650)
         """
         body = self.body
-        if body.get("instanceOf", {}).get("subject"):
-            for s in body.get("instanceOf", {}).get("subject"):
-                if not _is_uka_subject(s) and s.get("prefLabel"):
-                    s["label"] = s.pop("prefLabel")
+        for s in body.get("instanceOf", {}).get("subject", []):
+            if not is_ssif_classification(s):
+                langs = s.get("prefLabelByLang", {}).keys()
+                for lang in langs:  # should only be one at this point
+                    langcode = "eng" if lang == "en" else "swe"
+                    s["language"] = {
+                        "@type": "Language",
+                        "@id": f"https://id.kb.se/language/{langcode}",
+                        "code": langcode
+                    }
 
-    def add_part_of_773(self):
+                for key, value in _find_by_lang(s, "prefLabel"):
+                    s.pop(key)
+                    s["label"] = value
+
+    def add_is_part_of_773(self):
         """
-        Moves partOf to isPartOf, affects marc field 773
+        Reconstruct isPartOf, affects marc field 773
         1. Sets @type to Instance for each (is)PartOf
         2. Moves isPartOf.hasInstance.extent to isPartOf.extent. Removes the rest of hasInstance
         3. Creates isPartOf.marc:enumerationAndFirstPage  with volumeNumber and issueNumber
         3. Creates part with volumeNumber and issueNumber
         """
         body = self.body
-        if body.get("partOf"):
+        if body.get("isPartOf"):
             part = ""
             marc_enumeration_and_first_page = ""
 
             provision_activity_statement = _get_provision_activity_statement(body)
-            # Currently in swepub the name is partOf but while in libris its isPartOf. Once SWEPUB2-699 rename our
-            # partOf to isPartOf this code has to be updated
-
-            # Not all parts of 'partOf' should remain in body after conversion.
+            # Not all parts of 'isPartOf' should remain in body after conversion.
             # Only take parts that has title and does not have 'genreForm' or 'Dataset' as type, ignore other parts.
 
             to_add_to_body = []
-            before_convert = body.pop("partOf", [])
+            before_convert = body.pop("isPartOf", [])
 
             for is_part in before_convert:
 
@@ -535,7 +588,7 @@ class Publication:
 
 def _set_contribution_values(body, contribution, affiliation):
     if isinstance(affiliation, dict):
-        if affiliation.get("name") and affiliation.get("@type") == "Organization":
+        if (affiliation.get("name") or affiliation.get("nameByLang")) and affiliation.get("@type") == "Organization":
             _set_contribution_marc_affiliation(contribution, affiliation)
             _set_global_organizational_contribution_for_marc_field_710(body, affiliation)
         for key, value in affiliation.items():
@@ -550,28 +603,33 @@ def _set_contribution_marc_affiliation(contribution, affiliation):
         marc_affiliations_list = contribution.get("agent", {}).get("marc:affiliation").split(",")
     else:
         marc_affiliations_list = []
-    marc_affiliation = affiliation.get("name")
-    if marc_affiliation not in marc_affiliations_list:
-        if _is_kb_se_affiliation(affiliation):
-            marc_affiliations_list.insert(0, marc_affiliation)
-        else:
-            marc_affiliations_list.append(marc_affiliation)
+    # affiliations can have a single name *or* multiple names in nameByLang...
+    marc_affiliations = [affiliation.get("name"), affiliation.get("nameByLang", {}).get("swe"), affiliation.get("nameByLang", {}).get("eng")]
+
+    # ...so add each one of them
+    for marc_affiliation in [a for a in marc_affiliations if a is not None]:
+        if marc_affiliation not in marc_affiliations_list:
+            if _is_kb_se_affiliation(affiliation):
+                marc_affiliations_list.insert(0, marc_affiliation)
+            else:
+                marc_affiliations_list.append(marc_affiliation)
     contribution["agent"]["marc:affiliation"] = ",".join(str(s) for s in marc_affiliations_list)
 
 
 def _set_global_organizational_contribution_for_marc_field_710(body, affiliation):
+    affiliation_name = affiliation.get("name") or affiliation.get("nameByLang", {}).get("swe") or affiliation.get("nameByLang", {}).get("eng")
     if body.get("tmp_global_organizational_contribution"):
         agent = body.get("tmp_global_organizational_contribution").get("agent", {})
         agent_name = agent.get("name", {})
         is_part_of = agent.get("isPartOf", {})
-        if not is_part_of and agent_name != affiliation.get("name"):
+        if not is_part_of and agent_name != affiliation_name:
             is_part_of = {"@type": "Organization", "name": agent.pop("name")}
             agent["isPartOf"] = is_part_of
             if _is_kb_se_affiliation(affiliation):
                 marc_subordinate_unit = is_part_of.pop("name")
-                is_part_of["name"] = affiliation.get("name")
+                is_part_of["name"] = affiliation_name
             else:
-                marc_subordinate_unit = affiliation.get("name")
+                marc_subordinate_unit = affiliation_name
             marc_subordinate_units = agent.get("marc:subordinateUnit", [])
 
             if (
@@ -584,7 +642,7 @@ def _set_global_organizational_contribution_for_marc_field_710(body, affiliation
     else:
         body["tmp_global_organizational_contribution"] = {
             "@type": "Contribution",
-            "agent": {"@type": "Organization", "name": affiliation.get("name")},
+            "agent": {"@type": "Organization", "name": affiliation_name},
             "role": [{"@id": "https://id.kb.se/relator/org", "@type": "Role", "code": "org"}],
         }
 
@@ -609,41 +667,31 @@ def _is_kb_se_affiliation(affiliation):
     return False
 
 
-def _set_term_component_list(subject):
-    language = subject.get("language", {}).get("code", "")
-    code = subject.get("code", "")
-    pref_label = subject.get("prefLabel")
-    if not subject.get("broader"):
-        if get_top_subject_mapping(language, code):
-            pref_label = get_top_subject_mapping(language, code)
+def _get_term_components(broader, pref_label, lang):
+    term_components =  []
 
-        subject["termComponentList"] = [{"@type": "Topic", "prefLabel": pref_label}]
+    for component in _find_components(broader, lang):
+        term_components.append(component)
+
+    term_components.append(
+        {"@type": "TopicSubdivision", "prefLabel": pref_label}
+    )
+
+    return term_components
+
+
+def _find_components(broader, lang):
+    for key, value in _find_by_lang(broader, "prefLabel", [lang]):
+        pref_label = top_subject_mappings.get(lang, {}).get(broader.get("code"), value)
+        break
     else:
-        _set_broader_term_component_list(subject, subject.get("broader"))
-        topic_sub_division = {"@type": "TopicSubdivision", "prefLabel": pref_label}
-        if topic_sub_division not in subject.get("termComponentList"):
-            subject.get("termComponentList").append(
-                {"@type": "TopicSubdivision", "prefLabel": pref_label}
-            )
+        return
 
-
-def _set_broader_term_component_list(subject, broader):
-    if not subject.get("termComponentList"):
-        subject["termComponentList"] = []
     if not broader.get("broader"):
-        pref_label = broader.get("prefLabel")
-        language = subject.get("language", {}).get("code", "")
-        code = subject.get("code", "")
-        if get_top_subject_mapping(language, code):
-            pref_label = get_top_subject_mapping(language, code)
-        topic = {"@type": "Topic", "prefLabel": pref_label}
-        if topic not in subject.get("termComponentList"):
-            subject.get("termComponentList", []).insert(0, topic)
+        yield {"@type": "Topic", "prefLabel": pref_label}
     else:
-        topic_sub_division = {"@type": "TopicSubdivision", "prefLabel": broader.get("prefLabel")}
-        if topic_sub_division not in subject.get("termComponentList"):
-            subject.get("termComponentList", []).append(topic_sub_division)
-        _set_broader_term_component_list(subject, broader.get("broader"))
+        yield from _find_components(broader.get("broader"), lang)
+        yield {"@type": "TopicSubdivision", "prefLabel": pref_label}
 
 
 def _get_assigner_from_urn(url):
@@ -666,8 +714,8 @@ def _get_provision_activity_statement(body):
     return provision_activity_statement
 
 
-def _is_uka_subject(subject):
-    return subject.get("inScheme", {}).get("@id") == "https://id.kb.se/term/uka/"
+def is_ssif_classification(term):
+    return term.get("inScheme", {}).get("@id", "").startswith(("https://id.kb.se/term/ssif", "https://id.kb.se/term/uka"))
 
 
 def _format_date_as_year(date):
@@ -684,3 +732,29 @@ def _format_date_as_year(date):
     if year is None:
         year = datetime.today().year
     return str(year)
+
+
+def _find_by_lang(item, key, by_lang_pref_order=['sv', 'en']):
+    bylangkey = f"{key}ByLang"
+    bylang = item.get(bylangkey)
+
+    if bylang:
+        for lang in by_lang_pref_order:
+            if lang in bylang:
+                yield bylangkey, bylang[lang]
+                return
+        for value in bylang.values():
+            yield bylangkey, value
+            return
+
+    if key in item:
+        yield key, item[key]
+
+
+if __name__ == '__main__':
+    import json
+    import sys
+
+    indata = json.load(sys.stdin)['result']
+    outdata = Publication(indata).body_with_required_legacy_search_fields
+    json.dump(outdata, sys.stdout, indent=2, ensure_ascii=False)

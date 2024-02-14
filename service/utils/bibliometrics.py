@@ -37,6 +37,7 @@ def _build_hit(bibframe_record, fields):
     field_property_dict = {
         "archiveURI": "archive_URI",
         "autoclassified": "autoclassified",
+        "classifications": "ssif_subjects",
         "contentMarking": "content_marking",
         "creatorCount": "creator_count",
         "creators": "creators",
@@ -56,7 +57,6 @@ def _build_hit(bibframe_record, fields):
         "publicationChannel": "publication_channel",
         "publicationCount": "publication_count",
         "publicationStatus": "publication_status",
-        "publicationType": "publication_type",
         "publicationYear": "publication_year",
         "publisher": "publisher",
         "recordId": "record_id",
@@ -64,7 +64,6 @@ def _build_hit(bibframe_record, fields):
         "series": "series",
         "seriesTitle": "series_title",
         "source": "source_org",
-        "subjects": "uka_subjects",
         "summary": "summary",
         "swedishList": "swedish_list",
         "title": "title",
@@ -86,12 +85,12 @@ def _build_hit(bibframe_record, fields):
                         # do not add as these fields will be added to creator
                         continue
                 elif field in SUBJECT_FIELDS:
-                    if "subjects" not in result.keys() and "subjects" not in fields:
-                        # add subjects field if one of subject_fields has been chosen,
+                    if "classifications" not in result.keys() and "classifications" not in fields:
+                        # add classifications field if one of subject_fields has been chosen,
                         # if not already in fields or result
-                        field = "subjects"
+                        field = "classifications"
                     else:
-                        # do not add as these fields will be added to subjects
+                        # do not add as these fields will be added to classifications
                         continue
 
                 prop = field_property_dict.get(field)

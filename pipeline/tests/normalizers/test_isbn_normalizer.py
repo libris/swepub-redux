@@ -27,11 +27,11 @@ def test_with_delimeters_and_lower_case():
 
 
 def _test_isbn_normalizaion(test_data, expected_result, expected_codes):
-    body = {"partOf": [{"identifiedBy": [{"value": test_data}]}]}
+    body = {"isPartOf": [{"identifiedBy": [{"value": test_data}]}]}
 
     field = FieldMeta(
         value=test_data,
-        path="partOf.[0].identifiedBy.[0].value",
+        path="isPartOf.[0].identifiedBy.[0].value",
     )
 
     normalize_isbn(body, field)

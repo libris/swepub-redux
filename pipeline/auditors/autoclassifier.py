@@ -4,15 +4,9 @@ import json
 from simplemma.langdetect import lang_detector
 
 from pipeline.auditors import BaseAuditor
-from pipeline.util import get_title_by_language
+from pipeline.util import SWEPUB_CLASSIFIER_ID, SSIF_BASE, get_title_by_language
 
-categories = json.load(
-    open(
-        path.join(
-            path.dirname(path.abspath(__file__)), "../../resources/categories.json"
-        )
-    )
-)
+from pipeline.ldcache import get_description
 
 
 def _eligible_for_autoclassification(publication):
@@ -32,27 +26,16 @@ def _eligible_for_autoclassification(publication):
     # 4. No 3-level/5-level classification
     if publication.is_classified:
         return False
+
     return True
 
 
-def _create_subject(code, lang):
-    return {
-        "@type": "Topic",
-        "@id": f"https://id.kb.se/term/uka/{code}",
-        "inScheme": {
-            "@id": "https://id.kb.se/term/uka/",
-            "@type": "ConceptScheme",
-            "code": "uka.se",
-        },
-        "code": code,
-        "prefLabel": categories.get(code, {}).get(lang),
-        "language": {
-            "@type": "Language",
-            "@id": f"https://id.kb.se/language/{lang}",
-            "code": lang,
-        },
-        "hasNote": [{"@type": "Note", "label": "Autoclassified by Swepub"}],
+def _create_classification(code):
+    classification = get_description(f"https://id.kb.se/term/ssif/{code}").copy()
+    classification["@annotation"] = {
+        "assigner": {"@id": SWEPUB_CLASSIFIER_ID}
     }
+    return classification
 
 
 class AutoclassifierAuditor(BaseAuditor):
@@ -87,16 +70,12 @@ class AutoclassifierAuditor(BaseAuditor):
             return publication, audit_events, False
 
         title = get_title_by_language(publication, language)
-        current_codes = set(publication.ukas())
+        current_codes = set(publication.ssifs())
 
-        # Get non-UKA keywords in the target language; set Annif URL
-        if language == "sv":
-            language_id = "https://id.kb.se/language/swe"
-            annif_url = getenv("ANNIF_SV_URL")
-        else:
-            language_id = "https://id.kb.se/language/eng"
-            annif_url = getenv("ANNIF_EN_URL")
-        keywords = " ".join(publication.keywords(language=language_id))
+        annif_url = getenv("ANNIF_SV_URL" if language == "sv" else "ANNIF_EN_URL")
+
+        # Get non-SSIF keywords in the target language
+        keywords = " ".join(publication.keywords(langtag=language))
 
         try:
             r = session.post(
@@ -124,7 +103,7 @@ class AutoclassifierAuditor(BaseAuditor):
         for suggestion in [
             d for d in suggestions if d["uri"].split("/")[-1] not in current_codes
         ]:
-            # Extract UKA code from URI
+            # Extract SSIF code from URI
             code = suggestion["uri"].split("/")[-1]
             # Skip sugggested level 1
             if len(code) == 1:
@@ -145,15 +124,53 @@ class AutoclassifierAuditor(BaseAuditor):
         if not new_codes:
             return publication, audit_events, False
 
-        initial_value = publication.uka_swe_classification_list
+        initial_value = _get_ssif_swe_classification_list(publication.classifications)
 
-        classifications = []
-        for code in new_codes:
-            classifications.append(_create_subject(code, "eng"))
-            classifications.append(_create_subject(code, "swe"))
-        publication.add_subjects(classifications)
+        classifications = [_create_classification(code) for code in new_codes]
 
-        value = publication.uka_swe_classification_list
+        publication.body.setdefault("instanceOf", {}).setdefault(
+            "classification", []
+        ).extend(classifications)
+
+        value = _get_ssif_swe_classification_list(publication.classifications)
         audit_events.add_event(self.name, "auto_classify", True, initial_value, value)
 
         return publication, audit_events, True
+
+
+def _get_ssif_swe_classification_list(classifications):
+    """
+    Returns a list of all SSIF classifications in Swedish with code and prefLabel for each
+
+    >>> _get_ssif_swe_classification_list([
+    ...     {"@type": "Classification", "code": "1", "prefLabel": "Ett"},
+    ...     {"@id": "https://id.kb.se/term/ssif/1", "@type": "Classification",
+    ...      "code": "1", "prefLabel": "Ett"},
+    ...     {"@id": "https://id.kb.se/term/ssif/1", "@type": "Classification",
+    ...      "code": "1", "prefLabelByLang": {"sv": "Ett"}},
+    ...     {"@id": "https://id.kb.se/term/ssif/1", "@type": "Classification",
+    ...      "code": "1", "prefLabelByLang": {"en": "One"}},
+    ...     {"@id": "https://id.kb.se/term/other/1", "@type": "Classification",
+    ...      "code": "1", "prefLabelByLang": {"sv": "Ett"}},
+    ... ])
+    ['1 Ett', '1 Ett']
+    """
+    code_label_list = []
+
+    for term in classifications:
+        if term.get("@type", "") == "Classification":
+            term_id = term.get("@id")
+            if not term_id or not term_id.startswith(SSIF_BASE):
+                continue
+
+            code = term.get("code", "")
+            for lang, label in term.get("prefLabelByLang", {}).items():
+                if lang == 'sv':
+                    break
+            else:
+                label = term.get("prefLabel", "")
+
+            if code and label:
+                code_label_list.append(f"{code} {label}")
+
+    return code_label_list

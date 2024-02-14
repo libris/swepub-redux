@@ -22,7 +22,6 @@ column_name_label_dict = {
     "title": "title",
     "summary": "summary",
     "output_types": "outputTypes",
-    "publication_type": "publicationType",
     "content_marking": "contentMarking",
     "publication_year": "publicationYear",
     "publication_status": "publicationStatus",
@@ -106,7 +105,7 @@ def _get_row(data, column_names, include_all, chosen_fields, flavor="csv"):
             "five_digit_topics",
         ):
             value = _make_string_from_list(
-                data.get("subjects", {}).get(label, []), flavor
+                data.get("classifications", {}).get(label, []), flavor
             )
         elif column_name == "duplicate_ids":
             value = _make_string_from_list(data.get(label, []), flavor)

@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:mods="http://www.loc.gov/mods/v3"
-                xmlns:OAI-PMH="http://www.openarchives.org/OAI/2.0/" exclude-result-prefixes="OAI-PMH mods">
-    <xsl:output method="xml" indent="yes" encoding="UTF-8" omit-xml-declaration="no" media-type="text/xml"/>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:mods="http://www.loc.gov/mods/v3" xmlns:OAI-PMH="http://www.openarchives.org/OAI/2.0/"
+    exclude-result-prefixes="OAI-PMH mods">
+    <xsl:output method="xml" indent="yes" encoding="UTF-8" omit-xml-declaration="no"
+        media-type="text/xml"/>
     <!-- Transformerar DiVA:s MODS-format till Swepub MODS v 3 format -->
     <!-- Uppsala universitetsbibliotek, 2020 -->
+    <!-- Revision januari 2024 -->
+    <!-- Ändrat Swedish research subjects från subject till classification -->
+    <!-- Ändrat libris till se-libr i type-attribut för identifier -->
+    <!-- genre type=”grantAgreement” under relatedItem type=”host” borttaget -->
+    <!-- agent istället för publisher under originInfo -->
     <!-- Revision november 2021 -->
-        <!-- Uppdaterat mappning av underkategorier för artikel/konferensbidrag -->
-        <!-- Lagt till outputtyp artistic/thesis -->
-        <!-- Ändrat accessCondition till att gälla enbart fulltextfiler -->
-        <!-- Lagt till attribut i location/url -->
-        <!-- Lagt till dateOther för defence och online (epub ahead of print)-->
+    <!-- Uppdaterat mappning av underkategorier för artikel/konferensbidrag -->
+    <!-- Lagt till outputtyp artistic/thesis -->
+    <!-- Ändrat accessCondition till att gälla enbart fulltextfiler -->
+    <!-- Lagt till attribut i location/url -->
+    <!-- Lagt till dateOther för defence och online (epub ahead of print)-->
     <xsl:template match="/OAI-PMH:OAI-PMH">
         <OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/">
             <xsl:copy-of select="OAI-PMH:responseDate"/>
@@ -36,9 +43,10 @@
         <xsl:param name="org">Nationalmuseum</xsl:param>
         <!-- Bibliografisk beskrivning - Swepub - MODS 3.0 -->
         <!-- 2. MODS root element -->
-        <mods xmlns="http://www.loc.gov/mods/v3" version="3.7" xmlns:xlink="http://www.w3.org/1999/xlink"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
+        <mods xmlns="http://www.loc.gov/mods/v3" version="3.7"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-7.xsd">
             <xsl:for-each select="mods:mods">
                 <!-- 3. Record information -->
                 <xsl:for-each select="mods:recordInfo">
@@ -59,6 +67,14 @@
                             <xsl:if test="not(../mods:relatedItem[@type = 'host'])">
                                 <xsl:copy-of select="."/>
                             </xsl:if>
+                        </xsl:when>
+                        <xsl:when test="@type = 'libris'">
+                            <xsl:element name="identifier">
+                                <xsl:attribute name="type">
+                                    <xsl:text>se-libr</xsl:text>
+                                </xsl:attribute>
+                                <xsl:value-of select="."/>
+                            </xsl:element>
                         </xsl:when>
                         <xsl:otherwise>
                             <xsl:copy-of select="."/>
@@ -101,6 +117,7 @@
                 -->
                 <!-- 8. Subjects and keywords-->
                 <!-- 8.1. Subject classification according to Swedish research subjects standard -->
+                <!--
                 <xsl:for-each select="mods:subject[@authority = 'hsv']">
                     <xsl:element name="subject">
                         <xsl:attribute name="lang">
@@ -113,6 +130,15 @@
                             <xsl:value-of select="@xlink:href"/>
                         </xsl:attribute>
                         <xsl:copy-of select="mods:topic"/>
+                    </xsl:element>
+                </xsl:for-each>
+                -->
+                <xsl:for-each select="mods:subject[@authority = 'hsv'][@lang = 'swe']">
+                    <xsl:element name="classification">
+                        <xsl:attribute name="authority">
+                            <xsl:text>ssif</xsl:text>
+                        </xsl:attribute>
+                        <xsl:value-of select="@xlink:href"/>
                     </xsl:element>
                 </xsl:for-each>
                 <!-- 8.2. Keywords -->
@@ -164,26 +190,29 @@
                             <xsl:when test=". = 'article'">
                                 <xsl:choose>
                                     <xsl:when
-                                            test="../mods:genre[@authority = 'diva'][@type = 'publicationSubTypeCode'] = 'editorialMaterial'">
+                                        test="../mods:genre[@authority = 'diva'][@type = 'publicationSubTypeCode'] = 'editorialMaterial'">
                                         <xsl:text>publication/editorial-letter</xsl:text>
                                     </xsl:when>
                                     <xsl:when
-                                            test="../mods:genre[@authority = 'diva'][@type = 'publicationSubTypeCode'] = 'letter'">
+                                        test="../mods:genre[@authority = 'diva'][@type = 'publicationSubTypeCode'] = 'letter'">
                                         <xsl:text>publication/editorial-letter</xsl:text>
                                     </xsl:when>
                                     <xsl:when
-                                            test="../mods:genre[@authority = 'diva'][@type = 'publicationSubTypeCode'] = 'newsItem'">
+                                        test="../mods:genre[@authority = 'diva'][@type = 'publicationSubTypeCode'] = 'newsItem'">
                                         <xsl:text>publication/newspaper-article</xsl:text>
                                     </xsl:when>
                                     <xsl:otherwise>
                                         <xsl:choose>
-                                            <xsl:when test="../mods:genre[@authority = 'svep'][@type = 'ref']">
+                                            <xsl:when
+                                                test="../mods:genre[@authority = 'svep'][@type = 'ref']">
                                                 <xsl:text>publication/journal-article</xsl:text>
                                             </xsl:when>
-                                            <xsl:when test="../mods:genre[@authority = 'svep'][@type = 'vet']">
+                                            <xsl:when
+                                                test="../mods:genre[@authority = 'svep'][@type = 'vet']">
                                                 <xsl:text>publication/magazine-article</xsl:text>
                                             </xsl:when>
-                                            <xsl:when test="../mods:genre[@authority = 'svep'][@type = 'pop']">
+                                            <xsl:when
+                                                test="../mods:genre[@authority = 'svep'][@type = 'pop']">
                                                 <xsl:text>publication/newspaper-article</xsl:text>
                                             </xsl:when>
                                             <xsl:otherwise>
@@ -210,21 +239,23 @@
                             </xsl:when>
                             <xsl:when test=". = 'monographDoctoralThesis'">
                                 <xsl:choose>
-                                    <xsl:when test="../mods:genre[@authority = 'svep'][@type= 'publicationType'] = 'kfa' ">
-                                        <xsl:text>artistic-work/artistic-thesis</xsl:text> 
+                                    <xsl:when
+                                        test="../mods:genre[@authority = 'svep'][@type= 'publicationType'] = 'kfa' ">
+                                        <xsl:text>artistic-work/artistic-thesis</xsl:text>
                                     </xsl:when>
                                     <xsl:otherwise>
-                                        <xsl:text>publication/doctoral-thesis</xsl:text>                                   
+                                        <xsl:text>publication/doctoral-thesis</xsl:text>
                                     </xsl:otherwise>
                                 </xsl:choose>
                             </xsl:when>
                             <xsl:when test=". = 'comprehensiveDoctoralThesis'">
                                 <xsl:choose>
-                                    <xsl:when test="../mods:genre[@authority = 'svep'][@type= 'publicationType'] = 'kfa' ">
-                                        <xsl:text>artistic-work/artistic-thesis</xsl:text> 
+                                    <xsl:when
+                                        test="../mods:genre[@authority = 'svep'][@type= 'publicationType'] = 'kfa' ">
+                                        <xsl:text>artistic-work/artistic-thesis</xsl:text>
                                     </xsl:when>
                                     <xsl:otherwise>
-                                        <xsl:text>publication/doctoral-thesis</xsl:text>                                   
+                                        <xsl:text>publication/doctoral-thesis</xsl:text>
                                     </xsl:otherwise>
                                 </xsl:choose>
                             </xsl:when>
@@ -234,23 +265,23 @@
                             <xsl:when test=". = 'conferencePaper'">
                                 <xsl:choose>
                                     <xsl:when
-                                            test="../mods:genre[@authority = 'diva'][@type = 'publicationSubTypeCode'] = 'meetingAbstract'">
+                                        test="../mods:genre[@authority = 'diva'][@type = 'publicationSubTypeCode'] = 'meetingAbstract'">
                                         <xsl:text>conference/other</xsl:text>
                                     </xsl:when>
                                     <xsl:when
-                                            test="../mods:genre[@authority = 'diva'][@type = 'publicationSubTypeCode'] = 'abstracts'">
+                                        test="../mods:genre[@authority = 'diva'][@type = 'publicationSubTypeCode'] = 'abstracts'">
                                         <xsl:text>conference/other</xsl:text>
                                     </xsl:when>
                                     <xsl:when
-                                            test="../mods:genre[@authority= 'diva'][@type ='publicationSubTypeCode'] = 'poster'">
+                                        test="../mods:genre[@authority= 'diva'][@type ='publicationSubTypeCode'] = 'poster'">
                                         <xsl:text>conference/poster</xsl:text>
                                     </xsl:when>
                                     <xsl:when
-                                            test="../mods:genre[@authority= 'diva'][@type ='publicationSubTypeCode'] = 'presentation'">
+                                        test="../mods:genre[@authority= 'diva'][@type ='publicationSubTypeCode'] = 'presentation'">
                                         <xsl:text>conference/other</xsl:text>
                                     </xsl:when>
                                     <xsl:when
-                                            test="../mods:genre[@authority= 'diva'][@type ='publicationSubTypeCode'] = 'publishedPaper'">
+                                        test="../mods:genre[@authority= 'diva'][@type ='publicationSubTypeCode'] = 'publishedPaper'">
                                         <xsl:text>conference/paper</xsl:text>
                                     </xsl:when>
                                     <!-- Om underkategori saknas i DiVA -->
@@ -293,7 +324,8 @@
                 <!-- 10.2.2. Output type – artistic, som komplement till annan outputtyp -->
                 <xsl:for-each select="mods:genre[@authority = 'svep'][@type ='publicationType']">
                     <xsl:if test=". = 'kfa'">
-                        <xsl:if test="not(../mods:genre[@authority= 'diva'][@type='publicationTypeCode'] = 'monographDoctoralThesis' or ../mods:genre[@authority= 'diva'][@type='publicationTypeCode'] = 'comprehensiveDoctoralThesis')">
+                        <xsl:if
+                            test="not(../mods:genre[@authority= 'diva'][@type='publicationTypeCode'] = 'monographDoctoralThesis' or ../mods:genre[@authority= 'diva'][@type='publicationTypeCode'] = 'comprehensiveDoctoralThesis')">
                             <xsl:element name="genre">
                                 <xsl:attribute name="authority">
                                     <xsl:text>kb.se</xsl:text>
@@ -313,7 +345,8 @@
 
                 <!-- DiVA Content type -->
                 <xsl:for-each select="mods:genre[@authority = 'diva'][@type = 'contentTypeCode']">
-                    <xsl:if test=". = 'refereedArtisticOutput' and count(mods:genre[@authority = 'svep'][@type = 'contentType'][. = 'ref']) &lt; 1">
+                    <xsl:if
+                        test=". = 'refereedArtisticOutput' and count(mods:genre[@authority = 'svep'][@type = 'contentType'][. = 'ref']) &lt; 1">
                         <xsl:element name="genre">
                             <xsl:attribute name="authority">
                                 <xsl:text>svep</xsl:text>
@@ -407,22 +440,25 @@
                             <xsl:choose>
                                 <xsl:when test="starts-with(.,$org) and string-length($org) > 1">
                                     <affiliation lang="swe" authority="kb.se"
-                                                 xsi:type="stringPlusLanguagePlusAuthority">
+                                        xsi:type="stringPlusLanguagePlusAuthority">
                                         <xsl:attribute name="valueURI">
-                                            <xsl:value-of select="../../mods:recordInfo/mods:recordContentSource"/>
+                                            <xsl:value-of
+                                                select="../../mods:recordInfo/mods:recordContentSource"/>
                                             <xsl:text>.se</xsl:text>
                                         </xsl:attribute>
                                         <xsl:value-of select="$org"/>
                                     </affiliation>
                                     <xsl:if test="contains(.,', ')">
-                                        <affiliation lang="swe" xsi:type="stringPlusLanguagePlusAuthority">
+                                        <affiliation lang="swe"
+                                            xsi:type="stringPlusLanguagePlusAuthority">
                                             <xsl:attribute name="authority">
-                                                <xsl:value-of select="../../mods:recordInfo/mods:recordContentSource"/>
+                                                <xsl:value-of
+                                                  select="../../mods:recordInfo/mods:recordContentSource"/>
                                                 <xsl:text>.se</xsl:text>
                                             </xsl:attribute>
                                             <xsl:attribute name="valueURI">
-                                                    <xsl:value-of select="substring-after(.,', ')"/>
-                                             </xsl:attribute>
+                                                <xsl:value-of select="substring-after(.,', ')"/>
+                                            </xsl:attribute>
                                             <xsl:value-of select="substring-after(.,', ')"/>
                                         </affiliation>
                                     </xsl:if>
@@ -455,7 +491,8 @@
                     </xsl:element>
                 </xsl:for-each>
                 <!-- 13.1. Organisation as author -->
-                <xsl:for-each select="mods:name[@type = 'corporate'][mods:description = 'Responsible Organisation']">
+                <xsl:for-each
+                    select="mods:name[@type = 'corporate'][mods:description = 'Responsible Organisation']">
                     <!-- Ta bort de som inte är det egna lärosätets kontrollerade -->
                     <xsl:element name="name">
                         <xsl:attribute name="type">
@@ -488,26 +525,34 @@
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:choose>
-                            <xsl:when test="mods:genre[@authority= 'svep'][@ type='publicationType'][. = 'sam']">
+                            <xsl:when
+                                test="mods:genre[@authority= 'svep'][@ type='publicationType'][. = 'sam']">
                                 <xsl:choose>
-                                    <xsl:when test="count(mods:name[mods:role/mods:roleTerm = 'edt']) &gt; 0">
+                                    <xsl:when
+                                        test="count(mods:name[mods:role/mods:roleTerm = 'edt']) &gt; 0">
                                         <xsl:element name="note">
                                             <xsl:attribute name="type">
                                                 <xsl:text>creatorCount</xsl:text>
                                             </xsl:attribute>
-                                            <xsl:value-of select="count(mods:name[mods:role/mods:roleTerm = 'edt'])"/>
+                                            <xsl:value-of
+                                                select="count(mods:name[mods:role/mods:roleTerm = 'edt'])"
+                                            />
                                         </xsl:element>
                                     </xsl:when>
                                 </xsl:choose>
                             </xsl:when>
-                            <xsl:when test="mods:genre[@authority= 'svep'][@ type='publicationType'][. = 'pro']">
+                            <xsl:when
+                                test="mods:genre[@authority= 'svep'][@ type='publicationType'][. = 'pro']">
                                 <xsl:choose>
-                                    <xsl:when test="count(mods:name[mods:role/mods:roleTerm = 'edt']) &gt; 0">
+                                    <xsl:when
+                                        test="count(mods:name[mods:role/mods:roleTerm = 'edt']) &gt; 0">
                                         <xsl:element name="note">
                                             <xsl:attribute name="type">
                                                 <xsl:text>creatorCount</xsl:text>
                                             </xsl:attribute>
-                                            <xsl:value-of select="count(mods:name[mods:role/mods:roleTerm = 'edt'])"/>
+                                            <xsl:value-of
+                                                select="count(mods:name[mods:role/mods:roleTerm = 'edt'])"
+                                            />
                                         </xsl:element>
                                     </xsl:when>
                                 </xsl:choose>
@@ -515,13 +560,14 @@
                             <xsl:otherwise>
                                 <xsl:choose>
                                     <xsl:when
-                                            test="count(mods:name[mods:role/mods:roleTerm = 'aut' or mods:role/mods:roleTerm = 'cre']) &gt; 0">
+                                        test="count(mods:name[mods:role/mods:roleTerm = 'aut' or mods:role/mods:roleTerm = 'cre']) &gt; 0">
                                         <xsl:element name="note">
                                             <xsl:attribute name="type">
                                                 <xsl:text>creatorCount</xsl:text>
                                             </xsl:attribute>
                                             <xsl:value-of
-                                                    select="count(mods:name[mods:role/mods:roleTerm = 'aut' or mods:role/mods:roleTerm = 'cre'])"/>
+                                                select="count(mods:name[mods:role/mods:roleTerm = 'aut' or mods:role/mods:roleTerm = 'cre'])"
+                                            />
                                         </xsl:element>
                                     </xsl:when>
                                 </xsl:choose>
@@ -600,8 +646,8 @@
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>Toward Person-Centered Care in Long-term Illness: A Research Core
-                                        Center</title>
+                                    <title>Toward Person-Centered Care in Long-term Illness: A
+                                        Research Core Center</title>
                                 </titleInfo>
                                 <note type="sfo">Health Care Research</note>
                             </relatedItem>
@@ -615,11 +661,13 @@
                                 <note type="sfo">Stemcells and regenerative medicine</note>
                             </relatedItem>
                         </xsl:when>
-                        <xsl:when test=". = 'Translational Program in Diabetes Research, Education and Care'">
+                        <xsl:when
+                            test=". = 'Translational Program in Diabetes Research, Education and Care'">
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>Translational Program in Diabetes Research, Education and Care</title>
+                                    <title>Translational Program in Diabetes Research, Education and
+                                        Care</title>
                                 </titleInfo>
                                 <note type="sfo">Diabetes</note>
                             </relatedItem>
@@ -629,7 +677,9 @@
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>Center for Integrated Cancer Studies at Karolinska Institutet (CICS-KI) - an environment for translational cancer research</title>
+                                    <title>Center for Integrated Cancer Studies at Karolinska
+                                        Institutet (CICS-KI) - an environment for translational
+                                        cancer research</title>
                                 </titleInfo>
                                 <note type="sfo">Cancer</note>
                             </relatedItem>
@@ -639,7 +689,8 @@
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>Cognitive and Motor functions in Health and Disease during the Lifespan</title>
+                                    <title>Cognitive and Motor functions in Health and Disease
+                                        during the Lifespan</title>
                                 </titleInfo>
                                 <note type="sfo">Neuroscience</note>
                             </relatedItem>
@@ -649,7 +700,8 @@
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>Epidemiology: from mechanism to prevention, from surveillance to safety</title>
+                                    <title>Epidemiology: from mechanism to prevention, from
+                                        surveillance to safety</title>
                                 </titleInfo>
                                 <note type="sfo">Epidemiology</note>
                             </relatedItem>
@@ -659,7 +711,8 @@
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>Bridging Research and practice for Better Health: The Comprehensive Care Science Centre</title>
+                                    <title>Bridging Research and practice for Better Health: The
+                                        Comprehensive Care Science Centre</title>
                                 </titleInfo>
                                 <note type="sfo">Health Care Research</note>
                             </relatedItem>
@@ -673,20 +726,24 @@
                                 <note type="sfo">IT and mobile communications</note>
                             </relatedItem>
                         </xsl:when>
-                        <xsl:when test=". = 'TrenOp, Transport Research Environment with Novel Perspectives'">
+                        <xsl:when
+                            test=". = 'TrenOp, Transport Research Environment with Novel Perspectives'">
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>TRENoP, Transport Research Environment with Novel Perspectives</title>
+                                    <title>TRENoP, Transport Research Environment with Novel
+                                        Perspectives</title>
                                 </titleInfo>
                                 <note type="sfo">Transport-research</note>
                             </relatedItem>
                         </xsl:when>
-                        <xsl:when test=". = 'XPRES - Initiative for excellence in production research'">
+                        <xsl:when
+                            test=". = 'XPRES - Initiative for excellence in production research'">
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>XPRESS – Initiative for excellence in production research</title>
+                                    <title>XPRESS – Initiative for excellence in production
+                                        research</title>
                                 </titleInfo>
                                 <note type="sfo">Production-technology</note>
                             </relatedItem>
@@ -704,7 +761,8 @@
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>Science for Life Laboratory – a national resource center for high–throughput molecular bioscience</title>
+                                    <title>Science for Life Laboratory – a national resource center
+                                        for high–throughput molecular bioscience</title>
                                 </titleInfo>
                                 <note type="sfo">Molecular biosciences</note>
                             </relatedItem>
@@ -714,7 +772,8 @@
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>International Interdisciplinary Materials Science Laboratory for Advanced Functional Materials (AFM)</title>
+                                    <title>International Interdisciplinary Materials Science
+                                        Laboratory for Advanced Functional Materials (AFM)</title>
                                 </titleInfo>
                                 <note type="sfo">Materialsscience</note>
                             </relatedItem>
@@ -733,16 +792,19 @@
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>eLLIIT – The Linköping – Lund Initiative on IT and Mobile Communication</title>
+                                    <title>eLLIIT – The Linköping – Lund Initiative on IT and Mobile
+                                        Communication</title>
                                 </titleInfo>
                                 <note type="sfo">IT and mobile communications</note>
                             </relatedItem>
                         </xsl:when>
-                        <xsl:when test=". = 'Sustainable use of mineral resources - securing the future'">
+                        <xsl:when
+                            test=". = 'Sustainable use of mineral resources - securing the future'">
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>Sustainable use of mineral resources – securing the future</title>
+                                    <title>Sustainable use of mineral resources – securing the
+                                        future</title>
                                 </titleInfo>
                                 <note type="sfo">Sustainable use of natural resources</note>
                             </relatedItem>
@@ -752,16 +814,20 @@
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>Epidemiology for Health (EpiHealth): for Innovation and Excellence in Open-Access, Basic-Translational and Applied Epidemiological Research</title>
+                                    <title>Epidemiology for Health (EpiHealth): for Innovation and
+                                        Excellence in Open-Access, Basic-Translational and Applied
+                                        Epidemiological Research</title>
                                 </titleInfo>
                                 <note type="sfo">Epidemiology</note>
                             </relatedItem>
                         </xsl:when>
-                        <xsl:when test=". = 'National initiative on Stem Cells for Regenerative Therapy'">
+                        <xsl:when
+                            test=". = 'National initiative on Stem Cells for Regenerative Therapy'">
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>National initiative on Stem Cells for Regenerativ Therapy</title>
+                                    <title>National initiative on Stem Cells for Regenerativ
+                                        Therapy</title>
                                 </titleInfo>
                                 <note type="sfo">Stemcells and regenerative medicine</note>
                             </relatedItem>
@@ -770,16 +836,19 @@
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>The nanometer Structure Consortium at Lund University</title>
+                                    <title>The nanometer Structure Consortium at Lund
+                                        University</title>
                                 </titleInfo>
                                 <note type="sfo">Technology</note>
                             </relatedItem>
                         </xsl:when>
-                        <xsl:when test=". = 'Multidisciplinary research focused on Parkinson’s disease - MultiPark'">
+                        <xsl:when
+                            test=". = 'Multidisciplinary research focused on Parkinson’s disease - MultiPark'">
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>Multidisciplinary research focused on Parkinson´s disease – MultiPark</title>
+                                    <title>Multidisciplinary research focused on Parkinson´s disease
+                                        – MultiPark</title>
                                 </titleInfo>
                                 <note type="sfo">Neuroscience</note>
                             </relatedItem>
@@ -788,7 +857,8 @@
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>EXODIAB (Excellence of Diabetes Research in Sweden)</title>
+                                    <title>EXODIAB (Excellence of Diabetes Research in
+                                        Sweden)</title>
                                 </titleInfo>
                                 <note type="sfo">Diabetes</note>
                             </relatedItem>
@@ -798,7 +868,8 @@
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>BioCARE – Biomarkers in Cancer Medicine Improving Health Care, Education and Innovation</title>
+                                    <title>BioCARE – Biomarkers in Cancer Medicine Improving Health
+                                        Care, Education and Innovation</title>
                                 </titleInfo>
                                 <note type="sfo">Cancer</note>
                             </relatedItem>
@@ -816,16 +887,19 @@
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>ModElling the Regional and Global Earth system (MERGE)</title>
+                                    <title>ModElling the Regional and Global Earth system
+                                        (MERGE)</title>
                                 </titleInfo>
                                 <note type="sfo">Climate models</note>
                             </relatedItem>
                         </xsl:when>
-                        <xsl:when test=". = 'Biodiversity and Ecosystem Services in a Changing Climate'">
+                        <xsl:when
+                            test=". = 'Biodiversity and Ecosystem Services in a Changing Climate'">
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>Biodiversity and Ecosystem services in a Changing Climate – BECC</title>
+                                    <title>Biodiversity and Ecosystem services in a Changing Climate
+                                        – BECC</title>
                                 </titleInfo>
                                 <note type="sfo">Impact on natural resources</note>
                             </relatedItem>
@@ -839,11 +913,13 @@
                                 <note type="sfo">Sustainable use of natural resources</note>
                             </relatedItem>
                         </xsl:when>
-                        <xsl:when test=". = 'Modelling initiative of the Bert Bolin Centre for Climate Change'">
+                        <xsl:when
+                            test=". = 'Modelling initiative of the Bert Bolin Centre for Climate Change'">
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>Modelling initiative of the Bert Bolin Centre for Climate Change</title>
+                                    <title>Modelling initiative of the Bert Bolin Centre for Climate
+                                        Change</title>
                                 </titleInfo>
                                 <note type="sfo">Climate models </note>
                             </relatedItem>
@@ -853,7 +929,9 @@
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>A multiscale, cross-disciplinary approach to the study of climate change effects on ecosystem and biodiversity services</title>
+                                    <title>A multiscale, cross-disciplinary approach to the study of
+                                        climate change effects on ecosystem and biodiversity
+                                        services</title>
                                 </titleInfo>
                                 <note type="sfo">Impact on natural resources</note>
                             </relatedItem>
@@ -872,7 +950,8 @@
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>Ecosystem dynamics in the Baltic Sea in a changing climate perspective – ECOCHANGE</title>
+                                    <title>Ecosystem dynamics in the Baltic Sea in a changing
+                                        climate perspective – ECOCHANGE</title>
                                 </titleInfo>
                                 <note type="sfo">Marine environment research</note>
                             </relatedItem>
@@ -900,7 +979,9 @@
                             <relatedItem type="host">
                                 <genre>initiative</genre>
                                 <titleInfo>
-                                    <title>U-CARE Better Psychosocial Care at a Lower Cost? Evidence-based assessment and Psychosocial Care Via Internet, a Swedish Example</title>
+                                    <title>U-CARE Better Psychosocial Care at a Lower Cost?
+                                        Evidence-based assessment and Psychosocial Care Via
+                                        Internet, a Swedish Example</title>
                                 </titleInfo>
                                 <note type="sfo">Health Care Research</note>
                             </relatedItem>
@@ -956,9 +1037,11 @@
                                 <xsl:attribute name="type">
                                     <xsl:text>host</xsl:text>
                                 </xsl:attribute>
+                                <!--
                                 <xsl:element name="genre">
                                     <xsl:text>grantAgreement</xsl:text>
                                 </xsl:element>
+                                -->
                                 <xsl:element name="name">
                                     <xsl:attribute name="type">
                                         <xsl:text>corporate</xsl:text>
@@ -987,7 +1070,8 @@
                                 </xsl:element>
                                 <xsl:if test="contains(., '[')">
                                     <xsl:element name="identifier">
-                                        <xsl:value-of select="substring-before(substring-after(.,' ['),']')"/>
+                                        <xsl:value-of
+                                            select="substring-before(substring-after(.,' ['),']')"/>
                                     </xsl:element>
                                 </xsl:if>
                             </xsl:element>
@@ -1013,7 +1097,7 @@
                                 </xsl:attribute>
                                 <xsl:value-of select="substring(.,1,10)"/>
                             </xsl:element>
-                        </xsl:for-each>   
+                        </xsl:for-each>
                         <xsl:for-each select="../mods:note[@type = 'publicationStatus']">
                             <xsl:if test=". = 'Epub ahead of print'">
                                 <xsl:element name="dateOther">
@@ -1023,13 +1107,37 @@
                                     <xsl:value-of select="../mods:originInfo/mods:dateIssued"/>
                                 </xsl:element>
                             </xsl:if>
-                        </xsl:for-each>   
+                        </xsl:for-each>
                         <!-- 17.2. Publisher -->
-                        <xsl:copy-of select="mods:publisher"/>
+                        <!-- <xsl:copy-of select="mods:publisher"/> -->
                         <!-- 17.3. Place -->
                         <xsl:copy-of select="mods:place"/>
                         <!-- 17.4. Edition -->
                         <xsl:copy-of select="mods:edition"/>
+                    </xsl:element>
+                </xsl:for-each>
+                <!-- 17.2. Publisher -->
+                <xsl:for-each select="mods:originInfo/mods:publisher">
+                    <xsl:element name="originInfo">
+                        <xsl:attribute name="eventType">
+                            <xsl:text>publication</xsl:text>
+                        </xsl:attribute>
+                        <xsl:element name="agent">
+                            <xsl:element name="namePart">
+                                <xsl:value-of select="."/>
+                            </xsl:element>
+                            <xsl:element name="role">
+                                <xsl:element name="roleTerm">
+                                    <xsl:attribute name="authority">
+                                        <xsl:text>marcrelator</xsl:text>
+                                    </xsl:attribute>
+                                    <xsl:attribute name="valueURI">
+                                        <xsl:text>http://id.loc.gov/vocabulary/relators/pbl</xsl:text>
+                                    </xsl:attribute>
+                                    <xsl:text>pbl</xsl:text>
+                                </xsl:element>
+                            </xsl:element>
+                        </xsl:element>
                     </xsl:element>
                 </xsl:for-each>
                 <!-- 18. Source -->
@@ -1070,13 +1178,16 @@
                             <xsl:for-each select="mods:part">
                                 <xsl:element name="part">
                                     <xsl:copy-of select="mods:detail"/>
-                                    <xsl:if test="string-length(../../mods:identifier[@type = 'articleId']) &gt; 0">
+                                    <xsl:if
+                                        test="string-length(../../mods:identifier[@type = 'articleId']) &gt; 0">
                                         <xsl:element name="detail">
                                             <xsl:attribute name="type">
                                                 <xsl:text>artNo</xsl:text>
                                             </xsl:attribute>
                                             <xsl:element name="number">
-                                                <xsl:value-of select="../../mods:identifier[@type = 'articleId']"/>
+                                                <xsl:value-of
+                                                  select="../../mods:identifier[@type = 'articleId']"
+                                                />
                                             </xsl:element>
                                         </xsl:element>
                                     </xsl:if>
@@ -1102,13 +1213,16 @@
                                 <xsl:copy-of select="mods:titleInfo/mods:title"/>
                                 <xsl:copy-of select="mods:titleInfo/mods:subTitle"/>
                                 <xsl:choose>
-                                    <xsl:when test="string-length(mods:titleInfo/mods:partNumber) &gt; 0">
+                                    <xsl:when
+                                        test="string-length(mods:titleInfo/mods:partNumber) &gt; 0">
                                         <xsl:copy-of select="mods:titleInfo/mods:partNumber"/>
                                     </xsl:when>
                                     <xsl:otherwise>
-                                        <xsl:if test="string-length(mods:identifier[@type = 'issue number']) &gt; 0">
+                                        <xsl:if
+                                            test="string-length(mods:identifier[@type = 'issue number']) &gt; 0">
                                             <xsl:element name="partNumber">
-                                                <xsl:value-of select="mods:identifier[@type = 'issue number']"/>
+                                                <xsl:value-of
+                                                  select="mods:identifier[@type = 'issue number']"/>
                                             </xsl:element>
                                         </xsl:if>
                                     </xsl:otherwise>
@@ -1152,7 +1266,8 @@
                     <xsl:element name="location">
                         <xsl:for-each select="mods:url">
                             <xsl:element name="url">
-                                <xsl:if test="string-length(@displayLabel) &gt; 0 and contains(translate(@displayLabel, 'FULTEX', 'fultex'), 'fulltext')">
+                                <xsl:if
+                                    test="string-length(@displayLabel) &gt; 0 and contains(translate(@displayLabel, 'FULTEX', 'fultex'), 'fulltext')">
                                     <xsl:if test="contains(.,'diva-portal.org')">
                                         <xsl:attribute name="usage">
                                             <xsl:text>primary</xsl:text>
@@ -1161,15 +1276,17 @@
                                 </xsl:if>
                                 <xsl:if test="string-length(@displayLabel) &gt; 0">
                                     <xsl:attribute name="displayLabel">
-                                        <xsl:value-of select="@displayLabel"></xsl:value-of>
+                                        <xsl:value-of select="@displayLabel"/>
                                     </xsl:attribute>
                                 </xsl:if>
-                                <xsl:if test="string-length(@access) &gt; 0 and contains(translate(@displayLabel, 'FULTEX', 'fultex'), 'fulltext')">
+                                <xsl:if
+                                    test="string-length(@access) &gt; 0 and contains(translate(@displayLabel, 'FULTEX', 'fultex'), 'fulltext')">
                                     <xsl:attribute name="access">
                                         <xsl:text>raw object</xsl:text>
-                                     </xsl:attribute>
+                                    </xsl:attribute>
                                 </xsl:if>
-                                <xsl:if test="string-length(@access) &gt; 0 and @displayLabel = 'preview image'">
+                                <xsl:if
+                                    test="string-length(@access) &gt; 0 and @displayLabel = 'preview image'">
                                     <xsl:attribute name="access">
                                         <xsl:text>preview</xsl:text>
                                     </xsl:attribute>
@@ -1180,12 +1297,13 @@
                     </xsl:element>
                 </xsl:for-each>
                 <!-- 21. Access condition -->
-                <xsl:for-each select="mods:location/mods:url[contains(translate(@displayLabel, 'FULTEX', 'fultex'), 'fulltext') and @note = 'free']">
+                <xsl:for-each
+                    select="mods:location/mods:url[contains(translate(@displayLabel, 'FULTEX', 'fultex'), 'fulltext') and @note = 'free']">
                     <xsl:if test="position() = last()">
                         <xsl:element name="accessCondition">
                             <xsl:text>gratis</xsl:text>
                         </xsl:element>
-                    </xsl:if>    
+                    </xsl:if>
                 </xsl:for-each>
                 <!-- 21.1. Embargo -->
                 <xsl:for-each select="mods:location">

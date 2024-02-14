@@ -135,7 +135,7 @@
           },
           "outputTypes": {
             "example": [
-              "https://id.kb.se/term/swepub/publication/book"
+              "https://id.kb.se/term/swepub/output/publication/book"
             ],
             "items": {
               "type": "string"
@@ -149,9 +149,6 @@
             "type": "integer"
           },
           "publicationStatus": {
-            "type": "string"
-          },
-          "publicationType": {
             "type": "string"
           },
           "publicationYear": {
@@ -245,7 +242,7 @@
             },
             "type": "array"
           },
-          "subjects": {
+          "classifications": {
             "properties": {
               "fiveDigitTopics": {
                 "items": {
@@ -421,14 +418,14 @@
                     "type": "array"
                   },
                   "publicationStatus": {
-                    "description": "Permitted values are 'published', 'epub' or 'submitted'",
+                    "description": "Permitted values are 'published', 'epub', 'submitted' or 'retracted'",
                     "items": {
                       "example": "published",
                       "type": "string"
                     },
                     "type": "array"
                   },
-                  "subject": {
+                  "classification": {
                     "description": "SSIF codes, 3 or 5 digits.",
                     "example": [
                       "101",
@@ -629,7 +626,7 @@
   },
   "servers": [
     {
-      "url": "/api/v1/bibliometrics"
+      "url": "/api/v2/bibliometrics"
     }
   ]
 }

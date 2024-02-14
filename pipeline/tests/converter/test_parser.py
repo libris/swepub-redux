@@ -196,8 +196,7 @@ def test_parser(parser):
             "@type": "Text",
             "genreForm": [
                 {'@id': 'https://id.kb.se/term/swepub/svep/ref'},
-                {'@id': 'https://id.kb.se/term/swepub/publication/journal-article'},
-                {'@id': 'https://id.kb.se/term/swepub/JournalArticle'}
+                {'@id': 'https://id.kb.se/term/swepub/output/publication/journal-article'}
             ],
             "language": [
                 {
@@ -256,99 +255,69 @@ def test_parser(parser):
             "subject": [
                 {
                     "@type": "Topic",
-                    "language": {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-                    "prefLabel": "Typografer",
+                    "prefLabelByLang": {"sv": "Typografer"},
                 },
                 {
                     "@type": "Topic",
-                    "language": {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-                    "prefLabel": "Sverige",
+                    "prefLabelByLang": {"sv": "Sverige"},
                 },
                 {
                     "@type": "Topic",
-                    "language": {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-                    "prefLabel": "1800-talet",
+                    "prefLabelByLang": {"sv": "1800-talet"},
                 },
                 {
                     "@type": "Topic",
-                    "language": {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-                    "prefLabel": "1900-talet",
+                    "prefLabelByLang": {"sv": "1900-talet"},
                 },
                 {
                     "@type": "Topic",
                     "code": "60101",
-                    "inScheme": {"@id": "hsv/eng", "@type": "ConceptScheme", "code": "hsv"},
-                    "language": {'@type': 'Language', 'code': 'eng', '@id': 'https://id.kb.se/language/eng'},
-                    "prefLabel": "History",
+                    "inScheme": {"@type": "ConceptScheme", "code": "hsv"},
+                    "prefLabelByLang": {"en": "History"},
                     'broader': {'prefLabel': 'History and Archaeology',
                                 'broader': {'prefLabel': 'Humanities and the Arts'}},
                 },
                 {
                     "@type": "Topic",
                     "code": "60101",
-                    "inScheme": {"@id": "hsv/swe", "@type": "ConceptScheme", "code": "hsv"},
-                    "language": {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-                    "prefLabel": "Historia",
+                    "inScheme": {"@type": "ConceptScheme", "code": "hsv"},
+                    "prefLabelByLang": {"sv": "Historia"},
                     'broader': {'prefLabel': 'Historia och arkeologi',
                                 'broader': {'prefLabel': 'Humaniora och konst'}},
                 },
                 {
                     "@type": "Topic",
                     "code": "7304",
-                    "inScheme": {"@id": "lnu/swe", "@type": "ConceptScheme", "code": "lnu"},
-                    "language": {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-                    "prefLabel": "Historia",
+                    "inScheme": {"@type": "ConceptScheme", "code": "lnu"},
+                    "prefLabelByLang": {"sv": "Historia"},
                 },
                 {
                     "@type": "Topic",
                     "code": '7304',
-                    "inScheme": {"@id": "lnu/eng", "@type": "ConceptScheme", "code": "lnu"},
-                    "language": {'@type': 'Language', 'code': 'eng', '@id': 'https://id.kb.se/language/eng'},
-                    "prefLabel": "History",
+                    "inScheme": {"@type": "ConceptScheme", "code": "lnu"},
+                    "prefLabelByLang": {"en": "History"},
                 },
+            ],
+            "classification": [
                 {
-                    "@id": "https://id.kb.se/term/uka/30220",
-                    "@type": "Topic",
+                    "@id": "https://id.kb.se/term/ssif/30220",
+                    "@type": "Classification",
                     "code": "30220",
-                    "prefLabel": "Obstetrics, Gynecology and Reproductive Medicine",
-                    "language": {
-                        "@type": "Language",
-                        "@id": "https://id.kb.se/language/eng",
-                        "code": "eng"
-                    },
-                    "inScheme": {
-                        "@id": "https://id.kb.se/term/uka/",
-                        "@type": "ConceptScheme",
-                        "code": "uka.se"
-                    },
-                    "broader": {
-                        "prefLabel": "Clinical Medicine",
-                        "broader": {
-                            "prefLabel": "Medical and Health Sciences",
-                        }
-                    }
+                    "prefLabelByLang": {"en": "Obstetrics, Gynecology and Reproductive Medicine"},
+                    "inScheme": {"@id": "https://id.kb.se/term/ssif", "@type": "ConceptScheme"},
+                    #"broader": {
+                    #    "prefLabel": "Clinical Medicine",
+                    #    "broader": {
+                    #        "prefLabel": "Medical and Health Sciences",
+                    #    }
+                    #}
                 },
                 {
-                    "@id": "https://id.kb.se/term/uka/30305",
-                    "@type": "Topic",
+                    "@id": "https://id.kb.se/term/ssif/30305",
+                    "@type": "Classification",
                     "code": "30305",
-                    "prefLabel": "Nursing",
-                    "language": {
-                        "@type": "Language",
-                        "@id": "https://id.kb.se/language/eng",
-                        "code": "eng"
-                    },
-                    "inScheme": {
-                        "@id": "https://id.kb.se/term/uka/",
-                        "@type": "ConceptScheme",
-                        "code": "uka.se"
-                    },
-                    "broader": {
-                        "prefLabel": "Health Sciences",
-                        "broader": {
-                            "prefLabel": "Medical and Health Sciences",
-                        }
-                    }
+                    "prefLabelByLang": {"en": "Nursing"},
+                    "inScheme": {"@id": "https://id.kb.se/term/ssif", "@type": "ConceptScheme"},
                 }
             ],
             "hasNote": [
@@ -377,7 +346,7 @@ def test_parser(parser):
             'creationDate': '2017-09-07',
             'changeDate': '2017-09-07'
         },
-        "partOf": [
+        "isPartOf": [
             {
                 "@type": "Dataset",
                 "hasTitle": [
@@ -564,10 +533,7 @@ def test_parser(parser):
             }
         ],
         'usageAndAccessPolicy': [
-            {
-                "@type": "AccessPolicy",
-                "label": "gratis"
-            }
+            {"@id": "https://id.kb.se/policy/oa/gratis"}
         ]
     }
 
@@ -608,8 +574,8 @@ def test_host_title_is_extracted(parser):
         {'@type': 'Title', 'foo': 'bar'}
     ]
 
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 1
-    assert expected == parser.parse_mods(raw_xml)['partOf'][0]['hasTitle']
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
+    assert expected == parser.parse_mods(raw_xml)['isPartOf'][0]['hasTitle']
 
 
 def test_publication_with_series_and_host(parser):
@@ -628,14 +594,14 @@ def test_publication_with_series_and_host(parser):
         {'@type': 'Work', 'hasTitle': [{'@type': 'Title', 'mainTitle': 'ISKO', 'volumeNumber': '3'}]}
     ]
 
-    expected_part_of = [
+    expected_is_part_of = [
         {'@type': 'Work', 'hasTitle': [{'@type': 'Title', 'mainTitle': 'BOSE', 'volumeNumber': '5'}],
          'hasSeries': expected_has_series}
     ]
 
     actual = parser.parse_mods(raw_xml)
-    assert actual['partOf'] == expected_part_of
-    assert actual['partOf'][0]['hasSeries'] == expected_has_series
+    assert actual['isPartOf'] == expected_is_part_of
+    assert actual['isPartOf'][0]['hasSeries'] == expected_has_series
 
 
 def test_series_title_and_part_number_are_extracted(parser):
@@ -769,7 +735,7 @@ def test_host_volume_number_is_extracted(parser):
       </relatedItem>
     """)
 
-    assert '1337' == parser.parse_mods(raw_xml)['partOf'][0]['hasTitle'][0]['volumeNumber']
+    assert '1337' == parser.parse_mods(raw_xml)['isPartOf'][0]['hasTitle'][0]['volumeNumber']
 
 
 def test_series_issue_number_is_extracted(parser):
@@ -791,7 +757,7 @@ def test_host_issue_number_is_extracted(parser):
       </relatedItem>
     """)
 
-    assert '1337' == parser.parse_mods(raw_xml)['partOf'][0]['hasTitle'][0]['issueNumber']
+    assert '1337' == parser.parse_mods(raw_xml)['isPartOf'][0]['hasTitle'][0]['issueNumber']
 
 
 def test_host_part_number_is_not_extracted(parser):
@@ -802,7 +768,7 @@ def test_host_part_number_is_not_extracted(parser):
       </relatedItem>
     """)
 
-    assert 'partNumber' not in parser.parse_mods(raw_xml)['partOf'][0]['hasTitle'][0]
+    assert 'partNumber' not in parser.parse_mods(raw_xml)['isPartOf'][0]['hasTitle'][0]
 
 
 def test_host_include_id_type_issue_number(parser):
@@ -819,7 +785,7 @@ def test_host_include_id_type_issue_number(parser):
         }
     ]
 
-    assert expected_identified_by == parser.parse_mods(raw_xml)['partOf'][0]['identifiedBy']
+    assert expected_identified_by == parser.parse_mods(raw_xml)['isPartOf'][0]['identifiedBy']
 
 
 def test_handle_empty_detail_type_issue(parser):
@@ -832,7 +798,7 @@ def test_handle_empty_detail_type_issue(parser):
       </relatedItem>
     """)
 
-    assert {'@type': 'Title', 'mainTitle': '.'} == parser.parse_mods(raw_xml)['partOf'][0]['hasTitle'][0]
+    assert {'@type': 'Title', 'mainTitle': '.'} == parser.parse_mods(raw_xml)['isPartOf'][0]['hasTitle'][0]
 
 
 def test_handle_empty_start_and_end_for_extent(parser):
@@ -845,7 +811,7 @@ def test_handle_empty_start_and_end_for_extent(parser):
       </relatedItem>
     """)
 
-    assert {'@type': 'Title', 'mainTitle': '.'} == parser.parse_mods(raw_xml)['partOf'][0]['hasTitle'][0]
+    assert {'@type': 'Title', 'mainTitle': '.'} == parser.parse_mods(raw_xml)['isPartOf'][0]['hasTitle'][0]
 
 
 def test_series_article_number_is_extracted(parser):
@@ -879,8 +845,8 @@ def test_host_identifier_is_extracted(mods_identifier, bibframe_type, parser):
         }
     ]
 
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 1
-    assert identified_by == parser.parse_mods(raw_xml)['partOf'][0]['identifiedBy']
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
+    assert identified_by == parser.parse_mods(raw_xml)['isPartOf'][0]['identifiedBy']
 
 
 def test_host_only_gets_position_information_on_forst_title_instance(parser):
@@ -914,7 +880,7 @@ def test_host_only_gets_position_information_on_forst_title_instance(parser):
         ]
     }
 
-    assert expected == parser.parse_mods(raw_xml)['partOf'][0]
+    assert expected == parser.parse_mods(raw_xml)['isPartOf'][0]
 
 
 def test_series_only_gets_position_information_on_forst_title_instance(parser):
@@ -1004,9 +970,9 @@ def test_host_note_is_extracted(parser):
         {'@type': 'Note', 'label': 'bar'},
         {'@type': 'Note', 'label': 'arg'}
     ]
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 2
-    assert notes[:2] == parser.parse_mods(raw_xml)['partOf'][0]['hasNote']
-    assert notes[2:] == parser.parse_mods(raw_xml)['partOf'][1]['hasNote']
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 2
+    assert notes[:2] == parser.parse_mods(raw_xml)['isPartOf'][0]['hasNote']
+    assert notes[2:] == parser.parse_mods(raw_xml)['isPartOf'][1]['hasNote']
 
 
 def test_host_with_note_and_citation_is_extracted(parser):
@@ -1024,8 +990,8 @@ def test_host_with_note_and_citation_is_extracted(parser):
         {'@type': 'Note', 'label': 'bar', 'noteType': 'partText'}
     ]
 
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 1
-    assert notes == parser.parse_mods(raw_xml)['partOf'][0]['hasNote']
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
+    assert notes == parser.parse_mods(raw_xml)['isPartOf'][0]['hasNote']
 
 
 def test_host_citation_is_extracted(parser):
@@ -1053,9 +1019,9 @@ def test_host_citation_is_extracted(parser):
         {'@type': 'Note', 'label': 'arg', 'noteType': 'partText'}
     ]
 
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 2
-    assert notes[:3] == parser.parse_mods(raw_xml)['partOf'][0]['hasNote']
-    assert notes[3:] == parser.parse_mods(raw_xml)['partOf'][1]['hasNote']
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 2
+    assert notes[:3] == parser.parse_mods(raw_xml)['isPartOf'][0]['hasNote']
+    assert notes[3:] == parser.parse_mods(raw_xml)['isPartOf'][1]['hasNote']
 
 
 def test_host_with_open_ended_extent(parser):
@@ -1067,8 +1033,8 @@ def test_host_with_open_ended_extent(parser):
       </relatedItem>
     """)
 
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 1
-    assert parser.parse_mods(raw_xml)['partOf'][0]['hasInstance'] == {
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
+    assert parser.parse_mods(raw_xml)['isPartOf'][0]['hasInstance'] == {
         '@type': 'Instance',
         'extent': [{'@type': 'Extent', 'label': '234-'}]
     }
@@ -1079,7 +1045,7 @@ def test_host_with_empty_part_element(parser):
       <relatedItem type="host"><part/></relatedItem>
     """)
 
-    assert parser.parse_mods(raw_xml)['partOf'] == [{'@type': 'Work'}]
+    assert parser.parse_mods(raw_xml)['isPartOf'] == [{'@type': 'Work'}]
 
 
 def test_host_with_empty_extent_element(parser):
@@ -1087,7 +1053,7 @@ def test_host_with_empty_extent_element(parser):
       <relatedItem type="host"><part><extent/></part></relatedItem>
     """)
 
-    assert parser.parse_mods(raw_xml)['partOf'] == [{'@type': 'Work'}]
+    assert parser.parse_mods(raw_xml)['isPartOf'] == [{'@type': 'Work'}]
 
 
 def test_series_with_empty_part_element(parser):
@@ -1115,8 +1081,8 @@ def test_host_with_open_beginning_extent(parser):
       </relatedItem>
     """)
 
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 1
-    assert parser.parse_mods(raw_xml)['partOf'][0]['hasInstance'] == {
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
+    assert parser.parse_mods(raw_xml)['isPartOf'][0]['hasInstance'] == {
         '@type': 'Instance',
         'extent': [{'@type': 'Extent', 'label': '-234'}]
     }
@@ -1133,8 +1099,8 @@ def test_empty_start_and_end_are_ignored(parser):
         </part>
       </relatedItem>
     """)
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 1
-    assert 'hasInstance' not in parser.parse_mods(raw_xml)['partOf'][0]
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
+    assert 'hasInstance' not in parser.parse_mods(raw_xml)['isPartOf'][0]
 
 
 def test_host_with_closed_extent(parser):
@@ -1148,8 +1114,8 @@ def test_host_with_closed_extent(parser):
         </part>
       </relatedItem>
     """)
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 1
-    assert parser.parse_mods(raw_xml)['partOf'][0]['hasInstance'] == {
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
+    assert parser.parse_mods(raw_xml)['isPartOf'][0]['hasInstance'] == {
         '@type': 'Instance',
         'extent': [{'@type': 'Extent', 'label': '123-234'}]
     }
@@ -1166,8 +1132,8 @@ def test_host_with_total_extent(parser):
       </relatedItem>
     """)
 
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 1
-    assert parser.parse_mods(raw_xml)['partOf'][0]['hasInstance'] == {
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
+    assert parser.parse_mods(raw_xml)['isPartOf'][0]['hasInstance'] == {
         '@type': 'Instance',
         'extent': [{'@type': 'Extent', 'label': '123'}]
     }
@@ -1199,7 +1165,7 @@ def test_host_with_multiple_extents(parser):
       </relatedItem>
     """)
 
-    actual = parser.parse_mods(raw_xml)['partOf']
+    actual = parser.parse_mods(raw_xml)['isPartOf']
     assert len(actual) == 2
     assert actual[0]['hasInstance'] == {
         '@type': 'Instance',
@@ -1233,8 +1199,8 @@ def test_series_identifier_with_display_label_is_extracted(display_label, parser
         }
     ]
 
-    assert len(parser.parse_mods(raw_xml)['partOf']) == 1
-    assert identified_by == parser.parse_mods(raw_xml)['partOf'][0]['identifiedBy']
+    assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
+    assert identified_by == parser.parse_mods(raw_xml)['isPartOf'][0]['identifiedBy']
 
 
 def test_empty_issn_series_identifier_does_not_create_bibframe_field(parser):
@@ -1248,7 +1214,7 @@ def test_empty_issn_series_identifier_does_not_create_bibframe_field(parser):
     assert identified_by == parser.parse_mods(raw_xml)['hasSeries'][0]['identifiedBy']
 
 
-def test_empty_issn_part_of_identifier_does_not_create_bibframe_field(parser):
+def test_empty_issn_is_part_of_identifier_does_not_create_bibframe_field(parser):
     raw_xml = MODS("""
           <relatedItem type="host">
             <identifier type="issn"/>
@@ -1256,7 +1222,98 @@ def test_empty_issn_part_of_identifier_does_not_create_bibframe_field(parser):
         """)
     identified_by = []
 
-    assert identified_by == parser.parse_mods(raw_xml)['partOf'][0]['identifiedBy']
+    assert identified_by == parser.parse_mods(raw_xml)['isPartOf'][0]['identifiedBy']
+
+
+def test_relateditem_genre_valueuri(parser):
+    raw_xml = MODS("""
+    <relatedItem type="host">
+        <genre valueURI="https://example.com">grantAgreement</genre>
+    </relatedItem>
+    """)
+    expected = [{'@id': 'https://example.com'}]
+    actual = parser.parse_mods(raw_xml)['isPartOf'][0]['genreForm']
+    assert actual == expected
+
+
+def test_relateditem_genre_valueuri_2(parser):
+    raw_xml = MODS("""
+    <relatedItem type="host">
+        <genre valueURI="https://example.com">grantAgreement</genre>
+        <genre authority="mserialpubtype" valueURI="https://whatever.com">something else</genre>
+    </relatedItem>
+    """)
+    expected = [
+        {'@id': 'https://example.com'},
+        {'@id': 'https://whatever.com'}
+    ]
+    actual = parser.parse_mods(raw_xml)['isPartOf'][0]['genreForm']
+    assert actual == expected
+
+
+@pytest.mark.parametrize("authority, value, gf_id", [
+    ('mserialpubtype', 'journal', 'http://id.loc.gov/vocabulary/mserialpubtype/journal'),
+    ('mserialpubtype', 'magazine', 'http://id.loc.gov/vocabulary/mserialpubtype/mag'),
+    ('mserialpubtype', 'newspaper', 'http://id.loc.gov/vocabulary/mserialpubtype/newspaper'),
+    ('mserialpubtype', 'repository', 'http://id.loc.gov/vocabulary/mserialpubtype/repo'),
+    ('marcgt', 'book', 'http://id.loc.gov/vocabulary/marcgt/boo'),
+    ('marcgt', 'conference publication', 'http://id.loc.gov/vocabulary/marcgt/cpb'),
+    ('marcgt', 'technical report', 'http://id.loc.gov/vocabulary/marcgt/ter'),
+    ('marcgt', 'thesis', 'http://id.loc.gov/vocabulary/marcgt/the'),
+    ('marcgt', 'web site', 'http://id.loc.gov/vocabulary/marcgt/web'),
+])
+def test_host_relateditem_authority_mserialpubtype_marcgt(authority, value, gf_id, parser):
+    raw_xml = MODS(f"""
+      <relatedItem type="host">
+        <genre authority="{authority}">{value}</genre>
+      </relatedItem>
+    """)
+    expected = [
+        {
+            "@id": gf_id
+        }
+    ]
+
+    actual = parser.parse_mods(raw_xml)['isPartOf'][0]['genreForm']
+    assert actual == expected
+
+
+def test_host_relateditem_no_authority(parser):
+    raw_xml = MODS(f"""
+      <relatedItem type="host">
+        <genre>foobar</genre>
+      </relatedItem>
+    """)
+    expected = [
+        {
+            "label": "foobar"
+        }
+    ]
+
+    actual = parser.parse_mods(raw_xml)['isPartOf'][0]['genreForm']
+    assert actual == expected
+
+
+def test_constituent_relateditem(parser):
+    raw_xml = MODS(f"""
+      <relatedItem type="constituent">
+          <identifier type="uri">http://example.org/article/table-1</identifier>
+      </relatedItem>
+    """)
+    expected = [
+        {
+            "@type": "Resource",
+            "identifiedBy": [
+                {
+                    "@type": "URI",
+                    "value": "http://example.org/article/table-1"
+                }
+            ]
+        }
+    ]
+
+    actual = parser.parse_mods(raw_xml)['hasPart']
+    assert actual == expected
 
 
 def test_orcid_person_id_is_extracted(parser):
@@ -1385,6 +1442,19 @@ def test_corporate_contribution_agent_with_authority_and_multiple_names(parser):
     assert actual == expected
 
 
+def test_corporate_contribution_agent_with_research_group(parser):
+    raw_xml = MODS("""<name type="corporate">
+    <namePart>Some research group</namePart>
+    <description>Research group</description>
+    </name> """)
+    actual = parser.parse_mods(raw_xml)['instanceOf']['contribution'][0]['agent']
+    expected = {
+        '@type': 'Collaboration',
+        'name': 'Some research group',
+    }
+    assert actual == expected
+
+
 def test_persons_are_is_extracted(parser):
     raw_xml = MODS("""
       <name type="personal" authority="lnu" xlink:href="kogoaa">
@@ -1465,11 +1535,8 @@ def test_affiliation_is_split_up_by_language(parser):
     expected = [
         {
             "@type": "Organization",
-            "name": "Sektion 3",
-            "language": {
-                "@type": "Language",
-                "code": "swe",
-                '@id': 'https://id.kb.se/language/swe'
+            "nameByLang": {
+                "swe": "Sektion 3"
             },
             "identifiedBy": [
                 {
@@ -1484,11 +1551,8 @@ def test_affiliation_is_split_up_by_language(parser):
             "hasAffiliation": [
                 {
                     "@type": "Organization",
-                    "name": "Språk- och litteraturcentrum",
-                    "language": {
-                        "@type": "Language",
-                        "code": "swe",
-                        '@id': 'https://id.kb.se/language/swe'
+                    "nameByLang": {
+                        "swe": "Språk- och litteraturcentrum"
                     },
                     "identifiedBy": [
                         {
@@ -1503,11 +1567,8 @@ def test_affiliation_is_split_up_by_language(parser):
                     "hasAffiliation": [
                         {
                             "@type": "Organization",
-                            "name": "Institutioner",
-                            "language": {
-                                "@type": "Language",
-                                "code": "swe",
-                                '@id': 'https://id.kb.se/language/swe'
+                            "nameByLang": {
+                                "swe": "Institutioner"
                             },
                             "identifiedBy": [
                                 {
@@ -1526,11 +1587,8 @@ def test_affiliation_is_split_up_by_language(parser):
         },
         {
             "@type": "Organization",
-            "name": "Section 3",
-            "language": {
-                "@type": "Language",
-                "code": "eng",
-                '@id': 'https://id.kb.se/language/eng'
+            "nameByLang": {
+                "eng": "Section 3"
             },
             "identifiedBy": [
                 {
@@ -1545,11 +1603,8 @@ def test_affiliation_is_split_up_by_language(parser):
             "hasAffiliation": [
                 {
                     "@type": "Organization",
-                    "name": "Centre for Languages and Literature",
-                    "language": {
-                        "@type": "Language",
-                        "code": "eng",
-                        '@id': 'https://id.kb.se/language/eng'
+                    "nameByLang": {
+                        "eng": "Centre for Languages and Literature"
                     },
                     "identifiedBy": [
                         {
@@ -1564,11 +1619,8 @@ def test_affiliation_is_split_up_by_language(parser):
                     "hasAffiliation": [
                         {
                             "@type": "Organization",
-                            "name": "Departments",
-                            "language": {
-                                "@type": "Language",
-                                "code": "eng",
-                                '@id': 'https://id.kb.se/language/eng'
+                            "nameByLang": {
+                                "eng": "Departments"
                             },
                             "identifiedBy": [
                                 {
@@ -1670,11 +1722,8 @@ def test_affiliation_with_identified_by(parser):
     expected = [
         {
             "@type": "Organization",
-            "name": "Elektronik",
-            "language": {
-                "@id": "https://id.kb.se/language/swe",
-                "@type": "Language",
-                "code": "swe"
+            "nameByLang": {
+                "swe": "Elektronik"
             },
             "identifiedBy": [
                 {
@@ -1689,11 +1738,8 @@ def test_affiliation_with_identified_by(parser):
             "hasAffiliation": [
                 {
                     "@type": "Organization",
-                    "name": "KTH",
-                    "language": {
-                        "@id": "https://id.kb.se/language/swe",
-                        "@type": "Language",
-                        "code": "swe"
+                    "nameByLang": {
+                        "swe": "KTH"
                     },
                     "identifiedBy": [
                         {
@@ -1888,8 +1934,9 @@ def test_affiliation_language_is_extracted(parser):
     assert actual == [
         {
             '@type': 'Organization',
-            'name': 'Affiliation Name',
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'}
+            "nameByLang": {
+                "swe": "Affiliation Name"
+            },
         }
     ]
 
@@ -1986,11 +2033,8 @@ def test_affiliation_non_organizational(parser):
     expected_affiliations = [
         {
             "@type": "Collaboration",
-            "name": "Affiliation Name",
-            "language": {
-                "@type": "Language",
-                "code": "eng",
-                "@id": "https://id.kb.se/language/eng"
+            "nameByLang": {
+                "eng": "Affiliation Name"
             },
             "identifiedBy": [
                 {
@@ -2021,13 +2065,57 @@ def test_affiliation_to_country(parser):
 
 def test_output_type_with_authority_kb_se_is_extracted(parser):
     raw_xml = MODS("""<genre authority="kb.se" type="outputType">dok</genre>""")
-    expected = [{'@id': 'https://id.kb.se/term/swepub/dok'}]
+    expected = [{'@id': 'https://id.kb.se/term/swepub/output/dok'}]
     actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
     assert actual == expected
 
 
 def test_output_type_with_unknown_authority_is_ignored(parser):
     raw_xml = MODS("""<genre authority="foo" type="outputType">dok</genre>""")
+    expected = []
+    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
+    assert actual == expected
+
+
+def test_output_type_with_authority_kb_se_and_valueuri(parser):
+    raw_xml = MODS("""<genre authority="kb.se" type="outputType" valueURI="https://id.kb.se/foobar">dok</genre>""")
+    expected = [{'@id': 'https://id.kb.se/foobar'}]
+    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
+    assert actual == expected
+
+
+def test_publication_type_with_authority_svep_and_valueuri(parser):
+    raw_xml = MODS("""<genre authority="svep" type="publicationType" valueURI="https://example.com">for</genre>""")
+    expected = [{'@id': 'https://example.com'}]
+    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
+    assert actual == expected
+
+
+def test_content_type_with_authority_svep_and_valueuri(parser):
+    raw_xml = MODS("""<genre authority="svep" type="contentType" valueURI="https://example.com">ref</genre>""")
+    expected = [{'@id': 'https://example.com'}]
+    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
+    assert actual == expected
+
+
+@pytest.mark.parametrize("contenttype", [
+    ('ref'),
+    ('vet'),
+    ('pop'),
+])
+def test_content_type_with_authority_svep_and_valid_value(contenttype, parser):
+    raw_xml = MODS(f"""<genre authority="svep" type="contentType">{contenttype}</genre>""")
+    expected = [{'@id': f"https://id.kb.se/term/swepub/svep/{contenttype}"}]
+    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
+    assert actual == expected
+
+
+@pytest.mark.parametrize("contenttype", [
+    ('xyz'),
+    (''),
+])
+def test_content_type_with_authority_svep_and_invalid_value(contenttype, parser):
+    raw_xml = MODS(f"""<genre authority="svep" type="contentType">{contenttype}</genre>""")
     expected = []
     actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
     assert actual == expected
@@ -2052,9 +2140,8 @@ def test_output_type_with_unknown_authority_is_ignored(parser):
     ('ovr', 'OtherPublication', 'vet', 'publication')
 ])
 def test_publication_and_output_type(publicationtype, publicationtype_longform, contenttype, outputtype, parser):
-    expected = [{'@id': 'https://id.kb.se/term/swepub/{}'.format(publicationtype_longform)},
-                {'@id': 'https://id.kb.se/term/swepub/svep/{}'.format(contenttype)},
-                {'@id': 'https://id.kb.se/term/swepub/{}'.format(outputtype)}]
+    expected = [{'@id': 'https://id.kb.se/term/swepub/svep/{}'.format(contenttype)},
+                {'@id': 'https://id.kb.se/term/swepub/output/{}'.format(outputtype)}]
 
     raw_xml_without_outputtype \
         = MODS(f"""<genre authority="svep" type="publicationType">{publicationtype}</genre>
@@ -2097,8 +2184,7 @@ def test_that_output_type_and_publication_type_can_be_used_together(parser):
     """)
     # If we get an outputType in the input, we don't map the publicationType
     expected = [
-        {'@id': 'https://id.kb.se/term/swepub/dok'},
-        {'@id': 'https://id.kb.se/term/swepub/OtherPublication'},
+        {'@id': 'https://id.kb.se/term/swepub/output/dok'},
     ]
     actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
     assert actual == expected
@@ -2188,44 +2274,22 @@ def test_uka_subjects_with_href(parser):
       """)
     expected = [
         {
-            '@id': 'https://id.kb.se/term/uka/60203',
-            '@type': 'Topic',
+            "@id": "https://id.kb.se/term/ssif/60203",
+            '@type': 'Classification',
             'code': '60203',
-            'inScheme': {
-                '@id': 'https://id.kb.se/term/uka/',
-                '@type': 'ConceptScheme',
-                'code': 'uka.se'
-            },
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-            'prefLabel': 'Litteraturvetenskap',
-            "broader": {
-                "prefLabel": "Spr\u00e5k och litteratur",
-                "broader": {
-                    "prefLabel": "Humaniora",
-                }
-            }
+            "inScheme": {"@id": "https://id.kb.se/term/ssif", "@type": "ConceptScheme"},
+            "prefLabelByLang": {"sv": "Litteraturvetenskap"},
         },
         {
-            '@id': 'https://id.kb.se/term/uka/60203',
-            '@type': 'Topic',
+            "@id": "https://id.kb.se/term/ssif/60203",
+            '@type': 'Classification',
             'code': '60203',
-            'inScheme': {
-                '@id': 'https://id.kb.se/term/uka/',
-                '@type': 'ConceptScheme',
-                'code': 'uka.se'
-            },
-            'language': {'@type': 'Language', 'code': 'eng', '@id': 'https://id.kb.se/language/eng'},
-            'prefLabel': 'Literature',
-            "broader": {
-                "prefLabel": "Languages and Literature",
-                "broader": {
-                    "prefLabel": "Humanities",
-                }
-            }
+            "inScheme": {"@id": "https://id.kb.se/term/ssif", "@type": "ConceptScheme"},
+            "prefLabelByLang": {"en": "Literature"},
         },
     ]
 
-    actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
+    actual = parser.parse_mods(raw_xml)['instanceOf']['classification']
     assert actual == expected
 
 
@@ -2243,43 +2307,81 @@ def test_uka_subject_once_per_level(parser):
       """)
     expected = [
         {
-            '@id': 'https://id.kb.se/term/uka/6',
-            '@type': 'Topic',
+            "@id": "https://id.kb.se/term/ssif/6",
+            '@type': 'Classification',
             'code': '6',
-            'inScheme': {
-                '@id': 'https://id.kb.se/term/uka/',
-                '@type': 'ConceptScheme',
-                'code': 'uka.se'
-            },
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-            'prefLabel': 'Humaniora',
+            "inScheme": {"@id": "https://id.kb.se/term/ssif", "@type": "ConceptScheme"},
+            "prefLabelByLang": {"sv": "Humaniora"},
         },
         {
-            '@id': 'https://id.kb.se/term/uka/602',
-            '@type': 'Topic',
+            "@id": "https://id.kb.se/term/ssif/602",
+            '@type': 'Classification',
             'code': '602',
-            'inScheme': {
-                '@id': 'https://id.kb.se/term/uka/',
-                '@type': 'ConceptScheme',
-                'code': 'uka.se'
-            },
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-            'prefLabel': 'Spr\u00e5k och litteratur',
+            "inScheme": {"@id": "https://id.kb.se/term/ssif", "@type": "ConceptScheme"},
+            "prefLabelByLang": {"sv": "Spr\u00e5k och litteratur"},
         },
         {
-            '@id': 'https://id.kb.se/term/uka/60203',
-            '@type': 'Topic',
+            "@id": "https://id.kb.se/term/ssif/60203",
+            '@type': 'Classification',
             'code': '60203',
-            'inScheme': {
-                '@id': 'https://id.kb.se/term/uka/',
-                '@type': 'ConceptScheme',
-                'code': 'uka.se'
-            },
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-            'prefLabel': 'Litteraturvetenskap',
+            "inScheme": {"@id": "https://id.kb.se/term/ssif", "@type": "ConceptScheme"},
+            "prefLabelByLang": {"sv": "Litteraturvetenskap"},
         },
     ]
 
+    actual = parser.parse_mods(raw_xml)['instanceOf']['classification']
+    assert actual == expected
+
+
+@pytest.mark.parametrize("authority, authority_id", [
+    ('sao', 'https://id.kb.se/term/sao'),
+    ('lcsh', 'http://id.loc.gov/authorities/subjects'),
+    ('sdg', 'http://metadata.un.org/sdg'),
+])
+def test_non_uka_but_hardcoded_authority_subject(authority, authority_id, parser):
+    raw_xml = MODS(f"""
+        <subject lang="swe" authority="{authority}">
+            <topic>Foobar</topic>
+        </subject>
+      """)
+    expected = [
+        {
+            '@type': 'Topic',
+            'inScheme': {
+                '@id': authority_id,
+                '@type': 'ConceptScheme',
+                'code': authority
+            },
+            'prefLabelByLang': {'sv': 'Foobar'},
+        }
+    ]
+    actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
+    assert actual == expected
+
+
+@pytest.mark.parametrize("authority, authority_id, valueuri, topic", [
+    ('sao', 'https://id.kb.se/term/sao', 'https://id.kb.se/term/sao/Monster', 'Monster'),
+    ('lcsh', 'http://id.loc.gov/authorities/subjects', 'http://id.loc.gov/authorities/subjects/sh00007656', 'Aviation'),
+    ('sdg', 'http://metadata.un.org/sdg', 'http://metadata.un.org/sdg/13', 'Take urgent action to combat climate change and its impacts'),
+])
+def test_non_uka_but_hardcoded_authority_subject_with_valueuri(authority, authority_id, valueuri, topic, parser):
+    raw_xml = MODS(f"""
+        <subject lang="swe" authority="{authority}" valueURI="{valueuri}">
+            <topic>{topic}</topic>
+        </subject>
+      """)
+    expected = [
+        {
+            '@type': 'Topic',
+            '@id': valueuri,
+            'inScheme': {
+                '@id': authority_id,
+                '@type': 'ConceptScheme',
+                'code': authority
+            },
+            'prefLabelByLang': {'sv': topic},
+        }
+    ]
     actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
     assert actual == expected
 
@@ -2295,12 +2397,10 @@ def test_non_uka_subject(parser):
             '@type': 'Topic',
             'code': '60203',
             'inScheme': {
-                '@id': 'lnu.se/swe',
                 '@type': 'ConceptScheme',
                 'code': 'lnu.se'
             },
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-            'prefLabel': 'Humaniora',
+            "prefLabelByLang": {"sv": "Humaniora"},
         }
     ]
     actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
@@ -2318,7 +2418,6 @@ def test_non_uka_subject_without_language_property(parser):
             '@type': 'Topic',
             'code': '60203',
             'inScheme': {
-                '@id': 'lnu.se',
                 '@type': 'ConceptScheme',
                 'code': 'lnu.se'
             },
@@ -2338,8 +2437,7 @@ def test_non_uka_subject_without_href_or_authority_extract_only_basic_informatio
     expected = [
         {
             '@type': 'Topic',
-            'prefLabel': 'Humaniora',
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'}
+            "prefLabelByLang": {"sv": "Humaniora"},
         }
     ]
     actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
@@ -2356,12 +2454,10 @@ def test_non_uka_subject_without_href(parser):
         {
             '@type': 'Topic',
             'inScheme': {
-                '@id': 'lnu.se/swe',
                 '@type': 'ConceptScheme',
                 'code': 'lnu.se'
             },
-            'language': {'@type': 'Language', 'code': 'swe', '@id': 'https://id.kb.se/language/swe'},
-            'prefLabel': 'Humaniora',
+            "prefLabelByLang": {"sv": "Humaniora"},
         }
     ]
     actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
@@ -2378,6 +2474,22 @@ def test_uka_subjects_without_href_are_ignored(parser):
       """)
     expected = []
     actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
+    assert actual == expected
+
+
+def test_ssif_classification(parser):
+    raw_xml = MODS("""
+        <classification authority="ssif" usage="primary" generator="GPT-4">60203</classification>
+      """)
+    expected = [
+        {
+            '@annotation': {
+                'assigner': {'@type': 'SoftwareAgent', 'label': 'GPT-4'}
+            },
+            '@id': 'https://id.kb.se/term/ssif/60203',
+        }
+    ]
+    actual = parser.parse_mods(raw_xml)['instanceOf']['classification']
     assert actual == expected
 
 
@@ -2515,7 +2627,8 @@ def test_notes_with_different_types_can_be_mixed(parser):
     ('Submitted', 'Submitted'),
     ('Accepted', 'Accepted'),
     ('In press', 'InPress'),
-    ('Epub ahead of print/Online first', 'EpubAheadOfPrintOnlineFirst')
+    ('Epub ahead of print/Online first', 'EpubAheadOfPrintOnlineFirst'),
+    ('Retracted', 'Retracted'),
 ])
 def test_publication_status(mods_type, bibframe_type, parser):
     raw_xml = MODS("""<note type="publicationStatus">{}</note>""".format(mods_type))
@@ -2528,6 +2641,13 @@ def test_default_publication_status_is_published(parser):
     raw_xml = MODS("""<originInfo/>""")
     actual = parser.parse_mods(raw_xml)['instanceOf']['hasNote']
     expected = [{'@type': 'PublicationStatus', '@id': 'https://id.kb.se/term/swepub/Published'}]
+    assert actual == expected
+
+# If there's a valueURI it should have precedence
+def test_publication_status_valueuri(parser):
+    raw_xml = MODS("""<note type="publicationStatus" xsi:type="stringPlusLanguagePlusAuthority" valueURI="https://id.kb.se/term/swepub/Submitted">Preprint</note>""")
+    actual = parser.parse_mods(raw_xml)['instanceOf']['hasNote']
+    expected = [{'@type': 'PublicationStatus', '@id': 'https://id.kb.se/term/swepub/Submitted'}]
     assert actual == expected
 
 
@@ -2868,10 +2988,8 @@ def test_newer_output_type_for_artistic_work_as_publication(parser):
     """)
 
     expected = [
-        {'@id': 'https://id.kb.se/term/swepub/Book'},
-        {'@id': 'https://id.kb.se/term/swepub/publication/book'},
-        {'@id': 'https://id.kb.se/term/swepub/ArtisticWork'},
-        {'@id': 'https://id.kb.se/term/swepub/artistic-work'},
+        {'@id': 'https://id.kb.se/term/swepub/output/publication/book'},
+        {'@id': 'https://id.kb.se/term/swepub/output/artistic-work'},
     ]
     actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
     assert actual == expected
@@ -2879,8 +2997,6 @@ def test_newer_output_type_for_artistic_work_as_publication(parser):
 
 @pytest.mark.parametrize("givenoutputtype, convertedoutputtype", [
     ('ArtisticPerformance/VisualArtworks', 'ArtisticWork'),
-    ('artistic-work/curated-exhibition-or-event', 'artistic-work/original-creative-work'),
-    ('publication/translation', 'publication/critical-edition'),
 ])
 def test_changed_outputtypes_are_converted(givenoutputtype, convertedoutputtype, parser):
     raw_xml = MODS(f"""
@@ -2894,11 +3010,26 @@ def test_changed_outputtypes_are_converted(givenoutputtype, convertedoutputtype,
     assert actual == expected
 
 
+@pytest.mark.parametrize("givenoutputtype, convertedoutputtype", [
+    ('artistic-work/curated-exhibition-or-event', 'artistic-work/original-creative-work'),
+    ('publication/translation', 'publication/critical-edition'),
+])
+def test_changed_outputtypes_are_converted_2(givenoutputtype, convertedoutputtype, parser):
+    raw_xml = MODS(f"""
+        <genre authority="kb.se" type="outputType">{givenoutputtype}</genre>
+    """)
+
+    expected = [
+        {'@id': 'https://id.kb.se/term/swepub/output/{}'.format(convertedoutputtype)}
+    ]
+    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
+    assert actual == expected
+
+
 def test_conferance_publication_type(parser):
     raw_xml = MODS("""<genre authority="svep" type="publicationType">kon</genre>""")
     expected = [
-        {'@id': 'https://id.kb.se/term/swepub/ConferencePaper'},
-        {'@id': 'https://id.kb.se/term/swepub/conference'},
+        {'@id': 'https://id.kb.se/term/swepub/output/conference'},
     ]
     actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
     assert actual == expected
@@ -2908,8 +3039,7 @@ def test_conferance_publication_type(parser):
         <genre authority="kb.se" type="outputType">conference/paper</genre>
     """)
     expected = [
-        {'@id': 'https://id.kb.se/term/swepub/conference/paper'},
-        {'@id': 'https://id.kb.se/term/swepub/ConferencePaper'},
+        {'@id': 'https://id.kb.se/term/swepub/output/conference/paper'},
     ]
     actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
     print(actual)
@@ -2947,9 +3077,15 @@ def test_publication_identifier_with_display_label_is_extracted(display_label, p
     ('pmid', 'PMID'),
     ('patent_number', 'PatentNumber'),
     ('orcid', 'ORCID'),
+    ('se-libr', 'LibrisNumber'),
     ('libris', 'LibrisNumber'),
+    ('ocolc', 'WorldCatNumber'),
     ('worldcat', 'WorldCatNumber'),
     ('articleId', 'Local'),
+    ('ror', 'ROR'),
+    ('raid', 'RAiD'),
+    ('RAiD', 'RAiD'),
+    ('RAID', 'RAiD'),
     ('foo', 'Local'),
 ])
 def test_mods_identifier_types_are_mapped_to_appropriate_identifier_subclasses_in_bibframe(mods_type, bibframe_type, parser):
@@ -3137,22 +3273,22 @@ def test_invalid_identifiers(parser):
     ]
     assert expectedIncorrectlyIdentifiedBy == parser.parse_mods(raw_xml)['incorrectlyIdentifiedBy']
 
-    expectedPartOfIdentifiedBy = [
+    expectedIsPartOfIdentifiedBy = [
         {'@type': 'DOI', 'value': '10.1080/03468759408579279'},
         {'@type': 'URI', 'value': 'https://research.chalmers.se/publication/254409'},
         {'@type': 'ISBN', 'value': '9789129703771'}, {'@type': 'ISI', 'value': '000071067000025'},
         {'@type': 'ISSN', 'value': '1532-6349'}
     ]
-    assert expectedPartOfIdentifiedBy == parser.parse_mods(raw_xml)['partOf'][0]['identifiedBy']
+    assert expectedIsPartOfIdentifiedBy == parser.parse_mods(raw_xml)['isPartOf'][0]['identifiedBy']
 
-    expectedPartOfIncorrectlyIdentifiedBy = [
+    expectedIsPartOfIncorrectlyIdentifiedBy = [
         {'@type': 'DOI', 'value': 'invalid_doi'},
         {'@type': 'URI', 'value': 'invalid_uri'},
         {'@type': 'ISBN', 'value': 'invalid_isbn'},
         {'@type': 'ISI', 'value': 'invalid_isi'},
         {'@type': 'ISSN', 'value': 'invalid_issn'}
     ]
-    assert expectedPartOfIncorrectlyIdentifiedBy == parser.parse_mods(raw_xml)['partOf'][0]['incorrectlyIdentifiedBy']
+    assert expectedIsPartOfIncorrectlyIdentifiedBy == parser.parse_mods(raw_xml)['isPartOf'][0]['incorrectlyIdentifiedBy']
 
 
 def test_name_identifiers_swpmods_2(parser):
@@ -3284,8 +3420,33 @@ def test_usage_and_access_policy_gratis(parser):
     """)
     expected_usage_and_access_policy = [
         {
-            "@type": "AccessPolicy",
-            "label": "gratis"
+            "@id": "https://id.kb.se/policy/oa/gratis"
+        }
+    ]
+    parsed_policy = parser.parse_mods(raw_xml)['usageAndAccessPolicy']
+    assert expected_usage_and_access_policy == parsed_policy
+
+
+def test_usage_and_access_policy_restricted(parser):
+    raw_xml = MODS("""
+    <accessCondition>restricted</accessCondition>
+    """)
+    expected_usage_and_access_policy = [
+        {
+            "@id": "https://id.kb.se/policy/oa/restricted"
+        }
+    ]
+    parsed_policy = parser.parse_mods(raw_xml)['usageAndAccessPolicy']
+    assert expected_usage_and_access_policy == parsed_policy
+
+
+def test_usage_and_access_policy_valueuri(parser):
+    raw_xml = MODS("""
+    <accessCondition valueURI="https://example.com">gratis</accessCondition>
+    """)
+    expected_usage_and_access_policy = [
+        {
+            "@id": "https://example.com"
         }
     ]
     parsed_policy = parser.parse_mods(raw_xml)['usageAndAccessPolicy']
@@ -3339,3 +3500,379 @@ def test_several_access_policies(parser):
     parsed_policy = parser.parse_mods(raw_xml)['usageAndAccessPolicy']
     print(f"{parsed_policy}")
     assert expected_usage_and_access_policy == parsed_policy
+
+
+# Tests related to changes in Swepub MODS 4.0 below
+
+def test_origininfo_eventtype_publication_1(parser):
+    raw_xml = MODS("""
+        <originInfo eventType="publication">
+            <agent>
+                <namePart>Cambridge University Press</namePart>
+                <role>
+                    <roleTerm authority="marcrelator" valueURI="http://id.loc.gov/vocabulary/relators/pbl">pbl</roleTerm>
+                </role>
+            </agent>
+        </originInfo>
+    """)
+
+    actual = parser.parse_mods(raw_xml)['publication']
+    expected = [
+        {
+            '@type': 'Publication',
+            'agent': {
+                '@type': 'Agent',
+                'label': 'Cambridge University Press'
+            }
+        }
+    ]
+
+    assert actual == expected
+
+
+def test_origininfo_eventtype_publication_2(parser):
+    raw_xml = MODS("""
+        <originInfo eventType="publication">
+            <agent>
+                <namePart>Cambridge University Press</namePart>
+                <role>
+                    <roleTerm authority="marcrelator">pbl</roleTerm>
+                </role>
+            </agent>
+        </originInfo>
+    """)
+
+    actual = parser.parse_mods(raw_xml)['publication']
+    expected = [
+        {
+            '@type': 'Publication',
+            'agent': {
+                '@type': 'Agent',
+                'label': 'Cambridge University Press'
+            }
+        }
+    ]
+
+    assert actual == expected
+
+
+def test_origininfo_eventtype_publication_3(parser):
+    raw_xml = MODS("""
+        <originInfo eventType="publication">
+            <agent>
+                <namePart>Cambridge University Press</namePart>
+                <role>
+                    <roleTerm authority="marcrelator" valueURI="http://id.loc.gov/vocabulary/relators/pbl"></roleTerm>
+                </role>
+            </agent>
+        </originInfo>
+    """)
+
+    actual = parser.parse_mods(raw_xml)['publication']
+    expected = [
+        {
+            '@type': 'Publication',
+            'agent': {
+                '@type': 'Agent',
+                'label': 'Cambridge University Press'
+            }
+        }
+    ]
+
+    assert actual == expected
+
+
+def test_origininfo_eventtype_publication_4(parser):
+    raw_xml = MODS("""
+        <originInfo eventType="publication">
+            <agent>
+                <namePart>Cambridge University Press</namePart>
+                <role>
+                    <roleTerm authority="marcrelator" valueURI="http://id.loc.gov/vocabulary/relators/foo">bar</roleTerm>
+                </role>
+            </agent>
+        </originInfo>
+    """)
+
+    assert "publication" not in parser.parse_mods(raw_xml)
+
+
+def test_origininfo_eventtype_manufacture(parser):
+    raw_xml = MODS("""
+        <originInfo eventType="manufacture">
+            <agent>
+                <namePart>Cambridge University Press</namePart>
+                <role>
+                    <roleTerm authority="marcrelator" valueURI="http://id.loc.gov/vocabulary/relators/mfr">mfr</roleTerm>
+                </role>
+            </agent>
+        </originInfo>
+    """)
+
+    actual = parser.parse_mods(raw_xml)['manufacture']
+    expected = [
+        {
+            '@type': 'Manufacture',
+            'agent': {
+                '@type': 'Agent',
+                'label': 'Cambridge University Press'
+            }
+        }
+    ]
+
+    assert actual == expected
+
+
+def test_origininfo_eventtype_distribution(parser):
+    raw_xml = MODS("""
+        <originInfo eventType="distribution">
+            <agent>
+                <namePart>Cambridge University Press</namePart>
+                <role>
+                    <roleTerm authority="marcrelator" valueURI="http://id.loc.gov/vocabulary/relators/dst">dst</roleTerm>
+                </role>
+            </agent>
+        </originInfo>
+    """)
+
+    actual = parser.parse_mods(raw_xml)['distribution']
+    expected = [
+        {
+            '@type': 'Distribution',
+            'agent': {
+                '@type': 'Agent',
+                'label': 'Cambridge University Press'
+            }
+        }
+    ]
+
+    assert actual == expected
+
+
+def test_origininfo_eventtype_production(parser):
+    raw_xml = MODS("""
+        <originInfo eventType="production">
+            <agent>
+                <namePart>Cambridge University Press</namePart>
+                <role>
+                    <roleTerm authority="marcrelator" valueURI="http://id.loc.gov/vocabulary/relators/pro">pro</roleTerm>
+                </role>
+            </agent>
+        </originInfo>
+    """)
+
+    actual = parser.parse_mods(raw_xml)['production']
+    expected = [
+        {
+            '@type': 'Production',
+            'agent': {
+                '@type': 'Agent',
+                'label': 'Cambridge University Press'
+            }
+        }
+    ]
+
+    assert actual == expected
+
+
+def test_origininfo_other(parser):
+    raw_xml = MODS("""
+        <originInfo>
+            <agent>
+                <namePart>Cambridge University Press</namePart>
+                <role>
+                    <roleTerm authority="marcrelator" valueURI="http://id.loc.gov/vocabulary/relators/prt">prt</roleTerm>
+                </role>
+            </agent>
+        </originInfo>
+    """)
+
+    actual = parser.parse_mods(raw_xml)['contribution']
+    expected = [
+        {
+            '@type': 'Contribution',
+            'agent': {
+                '@type': 'Agent',
+                'label': 'Cambridge University Press',
+                'role': [
+                    {
+                        '@id': 'http://id.loc.gov/vocabulary/relators/prt'
+                    }
+                ]
+            }
+        }
+    ]
+
+    assert actual == expected
+
+
+def test_origininfo_other_2(parser):
+    raw_xml = MODS("""
+        <originInfo eventType="somethingelse">
+            <agent>
+                <namePart>Cambridge University Press</namePart>
+                <role>
+                    <roleTerm valueURI="http://id.loc.gov/vocabulary/relators/something" />
+                </role>
+            </agent>
+        </originInfo>
+    """)
+
+    actual = parser.parse_mods(raw_xml)['contribution']
+    expected = [
+        {
+            '@type': 'Contribution',
+            'agent': {
+                '@type': 'Agent',
+                'label': 'Cambridge University Press',
+                'role': [
+                    {
+                        '@id': 'http://id.loc.gov/vocabulary/relators/something'
+                    }
+                ]
+            }
+        }
+    ]
+
+    assert actual == expected
+
+
+def test_complete_origin_info_2(parser):
+    raw_xml = MODS("""
+        <originInfo eventType="publication">
+            <agent>
+                <namePart>Cambridge University Press</namePart>
+                <role>
+                    <roleTerm authority="marcrelator" valueURI="http://id.loc.gov/vocabulary/relators/pbl">pbl</roleTerm>
+                </role>
+            </agent>
+            <dateIssued>1986-05-30</dateIssued>
+            <place>
+                <placeTerm>Ankeborg</placeTerm>
+            </place>
+        </originInfo>
+    """)
+
+    actual = parser.parse_mods(raw_xml)['publication']
+    expected = [
+        {
+            '@type': 'Publication',
+            'date': '1986-05-30',
+            'place': {'@type': 'Place', 'label': 'Ankeborg'},
+            'agent': {'@type': 'Agent', 'label': 'Cambridge University Press'}
+        }
+    ]
+
+    assert actual == expected
+
+
+def test_complete_origin_info_3(parser):
+    raw_xml = MODS("""
+        <originInfo eventType="publication">
+            <agent>
+                <namePart>Elsevier</namePart>
+                <role>
+                    <roleTerm authority="marcrelator" valueURI="http://id.loc.gov/vocabulary/relators/pbl">pbl</roleTerm>
+                </role>
+            </agent>
+            <dateIssued>1986-05-30</dateIssued>
+            <dateOther type="available">2017-09-28T11:03:29</dateOther>
+            <place>
+                <placeTerm>Ankeborg</placeTerm>
+            </place>
+        </originInfo>
+        <originInfo eventType="manufacture">
+            <agent>
+                <namePart>Cambridge University Press</namePart>
+                <role>
+                    <roleTerm authority="marcrelator" valueURI="http://id.loc.gov/vocabulary/relators/mfr">mfr</roleTerm>
+                </role>
+            </agent>
+            <dateOther type="digitized">2022-07-25T20:05:30</dateOther>
+        </originInfo>
+        <originInfo eventType="distribution">
+            <agent>
+                <namePart>Cambridge University Press</namePart>
+                <role>
+                    <roleTerm authority="marcrelator" valueURI="http://id.loc.gov/vocabulary/relators/pbl">pbl</roleTerm>
+                </role>
+            </agent>
+        </originInfo>
+    """)
+
+    actual = parser.parse_mods(raw_xml)
+    expected_publication = [
+        {
+            '@type': 'Publication',
+            'date': '1986-05-30',
+            'place': {
+                '@type': 'Place',
+                'label': 'Ankeborg'
+            },
+            'agent': {
+                '@type': 'Agent',
+                'label': 'Elsevier'
+            }
+        }
+    ]
+    expected_manufacture = [
+        {
+            '@type': 'Manufacture',
+            'agent': {
+                '@type': 'Agent',
+                'label': 'Cambridge University Press'
+            }
+        }
+    ]
+    expected_provisionactivity = [
+        {
+            "@type": "Availability",
+            "date": "2017-09-28T11:03:29"
+        },
+        {
+            "@type": "Digitization",
+            "date": "2022-07-25T20:05:30"
+        }
+    ]
+
+    assert actual["publication"] == expected_publication
+    assert actual["manufacture"] == expected_manufacture
+    assert actual["provisionActivity"] == expected_provisionactivity
+
+
+def test_origininfo_copyrightdate(parser):
+    raw_xml = MODS("""
+        <originInfo>
+            <copyrightDate>1999</copyrightDate>
+        </originInfo>
+    """)
+
+    actual = parser.parse_mods(raw_xml)['copyright']
+    expected = [
+        {
+            '@type': 'Copyright',
+            'date': '1999'
+        }
+    ]
+
+    assert actual == expected
+
+
+# copyrightDate is not repeatable in Swepub MODS 4.0; use the first one
+def test_origininfo_copyrightdate(parser):
+    raw_xml = MODS("""
+        <originInfo>
+            <copyrightDate>1999</copyrightDate>
+            <copyrightDate>2000</copyrightDate>
+        </originInfo>
+    """)
+
+    actual = parser.parse_mods(raw_xml)['copyright']
+    expected = [
+        {
+            '@type': 'Copyright',
+            'date': '1999'
+        }
+    ]
+
+    assert actual == expected

@@ -3,7 +3,7 @@ import * as StringUtil from '@/utils/String';
 import Helptexts from '@/assets/json/helptexts.json';
 import YearPicker from '@/components/shared/YearPicker';
 import SelectSource from '@/components/shared/SelectSource';
-import SelectSubject from '@/components/shared/SelectSubject';
+import SelectClassification from '@/components/shared/SelectClassification';
 import SelectOutput from '@/components/shared/SelectOutput';
 import ValidationMixin from '@/components/mixins/ValidationMixin';
 
@@ -15,7 +15,7 @@ export default {
   mixins: [ValidationMixin],
   components: {
     SelectSource,
-    SelectSubject,
+    SelectClassification,
     SelectOutput,
     YearPicker,
     HelpBubble,
@@ -34,10 +34,11 @@ export default {
         { value: 'published', label: 'Publicerat' },
         { value: 'epub', label: 'Epub ahead of print/Online first' },
         { value: 'submitted', label: 'Submitted, Accepted, In print' },
+        { value: 'retracted', label: 'Retracted' },
       ],
       contentMarkings: [
         { value: 'ref', label: 'Sakkunniggranskat (ref)' },
-        { value: 'vet', label: 'Övrigt vetenskapligt (vet)' },
+        { value: 'vet', label: 'Övrigt vetenskapligt/konstnärligt (vet)' },
         { value: 'pop', label: 'Övrigt (populärvetenskap, debatt) (pop)' },
       ],
       search: null,
@@ -63,7 +64,7 @@ export default {
           from: this.getYearValue('from'),
           to: this.getYearValue('to'),
         },
-        subject: this.asArr(this.query.subject) || [],
+        classification: this.asArr(this.query.classification) || [],
         genreForm: this.joinGenreForm(),
         keywords: this.query.keywords || '',
         publicationStatus: this.asArr(this.query.publicationStatus) || [],
@@ -187,11 +188,11 @@ export default {
             </template>
           </select-source>
 
-          <select-subject v-model="selected.subject" multiple>
+          <select-classification v-model="selected.classification" multiple>
             <template v-slot:helpbubble>
-              <help-bubble bubbleKey="subject"/>
+              <help-bubble bubbleKey="classification"/>
             </template>
-          </select-subject>
+          </select-classification>
         </div>
 
         <div class="Search-SelectContainer">

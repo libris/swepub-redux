@@ -1,0 +1,3481 @@
+{
+  "@context": {
+    "@vocab": "https://id.kb.se/vocab/",
+    "prefLabelByLang": {
+      "@id": "prefLabel",
+      "@container": "@language"
+    },
+    "altLabelByLang": {
+      "@id": "altLabel",
+      "@container": "@language"
+    },
+    "commentByLang": {
+      "@id": "comment",
+      "@container": "@language"
+    }
+  },
+  "@graph": [
+    {
+      "@id": "https://id.kb.se/term/ssif/1",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "1",
+      "prefLabelByLang": {
+        "sv": "Naturvetenskap",
+        "en": "Natural Sciences"
+      }
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/101",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "101",
+      "prefLabelByLang": {
+        "sv": "Matematik",
+        "en": "Mathematics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/1"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10101",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10101",
+      "prefLabelByLang": {
+        "sv": "Matematisk analys",
+        "en": "Mathematical Analysis"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/101"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10102",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10102",
+      "prefLabelByLang": {
+        "sv": "Geometri",
+        "en": "Geometry"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/101"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10103",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10103",
+      "prefLabelByLang": {
+        "sv": "Algebra och logik",
+        "en": "Algebra and Logic"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/101"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10104",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10104",
+      "prefLabelByLang": {
+        "sv": "Diskret matematik",
+        "en": "Discrete Mathematics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/101"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10105",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10105",
+      "prefLabelByLang": {
+        "sv": "Beräkningsmatematik",
+        "en": "Computational Mathematics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/101"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10106",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10106",
+      "prefLabelByLang": {
+        "sv": "Sannolikhetsteori och statistik",
+        "en": "Probability Theory and Statistics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/101"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10199",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10199",
+      "prefLabelByLang": {
+        "sv": "Annan matematik",
+        "en": "Other Mathematics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/101"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/102",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "102",
+      "prefLabelByLang": {
+        "sv": "Data- och informationsvetenskap",
+        "en": "Computer and Information Sciences"
+      },
+      "altLabelByLang": {"sv": "Datateknik"},
+      "broader": {"@id": "https://id.kb.se/term/ssif/1"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10201",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10201",
+      "prefLabelByLang": {
+        "sv": "Datavetenskap",
+        "en": "Computer Sciences"
+      },
+      "altLabelByLang": {"sv": "datalogi"},
+      "broader": {"@id": "https://id.kb.se/term/ssif/102"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10202",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10202",
+      "prefLabelByLang": {
+        "sv": "Systemvetenskap, informationssystem och informatik",
+        "en": "Information Systems"
+      },
+      "commentByLang": {
+        "sv": "samhällsvetenskaplig inriktning under 50804",
+        "en": "Social aspects to be 50804"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/102"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10203",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10203",
+      "prefLabelByLang": {
+        "sv": "Bioinformatik",
+        "en": "Bioinformatics"
+      },
+      "altLabelByLang": {
+        "sv": "beräkningsbiologi",
+        "en": "Computational Biology"
+      },
+      "commentByLang": {
+        "sv": "tillämpningar under 10610",
+        "en": "applications to be 10610"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/102"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10204",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10204",
+      "prefLabelByLang": {
+        "sv": "Människa-datorinteraktion",
+        "en": "Human Computer Interaction"
+      },
+      "altLabelByLang": {"sv": "interaktionsdesign"},
+      "commentByLang": {
+        "sv": "Samhällsvetenskapliga aspekter under 50803",
+        "en": "Social aspects to be 50803"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/102"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10205",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10205",
+      "prefLabelByLang": {
+        "sv": "Programvaruteknik",
+        "en": "Software Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/102"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10206",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10206",
+      "prefLabelByLang": {
+        "sv": "Datorteknik",
+        "en": "Computer Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/102"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10207",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10207",
+      "prefLabelByLang": {
+        "sv": "Datorseende och robotik",
+        "en": "Computer Vision and Robotics"
+      },
+      "altLabelByLang": {
+        "sv": "autonoma system",
+        "en": "Autonomous Systems"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/102"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10208",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10208",
+      "prefLabelByLang": {
+        "sv": "Språkteknologi",
+        "en": "Language Technology"
+      },
+      "altLabelByLang": {
+        "sv": "språkvetenskaplig databehandling",
+        "en": "Computational Linguistics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/102"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10209",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10209",
+      "prefLabelByLang": {
+        "sv": "Medieteknik",
+        "en": "Media and Communication Technology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/102"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10299",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10299",
+      "prefLabelByLang": {
+        "sv": "Annan data- och informationsvetenskap",
+        "en": "Other Computer and Information Science"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/102"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/103",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "103",
+      "prefLabelByLang": {
+        "sv": "Fysik",
+        "en": "Physical Sciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/1"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10301",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10301",
+      "prefLabelByLang": {
+        "sv": "Subatomär fysik",
+        "en": "Subatomic Physics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/103"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10302",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10302",
+      "prefLabelByLang": {
+        "sv": "Atom- och molekylfysik och optik",
+        "en": "Atom and Molecular Physics and Optics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/103"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10303",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10303",
+      "prefLabelByLang": {
+        "sv": "Fusion, plasma och rymdfysik",
+        "en": "Fusion, Plasma and Space Physics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/103"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10304",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10304",
+      "prefLabelByLang": {
+        "sv": "Den kondenserade materiens fysik",
+        "en": "Condensed Matter Physics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/103"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10305",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10305",
+      "prefLabelByLang": {
+        "sv": "Astronomi, astrofysik och kosmologi",
+        "en": "Astronomy, Astrophysics and Cosmology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/103"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10306",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10306",
+      "prefLabelByLang": {
+        "sv": "Acceleratorfysik och instrumentering",
+        "en": "Accelerator Physics and Instrumentation"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/103"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10399",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10399",
+      "prefLabelByLang": {
+        "sv": "Annan fysik",
+        "en": "Other Physics Topics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/103"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/104",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "104",
+      "prefLabelByLang": {
+        "sv": "Kemi",
+        "en": "Chemical Sciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/1"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10401",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10401",
+      "prefLabelByLang": {
+        "sv": "Analytisk kemi",
+        "en": "Analytical Chemistry"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/104"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10402",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10402",
+      "prefLabelByLang": {
+        "sv": "Fysikalisk kemi",
+        "en": "Physical Chemistry"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/104"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10403",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10403",
+      "prefLabelByLang": {
+        "sv": "Materialkemi",
+        "en": "Materials Chemistry"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/104"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10404",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10404",
+      "prefLabelByLang": {
+        "sv": "Oorganisk kemi",
+        "en": "Inorganic Chemistry"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/104"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10405",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10405",
+      "prefLabelByLang": {
+        "sv": "Organisk kemi",
+        "en": "Organic Chemistry"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/104"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10406",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10406",
+      "prefLabelByLang": {
+        "sv": "Polymerkemi",
+        "en": "Polymer Chemistry"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/104"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10407",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10407",
+      "prefLabelByLang": {
+        "sv": "Teoretisk kemi",
+        "en": "Theoretical Chemistry"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/104"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10499",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10499",
+      "prefLabelByLang": {
+        "sv": "Annan kemi",
+        "en": "Other Chemistry Topics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/104"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/105",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "105",
+      "prefLabelByLang": {
+        "sv": "Geovetenskap och miljövetenskap",
+        "en": "Earth and Related Environmental Sciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/1"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10501",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10501",
+      "prefLabelByLang": {
+        "sv": "Klimatforskning",
+        "en": "Climate Research"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/105"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10502",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10502",
+      "prefLabelByLang": {
+        "sv": "Miljövetenskap",
+        "en": "Environmental Sciences"
+      },
+      "commentByLang": {
+        "sv": "Samhällsvetenskapliga aspekter under 507",
+        "en": "social aspects to be 507"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/105"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10503",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10503",
+      "prefLabelByLang": {
+        "sv": "Multidisciplinär geovetenskap",
+        "en": "Geosciences, Multidisciplinary"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/105"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10504",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10504",
+      "prefLabelByLang": {
+        "sv": "Geologi",
+        "en": "Geology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/105"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10505",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10505",
+      "prefLabelByLang": {
+        "sv": "Geofysik",
+        "en": "Geophysics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/105"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10506",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10506",
+      "prefLabelByLang": {
+        "sv": "Geokemi",
+        "en": "Geochemistry"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/105"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10507",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10507",
+      "prefLabelByLang": {
+        "sv": "Naturgeografi",
+        "en": "Physical Geography"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/105"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10508",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10508",
+      "prefLabelByLang": {
+        "sv": "Meteorologi och atmosfärforskning",
+        "en": "Meteorology and Atmospheric Sciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/105"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10509",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10509",
+      "prefLabelByLang": {
+        "sv": "Oceanografi, hydrologi och vattenresurser",
+        "en": "Oceanography, Hydrology and Water Resources"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/105"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10599",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10599",
+      "prefLabelByLang": {
+        "sv": "Annan geovetenskap och miljövetenskap",
+        "en": "Other Earth and Related Environmental Sciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/105"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/106",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "106",
+      "prefLabelByLang": {
+        "sv": "Biologi",
+        "en": "Biological Sciences"
+      },
+      "commentByLang": {
+        "sv": "Medicinska tillämpningar under 3 och lantbruksvetenskapliga under 4",
+        "en": "Medical to be 3 and Agricultural to be 4"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/1"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10601",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10601",
+      "prefLabelByLang": {
+        "sv": "Strukturbiologi",
+        "en": "Structural Biology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/106"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10602",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10602",
+      "prefLabelByLang": {
+        "sv": "Biokemi och molekylärbiologi",
+        "en": "Biochemistry and Molecular Biology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/106"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10603",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10603",
+      "prefLabelByLang": {
+        "sv": "Biofysik",
+        "en": "Biophysics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/106"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10604",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10604",
+      "prefLabelByLang": {
+        "sv": "Cellbiologi",
+        "en": "Cell Biology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/106"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10605",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10605",
+      "prefLabelByLang": {
+        "sv": "Immunologi",
+        "en": "Immunology"
+      },
+      "commentByLang": {
+        "sv": "medicinsk under 30110 och lantbruksvetenskaplig under 40302",
+        "en": "medical  to be 30110 and agricultural to be 40302"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/106"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10606",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10606",
+      "prefLabelByLang": {
+        "sv": "Mikrobiologi",
+        "en": "Microbiology"
+      },
+      "commentByLang": {
+        "sv": "medicinsk under 30109 och lantbruksvetenskaplig under 40302",
+        "en": "medical  to be 30109 and agricultural to be 40302"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/106"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10607",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10607",
+      "prefLabelByLang": {
+        "sv": "Botanik",
+        "en": "Botany"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/106"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10608",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10608",
+      "prefLabelByLang": {
+        "sv": "Zoologi",
+        "en": "Zoology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/106"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10609",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10609",
+      "prefLabelByLang": {
+        "sv": "Genetik",
+        "en": "Genetics"
+      },
+      "commentByLang": {
+        "sv": "medicinsk under 30107 och lantbruksvetenskaplig under 40402",
+        "en": "medical to be 30107 and agricultural to be 40402"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/106"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10610",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10610",
+      "prefLabelByLang": {
+        "sv": "Bioinformatik och systembiologi",
+        "en": "Bioinformatics and Systems Biology"
+      },
+      "commentByLang": {
+        "sv": "metodutveckling under 10203",
+        "en": "methods development to be 10203"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/106"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10611",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10611",
+      "prefLabelByLang": {
+        "sv": "Ekologi",
+        "en": "Ecology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/106"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10612",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10612",
+      "prefLabelByLang": {
+        "sv": "Biologisk systematik",
+        "en": "Biological Systematics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/106"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10613",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10613",
+      "prefLabelByLang": {
+        "sv": "Etologi",
+        "en": "Behavioural Sciences Biology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/106"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10614",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10614",
+      "prefLabelByLang": {
+        "sv": "Utvecklingsbiologi",
+        "en": "Developmental Biology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/106"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10615",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10615",
+      "prefLabelByLang": {
+        "sv": "Evolutionsbiologi",
+        "en": "Evolutionary Biology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/106"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10699",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10699",
+      "prefLabelByLang": {
+        "sv": "Annan biologi",
+        "en": "Other Biological Topics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/106"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/107",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "107",
+      "prefLabelByLang": {
+        "sv": "Annan naturvetenskap",
+        "en": "Other Natural Sciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/1"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10799",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10799",
+      "prefLabelByLang": {
+        "sv": "Övrig annan naturvetenskap",
+        "en": "Other Natural Sciences not elsewhere specified"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/107"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/2",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "2",
+      "prefLabelByLang": {
+        "sv": "Teknik",
+        "en": "Engineering and Technology"
+      }
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/201",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "201",
+      "prefLabelByLang": {
+        "sv": "Samhällsbyggnadsteknik",
+        "en": "Civil Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/2"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20101",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20101",
+      "prefLabelByLang": {
+        "sv": "Arkitekturteknik",
+        "en": "Architectural Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/201"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20102",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20102",
+      "prefLabelByLang": {
+        "sv": "Byggproduktion",
+        "en": "Construction Management"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/201"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20103",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20103",
+      "prefLabelByLang": {
+        "sv": "Husbyggnad",
+        "en": "Building Technologies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/201"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20104",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20104",
+      "prefLabelByLang": {
+        "sv": "Infrastrukturteknik",
+        "en": "Infrastructure Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/201"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20105",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20105",
+      "prefLabelByLang": {
+        "sv": "Transportteknik och logistik",
+        "en": "Transport Systems and Logistics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/201"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20106",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20106",
+      "prefLabelByLang": {
+        "sv": "Geoteknik",
+        "en": "Geotechnical Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/201"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20107",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20107",
+      "prefLabelByLang": {
+        "sv": "Vattenteknik",
+        "en": "Water Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/201"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20108",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20108",
+      "prefLabelByLang": {
+        "sv": "Miljöanalys och bygginformationsteknik",
+        "en": "Environmental Analysis and  Construction Information Technology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/201"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20199",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20199",
+      "prefLabelByLang": {
+        "sv": "Annan samhällsbyggnadsteknik",
+        "en": "Other Civil Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/201"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/202",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "202",
+      "prefLabelByLang": {
+        "sv": "Elektroteknik och elektronik",
+        "en": "Electrical Engineering, Electronic Engineering, Information Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/2"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20201",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20201",
+      "prefLabelByLang": {
+        "sv": "Robotteknik och automation",
+        "en": "Robotics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/202"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20202",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20202",
+      "prefLabelByLang": {
+        "sv": "Reglerteknik",
+        "en": "Control Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/202"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20203",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20203",
+      "prefLabelByLang": {
+        "sv": "Kommunikationssystem",
+        "en": "Communication Systems"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/202"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20204",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20204",
+      "prefLabelByLang": {
+        "sv": "Telekommunikation",
+        "en": "Telecommunications"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/202"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20205",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20205",
+      "prefLabelByLang": {
+        "sv": "Signalbehandling",
+        "en": "Signal Processing"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/202"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20206",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20206",
+      "prefLabelByLang": {
+        "sv": "Datorsystem",
+        "en": "Computer Systems"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/202"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20207",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20207",
+      "prefLabelByLang": {
+        "sv": "Inbäddad systemteknik",
+        "en": "Embedded Systems"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/202"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20299",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20299",
+      "prefLabelByLang": {
+        "sv": "Annan elektroteknik och elektronik",
+        "en": "Other Electrical Engineering, Electronic Engineering, Information Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/202"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/203",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "203",
+      "prefLabelByLang": {
+        "sv": "Maskinteknik",
+        "en": "Mechanical Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/2"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20301",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20301",
+      "prefLabelByLang": {
+        "sv": "Teknisk mekanik",
+        "en": "Applied Mechanics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/203"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20302",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20302",
+      "prefLabelByLang": {
+        "sv": "Rymd- och flygteknik",
+        "en": "Aerospace Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/203"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20303",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20303",
+      "prefLabelByLang": {
+        "sv": "Farkostteknik",
+        "en": "Vehicle Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/203"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20304",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20304",
+      "prefLabelByLang": {
+        "sv": "Energiteknik",
+        "en": "Energy Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/203"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20305",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20305",
+      "prefLabelByLang": {
+        "sv": "Tillförlitlighets- och kvalitetsteknik",
+        "en": "Reliability and Maintenance"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/203"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20306",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20306",
+      "prefLabelByLang": {
+        "sv": "Strömningsmekanik och akustik",
+        "en": "Fluid Mechanics and Acoustics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/203"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20307",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20307",
+      "prefLabelByLang": {
+        "sv": "Produktionsteknik, arbetsvetenskap och ergonomi",
+        "en": "Production Engineering, Human Work Science and Ergonomics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/203"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20308",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20308",
+      "prefLabelByLang": {
+        "sv": "Tribologi",
+        "en": "Tribology"
+      },
+      "commentByLang": {
+        "sv": "ytteknik omfattande friktion, nötning och smörjning",
+        "en": "interacting surfaces including Friction, Lubrication and Wear"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/203"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20399",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20399",
+      "prefLabelByLang": {
+        "sv": "Annan maskinteknik",
+        "en": "Other Mechanical Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/203"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/204",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "204",
+      "prefLabelByLang": {
+        "sv": "Kemiteknik",
+        "en": "Chemical Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/2"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20401",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20401",
+      "prefLabelByLang": {
+        "sv": "Kemiska processer",
+        "en": "Chemical Process Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/204"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20402",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20402",
+      "prefLabelByLang": {
+        "sv": "Korrosionsteknik",
+        "en": "Corrosion Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/204"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20403",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20403",
+      "prefLabelByLang": {
+        "sv": "Polymerteknologi",
+        "en": "Polymer Technologies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/204"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20404",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20404",
+      "prefLabelByLang": {
+        "sv": "Farmaceutisk synteskemi",
+        "en": "Pharmaceutical Chemistry"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/204"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20499",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20499",
+      "prefLabelByLang": {
+        "sv": "Annan kemiteknik",
+        "en": "Other Chemical Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/204"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/205",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "205",
+      "prefLabelByLang": {
+        "sv": "Materialteknik",
+        "en": "Materials Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/2"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20501",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20501",
+      "prefLabelByLang": {
+        "sv": "Keramteknik",
+        "en": "Ceramics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/205"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20502",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20502",
+      "prefLabelByLang": {
+        "sv": "Kompositmaterial och -teknik",
+        "en": "Composite Science and Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/205"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20503",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20503",
+      "prefLabelByLang": {
+        "sv": "Pappers-, massa-  och fiberteknik",
+        "en": "Paper, Pulp and Fiber Technology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/205"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20504",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20504",
+      "prefLabelByLang": {
+        "sv": "Textil-, gummi- och polymermaterial",
+        "en": "Textile, Rubber and Polymeric Materials"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/205"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20505",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20505",
+      "prefLabelByLang": {
+        "sv": "Bearbetnings-, yt- och fogningsteknik",
+        "en": "Manufacturing, Surface and Joining Technology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/205"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20506",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20506",
+      "prefLabelByLang": {
+        "sv": "Metallurgi och metalliska material",
+        "en": "Metallurgy and Metallic Materials"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/205"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20599",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20599",
+      "prefLabelByLang": {
+        "sv": "Annan materialteknik",
+        "en": "Other Materials Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/205"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/206",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "206",
+      "prefLabelByLang": {
+        "sv": "Medicinteknik",
+        "en": "Medical Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/2"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20601",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20601",
+      "prefLabelByLang": {
+        "sv": "Medicinsk laboratorie- och mätteknik",
+        "en": "Medical Laboratory and Measurements Technologies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/206"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20602",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20602",
+      "prefLabelByLang": {
+        "sv": "Medicinsk material- och protesteknik",
+        "en": "Medical Materials"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/206"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20603",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20603",
+      "prefLabelByLang": {
+        "sv": "Medicinsk bildbehandling",
+        "en": "Medical Image Processing"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/206"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20604",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20604",
+      "prefLabelByLang": {
+        "sv": "Medicinsk apparatteknik",
+        "en": "Medical Equipment Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/206"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20605",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20605",
+      "prefLabelByLang": {
+        "sv": "Medicinsk ergonomi",
+        "en": "Medical Ergonomics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/206"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20699",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20699",
+      "prefLabelByLang": {
+        "sv": "Annan medicinteknik",
+        "en": "Other Medical Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/206"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/207",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "207",
+      "prefLabelByLang": {
+        "sv": "Naturresursteknik",
+        "en": "Environmental Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/2"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20701",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20701",
+      "prefLabelByLang": {
+        "sv": "Geofysisk teknik",
+        "en": "Geophysical Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/207"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20702",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20702",
+      "prefLabelByLang": {
+        "sv": "Energisystem",
+        "en": "Energy Systems"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/207"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20703",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20703",
+      "prefLabelByLang": {
+        "sv": "Fjärranalysteknik",
+        "en": "Remote Sensing"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/207"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20704",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20704",
+      "prefLabelByLang": {
+        "sv": "Mineral- och gruvteknik",
+        "en": "Mineral and Mine Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/207"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20705",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20705",
+      "prefLabelByLang": {
+        "sv": "Marin teknik",
+        "en": "Marine Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/207"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20706",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20706",
+      "prefLabelByLang": {
+        "sv": "Havs- och vattendragsteknik",
+        "en": "Ocean and River Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/207"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20707",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20707",
+      "prefLabelByLang": {
+        "sv": "Miljöledning",
+        "en": "Environmental Management"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/207"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20799",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20799",
+      "prefLabelByLang": {
+        "sv": "Annan naturresursteknik",
+        "en": "Other Environmental Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/207"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/208",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "208",
+      "prefLabelByLang": {
+        "sv": "Miljöbioteknik",
+        "en": "Environmental Biotechnology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/2"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20801",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20801",
+      "prefLabelByLang": {
+        "sv": "Biosanering",
+        "en": "Bioremediation"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/208"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20802",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20802",
+      "prefLabelByLang": {
+        "sv": "Diagnostisk bioteknologi",
+        "en": "Diagnostic Biotechnology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/208"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20803",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20803",
+      "prefLabelByLang": {
+        "sv": "Vattenbehandling",
+        "en": "Water Treatment"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/208"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20804",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20804",
+      "prefLabelByLang": {
+        "sv": "Bioteknisk etik",
+        "en": "Bioethics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/208"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20899",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20899",
+      "prefLabelByLang": {
+        "sv": "Annan miljöbioteknik",
+        "en": "Other Environmental Biotechnology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/208"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/209",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "209",
+      "prefLabelByLang": {
+        "sv": "Industriell bioteknik",
+        "en": "Industrial Biotechnology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/2"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20901",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20901",
+      "prefLabelByLang": {
+        "sv": "Bioprocessteknik",
+        "en": "Bioprocess Technology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/209"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20902",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20902",
+      "prefLabelByLang": {
+        "sv": "Biokemikalier",
+        "en": "Biochemicals"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/209"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20903",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20903",
+      "prefLabelByLang": {
+        "sv": "Biomaterial",
+        "en": "Bio Materials"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/209"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20904",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20904",
+      "prefLabelByLang": {
+        "sv": "Bioenergi",
+        "en": "Bioenergy"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/209"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20905",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20905",
+      "prefLabelByLang": {
+        "sv": "Läkemedelsbioteknik",
+        "en": "Pharmaceutical Biotechnology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/209"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20906",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20906",
+      "prefLabelByLang": {
+        "sv": "Biokatalys och enzymteknik",
+        "en": "Biocatalysis and Enzyme Technology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/209"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20907",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20907",
+      "prefLabelByLang": {
+        "sv": "Bioteknisk apparatteknik",
+        "en": "Bioengineering Equipment"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/209"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20908",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20908",
+      "prefLabelByLang": {
+        "sv": "Medicinsk bioteknik",
+        "en": "Medical Biotechnology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/209"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20999",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20999",
+      "prefLabelByLang": {
+        "sv": "Annan industriell bioteknik",
+        "en": "Other Industrial Biotechnology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/209"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/210",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "210",
+      "prefLabelByLang": {
+        "sv": "Nanoteknik",
+        "en": "Nano-technology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/2"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/21001",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "21001",
+      "prefLabelByLang": {
+        "sv": "Nanoteknik",
+        "en": "Nano-technology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/210"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/211",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "211",
+      "prefLabelByLang": {
+        "sv": "Annan teknik",
+        "en": "Other Engineering and Technologies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/2"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/21101",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "21101",
+      "prefLabelByLang": {
+        "sv": "Livsmedelsteknik",
+        "en": "Food Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/211"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/21102",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "21102",
+      "prefLabelByLang": {
+        "sv": "Mediateknik",
+        "en": "Media Engineering"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/211"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/21103",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "21103",
+      "prefLabelByLang": {
+        "sv": "Interaktionsteknik",
+        "en": "Interaction Technologies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/211"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/21199",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "21199",
+      "prefLabelByLang": {
+        "sv": "Övrig annan teknik",
+        "en": "Other Engineering and Technologies not elsewhere specified"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/211"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/3",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "3",
+      "prefLabelByLang": {
+        "sv": "Medicin och hälsovetenskap",
+        "en": "Medical and Health Sciences"
+      }
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/301",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "301",
+      "prefLabelByLang": {
+        "sv": "Medicinska och farmaceutiska grundvetenskaper",
+        "en": "Basic Medicine"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/3"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30101",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30101",
+      "prefLabelByLang": {
+        "sv": "Farmaceutiska vetenskaper",
+        "en": "Pharmaceutical Sciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30102",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30102",
+      "prefLabelByLang": {
+        "sv": "Farmakologi och toxikologi",
+        "en": "Pharmacology and Toxicology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30103",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30103",
+      "prefLabelByLang": {
+        "sv": "Läkemedelskemi",
+        "en": "Medicinal Chemistry"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30104",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30104",
+      "prefLabelByLang": {
+        "sv": "Samhällsfarmaci och klinisk farmaci",
+        "en": "Social and Clinical Pharmacy"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30105",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30105",
+      "prefLabelByLang": {
+        "sv": "Neurovetenskaper",
+        "en": "Neurosciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30106",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30106",
+      "prefLabelByLang": {
+        "sv": "Fysiologi",
+        "en": "Physiology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30107",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30107",
+      "prefLabelByLang": {
+        "sv": "Medicinsk genetik",
+        "en": "Medical Genetics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30108",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30108",
+      "prefLabelByLang": {
+        "sv": "Cell- och molekylärbiologi",
+        "en": "Cell and Molecular Biology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30109",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30109",
+      "prefLabelByLang": {
+        "sv": "Mikrobiologi inom det medicinska området",
+        "en": "Microbiology in the medical area"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30110",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30110",
+      "prefLabelByLang": {
+        "sv": "Immunologi inom det medicinska området",
+        "en": "Immunology in the medical area"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30199",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30199",
+      "prefLabelByLang": {
+        "sv": "Andra medicinska och farmaceutiska grundvetenskaper",
+        "en": "Other Basic Medicine"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/302",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "302",
+      "prefLabelByLang": {
+        "sv": "Klinisk medicin",
+        "en": "Clinical Medicine"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/3"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30201",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30201",
+      "prefLabelByLang": {
+        "sv": "Anestesi och intensivvård",
+        "en": "Anesthesiology and Intensive Care"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30202",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30202",
+      "prefLabelByLang": {
+        "sv": "Hematologi",
+        "en": "Hematology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30203",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30203",
+      "prefLabelByLang": {
+        "sv": "Cancer och onkologi",
+        "en": "Cancer and Oncology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30204",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30204",
+      "prefLabelByLang": {
+        "sv": "Dermatologi och venereologi",
+        "en": "Dermatology and Venereal Diseases"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30205",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30205",
+      "prefLabelByLang": {
+        "sv": "Endokrinologi och diabetes",
+        "en": "Endocrinology and Diabetes"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30206",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30206",
+      "prefLabelByLang": {
+        "sv": "Kardiologi",
+        "en": "Cardiac and Cardiovascular Systems"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30207",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30207",
+      "prefLabelByLang": {
+        "sv": "Neurologi",
+        "en": "Neurology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30208",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30208",
+      "prefLabelByLang": {
+        "sv": "Radiologi och bildbehandling",
+        "en": "Radiology, Nuclear Medicine and Medical Imaging"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30209",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30209",
+      "prefLabelByLang": {
+        "sv": "Infektionsmedicin",
+        "en": "Infectious Medicine"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30210",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30210",
+      "prefLabelByLang": {
+        "sv": "Reumatologi och inflammation",
+        "en": "Rheumatology and Autoimmunity"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30211",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30211",
+      "prefLabelByLang": {
+        "sv": "Ortopedi",
+        "en": "Orthopaedics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30212",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30212",
+      "prefLabelByLang": {
+        "sv": "Kirurgi",
+        "en": "Surgery"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30213",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30213",
+      "prefLabelByLang": {
+        "sv": "Gastroenterologi",
+        "en": "Gastroenterology and Hepatology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30214",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30214",
+      "prefLabelByLang": {
+        "sv": "Urologi och njurmedicin",
+        "en": "Urology and Nephrology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30215",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30215",
+      "prefLabelByLang": {
+        "sv": "Psykiatri",
+        "en": "Psychiatry"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30216",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30216",
+      "prefLabelByLang": {
+        "sv": "Odontologi",
+        "en": "Dentistry"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30217",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30217",
+      "prefLabelByLang": {
+        "sv": "Oftalmologi",
+        "en": "Ophthalmology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30218",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30218",
+      "prefLabelByLang": {
+        "sv": "Oto-rhino-laryngologi",
+        "en": "Otorhinolaryngology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30219",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30219",
+      "prefLabelByLang": {
+        "sv": "Lungmedicin och allergi",
+        "en": "Respiratory Medicine and Allergy"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30220",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30220",
+      "prefLabelByLang": {
+        "sv": "Reproduktionsmedicin och gynekologi",
+        "en": "Obstetrics, Gynaecology and Reproductive Medicine"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30221",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30221",
+      "prefLabelByLang": {
+        "sv": "Pediatrik",
+        "en": "Pediatrics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30222",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30222",
+      "prefLabelByLang": {
+        "sv": "Geriatrik",
+        "en": "Geriatrics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30223",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30223",
+      "prefLabelByLang": {
+        "sv": "Klinisk laboratoriemedicin",
+        "en": "Clinical Laboratory Medicine"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30224",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30224",
+      "prefLabelByLang": {
+        "sv": "Allmänmedicin",
+        "en": "General Practice"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30299",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30299",
+      "prefLabelByLang": {
+        "sv": "Annan klinisk medicin",
+        "en": "Other Clinical Medicine"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/303",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "303",
+      "prefLabelByLang": {
+        "sv": "Hälsovetenskap",
+        "en": "Health Sciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/3"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30301",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30301",
+      "prefLabelByLang": {
+        "sv": "Hälso- och sjukvårdsorganisation, hälsopolitik och hälsoekonomi",
+        "en": "Health Care Service and Management, Health Policy and Services and Health Economy"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/303"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30302",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30302",
+      "prefLabelByLang": {
+        "sv": "Folkhälsovetenskap, global hälsa, socialmedicin och epidemiologi",
+        "en": "Public Health, Global Health, Social Medicine and Epidemiology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/303"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30303",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30303",
+      "prefLabelByLang": {
+        "sv": "Arbetsmedicin och miljömedicin",
+        "en": "Occupational Health and Environmental Health"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/303"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30304",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30304",
+      "prefLabelByLang": {
+        "sv": "Näringslära",
+        "en": "Nutrition and Dietetics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/303"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30305",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30305",
+      "prefLabelByLang": {
+        "sv": "Omvårdnad",
+        "en": "Nursing"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/303"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30306",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30306",
+      "prefLabelByLang": {
+        "sv": "Arbetsterapi",
+        "en": "Occupational Therapy"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/303"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30307",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30307",
+      "prefLabelByLang": {
+        "sv": "Sjukgymnastik",
+        "en": "Physiotherapy"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/303"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30308",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30308",
+      "prefLabelByLang": {
+        "sv": "Idrottsvetenskap",
+        "en": "Sport and Fitness Sciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/303"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30309",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30309",
+      "prefLabelByLang": {
+        "sv": "Beroendelära",
+        "en": "Substance Abuse"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/303"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30310",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30310",
+      "prefLabelByLang": {
+        "sv": "Medicinsk etik",
+        "en": "Medical Ethics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/303"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30399",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30399",
+      "prefLabelByLang": {
+        "sv": "Annan hälsovetenskap",
+        "en": "Other Health Sciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/303"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/304",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "304",
+      "prefLabelByLang": {
+        "sv": "Medicinsk bioteknologi",
+        "en": "Medical Biotechnology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/3"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30401",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30401",
+      "prefLabelByLang": {
+        "sv": "Medicinsk bioteknologi",
+        "en": "Medical Biotechnology"
+      },
+      "commentByLang": {
+        "sv": "inriktn. mot cellbiologi (inkl. stamcellsbiologi), molekylärbiologi, mikrobiologi, biokemi eller biofarmaci",
+        "en": "focus on Cell Biology (incl. Stem Cell Biology), Molecular Biology, Microbiology, Biochemistry or Biopharmacy"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/304"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30402",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30402",
+      "prefLabelByLang": {
+        "sv": "Biomedicinsk laboratorievetenskap/teknologi",
+        "en": "Biomedical Laboratory Science/Technology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/304"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30403",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30403",
+      "prefLabelByLang": {
+        "sv": "Biomaterialvetenskap",
+        "en": "Biomaterials Science"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/304"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30499",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30499",
+      "prefLabelByLang": {
+        "sv": "Annan medicinsk bioteknologi",
+        "en": "Other Medical Biotechnology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/304"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/305",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "305",
+      "prefLabelByLang": {
+        "sv": "Annan medicin och hälsovetenskap",
+        "en": "Other Medical and Health Sciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/3"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30501",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30501",
+      "prefLabelByLang": {
+        "sv": "Rättsmedicin",
+        "en": "Forensic Science"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/305"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30502",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30502",
+      "prefLabelByLang": {
+        "sv": "Gerontologi, medicinsk/hälsovetenskaplig inriktning",
+        "en": "Gerontology, specialising in Medical and Health Sciences"
+      },
+      "commentByLang": {
+        "sv": "Samhällsvetenskaplig inriktn.under 50999",
+        "en": "specialising in Social Sciences to be 50999"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/305"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30599",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30599",
+      "prefLabelByLang": {
+        "sv": "Övrig annan medicin och hälsovetenskap",
+        "en": "Other Medical and Health Sciences not elsewhere specified"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/305"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/4",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "4",
+      "prefLabelByLang": {
+        "sv": "Lantbruksvetenskap och veterinärmedicin",
+        "en": "Agricultural and Veterinary sciences"
+      }
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/401",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "401",
+      "prefLabelByLang": {
+        "sv": "Lantbruksvetenskap, skogsbruk och fiske",
+        "en": "Agriculture, Forestry and Fisheries"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/4"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40101",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40101",
+      "prefLabelByLang": {
+        "sv": "Jordbruksvetenskap",
+        "en": "Agricultural Science"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/401"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40102",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40102",
+      "prefLabelByLang": {
+        "sv": "Trädgårdsvetenskap/hortikultur",
+        "en": "Horticulture"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/401"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40103",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40103",
+      "prefLabelByLang": {
+        "sv": "Livsmedelsvetenskap",
+        "en": "Food Science"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/401"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40104",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40104",
+      "prefLabelByLang": {
+        "sv": "Skogsvetenskap",
+        "en": "Forest Science"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/401"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40105",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40105",
+      "prefLabelByLang": {
+        "sv": "Trävetenskap",
+        "en": "Wood Science"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/401"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40106",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40106",
+      "prefLabelByLang": {
+        "sv": "Markvetenskap",
+        "en": "Soil Science"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/401"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40107",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40107",
+      "prefLabelByLang": {
+        "sv": "Fisk- och akvakulturforskning",
+        "en": "Fish and Aquacultural Science"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/401"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40108",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40108",
+      "prefLabelByLang": {
+        "sv": "Landskapsarkitektur",
+        "en": "Landscape Architecture"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/401"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/402",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "402",
+      "prefLabelByLang": {
+        "sv": "Husdjursvetenskap",
+        "en": "Animal and Dairy Sience"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/4"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40201",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40201",
+      "prefLabelByLang": {
+        "sv": "Husdjursvetenskap",
+        "en": "Animal and Dairy Science."
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/402"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/403",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "403",
+      "prefLabelByLang": {
+        "sv": "Veterinärmedicin",
+        "en": "Veterinary Science"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/4"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40301",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40301",
+      "prefLabelByLang": {
+        "sv": "Medicinsk biovetenskap",
+        "en": "Medical Bioscience"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/403"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40302",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40302",
+      "prefLabelByLang": {
+        "sv": "Patobiologi",
+        "en": "Pathobiology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/403"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40303",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40303",
+      "prefLabelByLang": {
+        "sv": "Klinisk vetenskap",
+        "en": "Clinical Science"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/403"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40304",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40304",
+      "prefLabelByLang": {
+        "sv": "Annan veterinärmedicin",
+        "en": "Other Veterinary Science"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/403"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/404",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "404",
+      "prefLabelByLang": {
+        "sv": "Bioteknologi med applikationer på växter och djur",
+        "en": "Agricultural Biotechnology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/4"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40401",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40401",
+      "prefLabelByLang": {
+        "sv": "Växtbioteknologi",
+        "en": "Plant Biotechnology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/404"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40402",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40402",
+      "prefLabelByLang": {
+        "sv": "Genetik och förädling inom lantbruksvetenskap",
+        "en": "Genetics and Breeding in Agricultural Sciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/404"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/405",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "405",
+      "prefLabelByLang": {
+        "sv": "Annan lantbruksvetenskap",
+        "en": "Other Agricultural Sciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/4"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40501",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40501",
+      "prefLabelByLang": {
+        "sv": "Förnyelsebar bioenergi",
+        "en": "Renewable Bioenergy Research"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/405"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40502",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40502",
+      "prefLabelByLang": {
+        "sv": "Vilt- och fiskeförvaltning",
+        "en": "Fish and Wildlife Management"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/405"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40503",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40503",
+      "prefLabelByLang": {
+        "sv": "Lantbrukets arbetsmiljö och säkerhet",
+        "en": "Agricultural Occupational Health and Safety"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/405"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40504",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40504",
+      "prefLabelByLang": {
+        "sv": "Miljö- och  naturvårdsvetenskap",
+        "en": "Environmental Sciences related to Agriculture and Land-use"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/405"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40599",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40599",
+      "prefLabelByLang": {
+        "sv": "Övrig annan lantbruksvetenskap",
+        "en": "Other Agricultural Sciences not elsewhere specified"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/405"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/5",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "5",
+      "prefLabelByLang": {
+        "sv": "Samhällsvetenskap",
+        "en": "Social Sciences"
+      }
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/501",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "501",
+      "prefLabelByLang": {
+        "sv": "Psykologi",
+        "en": "Psychology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/5"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50101",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50101",
+      "prefLabelByLang": {
+        "sv": "Psykologi",
+        "en": "Psychology"
+      },
+      "commentByLang": {
+        "sv": "exklusive tillämpad psykologi",
+        "en": "excluding Applied Psychology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/501"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50102",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50102",
+      "prefLabelByLang": {
+        "sv": "Tillämpad psykologi",
+        "en": "Applied Psychology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/501"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/502",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "502",
+      "prefLabelByLang": {
+        "sv": "Ekonomi och näringsliv",
+        "en": "Economics and Business"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/5"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50201",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50201",
+      "prefLabelByLang": {
+        "sv": "Nationalekonomi",
+        "en": "Economics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/502"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50202",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50202",
+      "prefLabelByLang": {
+        "sv": "Företagsekonomi",
+        "en": "Business Administration"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/502"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50203",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50203",
+      "prefLabelByLang": {
+        "sv": "Ekonomisk historia",
+        "en": "Economic History"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/502"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/503",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "503",
+      "prefLabelByLang": {
+        "sv": "Utbildningsvetenskap",
+        "en": "Educational Sciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/5"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50301",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50301",
+      "prefLabelByLang": {
+        "sv": "Pedagogik",
+        "en": "Pedagogy"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/503"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50302",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50302",
+      "prefLabelByLang": {
+        "sv": "Didaktik",
+        "en": "Didactics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/503"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50303",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50303",
+      "prefLabelByLang": {
+        "sv": "Lärande",
+        "en": "Learning"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/503"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50304",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50304",
+      "prefLabelByLang": {
+        "sv": "Pedagogiskt arbete",
+        "en": "Pedagogical Work"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/503"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/504",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "504",
+      "prefLabelByLang": {
+        "sv": "Sociologi",
+        "en": "Sociology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/5"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50401",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50401",
+      "prefLabelByLang": {
+        "sv": "Sociologi",
+        "en": "Sociology"
+      },
+      "commentByLang": {
+        "sv": "exklusive socialt arbete, socialpsykologi och socialantropologi",
+        "en": "excluding Social Work, Social Psychology and Social Anthropology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/504"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50402",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50402",
+      "prefLabelByLang": {
+        "sv": "Socialt arbete",
+        "en": "Social Work"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/504"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50403",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50403",
+      "prefLabelByLang": {
+        "sv": "Socialpsykologi",
+        "en": "Social Psychology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/504"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50404",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50404",
+      "prefLabelByLang": {
+        "sv": "Socialantropologi",
+        "en": "Social Anthropology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/504"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/505",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "505",
+      "prefLabelByLang": {
+        "sv": "Juridik",
+        "en": "Law"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/5"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50501",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50501",
+      "prefLabelByLang": {
+        "sv": "Juridik",
+        "en": "Law"
+      },
+      "commentByLang": {
+        "sv": "exklusive juridik och samhälle",
+        "en": "excluding Law and Society"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/505"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50502",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50502",
+      "prefLabelByLang": {
+        "sv": "Juridik och samhälle",
+        "en": "Law and Society"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/505"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/506",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "506",
+      "prefLabelByLang": {
+        "sv": "Statsvetenskap",
+        "en": "Political Science"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/5"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50601",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50601",
+      "prefLabelByLang": {
+        "sv": "Statsvetenskap",
+        "en": "Political Science"
+      },
+      "commentByLang": {
+        "sv": "exklusive studier av offentlig förvaltning och globaliseringsstudier",
+        "en": "excluding Public Administration Studies and Globalisation Studies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/506"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50602",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50602",
+      "prefLabelByLang": {
+        "sv": "Studier av offentlig förvaltning",
+        "en": "Public Administration Studies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/506"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50603",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50603",
+      "prefLabelByLang": {
+        "sv": "Globaliseringsstudier",
+        "en": "Globalisation Studies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/506"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/507",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "507",
+      "prefLabelByLang": {
+        "sv": "Social och ekonomisk geografi",
+        "en": "Social and Economic Geography"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/5"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50701",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50701",
+      "prefLabelByLang": {
+        "sv": "Kulturgeografi",
+        "en": "Human Geography"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/507"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50702",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50702",
+      "prefLabelByLang": {
+        "sv": "Ekonomisk geografi",
+        "en": "Economic Geography"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/507"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/508",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "508",
+      "prefLabelByLang": {
+        "sv": "Medie- och kommunikationsvetenskap",
+        "en": "Media and Communications"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/5"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50801",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50801",
+      "prefLabelByLang": {
+        "sv": "Medievetenskap",
+        "en": "Media Studies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/508"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50802",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50802",
+      "prefLabelByLang": {
+        "sv": "Kommunikationsvetenskap",
+        "en": "Communication Studies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/508"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50803",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50803",
+      "prefLabelByLang": {
+        "sv": "Mänsklig interaktion med IKT",
+        "en": "Human Aspects of ICT"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/508"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50804",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50804",
+      "prefLabelByLang": {
+        "sv": "Systemvetenskap, informationssystem och informatik med samhällsvetenskaplig inriktning",
+        "en": "Information Systems, Social aspects"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/508"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50805",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50805",
+      "prefLabelByLang": {
+        "sv": "Biblioteks- och informationsvetenskap",
+        "en": "Information Studies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/508"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/509",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "509",
+      "prefLabelByLang": {
+        "sv": "Annan samhällsvetenskap",
+        "en": "Other Social Sciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/5"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50901",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50901",
+      "prefLabelByLang": {
+        "sv": "Tvärvetenskapliga studier inom samhällsvetenskap",
+        "en": "Social Sciences Interdisciplinary"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/509"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50902",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50902",
+      "prefLabelByLang": {
+        "sv": "Genusstudier",
+        "en": "Gender Studies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/509"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50903",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50903",
+      "prefLabelByLang": {
+        "sv": "Arbetslivsstudier",
+        "en": "Work Sciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/509"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50904",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50904",
+      "prefLabelByLang": {
+        "sv": "Internationell migration och etniska relationer",
+        "en": "International Migration and Ethnic Relations"
+      },
+      "altLabelByLang": {"sv": "IMER"},
+      "broader": {"@id": "https://id.kb.se/term/ssif/509"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50999",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50999",
+      "prefLabelByLang": {
+        "sv": "Övrig annan samhällsvetenskap",
+        "en": "Other Social Sciences not elsewhere specified"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/509"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/6",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "6",
+      "prefLabelByLang": {
+        "sv": "Humaniora och konst",
+        "en": "Humanities and the Arts"
+      }
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/601",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "601",
+      "prefLabelByLang": {
+        "sv": "Historia och arkeologi",
+        "en": "History and Archaeology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/6"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60101",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60101",
+      "prefLabelByLang": {
+        "sv": "Historia",
+        "en": "History"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/601"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60102",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60102",
+      "prefLabelByLang": {
+        "sv": "Teknikhistoria",
+        "en": "History of Technology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/601"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60103",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60103",
+      "prefLabelByLang": {
+        "sv": "Arkeologi",
+        "en": "Archaeology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/601"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/602",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "602",
+      "prefLabelByLang": {
+        "sv": "Språk och litteratur",
+        "en": "Languages and Literature"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/6"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60201",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60201",
+      "prefLabelByLang": {
+        "sv": "Jämförande språkvetenskap och allmän lingvistik",
+        "en": "General Language Studies and Linguistics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/602"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60202",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60202",
+      "prefLabelByLang": {
+        "sv": "Studier av enskilda språk",
+        "en": "Specific Languages"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/602"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60203",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60203",
+      "prefLabelByLang": {
+        "sv": "Litteraturvetenskap",
+        "en": "General Literary Studies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/602"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60204",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60204",
+      "prefLabelByLang": {
+        "sv": "Litteraturstudier",
+        "en": "Specific Literatures"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/602"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/603",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "603",
+      "prefLabelByLang": {
+        "sv": "Filosofi, etik och religion",
+        "en": "Philosophy, Ethics and Religion"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/6"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60301",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60301",
+      "prefLabelByLang": {
+        "sv": "Filosofi",
+        "en": "Philosophy"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/603"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60302",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60302",
+      "prefLabelByLang": {
+        "sv": "Etik",
+        "en": "Ethics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/603"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60303",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60303",
+      "prefLabelByLang": {
+        "sv": "Religionsvetenskap",
+        "en": "Religious Studies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/603"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60304",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60304",
+      "prefLabelByLang": {
+        "sv": "Religionshistoria",
+        "en": "History of Religions"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/603"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60305",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60305",
+      "prefLabelByLang": {
+        "sv": "Idé- och lärdomshistoria",
+        "en": "History of Ideas"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/603"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/604",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "604",
+      "prefLabelByLang": {
+        "sv": "Konst",
+        "en": "Arts"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/6"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60401",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60401",
+      "prefLabelByLang": {
+        "sv": "Bildkonst",
+        "en": "Visual Arts"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/604"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60402",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60402",
+      "prefLabelByLang": {
+        "sv": "Musik",
+        "en": "Music"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/604"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60403",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60403",
+      "prefLabelByLang": {
+        "sv": "Litterär gestaltning",
+        "en": "Literary Composition"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/604"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60404",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60404",
+      "prefLabelByLang": {
+        "sv": "Scenkonst",
+        "en": "Performing Arts"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/604"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60405",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60405",
+      "prefLabelByLang": {
+        "sv": "Arkitektur",
+        "en": "Architecture"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/604"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60406",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60406",
+      "prefLabelByLang": {
+        "sv": "Design",
+        "en": "Design"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/604"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60407",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60407",
+      "prefLabelByLang": {
+        "sv": "Konstvetenskap",
+        "en": "Art History"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/604"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60408",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60408",
+      "prefLabelByLang": {
+        "sv": "Musikvetenskap",
+        "en": "Musicology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/604"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60409",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60409",
+      "prefLabelByLang": {
+        "sv": "Teatervetenskap",
+        "en": "Performing Art Studies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/604"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60410",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60410",
+      "prefLabelByLang": {
+        "sv": "Filmvetenskap",
+        "en": "Studies on Film"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/604"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/605",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "605",
+      "prefLabelByLang": {
+        "sv": "Annan humaniora",
+        "en": "Other Humanities"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/6"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60501",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60501",
+      "prefLabelByLang": {
+        "sv": "Antikvetenskap",
+        "en": "Classical Archaeology and Ancient History"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/605"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60502",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60502",
+      "prefLabelByLang": {
+        "sv": "Kulturstudier",
+        "en": "Cultural Studies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/605"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60503",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60503",
+      "prefLabelByLang": {
+        "sv": "Etnologi",
+        "en": "Ethnology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/605"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60599",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60599",
+      "prefLabelByLang": {
+        "sv": "Övrig annan humaniora",
+        "en": "Other Humanities not elsewhere specified"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/605"}
+    }
+  ]
+}

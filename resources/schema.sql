@@ -20,6 +20,15 @@ CREATE TABLE harvest_history (
 CREATE INDEX idx_harvest_history_source ON harvest_history (source);
 
 
+CREATE TABLE legacy_sync_history (
+    id INTEGER PRIMARY KEY,
+    sync_start INTEGER DEFAULT (strftime('%s', 'now')), -- seconds since epoch
+    sync_completed INT,
+    sync_succeeded INT,
+    synced_records INT
+);
+
+
 -- Because Swepub APIs expose publications as originally harvested, these must be kept.
 CREATE TABLE original (
     id INTEGER PRIMARY KEY,
