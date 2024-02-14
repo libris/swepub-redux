@@ -2473,7 +2473,7 @@ def test_uka_subjects_without_href_are_ignored(parser):
         </subject>
       """)
     expected = []
-    actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
+    actual = parser.parse_mods(raw_xml)['instanceOf'].get('classification', [])
     assert actual == expected
 
 
