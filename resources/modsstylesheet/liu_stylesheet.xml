@@ -1103,6 +1103,31 @@
                 <!-- 17. Publication date, publisher and edition -->
                 <xsl:for-each select="mods:originInfo">
                     <xsl:element name="originInfo">
+                        <!-- 17.2. Publisher -->
+                        <xsl:if test="mods:publisher">
+                            <xsl:attribute name="eventType">
+                                <xsl:text>publication</xsl:text>
+                            </xsl:attribute>
+                            <xsl:for-each select="mods:publisher">
+                                <xsl:element name="agent">
+                                    <xsl:element name="namePart">
+                                        <xsl:value-of select="."/>
+                                    </xsl:element>
+                                    <xsl:element name="role">
+                                        <xsl:element name="roleTerm">
+                                            <xsl:attribute name="authority">
+                                                <xsl:text>marcrelator</xsl:text>
+                                            </xsl:attribute>
+                                            <xsl:attribute name="valueURI">
+                                                <xsl:text>http://id.loc.gov/vocabulary/relators/pbl</xsl:text>
+                                            </xsl:attribute>
+                                            <xsl:text>pbl</xsl:text>
+                                        </xsl:element>
+                                    </xsl:element>
+                                </xsl:element>
+                            </xsl:for-each>
+                        </xsl:if>
+
                         <!-- 17.1. Publication date -->
                         <xsl:for-each select="mods:dateIssued">
                             <xsl:element name="dateIssued">
@@ -1134,30 +1159,6 @@
                         <xsl:copy-of select="mods:place"/>
                         <!-- 17.4. Edition -->
                         <xsl:copy-of select="mods:edition"/>
-                    </xsl:element>
-                </xsl:for-each>
-                <!-- 17.2. Publisher -->
-                <xsl:for-each select="mods:originInfo/mods:publisher">
-                    <xsl:element name="originInfo">
-                        <xsl:attribute name="eventType">
-                            <xsl:text>publication</xsl:text>
-                        </xsl:attribute>
-                        <xsl:element name="agent">
-                            <xsl:element name="namePart">
-                                <xsl:value-of select="."/>
-                            </xsl:element>
-                            <xsl:element name="role">
-                                <xsl:element name="roleTerm">
-                                    <xsl:attribute name="authority">
-                                        <xsl:text>marcrelator</xsl:text>
-                                    </xsl:attribute>
-                                    <xsl:attribute name="valueURI">
-                                        <xsl:text>http://id.loc.gov/vocabulary/relators/pbl</xsl:text>
-                                    </xsl:attribute>
-                                    <xsl:text>pbl</xsl:text>
-                                </xsl:element>
-                            </xsl:element>
-                        </xsl:element>
                     </xsl:element>
                 </xsl:for-each>
                 <!-- 18. Source -->
