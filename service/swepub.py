@@ -172,7 +172,7 @@ def bibliometrics_api():
         title = query_data.get("title", "").replace(",", " ")
         keywords = query_data.get("keywords", "").replace(",", " ")
 
-        subjects = query_data.get("subject", [])
+        subjects = query_data.get("classification", [])
         if isinstance(subjects, str):
             subjects = subjects.split(",")
         subjects = [s.strip() for s in subjects if len(s.strip()) > 0]
