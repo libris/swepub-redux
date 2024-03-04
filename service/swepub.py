@@ -274,7 +274,11 @@ def bibliometrics_api():
                     search_fulltext[field_name].wrap_constant(Parameter("?")),
                 )
             )
-            values.append(value)
+            # Search string needs to be escaped for SQLite's FTS5
+            escaped_string = ""
+            for word in value.split():
+                escaped_string = f"{escaped_string} \"{word}\""
+            values.append(escaped_string)
     if any([title, keywords]):
         q = q.join(search_fulltext).on(search_single.finalized_id == search_fulltext.finalized_id)
 
