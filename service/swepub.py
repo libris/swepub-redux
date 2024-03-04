@@ -265,21 +265,23 @@ def bibliometrics_api():
     if any([orcid, given_name, family_name, person_local_id, person_local_id_by]):
         q = q.join(search_creator).on(search_single.finalized_id == search_creator.finalized_id)
 
+    fulltext_search_strings = []
     for field_name, value in {"title": title, "keywords": keywords}.items():
         if value:
-            q = q.where(
-                BasicCriterion(
-                    Comparator.match,
-                    search_fulltext[field_name],
-                    search_fulltext[field_name].wrap_constant(Parameter("?")),
-                )
-            )
             # Search string needs to be escaped for SQLite's FTS5
             escaped_string = ""
             for word in value.split():
                 escaped_string = f"{escaped_string} \"{word}\""
-            values.append(escaped_string)
-    if any([title, keywords]):
+            fulltext_search_strings.append(f"{field_name}: {escaped_string}")
+    if fulltext_search_strings:
+        q = q.where(
+            BasicCriterion(
+                Comparator.match,
+                search_fulltext["search_fulltext"],
+                search_fulltext["search_fulltext"].wrap_constant(Parameter("?")),
+            )
+        )
+        values.append(" AND ".join(fulltext_search_strings))
         q = q.join(search_fulltext).on(search_single.finalized_id == search_fulltext.finalized_id)
 
     has_joined_search_org = False # ugh
