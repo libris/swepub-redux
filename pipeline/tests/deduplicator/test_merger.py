@@ -6,6 +6,8 @@ from pipeline.publication import Publication
 from pipeline.publication import Contribution
 from pipeline.publication import IsPartOf
 
+from pipeline.util import SWEPUB_CLASSIFIER_ID
+
 from flexmock import flexmock
 
 merger = PublicationMerger()
@@ -200,6 +202,123 @@ def test_merge_subjects(master, candidate1_same_title_and_same_doi,
     assert {'@type': 'Topic', 'code': '28177', 'prefLabel': 'prefLabel1_eng', 'language': {'code': 'eng'}} \
         in merged_master.subjects
 
+
+def test_merge_classifications():
+    master = Publication({
+        "instanceOf": {
+            "classification": [
+                {
+                    "@id": "https://id.kb.se/term/ssif/10606",
+                    "@type": "Classification",
+                    "prefLabelByLang": {"en": "Microbiology", "sv": "Mikrobiologi"}
+                },
+                {
+                    "@id": "https://id.kb.se/term/ssif/10203",
+                    "@type": "Classification",
+                    "prefLabelByLang": {"en": "Bioinformatics", "sv": "Bioinformatik"}
+                }
+            ]
+        }
+    })
+
+    candidate = Publication({
+        "instanceOf": {
+            "classification": [
+                {
+                    "@id": "https://id.kb.se/term/ssif/10606",
+                    "@type": "Classification",
+                    "prefLabelByLang": {"en": "Microbiology", "sv": "Mikrobiologi"}
+                },
+                {
+                    "@id": "https://id.kb.se/term/ssif/30102",
+                    "@type": "Classification",
+                    "prefLabelByLang": {"en": "Pharmacology and Toxicology", "sv": "Farmakologi och toxikologi"}
+                }
+            ]
+        }
+    })
+
+    merged_master = merger._merge_classifications(master, candidate)
+
+    assert len(merged_master.classifications) == 3
+
+    assert merged_master.classifications == [
+        {
+            "@id": "https://id.kb.se/term/ssif/10606",
+            "@type": "Classification",
+            "prefLabelByLang": {"en": "Microbiology", "sv": "Mikrobiologi"}
+        },
+        {
+            "@id": "https://id.kb.se/term/ssif/10203",
+            "@type": "Classification",
+            "prefLabelByLang": {"en": "Bioinformatics", "sv": "Bioinformatik"}
+        },
+        {
+            "@id": "https://id.kb.se/term/ssif/30102",
+            "@type": "Classification",
+            "prefLabelByLang": {"en": "Pharmacology and Toxicology", "sv": "Farmakologi och toxikologi"}
+        }
+    ]
+
+def test_merge_classifications_with_autoclassified_subject():
+    master = Publication({
+        "instanceOf": {
+            "classification": [
+                {
+                    "@id": "https://id.kb.se/term/ssif/10606",
+                    "@type": "Classification",
+                    "prefLabelByLang": {"en": "Microbiology", "sv": "Mikrobiologi"}
+                },
+                {
+                    "@id": "https://id.kb.se/term/ssif/10203",
+                    "@type": "Classification",
+                    "prefLabelByLang": {"en": "Bioinformatics", "sv": "Bioinformatik"}
+                }
+            ]
+        }
+    })
+
+    # Since the master publication is classified, *not* autoclassified, and the candidate has
+    # an autoclassified term, the autoclassified term should be dropped when merging.
+    candidate = Publication({
+        "instanceOf": {
+            "classification": [
+                {
+                    "@id": "https://id.kb.se/term/ssif/30105",
+                    "@type": "Classification",
+                    "prefLabelByLang": {"en": "Neurosciences", "sv": "Neurovetenskaper"},
+                    "@annotation": {"assigner": {"@id": SWEPUB_CLASSIFIER_ID}}
+                },
+                {
+                    "@id": "https://id.kb.se/term/ssif/30102",
+                    "@type": "Classification",
+                    "prefLabelByLang": {"en": "Pharmacology and Toxicology", "sv": "Farmakologi och toxikologi"}
+                }
+            ]
+        }
+    })
+
+    merged_master = merger._merge_classifications(master, candidate)
+
+    assert len(merged_master.classifications) == 3
+
+    assert merged_master.classifications == [
+        {
+            "@id": "https://id.kb.se/term/ssif/10606",
+            "@type": "Classification",
+            "prefLabelByLang": {"en": "Microbiology", "sv": "Mikrobiologi"}
+        },
+        {
+            "@id": "https://id.kb.se/term/ssif/10203",
+            "@type": "Classification",
+            "prefLabelByLang": {"en": "Bioinformatics", "sv": "Bioinformatik"}
+        },
+        {
+            "@id": "https://id.kb.se/term/ssif/30102",
+            "@type": "Classification",
+            "prefLabelByLang": {"en": "Pharmacology and Toxicology", "sv": "Farmakologi och toxikologi"}
+        }
+    ]
 
 def test_merge_has_series(master, candidate1_same_title_and_same_doi):
     merged_master = merger._merge_has_series(master, candidate1_same_title_and_same_doi)

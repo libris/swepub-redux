@@ -6,6 +6,7 @@ import Levenshtein
 
 from pipeline.swepublog import logger as log
 from pipeline.publication import Contribution, Publication
+from pipeline.util import is_autoclassified
 
 
 GENRE_FORMS_TO_MERGE = ["https://id.kb.se/term/swepub/ArtisticWork"]
@@ -137,6 +138,7 @@ class PublicationMerger:
         master = self._merge_has_notes(master, candidate)
         master = self._merge_genre_forms(master, candidate)
         master = self._merge_subjects(master, candidate)
+        master = self._merge_classifications(master, candidate)
         master = self._merge_has_series(master, candidate)
         master = self._merge_identifiedby_ids(master, candidate)
         master = self._merge_indirectly_identifiedby_ids(master, candidate)
@@ -222,19 +224,6 @@ class PublicationMerger:
         master_subjects = master.subjects
         candidate_subjects = candidate.subjects
 
-        master_is_classified = master.is_classified
-        master_is_autoclassified = master.is_autoclassified
-        candidate_is_classified = candidate.is_classified
-        candidate_is_autoclassified = candidate.is_autoclassified
-
-        # Get rid of autoclassifications if one of the publications is 1) not autoclassified,
-        # *and* 2) has level 3 subjects
-        if master_is_classified and candidate_is_autoclassified and not master_is_autoclassified:
-            candidate_subjects = self._remove_autoclassified(candidate_subjects)
-
-        if candidate_is_classified and master_is_autoclassified and not candidate_is_autoclassified:
-            master_subjects = self._remove_autoclassified(master_subjects)
-
         for cs in candidate_subjects:
             if not self._subject_preflabel_exist_in_master(
                 master_subjects, cs
@@ -243,16 +232,33 @@ class PublicationMerger:
         master.subjects = master_subjects
         return master
 
-    @staticmethod
-    def _has_autoclassification_note(subject):
-        for note in subject.get("hasNote", []):
-            if note.get("label", "") == "Autoclassified by Swepub":
-                return True
-        return False
+    def _merge_classifications(self, master, candidate):
+        """Merge classifications if @id is new"""
+        master_classifications = master.classifications
+        candidate_classifications = candidate.classifications
+
+        master_is_classified = master.is_classified
+        master_is_autoclassified = master.is_autoclassified
+        candidate_is_classified = candidate.is_classified
+        candidate_is_autoclassified = candidate.is_autoclassified
+
+        # Get rid of autoclassifications if one of the publications is 1) not autoclassified,
+        # *and* 2) has level 3 classifications
+        if master_is_classified and candidate_is_autoclassified and not master_is_autoclassified:
+            candidate_classifications = self._remove_autoclassified(candidate_classifications)
+
+        if candidate_is_classified and master_is_autoclassified and not candidate_is_autoclassified:
+            master_classifications = self._remove_autoclassified(master_classifications)
+
+        for cc in candidate_classifications:
+            if not self._classification_id_exist_in_master(master_classifications, cc):
+                master_classifications.append(cc)
+        master.classifications = master_classifications
+        return master
 
     @staticmethod
     def _remove_autoclassified(subjects):
-        return list(filter(lambda d: not PublicationMerger._has_autoclassification_note(d), subjects))
+        return list(filter(lambda d: not is_autoclassified(d), subjects))
 
     def _merge_identifiedby_ids(self, master, candidate):
         """Merge identifiedbyIds if its ISSN/ISBN or URI and do not exist in master"""
@@ -434,6 +440,10 @@ class PublicationMerger:
             and ms.get("language", None) == cs.get("language")
             for ms in master_subjects
         )
+
+    @staticmethod
+    def _classification_id_exist_in_master(master_classifications, cs):
+        return any(ms.get("@id", None) == cs.get("@id") for ms in master_classifications)
 
     @staticmethod
     def _possibly_append_id(master_ids, allowed_id):
