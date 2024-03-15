@@ -623,21 +623,21 @@ class BibframeSource:
         if (
             self.include_all
             or "oneDigitTopics" in self._chosen_fields
-            or "subjects" in self._chosen_fields
+            or "classifications" in self._chosen_fields
         ):  # noqa: W503
             should_include_one_digit_topics = True
 
         if (
             self.include_all
             or "threeDigitTopics" in self._chosen_fields
-            or "subjects" in self._chosen_fields
+            or "classifications" in self._chosen_fields
         ):  # noqa: W503
             should_include_three_digit_topics = True
 
         if (
             self.include_all
             or "fiveDigitTopics" in self._chosen_fields
-            or "subjects" in self._chosen_fields
+            or "classifications" in self._chosen_fields
         ):  # noqa: W503
             should_include_five_digit_topics = True
 
