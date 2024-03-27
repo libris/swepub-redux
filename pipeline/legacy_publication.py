@@ -188,13 +188,13 @@ class Publication:
                 if org != self.meta_assigner_label
             ]
             if other_orgs:
-                # meta.descriptionUpgrader only support one meta_assigner_label in 040d so take first one
-                candidate_meta_assigner_label = other_orgs[0]
-                meta["descriptionUpgrader"] = {
-                    "@id": "https://libris.kb.se/library/" + str(candidate_meta_assigner_label),
-                    "@type": "Library",
-                    "sigel": "(SwePub)" + str(candidate_meta_assigner_label),
-                }
+                meta["descriptionUpgrader"] = []
+                for other_org in other_orgs:
+                    meta["descriptionUpgrader"].append({
+                        "@id": "https://libris.kb.se/library/" + str(other_org),
+                        "@type": "Library",
+                        "sigel": "(SwePub)" + str(other_org),
+                })
 
     def add_meta_bibliography_sigel_042(self):
         """Adds meta.bibliography hardcoded Bibliography/Swepub, represents marc field 042"""
