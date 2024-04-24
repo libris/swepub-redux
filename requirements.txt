@@ -9,8 +9,8 @@ Flask-Cors==4.0.0
 PyPika==0.48.9
 lxml==4.9.3
 psutil==5.9.5
-gunicorn==21.2.0
-orjson==3.9.7
+gunicorn==22.0.0
+orjson==3.9.15
 # mysql-connector-python 8.1.0 (and 8.3.0) causes a *massive* performance degradation
 # when running pipeline.legacy_sync. Don't change to a newer version without testing
 # performance carefully.
