@@ -46,7 +46,14 @@
       {
         "url": "https://lup.lub.lu.se/oai",
         "subset": "LU_SWEPUB",
-        "metadata_prefix": "swepub_mods"
+        "metadata_prefix": "swepub_mods",
+        "envs": ["PROD"]
+      },
+      {
+        "url": "https://lucris.lub.lu.se/ws/oai",
+        "subset": "publications:all",
+        "metadata_prefix": "mods_swepub",
+        "envs": ["DEV", "QA"]
       }
     ]
   },
