@@ -148,10 +148,13 @@ class Record(OAIItem):
         # We want to get record/metadata/<container>/*
         # <container> would be the element ``dc``
         # in the ``oai_dc`` case.
-        return xml_to_dict(
-            self.xml.find(
-                './/' + self._oai_namespace + 'metadata'
-            ).getchildren()[0], strip_ns=self._strip_ns)
+        try:
+            return xml_to_dict(
+                self.xml.find(
+                    './/' + self._oai_namespace + 'metadata'
+                ).getchildren()[0], strip_ns=self._strip_ns)
+        except Exception as e:
+            raise Exception(f"Failed getting metadata from {self.header.identifier}: {e}") from e
 
 
 class Set(OAIItem):

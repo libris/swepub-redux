@@ -174,24 +174,28 @@ def harvest(source):
             ) as executor:
                 # fromtime = "2020-05-05T00:00:00Z"  # Only while debugging, use to force FROM date to get some incremental test data.
                 batch = []
-                for record in record_iterator:
-                    if record.is_successful():
-                        batch.append(record)
-                        if len(batch) >= 128:
-                            # Partial to add additional arguments to threaded_handle_harvested.
-                            # Note: `batch` will appear as the _last_ argument.
-                            func = partial(
-                                threaded_handle_harvested,
-                                source["code"],
-                                source_set["subset"],
-                                harvest_id,
-                                cached_paths,
-                            )
-                            executor.submit(func, batch)
-                            batch = []
-                        record_count += 1
-                    else:
-                        num_failed += 1
+                try:
+                    for record in record_iterator:
+                        if record.is_successful():
+                            batch.append(record)
+                            if len(batch) >= 128:
+                                # Partial to add additional arguments to threaded_handle_harvested.
+                                # Note: `batch` will appear as the _last_ argument.
+                                func = partial(
+                                    threaded_handle_harvested,
+                                    source["code"],
+                                    source_set["subset"],
+                                    harvest_id,
+                                    cached_paths,
+                                )
+                                executor.submit(func, batch)
+                                batch = []
+                            record_count += 1
+                        else:
+                            num_failed += 1
+                except Exception as e:
+                    log.warning(f"Record from {source['code']} failed: {e}")
+                    num_failed += 1
                 func = partial(
                     threaded_handle_harvested, source["code"], source_set["subset"], harvest_id, cached_paths
                 )
