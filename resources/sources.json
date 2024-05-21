@@ -16,7 +16,7 @@
     "sets": [
       {
         "url": "https://gup-staging.ub.gu.se/oai",
-        "subset": "",
+        "subset": "gu",
         "metadata_prefix": "mods",
         "envs": ["DEV", "QA"]
       },
