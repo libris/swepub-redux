@@ -2,7 +2,7 @@ wheel
 jsonpath-rw-ext==1.2.2
 python-stdnum==1.19
 rfc3987==1.3.8
-requests==2.31.0
+requests==2.32.0
 python-dateutil==2.8.2
 Flask==3.0.0
 Flask-Cors==4.0.0
