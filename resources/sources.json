@@ -16,13 +16,13 @@
     "sets": [
       {
         "url": "https://gup-staging.ub.gu.se/oai",
-        "subset": "",
+        "subset": "gu",
         "metadata_prefix": "mods",
         "envs": ["DEV", "QA"]
       },
       {
         "url": "https://gup.ub.gu.se/oai",
-        "subset": "",
+        "subset": "gu",
         "metadata_prefix": "mods",
         "envs": ["PROD"]
       }
