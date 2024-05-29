@@ -41,7 +41,7 @@ def _validate_with_crossref(doi, session):
 def _validate_with_shortdoi(doi, session):
     # Encode doi to ensure valid url, same is done in forward-proxy.
     url_encoded_doi = quote(doi, safe="/")
-    url = f"http://shortdoi.org/{url_encoded_doi}?format=json"
+    url = f"https://shortdoi.org/{url_encoded_doi}?format=json"
     return remote_verification(url, session)
 
 
