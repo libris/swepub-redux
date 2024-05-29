@@ -194,8 +194,8 @@ def harvest(source):
                         else:
                             num_failed += 1
                 except Exception as e:
-                    log.warning(f"Record from {source['code']} failed: {e}")
                     num_failed += 1
+                    raise e
                 func = partial(
                     threaded_handle_harvested, source["code"], source_set["subset"], harvest_id, cached_paths
                 )
