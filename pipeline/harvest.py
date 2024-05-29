@@ -204,7 +204,7 @@ def harvest(source):
 
             # If we're doing incremental updating: Check if the source uses <deletedRecord>persistent</deletedRecord>.
             # If it does not, we need to "ListIdentifiers" all of their records to figure out if any were deleted.
-            if incremental and not _get_has_persistent_deletes(source_set):
+            if incremental and fromtime and not _get_has_persistent_deletes(source_set):
                 all_source_ids = _get_source_ids(source_set)
                 obsolete_ids = []
                 with get_connection() as con:
