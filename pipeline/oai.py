@@ -63,7 +63,7 @@ class RecordIterator:
             "metadataPrefix": self.set["metadata_prefix"],
             "ignore_deleted": False
         }
-        if self.set["subset"]:
+        if self.set.get("subset"):
             list_record_params["set"] = self.set["subset"]
         if self.harvest_from:
             list_record_params["from"] = self.harvest_from

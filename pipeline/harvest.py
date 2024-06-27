@@ -184,7 +184,7 @@ def harvest(source):
                                 func = partial(
                                     threaded_handle_harvested,
                                     source["code"],
-                                    source_set["subset"],
+                                    source_set.get("subset", ""),
                                     harvest_id,
                                     cached_paths,
                                 )
@@ -197,7 +197,7 @@ def harvest(source):
                     num_failed += 1
                     raise e
                 func = partial(
-                    threaded_handle_harvested, source["code"], source_set["subset"], harvest_id, cached_paths
+                    threaded_handle_harvested, source["code"], source_set.get("subset", ""), harvest_id, cached_paths
                 )
                 executor.submit(func, batch)
                 executor.shutdown(wait=True)
@@ -380,7 +380,7 @@ def _get_source_ids(source_set):
         "metadataPrefix": source_set["metadata_prefix"],
         "ignore_deleted": False,
     }
-    if source_set["subset"]:
+    if source_set.get("subset"):
         list_ids_params["set"] = source_set["subset"]
     headers = sickle_client.ListIdentifiers(**list_ids_params)
     for header in headers:
