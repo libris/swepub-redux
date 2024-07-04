@@ -145,29 +145,31 @@ class Sickle(object):
         response.raise_for_status()
         return response
 
-    def ListRecords(self, ignore_deleted=False, **kwargs):
+    def ListRecords(self, ignore_deleted=False, ignore_broken=False, **kwargs):
         """Issue a ListRecords request.
 
-        :param ignore_deleted: If set to :obj:`True`, the resulting
-                              iterator will skip records flagged as deleted.
+        :param ignore_broken: If set to :obj:`True`, the resulting
+                              iterator will skip broken records.
         :rtype: :class:`sickle.iterator.BaseOAIIterator`
         """
         params = kwargs
         params.update({'verb': 'ListRecords'})
         # noinspection PyCallingNonCallable
-        return self.iterator(self, params, ignore_deleted=ignore_deleted)
+        return self.iterator(self, params, ignore_deleted=ignore_deleted, ignore_broken=ignore_broken)
 
-    def ListIdentifiers(self, ignore_deleted=False, **kwargs):
+    def ListIdentifiers(self, ignore_deleted=False, ignore_broken=False, **kwargs):
         """Issue a ListIdentifiers request.
 
         :param ignore_deleted: If set to :obj:`True`, the resulting
                               iterator will skip records flagged as deleted.
+        :param ignore_broken: If set to :obj:`True`, the resulting
+                              iterator will skip broken records.
         :rtype: :class:`sickle.iterator.BaseOAIIterator`
         """
         params = kwargs
         params.update({'verb': 'ListIdentifiers'})
         return self.iterator(self,
-                             params, ignore_deleted=ignore_deleted)
+                             params, ignore_deleted=ignore_deleted, ignore_broken=ignore_broken)
 
     def ListSets(self, **kwargs):
         """Issue a ListSets request.

@@ -69,7 +69,7 @@ class RecordIterator:
             list_record_params["from"] = self.harvest_from
         if self.harvest_to:
             list_record_params["until"] = self.harvest_to
-        self.records = sickle_client.ListRecords(**list_record_params)
+        self.records = sickle_client.ListRecords(ignore_broken=True, **list_record_params)
 
     def _get_next_record(self):
         record = next(self.records)

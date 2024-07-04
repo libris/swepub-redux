@@ -7,6 +7,7 @@
 
     :copyright: Copyright 2015 Mathias Loesch
 """
+from lxml import etree
 
 from . import oaiexceptions
 from .models import ResumptionToken
@@ -35,12 +36,15 @@ class BaseOAIIterator(object):
     :type params:  dict
     :param ignore_deleted: Flag for whether to ignore deleted records.
     :type ignore_deleted: bool
+    :param ignore_broken: Flag for whether to ignore broken records.
+    :type ignore_broken: bool
     """
 
-    def __init__(self, sickle, params, ignore_deleted=False):
+    def __init__(self, sickle, params, ignore_deleted=False, ignore_broken=False):
         self.sickle = sickle
         self.params = params
         self.ignore_deleted = ignore_deleted
+        self.ignore_broken = ignore_broken
         self.verb = self.params.get('verb')
         self.resumption_token = None
         self._next_response()
@@ -127,12 +131,14 @@ class OAIItemIterator(BaseOAIIterator):
     :type params:  dict
     :param ignore_deleted: Flag for whether to ignore deleted records.
     :type ignore_deleted: bool
+    :param ignore_broken: Flag for whether to ignore broken records.
+    :type ignore_broken: bool
     """
 
-    def __init__(self, sickle, params, ignore_deleted=False):
+    def __init__(self, sickle, params, ignore_deleted=False, ignore_broken=False):
         self.mapper = sickle.class_mapping[params.get('verb')]
         self.element = VERBS_ELEMENTS[params.get('verb')]
-        super(OAIItemIterator, self).__init__(sickle, params, ignore_deleted)
+        super(OAIItemIterator, self).__init__(sickle, params, ignore_deleted, ignore_broken)
 
     def _next_response(self):
         super(OAIItemIterator, self)._next_response()
@@ -143,7 +149,31 @@ class OAIItemIterator(BaseOAIIterator):
         """Return the next record/header/set."""
         while True:
             for item in self._items:
-                mapped = self.mapper(item)
+                try:
+                    mapped = self.mapper(item)
+                except Exception as e:
+                    # Handling for cases where the XML is broken, e.g. <metadata>
+                    # contains something that can't be parsed as MODS.
+                    if self.ignore_broken:
+                        # Here we make it so that the record's <metadata> element,
+                        # if there is one, contains an empty <mods>.
+                        # This simply ensures that the record will show up as failed on
+                        # /process/<org>/status/history in the frontend, so that the orgs
+                        # can more easily figure out what's broken.
+                        print(f"WARNING: Broken record: {e}")
+                        try:
+                            metadata_element = item.find(".//{http://www.openarchives.org/OAI/2.0/}metadata")
+                            original_metadata = etree.tostring(metadata_element)
+                            print("Original <metadata>:", original_metadata)
+                            metadata_element.clear()
+                            metadata_element.append(etree.Element("mods"))
+                            mapped = self.mapper(item)
+                        except Exception as e2:
+                            # If it's *too* broken, just log and continue.
+                            print(f"ERROR: Ignoring record too broken to do anything with: {e}; {e2}")
+                            continue
+                    else:
+                        raise oaiexceptions.OAIError(e)
                 if self.ignore_deleted and mapped.deleted:
                     continue
                 return mapped
