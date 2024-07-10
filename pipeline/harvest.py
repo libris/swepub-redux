@@ -591,7 +591,7 @@ def _handle_reprocess_affected_records(source):
         for oai_id in oai_ids_to_reprocess:
             try:
                 xml = cursor.execute("SELECT data FROM original WHERE oai_id = ?", [oai_id]).fetchone()["data"]
-                original_converted = cursor.execute("SELECT original_id, source FROM converted WHERE oai_id = ?", [oai_id]).fetchone()
+                original_converted = cursor.execute("SELECT id, original_id, source FROM converted WHERE oai_id = ?", [oai_id]).fetchone()
                 converted = convert(xml)
                 (field_events, record_info) = validate(converted, harvest_cache, session, original_converted["source"], cached_paths, inner_cursor)
                 (audited, audit_events) = audit(converted, harvest_cache, session)
@@ -599,7 +599,7 @@ def _handle_reprocess_affected_records(source):
                 lock.acquire()
                 try:
                     with get_connection() as inner_connection:
-                        store_converted(original_converted["original_id"], audited.body, audit_events.data, field_events, record_info, inner_connection)
+                        store_converted(original_converted["original_id"], audited.body, audit_events.data, field_events, record_info, inner_connection, clear_record_info=True, original_converted_id=original_converted["id"])
                 except Exception:
                         log.warning(traceback.format_exc())
                 finally:

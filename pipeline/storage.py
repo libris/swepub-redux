@@ -129,9 +129,14 @@ def serialize(obj):
     return obj.__dict__
 
 
-def store_converted(original_rowid, converted, audit_events, field_events, record_info, connection):
+def store_converted(original_rowid, converted, audit_events, field_events, record_info, connection, clear_record_info=False, original_converted_id=None):
     try:
         cur = connection.cursor()
+        # If a we're reprocessing a record, clear its converted_record_info data, otherwise that data
+        # will be duplicated and the processing stats will be wrong
+        if clear_record_info and original_converted_id:
+            cur.execute("DELETE FROM converted_record_info WHERE converted_id = ?", [original_converted_id])
+
         doc = BibframeSource(converted)
         converted_events = {"audit_events": audit_events, "field_events": field_events}
 
