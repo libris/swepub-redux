@@ -16,7 +16,7 @@ def dump_tsv():
         cur = con.cursor()
         cur.row_factory = dict_factory
 
-        print(f"publication_ids\ttitle\tabstract\tlanguage\torganization_ids\tuka_codes")
+        print(f"publication_ids\ttitle\tabstract\tlanguage\torganization_ids\tssif_codes")
         for row in cur.execute(f"SELECT data FROM finalized", []):
             if row.get("data"):
                 finalized = orjson.loads(row["data"])
@@ -29,8 +29,8 @@ def dump_tsv():
                 org_ids = ";".join(list(set(finalized["_publication_orgs"])))
                 summary = publication.summary or ""
                 language = publication.language or ""
-                ukas = ";".join(publication.ukas())
-                print(f"{pub_ids}\t{title}\t{summary}\t{language}\t{org_ids}\t{ukas}")
+                ssifs = ";".join(publication.ssifs())
+                print(f"{pub_ids}\t{title}\t{summary}\t{language}\t{org_ids}\t{ssifs}")
 
 
 if __name__ == "__main__":

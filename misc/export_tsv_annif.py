@@ -27,18 +27,18 @@ def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_lev
                 finalized = orjson.loads(row["data"])
                 publication = Publication(finalized)
 
-                # Get UKA codes, filtered by min/max level, and skip records with
+                # Get SSIF codes, filtered by min/max level, and skip records with
                 # no classification in the desired levels. For example, with
                 # min_level 3 max_level 5, records with only 1-level classification
                 # would be skipped.
-                ukas = list(
+                ssifs = list(
                     filter(
                         lambda x: len(x) >= int(min_level) and len(x) <= int(max_level),
-                        publication.ukas(skip_autoclassified=True),
+                        publication.ssifs(skip_autoclassified=True),
                     )
                 )
                 # Skip records with no classification
-                if not ukas:
+                if not ssifs:
                     continue
 
                 title = get_title_by_language(publication, target_language)
@@ -70,25 +70,25 @@ def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_lev
                     continue
 
                 # E.g. if record has a subject like "305", ensure it also has "3"
-                expanded_ukas = set(ukas)
-                for uka in ukas:
-                    if len(uka) == 3:
-                        expanded_ukas.add(uka[:1])
-                    if len(uka) == 5:
-                        expanded_ukas.add(uka[:1])
-                        expanded_ukas.add(uka[:3])
-                ukas_str = " ".join(
-                    [f"<https://id.kb.se/term/uka/{s}>" for s in expanded_ukas]
+                expanded_ssif = set(ssifs)
+                for ssif in ssifs:
+                    if len(ssif) == 3:
+                        expanded_ssif.add(ssif[:1])
+                    if len(ssif) == 5:
+                        expanded_ssif.add(ssif[:1])
+                        expanded_ssif.add(ssif[:3])
+                ssif_str = " ".join(
+                    [f"<https://id.kb.se/term/ssif/{s}>" for s in expanded_ssif]
                 )
 
-                # Get non-UKA keywords in the target language
+                # Get non-SSIF keywords in the target language
                 if target_language == "en":
                     language_id = "https://id.kb.se/language/eng"
                 elif target_language == "sv":
                     language_id = "https://id.kb.se/language/swe"
-                keywords = " ".join(publication.keywords(language=language_id))
+                keywords = " ".join(publication.keywords(langtag=language_id))
 
-                print(f"{title} {summary} {keywords}\t{ukas_str}")
+                print(f"{title} {summary} {keywords}\t{ssif_str}")
                 count += 1
                 if count >= int(number_of_records) and int(number_of_records) > 0:
                     break
