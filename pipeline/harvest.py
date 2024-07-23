@@ -634,6 +634,11 @@ def handle_args():
         help="Forcibly creates a new database, removing the existing one if one exists as the given path",
     )
     group.add_argument(
+        "--force-new-but-keep-history",
+        action="store_true",
+        help="Forcibly creates a new database, but, if an old database is detected, copies the contents of its `harvest_history` and `rejected` tables",
+    )
+    group.add_argument(
         "-u",
         "--update",
         action="store_true",
@@ -811,7 +816,12 @@ if __name__ == "__main__":
                 for table in TABLES_DELETED_ON_INCREMENTAL_OR_PURGE:
                     cursor.execute(f"DELETE FROM {table}")
         else:
-            clean_and_init_storage()
+            if args.force_new_but_keep_history:
+                log.info("Creating a new db; will preserve harvest history from previous db if found")
+                clean_and_init_storage(preserve_history=True)
+            else:
+                log.info("Creating a new db; will *not* preserve harvest history from previous database if found")
+                clean_and_init_storage()
 
         # Initially synchronization was left up to sqlite3's file locking to handle,
         # which was fine, except that the try/sleep is somewhat inefficient and risks

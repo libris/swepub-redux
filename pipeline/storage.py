@@ -26,19 +26,61 @@ def get_sqlite_path():
     )
 
 
+def get_sqlite_tmp_history_path():
+    return f"{get_sqlite_path()}-history-tmp"
+
+
 def storage_exists():
     return os.path.exists(get_sqlite_path())
 
 
-def clean_and_init_storage():
-    sqlite_path = get_sqlite_path()
-
+def remove_sqlite_files(sqlite_path):
     if os.path.exists(sqlite_path):
         os.remove(sqlite_path)
     if os.path.exists(f"{sqlite_path}-wal"):
         os.remove(f"{sqlite_path}-wal")
     if os.path.exists(f"{sqlite_path}-shm"):
         os.remove(f"{sqlite_path}-shm")
+
+
+def copy_history_to_tmp_db():
+    log.info("Copying history to tmp db")
+
+    src_sqlite_path = get_sqlite_path()
+    sqlite_history_tmp_path = get_sqlite_tmp_history_path()
+    # If there are old history tmp files, get rid of them
+    if os.path.exists(sqlite_history_tmp_path):
+        os.remove(sqlite_history_tmp_path)
+    if os.path.exists(f"{sqlite_history_tmp_path}-wal"):
+        os.remove(f"{sqlite_history_tmp_path}-wal")
+    if os.path.exists(f"{sqlite_history_tmp_path}-shm"):
+        os.remove(f"{sqlite_history_tmp_path}-shm")
+
+    con = sqlite3.connect(sqlite_history_tmp_path)
+    cur = con.cursor()
+
+    # Create tables in empty tmp db
+    with open(SQL_SCHEMA_FILE, "r") as sql_schema_file:
+        sql_script = sql_schema_file.read()
+    cur.executescript(sql_script)
+
+    # Attach old db, copy records
+    cur.execute(f"ATTACH DATABASE '{src_sqlite_path}' AS src")
+    cur.execute("INSERT INTO harvest_history SELECT * FROM src.harvest_history")
+    cur.execute("INSERT INTO rejected SELECT * FROM src.rejected")
+
+    con.commit()
+    con.close()
+
+
+def clean_and_init_storage(preserve_history=False):
+    sqlite_path = get_sqlite_path()
+
+    if preserve_history and storage_exists():
+        copy_history_to_tmp_db()
+
+    remove_sqlite_files(sqlite_path)
+
     con = sqlite3.connect(sqlite_path)
     cur = con.cursor()
     _set_pragmas(cur)
@@ -46,6 +88,16 @@ def clean_and_init_storage():
     with open(SQL_SCHEMA_FILE, "r") as sql_schema_file:
         sql_script = sql_schema_file.read()
     cur.executescript(sql_script)
+
+    if preserve_history:
+        log.info("Copying history from tmp db to the new db")
+        sqlite_history_tmp_path = get_sqlite_tmp_history_path()
+        # Attach temp db with history, copy records
+        cur.execute(f"ATTACH DATABASE '{sqlite_history_tmp_path}' AS history_src")
+        cur.execute("INSERT INTO harvest_history SELECT * FROM history_src.harvest_history")
+        cur.execute("INSERT INTO rejected SELECT * FROM history_src.rejected")
+        con.commit()
+        cur.execute("DETACH DATABASE history_src")
 
     con.commit()
 
