@@ -86,9 +86,8 @@ def clean_and_init_storage(preserve_history=False):
 
     if preserve_history:
         log.info("Copying history from tmp db to the new db")
-        sqlite_history_tmp_path = get_sqlite_tmp_history_path()
         # Attach temp db with history, copy records
-        cur.execute(f"ATTACH DATABASE '{sqlite_history_tmp_path}' AS history_src")
+        cur.execute(f"ATTACH DATABASE '{get_sqlite_tmp_history_path()}' AS history_src")
         cur.execute("INSERT INTO harvest_history SELECT * FROM history_src.harvest_history")
         cur.execute("INSERT INTO rejected SELECT * FROM history_src.rejected")
         con.commit()
