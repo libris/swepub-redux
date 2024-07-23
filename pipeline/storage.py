@@ -49,12 +49,7 @@ def copy_history_to_tmp_db():
     src_sqlite_path = get_sqlite_path()
     sqlite_history_tmp_path = get_sqlite_tmp_history_path()
     # If there are old history tmp files, get rid of them
-    if os.path.exists(sqlite_history_tmp_path):
-        os.remove(sqlite_history_tmp_path)
-    if os.path.exists(f"{sqlite_history_tmp_path}-wal"):
-        os.remove(f"{sqlite_history_tmp_path}-wal")
-    if os.path.exists(f"{sqlite_history_tmp_path}-shm"):
-        os.remove(f"{sqlite_history_tmp_path}-shm")
+    remove_sqlite_files(sqlite_history_tmp_path)
 
     con = sqlite3.connect(sqlite_history_tmp_path)
     cur = con.cursor()
