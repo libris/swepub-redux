@@ -28,7 +28,7 @@ class CrossrefAuditor(BaseAuditor):
         modified_properties = []
         for doi in publication.identifiedby_dois:
             try:
-                r = session.get(f"{CROSSREF_URL}{self._clean_identifier(doi)}", timeout=10)
+                r = session.get(f"{CROSSREF_URL}{self._clean_identifier(doi)}", timeout=20)
                 if r.status_code == 200:
                     #print(f"Crossref match found for {publication.id}: {doi}")
                     crossref = r.json()
