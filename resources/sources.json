@@ -338,6 +338,7 @@
     "sets": [
       {
         "url": "https://swepub.ki.se/",
+        "subset": "",
         "metadata_prefix": "mods"
       }
     ]
