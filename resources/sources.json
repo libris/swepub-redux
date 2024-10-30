@@ -337,21 +337,8 @@
     "name": "Karolinska Institutet",
     "sets": [
       {
-        "url": "http://openarchive.ki.se/oai/request",
-        "subset": "com_10616_46998",
-        "metadata_prefix": "swepub",
-        "envs": ["PROD"]
-      },
-      {
-        "url": "http://prod.swepub.kib.ki.se",
-        "subset": "",
-        "metadata_prefix": "mods",
-        "envs": ["PROD"]
-      },
-      {
         "url": "https://swepub.ki.se/",
-        "metadata_prefix": "mods",
-        "envs": ["DEV", "QA"]
+        "metadata_prefix": "mods"
       }
     ]
   },
