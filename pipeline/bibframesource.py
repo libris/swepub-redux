@@ -436,6 +436,9 @@ class BibframeSource:
         affil_name = affiliation.get("name")
         if affil_name:
             nested_affils.append(affil_name)
+        affil_names_by_lang = affiliation.get("nameByLang", {})
+        for affil_name_by_lang in list(affil_names_by_lang.values()):
+            nested_affils.append(affil_name_by_lang)
         sub_affils = affiliation.get("hasAffiliation", [])
         for sub_affil in sub_affils:
             subsub_affils = self._get_freetext_affiliations(sub_affil)
