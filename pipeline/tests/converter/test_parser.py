@@ -1,6 +1,7 @@
 import re
 import pytest
 from lxml.etree import LxmlError, XMLSyntaxError
+from pipeline.util import SSIF_SCHEME, SSIF_BASE
 
 MODS = """
     <record xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -300,11 +301,11 @@ def test_parser(parser):
             ],
             "classification": [
                 {
-                    "@id": "https://id.kb.se/term/ssif/30220",
+                    "@id": f"{SSIF_BASE}30220",
                     "@type": "Classification",
                     "code": "30220",
                     "prefLabelByLang": {"en": "Obstetrics, Gynecology and Reproductive Medicine"},
-                    "inScheme": {"@id": "https://id.kb.se/term/ssif", "@type": "ConceptScheme"},
+                    "inScheme": {"@id": SSIF_SCHEME, "@type": "ConceptScheme"},
                     #"broader": {
                     #    "prefLabel": "Clinical Medicine",
                     #    "broader": {
@@ -313,11 +314,11 @@ def test_parser(parser):
                     #}
                 },
                 {
-                    "@id": "https://id.kb.se/term/ssif/30305",
+                    "@id": f"{SSIF_BASE}30305",
                     "@type": "Classification",
                     "code": "30305",
                     "prefLabelByLang": {"en": "Nursing"},
-                    "inScheme": {"@id": "https://id.kb.se/term/ssif", "@type": "ConceptScheme"},
+                    "inScheme": {"@id": SSIF_SCHEME, "@type": "ConceptScheme"},
                 }
             ],
             "hasNote": [
@@ -2274,17 +2275,17 @@ def test_uka_subjects_with_href(parser):
       """)
     expected = [
         {
-            "@id": "https://id.kb.se/term/ssif/60203",
+            "@id": f"{SSIF_BASE}60203",
             '@type': 'Classification',
             'code': '60203',
-            "inScheme": {"@id": "https://id.kb.se/term/ssif", "@type": "ConceptScheme"},
+            "inScheme": {"@id": SSIF_SCHEME, "@type": "ConceptScheme"},
             "prefLabelByLang": {"sv": "Litteraturvetenskap"},
         },
         {
-            "@id": "https://id.kb.se/term/ssif/60203",
+            "@id": f"{SSIF_BASE}60203",
             '@type': 'Classification',
             'code': '60203',
-            "inScheme": {"@id": "https://id.kb.se/term/ssif", "@type": "ConceptScheme"},
+            "inScheme": {"@id": SSIF_SCHEME, "@type": "ConceptScheme"},
             "prefLabelByLang": {"en": "Literature"},
         },
     ]
@@ -2307,24 +2308,24 @@ def test_uka_subject_once_per_level(parser):
       """)
     expected = [
         {
-            "@id": "https://id.kb.se/term/ssif/6",
+            "@id": f"{SSIF_BASE}6",
             '@type': 'Classification',
             'code': '6',
-            "inScheme": {"@id": "https://id.kb.se/term/ssif", "@type": "ConceptScheme"},
+            "inScheme": {"@id": SSIF_SCHEME, "@type": "ConceptScheme"},
             "prefLabelByLang": {"sv": "Humaniora"},
         },
         {
-            "@id": "https://id.kb.se/term/ssif/602",
+            "@id": f"{SSIF_BASE}602",
             '@type': 'Classification',
             'code': '602',
-            "inScheme": {"@id": "https://id.kb.se/term/ssif", "@type": "ConceptScheme"},
+            "inScheme": {"@id": SSIF_SCHEME, "@type": "ConceptScheme"},
             "prefLabelByLang": {"sv": "Spr\u00e5k och litteratur"},
         },
         {
-            "@id": "https://id.kb.se/term/ssif/60203",
+            "@id": f"{SSIF_BASE}60203",
             '@type': 'Classification',
             'code': '60203',
-            "inScheme": {"@id": "https://id.kb.se/term/ssif", "@type": "ConceptScheme"},
+            "inScheme": {"@id": SSIF_SCHEME, "@type": "ConceptScheme"},
             "prefLabelByLang": {"sv": "Litteraturvetenskap"},
         },
     ]
@@ -2486,7 +2487,7 @@ def test_ssif_classification(parser):
             '@annotation': {
                 'assigner': {'@type': 'SoftwareAgent', 'label': 'GPT-4'}
             },
-            '@id': 'https://id.kb.se/term/ssif/60203',
+            '@id': f"{SSIF_BASE}60203",
         }
     ]
     actual = parser.parse_mods(raw_xml)['instanceOf']['classification']

@@ -5,7 +5,7 @@ from simplemma.langdetect import lang_detector
 
 from pipeline.storage import get_connection, dict_factory
 from pipeline.publication import Publication
-from pipeline.util import get_title_by_language, get_summary_by_language
+from pipeline.util import get_title_by_language, get_summary_by_language, SSIF_BASE
 
 
 def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_level=5):
@@ -78,7 +78,7 @@ def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_lev
                         expanded_ssif.add(ssif[:1])
                         expanded_ssif.add(ssif[:3])
                 ssif_str = " ".join(
-                    [f"<https://id.kb.se/term/ssif/{s}>" for s in expanded_ssif]
+                    [f"<{SSIF_BASE}{s}>" for s in expanded_ssif]
                 )
 
                 # Get non-SSIF keywords in the target language
