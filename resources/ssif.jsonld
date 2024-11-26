@@ -12,6 +12,18 @@
     "commentByLang": {
       "@id": "comment",
       "@container": "@language"
+    },
+    "hiddenLabelByLang": {
+      "@id": "hiddenLabel",
+      "@container": "@language"
+    },
+    "scopeNoteByLang": {
+      "@id": "scopeNote",
+      "@container": "@language"
+    },
+    "historyNoteByLang": {
+      "@id": "historyNote",
+      "@container": "@language"
     }
   },
   "@graph": [
@@ -22,7 +34,7 @@
       "code": "1",
       "prefLabelByLang": {
         "sv": "Naturvetenskap",
-        "en": "Natural Sciences"
+        "en": "Natural sciences"
       }
     },
     {
@@ -32,7 +44,7 @@
       "code": "101",
       "prefLabelByLang": {
         "sv": "Matematik",
-        "en": "Mathematics"
+        "en": "Mathematical sciences"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/1"}
     },
@@ -100,7 +112,13 @@
         "sv": "Sannolikhetsteori och statistik",
         "en": "Probability Theory and Statistics"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/101"}
+      "commentByLang": {
+        "sv": "Statistik med medicinska aspekter under 30118 och samhällsvetenskapliga aspekter under 50907",
+        "en": "Statistics with medical aspects at 30118 and with social aspects at 50907"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/101"},
+      "scopeNoteByLang": {"sv": "Annan"},
+      "historyNoteByLang": {"sv": "Numera finns även ämnena medicinsk biostatistik 30118 (SSIF2025) som ingår i Medicinska och farmaceutiska grundvetenskaper 301 och Statistik inom samhällsvetenskap 50907 (SSIF2025) som ingår i Annan samhällsvetenskap 509."}
     },
     {
       "@id": "https://id.kb.se/term/ssif/10199",
@@ -147,8 +165,8 @@
         "en": "Information Systems"
       },
       "commentByLang": {
-        "sv": "samhällsvetenskaplig inriktning under 50804",
-        "en": "Social aspects to be 50804"
+        "sv": "samhällsvetenskapliga aspekter under 50804",
+        "en": "Social aspects at 50804"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/102"}
     },
@@ -167,7 +185,7 @@
       },
       "commentByLang": {
         "sv": "tillämpningar under 10610",
-        "en": "applications to be 10610"
+        "en": "Applications at 10610"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/102"}
     },
@@ -182,8 +200,8 @@
       },
       "altLabelByLang": {"sv": "interaktionsdesign"},
       "commentByLang": {
-        "sv": "Samhällsvetenskapliga aspekter under 50803",
-        "en": "Social aspects to be 50803"
+        "sv": "Samhällsvetenskapliga aspekter under 50804",
+        "en": "Social aspects at 50804"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/102"}
     },
@@ -215,14 +233,16 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "10207",
       "prefLabelByLang": {
-        "sv": "Datorseende och robotik",
-        "en": "Computer Vision and Robotics"
+        "sv": "Datorgrafik och datorseende",
+        "en": "Computer graphics and computer vision"
       },
-      "altLabelByLang": {
-        "sv": "autonoma system",
-        "en": "Autonomous Systems"
+      "commentByLang": {
+        "sv": "systemtekniska aspekter under 20208",
+        "en": "System engineering aspects at 20208"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/102"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/102"},
+      "hiddenLabelByLang": {"sv": "Datorseende och robotik (autonoma system)"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/10208",
@@ -230,25 +250,82 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "10208",
       "prefLabelByLang": {
-        "sv": "Språkteknologi",
-        "en": "Language Technology"
+        "sv": "Språkbehandling och datorlingvistik",
+        "en": "Natural Language Processing"
       },
-      "altLabelByLang": {
-        "sv": "språkvetenskaplig databehandling",
-        "en": "Computational Linguistics"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/102"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/102"},
+      "hiddenLabelByLang": {"sv": "Språkteknologi (språkvetenskaplig databehandling)"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/10209",
       "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "10209",
+      "hiddenLabel": "Medieteknik",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/10202"},
+        {"@id": "https://id.kb.se/term/ssif/10204"}
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10210",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10210",
       "prefLabelByLang": {
-        "sv": "Medieteknik",
-        "en": "Media and Communication Technology"
+        "sv": "Artificiell intelligens",
+        "en": "Artificial Intelligence"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/102"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/102"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10211",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10211",
+      "prefLabelByLang": {
+        "sv": "Säkerhet, integritet och kryptologi",
+        "en": "Security, Privacy and Cryptography"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/102"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10212",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10212",
+      "prefLabelByLang": {
+        "sv": "Algoritmer",
+        "en": "Algorithms"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/102"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10213",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10213",
+      "prefLabelByLang": {
+        "sv": "Formella metoder",
+        "en": "Formal Methods"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/102"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10214",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10214",
+      "prefLabelByLang": {
+        "sv": "Nätverks-, parallell- och distribuerad beräkning",
+        "en": "Networked, Parallel and Distributed Computing"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/102"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/10299",
@@ -281,7 +358,39 @@
         "sv": "Subatomär fysik",
         "en": "Subatomic Physics"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/103"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/103"},
+      "scopeNoteByLang": {"sv": "Sammanslagning av ämnen"},
+      "historyNoteByLang": {"sv": "Acceleratorfysik och instrumentering 10306 (SSIF2011) ingår numera i Subatomär fysik 10301 (SSIF2025)."},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "fält- och partikelfysik",
+            "en": "Particle and Field Physics"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "astropartikelfysik",
+            "en": "Astroparticle Physics"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "kärnfysik",
+            "en": "Nuclear Physics"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "acceleratorfysik",
+            "en": "Accelerator Physics"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/10302",
@@ -292,7 +401,30 @@
         "sv": "Atom- och molekylfysik och optik",
         "en": "Atom and Molecular Physics and Optics"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/103"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/103"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "kemisk fysik",
+            "en": "Chemical Physics"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "kvantoptik",
+            "en": "Quantum Optics"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/10303",
@@ -314,7 +446,23 @@
         "sv": "Den kondenserade materiens fysik",
         "en": "Condensed Matter Physics"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/103"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/103"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "materialfysik",
+            "en": "Material Physics"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "nanofysik",
+            "en": "Nano Physics"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/10305",
@@ -323,20 +471,57 @@
       "code": "10305",
       "prefLabelByLang": {
         "sv": "Astronomi, astrofysik och kosmologi",
-        "en": "Astronomy, Astrophysics and Cosmology"
+        "en": "Astronomy, Astrophysics, and Cosmology"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/103"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/10306",
       "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "10306",
+      "hiddenLabel": "Acceleratorfysik och instrumentering",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/10301"}
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10603",
+      "@type": "Classification",
+      "code": "10603",
+      "hiddenLabelByLang": {"sv": "Biofysik"},
+      "isReplacedBy": [
+        {
+          "@id": "https://id.kb.se/term/ssif/10307",
+          "@annotation": {
+            "commentByLang": {"sv": "Bytt forskningsämnesgrupp"}
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10307",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10307",
       "prefLabelByLang": {
-        "sv": "Acceleratorfysik och instrumentering",
-        "en": "Accelerator Physics and Instrumentation"
+        "sv": "Biofysik",
+        "en": "Biophysics"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/103"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/103"},
+      "scopeNoteByLang": {"sv": "Bytt forskningsämnesgrupp"},
+      "historyNoteByLang": {"sv": "Biofysik 10307 (SSIF2025) ingick tidigare i Biologi 106 (SSIF2011)."}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10308",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10308",
+      "prefLabelByLang": {
+        "sv": "Statistisk fysik och komplexa system",
+        "en": "Statistical physics and complex systems"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/103"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/10399",
@@ -380,7 +565,16 @@
         "sv": "Fysikalisk kemi",
         "en": "Physical Chemistry"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/104"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/104"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "yt- och kolloidkemi",
+            "en": "Surface- and Colloid Chemistry"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/10403",
@@ -413,7 +607,16 @@
         "sv": "Organisk kemi",
         "en": "Organic Chemistry"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/104"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/104"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "läkemedelskemi (medicinsk inriktning under 30103)",
+            "en": "Medicinal Chemistry (Medical focus at 30103)"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/10406",
@@ -435,7 +638,49 @@
         "sv": "Teoretisk kemi",
         "en": "Theoretical Chemistry"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/104"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/104"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "beräkningskemi",
+            "en": "Computational Chemistry"
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10602",
+      "@type": "Classification",
+      "code": "10602",
+      "hiddenLabelByLang": {"sv": "Biokemi och molekylärbiologi"},
+      "isReplacedBy": [
+        {
+          "@id": "https://id.kb.se/term/ssif/10408",
+          "@annotation": {
+            "commentByLang": {"sv": "Bytt forskningsämnesgrupp, Uppdelning av ämne"}
+          }
+        },
+        {
+          "@id": "https://id.kb.se/term/ssif/10616",
+          "@annotation": {
+            "commentByLang": {"sv": "Uppdelning av ämne"}
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/10408",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10408",
+      "prefLabelByLang": {
+        "sv": "Biokemi",
+        "en": "Biochemistry"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/104"},
+      "scopeNoteByLang": {"sv": "Bytt forskningsämnesgrupp, Uppdelning av ämne"},
+      "historyNoteByLang": {"sv": "Biokemi och molekylärbiologi 10602 (SSIF2011) har delats upp i två ämnen. Biokemi 10408 (SSIF 2025) ingår nu i Kemi 104 medan Molekylärbiologi 10616 (SSIF2025) fortsatt ingår i Biologi 106."}
     },
     {
       "@id": "https://id.kb.se/term/ssif/10499",
@@ -454,10 +699,12 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "105",
       "prefLabelByLang": {
-        "sv": "Geovetenskap och miljövetenskap",
+        "sv": "Geovetenskap och relaterad miljövetenskap",
         "en": "Earth and Related Environmental Sciences"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/1"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/1"},
+      "hiddenLabelByLang": {"sv": "Geovetenskap och miljövetenskap"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/10501",
@@ -465,10 +712,12 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "10501",
       "prefLabelByLang": {
-        "sv": "Klimatforskning",
-        "en": "Climate Research"
+        "sv": "Klimatvetenskap",
+        "en": "Climate Science"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/105"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/105"},
+      "hiddenLabelByLang": {"sv": "Klimatforskning"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/10502",
@@ -480,8 +729,8 @@
         "en": "Environmental Sciences"
       },
       "commentByLang": {
-        "sv": "Samhällsvetenskapliga aspekter under 507",
-        "en": "social aspects to be 507"
+        "sv": "Samhällsvetenskapliga aspekter under 50909 och lantbruksvetenskapliga under 40504",
+        "en": "Social aspects at 50909 and agricultural at 40504"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/105"}
     },
@@ -492,7 +741,7 @@
       "code": "10503",
       "prefLabelByLang": {
         "sv": "Multidisciplinär geovetenskap",
-        "en": "Geosciences, Multidisciplinary"
+        "en": "Multidisciplinary Geosciences"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/105"}
     },
@@ -505,6 +754,10 @@
         "sv": "Geologi",
         "en": "Geology"
       },
+      "commentByLang": {
+        "sv": "Geoteknik och teknisk geologi under 20106",
+        "en": "Geotechnical Engineering and Engineering Geology at 20106"
+      },
       "broader": {"@id": "https://id.kb.se/term/ssif/105"}
     },
     {
@@ -515,6 +768,10 @@
       "prefLabelByLang": {
         "sv": "Geofysik",
         "en": "Geophysics"
+      },
+      "commentByLang": {
+        "sv": "Tillämningar med jordobservationsteknik under 20703",
+        "en": "Applications with Earth Observation at 20703"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/105"}
     },
@@ -546,10 +803,12 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "10508",
       "prefLabelByLang": {
-        "sv": "Meteorologi och atmosfärforskning",
+        "sv": "Meteorologi och atmosfärsvetenskap",
         "en": "Meteorology and Atmospheric Sciences"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/105"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/105"},
+      "hiddenLabelByLang": {"sv": "Meteorologi och atmosfärforskning"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/10509",
@@ -563,15 +822,38 @@
       "broader": {"@id": "https://id.kb.se/term/ssif/105"}
     },
     {
+      "@id": "https://id.kb.se/term/ssif/10510",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10510",
+      "prefLabelByLang": {
+        "sv": "Paleontologi och paleoekologi",
+        "en": "Palaeontology and Palaeoecology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/105"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
       "@id": "https://id.kb.se/term/ssif/10599",
       "@type": "Classification",
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "10599",
       "prefLabelByLang": {
-        "sv": "Annan geovetenskap och miljövetenskap",
-        "en": "Other Earth and Related Environmental Sciences"
+        "sv": "Annan geovetenskap",
+        "en": "Other Earth Sciences"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/105"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/105"},
+      "hiddenLabelByLang": {"sv": "Annan geovetenskap och miljövetenskap"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "geografisk informationsvetenskap",
+            "en": "Geographical Information Science"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/106",
@@ -584,7 +866,7 @@
       },
       "commentByLang": {
         "sv": "Medicinska tillämpningar under 3 och lantbruksvetenskapliga under 4",
-        "en": "Medical to be 3 and Agricultural to be 4"
+        "en": "Medical aspects at 3 and agricultural at 4"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/1"}
     },
@@ -596,28 +878,6 @@
       "prefLabelByLang": {
         "sv": "Strukturbiologi",
         "en": "Structural Biology"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/106"}
-    },
-    {
-      "@id": "https://id.kb.se/term/ssif/10602",
-      "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "10602",
-      "prefLabelByLang": {
-        "sv": "Biokemi och molekylärbiologi",
-        "en": "Biochemistry and Molecular Biology"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/106"}
-    },
-    {
-      "@id": "https://id.kb.se/term/ssif/10603",
-      "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "10603",
-      "prefLabelByLang": {
-        "sv": "Biofysik",
-        "en": "Biophysics"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/106"}
     },
@@ -642,8 +902,8 @@
         "en": "Immunology"
       },
       "commentByLang": {
-        "sv": "medicinsk under 30110 och lantbruksvetenskaplig under 40302",
-        "en": "medical  to be 30110 and agricultural to be 40302"
+        "sv": "medicinska aspekter under 30110 och lantbruksvetenskapliga under 40302",
+        "en": "Medical aspects at 30110 and agricultural at 40302"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/106"}
     },
@@ -657,8 +917,8 @@
         "en": "Microbiology"
       },
       "commentByLang": {
-        "sv": "medicinsk under 30109 och lantbruksvetenskaplig under 40302",
-        "en": "medical  to be 30109 and agricultural to be 40302"
+        "sv": "medicinska aspekter under 30109 och lantbruksvetenskapliga under 40302",
+        "en": "Medical aspects at 30109 and agricultural at 40302"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/106"}
     },
@@ -690,14 +950,16 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "10609",
       "prefLabelByLang": {
-        "sv": "Genetik",
-        "en": "Genetics"
+        "sv": "Genetik och genomik",
+        "en": "Genetics and Genomics"
       },
       "commentByLang": {
-        "sv": "medicinsk under 30107 och lantbruksvetenskaplig under 40402",
-        "en": "medical to be 30107 and agricultural to be 40402"
+        "sv": "medicinska aspekter under 30107 och lantbruksvetenskapliga under 40402",
+        "en": "Medical aspects at 30107 and agricultural at 40402"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/106"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/106"},
+      "hiddenLabelByLang": {"sv": "Genetik (medicinsk under 30107 och lantbruksvetenskaplig under 40402)"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/10610",
@@ -705,14 +967,32 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "10610",
       "prefLabelByLang": {
-        "sv": "Bioinformatik och systembiologi",
-        "en": "Bioinformatics and Systems Biology"
+        "sv": "Bioinformatik och beräkningsbiologi",
+        "en": "Bioinformatics and Computational Biology"
       },
       "commentByLang": {
         "sv": "metodutveckling under 10203",
-        "en": "methods development to be 10203"
+        "en": "Methods development to be 10203"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/106"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/106"},
+      "hiddenLabelByLang": {"sv": "Bioinformatik och systembiologi (metodutveckling under 10203)"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "modellering",
+            "en": "Modelling"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "maskininlärning",
+            "en": "Machine Learning"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/10611",
@@ -723,7 +1003,30 @@
         "sv": "Ekologi",
         "en": "Ecology"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/106"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/106"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "bevarandebiologi (biodiversitet med lantbruksvetenskaplig inriktning under 40504)",
+            "en": "Biodiversity Conservation (Biodiversity within agricultural sciences at 40504)"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/10612",
@@ -770,6 +1073,19 @@
       "broader": {"@id": "https://id.kb.se/term/ssif/106"}
     },
     {
+      "@id": "https://id.kb.se/term/ssif/10616",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "10616",
+      "prefLabelByLang": {
+        "sv": "Molekylärbiologi",
+        "en": "Molecular Biology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/106"},
+      "scopeNoteByLang": {"sv": "Uppdelning av ämne"},
+      "historyNoteByLang": {"sv": "Biokemi och molekylärbiologi 10602 (SSIF2011) har delats upp i två separata ämnen. Biokemi 10408 (SSIF 2025) ingår nu i Kemi 104 medan Molekylärbiologi 10616 (SSIF2025) fortsatt ingår i Biologi 106."}
+    },
+    {
       "@id": "https://id.kb.se/term/ssif/10699",
       "@type": "Classification",
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
@@ -797,10 +1113,12 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "10799",
       "prefLabelByLang": {
-        "sv": "Övrig annan naturvetenskap",
-        "en": "Other Natural Sciences not elsewhere specified"
+        "sv": "Annan naturvetenskap",
+        "en": "Other Natural Sciences"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/107"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/107"},
+      "hiddenLabelByLang": {"sv": "Övrig annan naturvetenskap"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/2",
@@ -840,10 +1158,22 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20102",
       "prefLabelByLang": {
-        "sv": "Byggproduktion",
+        "sv": "Byggprocess och förvaltning",
         "en": "Construction Management"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/201"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/201"},
+      "hiddenLabelByLang": {"sv": "Byggproduktion"},
+      "scopeNoteByLang": {"sv": "Sammanslagning av ämnen"},
+      "historyNoteByLang": {"sv": "Miljöanalys och bygginformatik 20108 (SSIF2011) och Byggproduktion 20102 (SSIF2011) har slagits samman till Byggprocess och förvaltning 20102 (SSIF2025)."},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "miljöanalys och bygginformationsteknik",
+            "en": "Environmental Analysis and Construction Information Technology"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/20103",
@@ -884,10 +1214,12 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20106",
       "prefLabelByLang": {
-        "sv": "Geoteknik",
-        "en": "Geotechnical Engineering"
+        "sv": "Geoteknik och teknisk geologi",
+        "en": "Geotechnical Engineering and Engineering Geology"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/201"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/201"},
+      "hiddenLabelByLang": {"sv": "Geoteknik"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/20107",
@@ -903,13 +1235,35 @@
     {
       "@id": "https://id.kb.se/term/ssif/20108",
       "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20108",
+      "hiddenLabel": "Miljöanalys och bygginformationsteknik",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/20102"}
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20109",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20109",
       "prefLabelByLang": {
-        "sv": "Miljöanalys och bygginformationsteknik",
-        "en": "Environmental Analysis and  Construction Information Technology"
+        "sv": "Byggkonstruktion",
+        "en": "Structural Engineering"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/201"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/201"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20110",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20110",
+      "prefLabelByLang": {
+        "sv": "Byggnadsmaterial",
+        "en": "Building materials"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/201"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/20199",
@@ -939,10 +1293,12 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20201",
       "prefLabelByLang": {
-        "sv": "Robotteknik och automation",
-        "en": "Robotics"
+        "sv": "Robotik och automation",
+        "en": "Robotics and automation"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/202"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/202"},
+      "hiddenLabelByLang": {"sv": "Robotteknik och automation"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/20202",
@@ -1011,6 +1367,34 @@
       "broader": {"@id": "https://id.kb.se/term/ssif/202"}
     },
     {
+      "@id": "https://id.kb.se/term/ssif/20208",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20208",
+      "prefLabelByLang": {
+        "sv": "Datorseende och lärande system",
+        "en": "Computer Vision and learning System"
+      },
+      "commentByLang": {
+        "sv": "datavetenskapliga aspekter under 10207",
+        "en": "Computer Sciences aspects in 10207"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/202"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20209",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20209",
+      "prefLabelByLang": {
+        "sv": "Elkraftsystem och -komponenter",
+        "en": "Power Systems and Components"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/202"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
       "@id": "https://id.kb.se/term/ssif/20299",
       "@type": "Classification",
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
@@ -1049,21 +1433,38 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20302",
       "prefLabelByLang": {
-        "sv": "Rymd- och flygteknik",
-        "en": "Aerospace Engineering"
+        "sv": "Farkost och rymdteknik",
+        "en": "Vehicle and Aerospace Engineering"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/203"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/203"},
+      "hiddenLabelByLang": {"sv": "Rymd- och flygteknik"},
+      "scopeNoteByLang": {"sv": "Sammanslagning av ämnen"},
+      "historyNoteByLang": {"sv": "Farkostteknik 20303 (SSIF2011) och Rymd- och flygteknik 20302 (SSIF 2011) har slagits samman till Farkost och rymdteknik 20302 (SSIF2025)."},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "flygteknik",
+            "en": ""
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/20303",
       "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20303",
-      "prefLabelByLang": {
-        "sv": "Farkostteknik",
-        "en": "Vehicle Engineering"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/203"}
+      "hiddenLabel": "Farkostteknik",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/20302"}
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/20304",
@@ -1093,10 +1494,13 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20306",
       "prefLabelByLang": {
-        "sv": "Strömningsmekanik och akustik",
-        "en": "Fluid Mechanics and Acoustics"
+        "sv": "Strömningsmekanik",
+        "en": "Fluid Mechanics"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/203"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/203"},
+      "hiddenLabelByLang": {"sv": "Strömningsmekanik och akustik"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"},
+      "historyNoteByLang": {"sv": "Akustik som tidigare var del av ämnet ingår numera i Annan maskinteknik 20399 (SSIF2025)."}
     },
     {
       "@id": "https://id.kb.se/term/ssif/20307",
@@ -1112,17 +1516,23 @@
     {
       "@id": "https://id.kb.se/term/ssif/20308",
       "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20308",
+      "hiddenLabel": "Tribologi (ytteknik omfattande friktion, nötning och smörjning)",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/20399"}
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20309",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20309",
       "prefLabelByLang": {
-        "sv": "Tribologi",
-        "en": "Tribology"
+        "sv": "Solid- och strukturmekanik",
+        "en": "Solid and Structural Mechanics"
       },
-      "commentByLang": {
-        "sv": "ytteknik omfattande friktion, nötning och smörjning",
-        "en": "interacting surfaces including Friction, Lubrication and Wear"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/203"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/203"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/20399",
@@ -1133,7 +1543,67 @@
         "sv": "Annan maskinteknik",
         "en": "Other Mechanical Engineering"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/203"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/203"},
+      "scopeNoteByLang": {"sv": "Annan"},
+      "historyNoteByLang": {"sv": "Tribologi 20308 (SSIF2011) och akustik som var en delmängd av 20306 (SSIF2011) ingår numera i Annan maskinteknik 20399 (SSIF2025). Industriell ekonomi 20310 (SSIF2025) ingick tidigare i Annan maskinteknik 20399 (SSIF2011)."},
+      "related": [
+        {
+          "@id": "https://id.kb.se/term/ssif/20310",
+          "@annotation": {
+            "commentByLang": {"sv": "Uppdelning av ämne"}
+          }
+        }
+      ],
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "logistik",
+            "en": "Logistics"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "förbränningsteknik",
+            "en": "Combustion Technology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "återvinningsteknik",
+            "en": "Recycling Technology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "tribologi",
+            "en": "Tribology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "akustik",
+            "en": "Acoustics"
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20310",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20310",
+      "prefLabelByLang": {
+        "sv": "Industriell ekonomi",
+        "en": "Industrial engineering and management"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/203"},
+      "scopeNoteByLang": {"sv": "Uppdelning av ämne"},
+      "historyNoteByLang": {"sv": "Industriell ekonomi 20310 (SSIF2025) ingick tidigare i Annan maskinteknik 20399 (SSIF2011)."}
     },
     {
       "@id": "https://id.kb.se/term/ssif/204",
@@ -1147,26 +1617,26 @@
       "broader": {"@id": "https://id.kb.se/term/ssif/2"}
     },
     {
-      "@id": "https://id.kb.se/term/ssif/20401",
-      "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "20401",
-      "prefLabelByLang": {
-        "sv": "Kemiska processer",
-        "en": "Chemical Process Engineering"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/204"}
-    },
-    {
       "@id": "https://id.kb.se/term/ssif/20402",
       "@type": "Classification",
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20402",
       "prefLabelByLang": {
-        "sv": "Korrosionsteknik",
-        "en": "Corrosion Engineering"
+        "sv": "Yt- och korrosionsteknik",
+        "en": "Surface- and Corrosion Engineering"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/204"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/204"},
+      "hiddenLabelByLang": {"sv": "Korrosionsteknik"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "kemisk tribologi",
+            "en": "Chemical tribology"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/20403",
@@ -1182,13 +1652,90 @@
     {
       "@id": "https://id.kb.se/term/ssif/20404",
       "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20404",
+      "hiddenLabel": "Farmaceutisk synteskemi",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/20499"}
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20401",
+      "@type": "Classification",
+      "code": "20401",
+      "hiddenLabelByLang": {"sv": "Kemiska processer"},
+      "isReplacedBy": [
+        {
+          "@id": "https://id.kb.se/term/ssif/20405",
+          "@annotation": {
+            "commentByLang": {"sv": "Uppdelning av ämne"}
+          }
+        },
+        {
+          "@id": "https://id.kb.se/term/ssif/20406",
+          "@annotation": {
+            "commentByLang": {"sv": "Uppdelning av ämne"}
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20405",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20405",
       "prefLabelByLang": {
-        "sv": "Farmaceutisk synteskemi",
-        "en": "Pharmaceutical Chemistry"
+        "sv": "Katalytiska processer",
+        "en": "Catalytic Processes"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/204"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/204"},
+      "scopeNoteByLang": {"sv": "Uppdelning av ämne"},
+      "historyNoteByLang": {"sv": "Kemiska processer 20401 (SSIF2011) har delats upp i Katalytiska processer 20405 (SSIF2025) och Separationsprocesser 20406 (SSIF2025)."}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20406",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20406",
+      "prefLabelByLang": {
+        "sv": "Separationsprocesser",
+        "en": "Separation Processes"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/204"},
+      "scopeNoteByLang": {"sv": "Uppdelning av ämne"},
+      "historyNoteByLang": {"sv": "Kemiska processer 20401 (SSIF2011) har delats upp i Katalytiska processer 20405 (SSIF2025) och Separationsprocesser 20406 (SSIF2025)."}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/21101",
+      "@type": "Classification",
+      "code": "21101",
+      "hiddenLabelByLang": {"sv": "Livsmedelsteknik"},
+      "isReplacedBy": [
+        {
+          "@id": "https://id.kb.se/term/ssif/20407",
+          "@annotation": {
+            "commentByLang": {"sv": "Bytt forskningsämnesgrupp, Uppdelning av ämne"}
+          }
+        },
+        {
+          "@id": "https://id.kb.se/term/ssif/20909",
+          "@annotation": {
+            "commentByLang": {"sv": "Bytt forskningsämnesgrupp, Uppdelning av ämne"}
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20407",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20407",
+      "prefLabelByLang": {
+        "sv": "Livsmedelsprocessteknik",
+        "en": "Circular Food Process Technologies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/204"},
+      "scopeNoteByLang": {"sv": "Bytt forskningsämnesgrupp, Uppdelning av ämne"},
+      "historyNoteByLang": {"sv": "Livsmedelsteknik 21101 (SSIF2011) har nu delats upp i Livsmedelsbioteknik 20909 (SSIF2025) och Livsmedelsprocessteknik 20407 (SSIF2025)"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/20499",
@@ -1218,10 +1765,12 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20501",
       "prefLabelByLang": {
-        "sv": "Keramteknik",
-        "en": "Ceramics"
+        "sv": "Keramiska och pulvermetallurgiska material",
+        "en": "Ceramics and Powder Metallurgical Materials"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/205"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/205"},
+      "hiddenLabelByLang": {"sv": "Keramteknik"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/20502",
@@ -1229,7 +1778,7 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20502",
       "prefLabelByLang": {
-        "sv": "Kompositmaterial och -teknik",
+        "sv": "Kompositmaterial och kompositteknik",
         "en": "Composite Science and Engineering"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/205"}
@@ -1306,10 +1855,13 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20601",
       "prefLabelByLang": {
-        "sv": "Medicinsk laboratorie- och mätteknik",
-        "en": "Medical Laboratory and Measurements Technologies"
+        "sv": "Medicinsk laboratorieteknik",
+        "en": "Medical Laboratory Technologies"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/206"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/206"},
+      "hiddenLabelByLang": {"sv": "Medicinsk laboratorie- och mätteknik"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"},
+      "historyNoteByLang": {"sv": "Mätteknik som tidigare var del av ämnet ingår numera i Medicinsk instrumentering 20604 (SSIF2025)"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/20602",
@@ -1317,10 +1869,21 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20602",
       "prefLabelByLang": {
-        "sv": "Medicinsk material- och protesteknik",
+        "sv": "Medicinsk materialteknik",
         "en": "Medical Materials"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/206"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/206"},
+      "hiddenLabelByLang": {"sv": "Medicinsk material- och protesteknik"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "protesteknik",
+            "en": "Prosthesis technologies"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/20603",
@@ -1328,10 +1891,12 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20603",
       "prefLabelByLang": {
-        "sv": "Medicinsk bildbehandling",
-        "en": "Medical Image Processing"
+        "sv": "Medicinsk bildvetenskap",
+        "en": "Medical Imaging"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/206"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/206"},
+      "hiddenLabelByLang": {"sv": "Medicinsk bildbehandling"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/20604",
@@ -1339,10 +1904,22 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20604",
       "prefLabelByLang": {
-        "sv": "Medicinsk apparatteknik",
-        "en": "Medical Equipment Engineering"
+        "sv": "Medicinsk instrumentering",
+        "en": "Medical Instrumentation"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/206"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/206"},
+      "hiddenLabelByLang": {"sv": "Medicinsk apparatteknik"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"},
+      "historyNoteByLang": {"sv": "Mätteknik som tidigare var del av 20601 (SSIF2011) ingår numera i Medicinsk instrumentering 20604 (SSIF2025)"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "mätteknik",
+            "en": "Measurement Technologies"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/20605",
@@ -1350,10 +1927,28 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20605",
       "prefLabelByLang": {
-        "sv": "Medicinsk ergonomi",
-        "en": "Medical Ergonomics"
+        "sv": "Medicinsk modellering och simulering",
+        "en": "Medical Modelling and Simulation"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/206"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/206"},
+      "hiddenLabelByLang": {"sv": "Medicinsk ergonomi"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20606",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20606",
+      "prefLabelByLang": {
+        "sv": "Medicinteknisk informatik",
+        "en": "Medical Informatics Engineering"
+      },
+      "commentByLang": {
+        "sv": "medicinska aspekter under 30117",
+        "en": "Medical aspects at 30117"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/206"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/20699",
@@ -1380,13 +1975,11 @@
     {
       "@id": "https://id.kb.se/term/ssif/20701",
       "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20701",
-      "prefLabelByLang": {
-        "sv": "Geofysisk teknik",
-        "en": "Geophysical Engineering"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/207"}
+      "hiddenLabel": "Geofysisk teknik",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/20703"}
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/20702",
@@ -1405,10 +1998,43 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20703",
       "prefLabelByLang": {
-        "sv": "Fjärranalysteknik",
-        "en": "Remote Sensing"
+        "sv": "Jordobservationsteknik",
+        "en": "Earth Observation"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/207"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/207"},
+      "hiddenLabelByLang": {"sv": "Fjärranalysteknik"},
+      "scopeNoteByLang": {"sv": "Sammanslagning av ämnen"},
+      "historyNoteByLang": {"sv": "Geofysisk teknik 20701 (SSIF2011) och Fjärranalysteknik 20703 (SSIF2011) har slagits samman till Jordobservationsteknik 20703 (SSIF2025)."},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "teknik för fjärranalys",
+            "en": "Remote Sensing"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "geodesi",
+            "en": "Geodesy"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "geofysisk teknik",
+            "en": "Geophysical Engineering"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "geografisk informationsteknik",
+            "en": "Geographical information technology"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/20704",
@@ -1427,21 +2053,38 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20705",
       "prefLabelByLang": {
-        "sv": "Marin teknik",
+        "sv": "Marinteknik",
         "en": "Marine Engineering"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/207"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/207"},
+      "hiddenLabelByLang": {"sv": "Marin teknik"},
+      "scopeNoteByLang": {"sv": "Sammanslagning av ämnen"},
+      "historyNoteByLang": {"sv": "Havs- och vattendragsteknik 20706 (SSIF2011) ingår numera i Marinteknik 20705 (SSIF2025)."},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "havs- och vattendragsteknik",
+            "en": "Ocean and River Engineering"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/20706",
       "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20706",
-      "prefLabelByLang": {
-        "sv": "Havs- och vattendragsteknik",
-        "en": "Ocean and River Engineering"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/207"}
+      "hiddenLabel": "Havs- och vattendragsteknik",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/20705"}
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/20707",
@@ -1449,10 +2092,12 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20707",
       "prefLabelByLang": {
-        "sv": "Miljöledning",
+        "sv": "Miljöteknik och miljöledning",
         "en": "Environmental Management"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/207"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/207"},
+      "hiddenLabelByLang": {"sv": "Miljöledning"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/20799",
@@ -1504,21 +2149,21 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20803",
       "prefLabelByLang": {
-        "sv": "Vattenbehandling",
+        "sv": "Vattenbehandlingsbioteknik",
         "en": "Water Treatment"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/208"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/208"},
+      "hiddenLabelByLang": {"sv": "Vattenbehandling"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/20804",
       "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20804",
-      "prefLabelByLang": {
-        "sv": "Bioteknisk etik",
-        "en": "Bioethics"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/208"}
+      "hiddenLabel": "Bioteknisk etik",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/20899"}
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/20899",
@@ -1551,7 +2196,18 @@
         "sv": "Bioprocessteknik",
         "en": "Bioprocess Technology"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/209"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/209"},
+      "scopeNoteByLang": {"sv": "Sammanslagning av ämnen"},
+      "historyNoteByLang": {"sv": "Bioteknisk apparatteknik 20907 (SSIF2011) ingår numera i Bioprocessteknik 20901 (SSIF2025)."},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "bioteknisk apparatteknik",
+            "en": "Bioengineering Equipment"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/20902",
@@ -1584,7 +2240,9 @@
         "sv": "Bioenergi",
         "en": "Bioenergy"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/209"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/209"},
+      "scopeNoteByLang": {"sv": "Annan"},
+      "historyNoteByLang": {"sv": "Förnyelsebar bioenergi 40501 (SSIF2011) ingår nu i 20904 (SSIF2025)."}
     },
     {
       "@id": "https://id.kb.se/term/ssif/20905",
@@ -1592,10 +2250,13 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20905",
       "prefLabelByLang": {
-        "sv": "Läkemedelsbioteknik",
-        "en": "Pharmaceutical Biotechnology"
+        "sv": "Läkemedel- och medicinsk processbioteknik",
+        "en": "Pharmaceutical and Medical Biotechnology"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/209"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/209"},
+      "hiddenLabelByLang": {"sv": "Läkemedelsbioteknik"},
+      "scopeNoteByLang": {"sv": "Sammanslagning av ämnen"},
+      "historyNoteByLang": {"sv": "Läkemedelsbioteknik 20905 (SSIF2011) och Medicinsk bioteknik 20908 (SSIF2011) har slagits samman till Läkemedel- och medicinsk processbioteknik 20905 (SSIF2025)."}
     },
     {
       "@id": "https://id.kb.se/term/ssif/20906",
@@ -1611,24 +2272,33 @@
     {
       "@id": "https://id.kb.se/term/ssif/20907",
       "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20907",
-      "prefLabelByLang": {
-        "sv": "Bioteknisk apparatteknik",
-        "en": "Bioengineering Equipment"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/209"}
+      "hiddenLabel": "Bioteknisk apparatteknik",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/20901"}
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/20908",
       "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "20908",
+      "hiddenLabel": "Medicinsk bioteknik",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/20905"}
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/20909",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "20909",
       "prefLabelByLang": {
-        "sv": "Medicinsk bioteknik",
-        "en": "Medical Biotechnology"
+        "sv": "Livsmedelsbioteknik",
+        "en": "Food Biotechnology"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/209"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/209"},
+      "scopeNoteByLang": {"sv": "Bytt forskningsämnesgrupp, Uppdelning av ämne"},
+      "historyNoteByLang": {"sv": "Livsmedelsteknik 21101 (SSIF2011) har nu delats upp i Livsmedelsbioteknik 20909 (SSIF2025) och Livsmedelsprocessteknik 20407 (SSIF2025)."}
     },
     {
       "@id": "https://id.kb.se/term/ssif/20999",
@@ -1655,13 +2325,74 @@
     {
       "@id": "https://id.kb.se/term/ssif/21001",
       "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "21001",
+      "hiddenLabel": "Nanoteknik",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/21002"},
+        {"@id": "https://id.kb.se/term/ssif/21003"},
+        {"@id": "https://id.kb.se/term/ssif/21004"},
+        {"@id": "https://id.kb.se/term/ssif/21005"}
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/21002",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "21002",
       "prefLabelByLang": {
-        "sv": "Nanoteknik",
-        "en": "Nano-technology"
+        "sv": "Nanoteknisk elektronik",
+        "en": "Nanotechnology for Electronic Applications"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/210"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/210"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/21003",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "21003",
+      "prefLabelByLang": {
+        "sv": "Nanoteknisk materialvetenskap",
+        "en": "Nanotechnology for Material Science"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/210"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/21004",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "21004",
+      "prefLabelByLang": {
+        "sv": "Nanotekniska energitillämpningar",
+        "en": "Nanotechnology for Energy Applications"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/210"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/21005",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "21005",
+      "prefLabelByLang": {
+        "sv": "Nanotekniska livsvetenskaper och medicin",
+        "en": "Nanotechnology for/in Life Science and Medicine"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/210"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/21099",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "21099",
+      "prefLabelByLang": {
+        "sv": "Annan nanoteknik",
+        "en": "Other Nanotechnology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/210"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/211",
@@ -1675,37 +2406,22 @@
       "broader": {"@id": "https://id.kb.se/term/ssif/2"}
     },
     {
-      "@id": "https://id.kb.se/term/ssif/21101",
-      "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "21101",
-      "prefLabelByLang": {
-        "sv": "Livsmedelsteknik",
-        "en": "Food Engineering"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/211"}
-    },
-    {
       "@id": "https://id.kb.se/term/ssif/21102",
       "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "21102",
-      "prefLabelByLang": {
-        "sv": "Mediateknik",
-        "en": "Media Engineering"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/211"}
+      "hiddenLabel": "Mediateknik",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/21199"}
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/21103",
       "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "21103",
-      "prefLabelByLang": {
-        "sv": "Interaktionsteknik",
-        "en": "Interaction Technologies"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/211"}
+      "hiddenLabel": "Interaktionsteknik",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/21199"}
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/21199",
@@ -1713,10 +2429,12 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "21199",
       "prefLabelByLang": {
-        "sv": "Övrig annan teknik",
-        "en": "Other Engineering and Technologies not elsewhere specified"
+        "sv": "Annan teknik",
+        "en": "Other Engineering and Technologies"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/211"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/211"},
+      "hiddenLabelByLang": {"sv": "Övrig annan teknik"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/3",
@@ -1770,6 +2488,10 @@
         "sv": "Läkemedelskemi",
         "en": "Medicinal Chemistry"
       },
+      "commentByLang": {
+        "sv": "naturvetenskaplig inriktning under 10405",
+        "en": "Natural Sciences at 10405"
+      },
       "broader": {"@id": "https://id.kb.se/term/ssif/301"}
     },
     {
@@ -1800,10 +2522,12 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "30106",
       "prefLabelByLang": {
-        "sv": "Fysiologi",
-        "en": "Physiology"
+        "sv": "Fysiologi och anatomi",
+        "en": "Physiology and Anatomy"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/301"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"},
+      "hiddenLabelByLang": {"sv": "Fysiologi"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/30107",
@@ -1811,10 +2535,21 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "30107",
       "prefLabelByLang": {
-        "sv": "Medicinsk genetik",
-        "en": "Medical Genetics"
+        "sv": "Medicinsk genetik och genomik",
+        "en": "Medical Genetics and Genomics"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/301"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"},
+      "hiddenLabelByLang": {"sv": "Medicinsk genetik"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "genterapi",
+            "en": "Gene Therapy"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/30108",
@@ -1834,7 +2569,7 @@
       "code": "30109",
       "prefLabelByLang": {
         "sv": "Mikrobiologi inom det medicinska området",
-        "en": "Microbiology in the medical area"
+        "en": "Microbiology in the Medical Area"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/301"}
     },
@@ -1845,9 +2580,148 @@
       "code": "30110",
       "prefLabelByLang": {
         "sv": "Immunologi inom det medicinska området",
-        "en": "Immunology in the medical area"
+        "en": "Immunology in the Medical Area"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/301"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "cell- och immunterapi",
+            "en": "Cell and Immunotherapy"
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30111",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30111",
+      "prefLabelByLang": {
+        "sv": "Medicinska biovetenskaper",
+        "en": "Medical Life Sciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "patologi och biokemi",
+            "en": "Pathology and Biochemistry"
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30112",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30112",
+      "prefLabelByLang": {
+        "sv": "Basal cancerforskning",
+        "en": "Basic Cancer Research"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30113",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30113",
+      "prefLabelByLang": {
+        "sv": "Medicinsk bioinformatik och systembiologi",
+        "en": "Medical Bioinformatics and Systems Biology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30114",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30114",
+      "prefLabelByLang": {
+        "sv": "Evolution och utvecklingsgenetik",
+        "en": "Evolution and Developmental Genetics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30115",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30115",
+      "prefLabelByLang": {
+        "sv": "Medicinsk epigenetik och epigenomik",
+        "en": "Medical Epigenetics and Epigenomics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30302",
+      "@type": "Classification",
+      "code": "30302",
+      "hiddenLabelByLang": {"sv": "Folkhälsovetenskap, global hälsa, socialmedicin och epidemiologi"},
+      "isReplacedBy": [
+        {
+          "@id": "https://id.kb.se/term/ssif/30116",
+          "@annotation": {
+            "commentByLang": {"sv": "Bytt forskningsämnesgrupp, Uppdelning av ämne"}
+          }
+        },
+        {
+          "@id": "https://id.kb.se/term/ssif/30311",
+          "@annotation": {
+            "commentByLang": {"sv": "Uppdelning av ämne"}
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30116",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30116",
+      "prefLabelByLang": {
+        "sv": "Epidemiologi",
+        "en": "Epidemiology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"},
+      "scopeNoteByLang": {"sv": "Bytt forskningsämnesgrupp, Uppdelning av ämne"},
+      "historyNoteByLang": {"sv": "Epidemiologi 30116 (SSIF2025) var tidigare en del av Folkhälsovetenskap, global hälsa, socialmedicin och epidemiologi 30302 (SSIF2011) men utgör numera ett eget ämne."}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30117",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30117",
+      "prefLabelByLang": {
+        "sv": "Medicinsk informatik",
+        "en": "Medical Informatics"
+      },
+      "commentByLang": {
+        "sv": "tekniska aspekter under 20606",
+        "en": "Technical aspects at 20606"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30118",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30118",
+      "prefLabelByLang": {
+        "sv": "Medicinsk biostatistik",
+        "en": "Medical Biostatistics"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/301"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/30199",
@@ -1902,7 +2776,16 @@
         "sv": "Cancer och onkologi",
         "en": "Cancer and Oncology"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "precisionsmedicin",
+            "en": "Precision Medicine"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/30204",
@@ -1932,10 +2815,12 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "30206",
       "prefLabelByLang": {
-        "sv": "Kardiologi",
-        "en": "Cardiac and Cardiovascular Systems"
+        "sv": "Kardiologi och kardiovaskulära sjukdomar",
+        "en": "Cardiology and Cardiovascular Disease"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"},
+      "hiddenLabelByLang": {"sv": "Kardiologi"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/30207",
@@ -1955,7 +2840,7 @@
       "code": "30208",
       "prefLabelByLang": {
         "sv": "Radiologi och bildbehandling",
-        "en": "Radiology, Nuclear Medicine and Medical Imaging"
+        "en": "Radiology and Medical Imaging"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/302"}
     },
@@ -1967,17 +2852,6 @@
       "prefLabelByLang": {
         "sv": "Infektionsmedicin",
         "en": "Infectious Medicine"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
-    },
-    {
-      "@id": "https://id.kb.se/term/ssif/30210",
-      "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "30210",
-      "prefLabelByLang": {
-        "sv": "Reumatologi och inflammation",
-        "en": "Rheumatology and Autoimmunity"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/302"}
     },
@@ -2001,7 +2875,16 @@
         "sv": "Kirurgi",
         "en": "Surgery"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "kirurgiska subspecialiteter",
+            "en": "Surgical Subspecialties"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/30213",
@@ -2009,21 +2892,12 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "30213",
       "prefLabelByLang": {
-        "sv": "Gastroenterologi",
+        "sv": "Gastroenterologi och hepatologi",
         "en": "Gastroenterology and Hepatology"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
-    },
-    {
-      "@id": "https://id.kb.se/term/ssif/30214",
-      "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "30214",
-      "prefLabelByLang": {
-        "sv": "Urologi och njurmedicin",
-        "en": "Urology and Nephrology"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"},
+      "hiddenLabelByLang": {"sv": "Gastroenterologi"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/30215",
@@ -2043,7 +2917,7 @@
       "code": "30216",
       "prefLabelByLang": {
         "sv": "Odontologi",
-        "en": "Dentistry"
+        "en": "Odontology"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/302"}
     },
@@ -2065,7 +2939,7 @@
       "code": "30218",
       "prefLabelByLang": {
         "sv": "Oto-rhino-laryngologi",
-        "en": "Otorhinolaryngology"
+        "en": "Oto-rhino-laryngology"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/302"}
     },
@@ -2086,10 +2960,12 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "30220",
       "prefLabelByLang": {
-        "sv": "Reproduktionsmedicin och gynekologi",
-        "en": "Obstetrics, Gynaecology and Reproductive Medicine"
+        "sv": "Gynekologi, obstetrik och reproduktionsmedicin",
+        "en": "Gynaecology, Obstetrics and Reproductive Medicine"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"},
+      "hiddenLabelByLang": {"sv": "Reproduktionsmedicin och gynekologi"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/30221",
@@ -2131,9 +3007,125 @@
       "code": "30224",
       "prefLabelByLang": {
         "sv": "Allmänmedicin",
-        "en": "General Practice"
+        "en": "General Medicine"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/302"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30210",
+      "@type": "Classification",
+      "code": "30210",
+      "hiddenLabelByLang": {"sv": "Reumatologi och inflammation"},
+      "isReplacedBy": [
+        {
+          "@id": "https://id.kb.se/term/ssif/30225",
+          "@annotation": {
+            "commentByLang": {"sv": "Uppdelning av ämne"}
+          }
+        },
+        {
+          "@id": "https://id.kb.se/term/ssif/30226",
+          "@annotation": {
+            "commentByLang": {"sv": "Uppdelning av ämne"}
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30225",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30225",
+      "prefLabelByLang": {
+        "sv": "Reumatologi",
+        "en": "Rheumatology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"},
+      "scopeNoteByLang": {"sv": "Uppdelning av ämne"},
+      "historyNoteByLang": {"sv": "Reumatologi 30225 (SSIF2025) var tidigare en del av Reumatologi och inflamation 30210 (SSIF2011) men utgör numera ett eget ämne."}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30226",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30226",
+      "prefLabelByLang": {
+        "sv": "Autoimmunitet och inflammation",
+        "en": "Autoimmunity and Inflammation"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"},
+      "scopeNoteByLang": {"sv": "Uppdelning av ämne"},
+      "historyNoteByLang": {"sv": "Autoimmunitet och inflamation 30226 (SSIF2025) var tidigare en del av Reumatologi och inflamation 30210 (SSIF2011) men utgör numera ett eget ämne."}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30227",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30227",
+      "prefLabelByLang": {
+        "sv": "Internmedicin",
+        "en": "Internal Medicine"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30214",
+      "@type": "Classification",
+      "code": "30214",
+      "hiddenLabelByLang": {"sv": "Urologi och njurmedicin"},
+      "isReplacedBy": [
+        {
+          "@id": "https://id.kb.se/term/ssif/30228",
+          "@annotation": {
+            "commentByLang": {"sv": "Uppdelning av ämne"}
+          }
+        },
+        {
+          "@id": "https://id.kb.se/term/ssif/30229",
+          "@annotation": {
+            "commentByLang": {"sv": "Uppdelning av ämne"}
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30228",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30228",
+      "prefLabelByLang": {
+        "sv": "Urologi",
+        "en": "Urology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"},
+      "scopeNoteByLang": {"sv": "Uppdelning av ämne"},
+      "historyNoteByLang": {"sv": "Urologi 30228 (SSIF2025) var tidigare en del av Urologi och njurmedicin 30214 (SSIF2011) men utgör numera ett eget ämne."}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30229",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30229",
+      "prefLabelByLang": {
+        "sv": "Njurmedicin",
+        "en": "Nephrology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"},
+      "scopeNoteByLang": {"sv": "Uppdelning av ämne"},
+      "historyNoteByLang": {"sv": "Njurmedicin 30229 (SSIF2025) var tidigare en del av Urologi och njurmedicin 30214 (SSIF2011) men utgör numera ett eget ämne."}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30230",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30230",
+      "prefLabelByLang": {
+        "sv": "Förlossnings- och mödravård",
+        "en": "Childbirth and Maternity care"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/302"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/30299",
@@ -2169,17 +3161,6 @@
       "broader": {"@id": "https://id.kb.se/term/ssif/303"}
     },
     {
-      "@id": "https://id.kb.se/term/ssif/30302",
-      "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "30302",
-      "prefLabelByLang": {
-        "sv": "Folkhälsovetenskap, global hälsa, socialmedicin och epidemiologi",
-        "en": "Public Health, Global Health, Social Medicine and Epidemiology"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/303"}
-    },
-    {
       "@id": "https://id.kb.se/term/ssif/30303",
       "@type": "Classification",
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
@@ -2196,10 +3177,12 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "30304",
       "prefLabelByLang": {
-        "sv": "Näringslära",
+        "sv": "Näringslära och dietkunskap",
         "en": "Nutrition and Dietetics"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/303"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/303"},
+      "hiddenLabelByLang": {"sv": "Näringslära"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/30305",
@@ -2229,10 +3212,12 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "30307",
       "prefLabelByLang": {
-        "sv": "Sjukgymnastik",
+        "sv": "Fysioterapi",
         "en": "Physiotherapy"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/303"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/303"},
+      "hiddenLabelByLang": {"sv": "Sjukgymnastik"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/30308",
@@ -2240,10 +3225,12 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "30308",
       "prefLabelByLang": {
-        "sv": "Idrottsvetenskap",
+        "sv": "Idrottsvetenskap och fitness",
         "en": "Sport and Fitness Sciences"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/303"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/303"},
+      "hiddenLabelByLang": {"sv": "Idrottsvetenskap"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/30309",
@@ -2251,10 +3238,12 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "30309",
       "prefLabelByLang": {
-        "sv": "Beroendelära",
-        "en": "Substance Abuse"
+        "sv": "Beroendelära och missbruk",
+        "en": "Drug Abuse and Addiction"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/303"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/303"},
+      "hiddenLabelByLang": {"sv": "Beroendelära"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/30310",
@@ -2266,6 +3255,55 @@
         "en": "Medical Ethics"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/303"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30311",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30311",
+      "prefLabelByLang": {
+        "sv": "Folkhälsovetenskap, global hälsa och socialmedicin",
+        "en": "Public Health, Global Health and Social Medicine"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/303"},
+      "scopeNoteByLang": {"sv": "Uppdelning av ämne"},
+      "historyNoteByLang": {"sv": "Epidemiologi 30116 (SSIF2025) var tidigare en del av Folkhälsovetenskap, global hälsa, socialmedicin och epidemiologi 30302 (SSIF2011) men utgör numera ett eget ämne."}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30312",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30312",
+      "prefLabelByLang": {
+        "sv": "Palliativ medicin och palliativ vård",
+        "en": "Palliative Medicine and Palliative Care"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/303"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30313",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30313",
+      "prefLabelByLang": {
+        "sv": "Oral hälsa",
+        "en": "Oral Health"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/303"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/30314",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "30314",
+      "prefLabelByLang": {
+        "sv": "Rehabiliteringsmedicin",
+        "en": "Rehabilitation Medicine"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/303"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/30399",
@@ -2300,7 +3338,7 @@
       },
       "commentByLang": {
         "sv": "inriktn. mot cellbiologi (inkl. stamcellsbiologi), molekylärbiologi, mikrobiologi, biokemi eller biofarmaci",
-        "en": "focus on Cell Biology (incl. Stem Cell Biology), Molecular Biology, Microbiology, Biochemistry or Biopharmacy"
+        "en": "Focus on Cell Biology (incl. Stem Cell Biology), Molecular Biology, Microbiology, Biochemistry or Biopharmacy"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/304"}
     },
@@ -2369,8 +3407,8 @@
         "en": "Gerontology, specialising in Medical and Health Sciences"
       },
       "commentByLang": {
-        "sv": "Samhällsvetenskaplig inriktn.under 50999",
-        "en": "specialising in Social Sciences to be 50999"
+        "sv": "Samhällsvetenskaplig inriktn.under 50908",
+        "en": "Specialising in Social Sciences at 50908"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/305"}
     },
@@ -2401,10 +3439,12 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "401",
       "prefLabelByLang": {
-        "sv": "Lantbruksvetenskap, skogsbruk och fiske",
+        "sv": "Jordbruk, skogsbruk och fiske",
         "en": "Agriculture, Forestry and Fisheries"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/4"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/4"},
+      "hiddenLabelByLang": {"sv": "Lantbruksvetenskap, skogsbruk och fiske"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/40101",
@@ -2415,7 +3455,65 @@
         "sv": "Jordbruksvetenskap",
         "en": "Agricultural Science"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/401"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/401"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "växtgenetik",
+            "en": "Plant Genetics"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "jordbruksekologi",
+            "en": "Agricultural Ecology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "agroteknologi",
+            "en": "Agricultural Technology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "agrarhistoria",
+            "en": "Agricultural History"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/40102",
@@ -2437,7 +3535,44 @@
         "sv": "Livsmedelsvetenskap",
         "en": "Food Science"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/401"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/401"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "produktkvalitet",
+            "en": "Product Quality"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/40104",
@@ -2448,7 +3583,86 @@
         "sv": "Skogsvetenskap",
         "en": "Forest Science"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/401"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/401"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "skogsskötsel",
+            "en": "Silviculture"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "skogsgenetik",
+            "en": "Forest Genetics"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "skogsmykologi",
+            "en": "Forest Mycology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "skogspatologi",
+            "en": "Forest Pathology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "skogsteknologi",
+            "en": "Forest Technology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "skogshistoria",
+            "en": "Forest History"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "skogsekologi",
+            "en": "Forest Ecology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "skogsekonomi",
+            "en": "Forest Economics"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/40105",
@@ -2459,7 +3673,16 @@
         "sv": "Trävetenskap",
         "en": "Wood Science"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/401"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/401"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "träteknologi",
+            "en": "Wood Technology"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/40106",
@@ -2470,7 +3693,37 @@
         "sv": "Markvetenskap",
         "en": "Soil Science"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/401"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/401"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "biogeofysik",
+            "en": "Biogeophysics"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "biogeokemi",
+            "en": "Biogeochemistry"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "markmikrobiologi",
+            "en": "Soil Microbiology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "växt-mark interaktioner",
+            "en": "Plant-Soil Interactions"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/40107",
@@ -2481,18 +3734,46 @@
         "sv": "Fisk- och akvakulturforskning",
         "en": "Fish and Aquacultural Science"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/401"}
-    },
-    {
-      "@id": "https://id.kb.se/term/ssif/40108",
-      "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "40108",
-      "prefLabelByLang": {
-        "sv": "Landskapsarkitektur",
-        "en": "Landscape Architecture"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/401"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/401"},
+      "scopeNoteByLang": {"sv": "Annan"},
+      "historyNoteByLang": {"sv": "Fiskpopulationsekologi ingick tidigare i Fisk- och akvakulturforskning 40107 (SSIF2011) men ingår nu i Vilt och fiskeförvaltning 40502 (SSIF2025)."},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "fiskodling",
+            "en": "Fish farming"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "fiskgenetik",
+            "en": "Fish Genetics"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "fisketologi",
+            "en": "Fish Ethology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/402",
@@ -2501,7 +3782,7 @@
       "code": "402",
       "prefLabelByLang": {
         "sv": "Husdjursvetenskap",
-        "en": "Animal and Dairy Sience"
+        "en": "Animal and Dairy Science"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/4"}
     },
@@ -2512,9 +3793,53 @@
       "code": "40201",
       "prefLabelByLang": {
         "sv": "Husdjursvetenskap",
-        "en": "Animal and Dairy Science."
+        "en": "Animal and Dairy Science"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/402"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/402"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "djuretik",
+            "en": "Animal Ethics"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "renskötsel",
+            "en": "Reindeer Husbandry"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/403",
@@ -2536,7 +3861,30 @@
         "sv": "Medicinsk biovetenskap",
         "en": "Medical Bioscience"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/403"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/403"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "anatomi",
+            "en": "Anatomy"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "fysiologi",
+            "en": "Physiology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "biokemi",
+            "en": "Biochemistry"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/40302",
@@ -2547,7 +3895,51 @@
         "sv": "Patobiologi",
         "en": "Pathobiology"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/403"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/403"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "immunologi",
+            "en": "Immunology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "mikrobiologi",
+            "en": "Microbiology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "patologi",
+            "en": "Pathology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "toxikologi",
+            "en": "Toxicology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "farmakologi",
+            "en": "Pharmacology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "livsmedelssäkerhet",
+            "en": "Food Safety"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/40303",
@@ -2558,18 +3950,91 @@
         "sv": "Klinisk vetenskap",
         "en": "Clinical Science"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/403"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/403"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "anestesiologi",
+            "en": "Anaesthesiology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "komparativ medicin",
+            "en": "Comparative Medicine"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "diagnostik",
+            "en": "Diagnostics"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "djuromvårdnad",
+            "en": "Veterinary Nursing"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "epidemiologi",
+            "en": "Epidemiology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "kirurgi",
+            "en": "Surgery"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "medicin",
+            "en": "Medicine"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "reproduktion",
+            "en": "Reproduction"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/40304",
       "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "40304",
+      "hiddenLabelByLang": {"sv": "Annan veterinärmedicin"},
+      "isReplacedBy": [
+        {
+          "@id": "https://id.kb.se/term/ssif/40399",
+          "@annotation": {
+            "commentByLang": {"sv": "Ny kod"}
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40399",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40399",
       "prefLabelByLang": {
         "sv": "Annan veterinärmedicin",
         "en": "Other Veterinary Science"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/403"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/403"},
+      "scopeNoteByLang": {"sv": "Ny kod"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/404",
@@ -2591,7 +4056,23 @@
         "sv": "Växtbioteknologi",
         "en": "Plant Biotechnology"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/404"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/404"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "skogsbioteknologi",
+            "en": "Forest Biotechnology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/40402",
@@ -2602,7 +4083,37 @@
         "sv": "Genetik och förädling inom lantbruksvetenskap",
         "en": "Genetics and Breeding in Agricultural Sciences"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/404"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/404"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "mikroorganismer",
+            "en": "Microorganisms"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "svampar",
+            "en": "Fungi"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "reproduktionsbioteknologi",
+            "en": "Reproductive Biotechnology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "Cell-linjer och organioder",
+            "en": "Cell lines and Organoids"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/405",
@@ -2618,13 +4129,11 @@
     {
       "@id": "https://id.kb.se/term/ssif/40501",
       "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "40501",
-      "prefLabelByLang": {
-        "sv": "Förnyelsebar bioenergi",
-        "en": "Renewable Bioenergy Research"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/405"}
+      "hiddenLabel": "Förnyelsebar bioenergi",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/20904"}
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/40502",
@@ -2635,18 +4144,39 @@
         "sv": "Vilt- och fiskeförvaltning",
         "en": "Fish and Wildlife Management"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/405"}
-    },
-    {
-      "@id": "https://id.kb.se/term/ssif/40503",
-      "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "40503",
-      "prefLabelByLang": {
-        "sv": "Lantbrukets arbetsmiljö och säkerhet",
-        "en": "Agricultural Occupational Health and Safety"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/405"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/405"},
+      "scopeNoteByLang": {"sv": "Annan"},
+      "historyNoteByLang": {"sv": "Fiskpopulationsekologi ingick tidigare i Fisk- och akvakulturforskning 40107 (SSIF2011) men ingår nu i Vilt och fiskeförvaltning 40502 (SSIF2025)."},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "jakt",
+            "en": "Hunting"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "fisk och fiskeri",
+            "en": "Fishing and Fisheries"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "vilt- och fiskpopulationsekologi",
+            "en": "Game and Fishpopulation Ecology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/40504",
@@ -2654,10 +4184,116 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "40504",
       "prefLabelByLang": {
-        "sv": "Miljö- och  naturvårdsvetenskap",
-        "en": "Environmental Sciences related to Agriculture and Land-use"
+        "sv": "Miljö- och naturvårdsvetenskap",
+        "en": "Environmental Sciences and Nature Conservation"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/405"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/405"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "biodiversitet",
+            "en": "Biodiversity"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "",
+            "en": ""
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40503",
+      "@type": "Classification",
+      "code": "40503",
+      "hiddenLabel": "Lantbrukets arbetsmiljö och säkerhet",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/40599"}
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40108",
+      "@type": "Classification",
+      "code": "40108",
+      "hiddenLabelByLang": {"sv": "Landskapsarkitektur"},
+      "isReplacedBy": [
+        {
+          "@id": "https://id.kb.se/term/ssif/40505",
+          "@annotation": {
+            "commentByLang": {"sv": "Bytt forskningsämnesgrupp"}
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40505",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40505",
+      "prefLabelByLang": {
+        "sv": "Landskapsarkitektur",
+        "en": "Landscape Architecture"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/405"},
+      "scopeNoteByLang": {"sv": "Bytt forskningsämnesgrupp"},
+      "historyNoteByLang": {"sv": "Landskapsarkitektur 40505 (SSIF2025) ingick tidigare i Lantbruksvetenskap, skogsbruk och fiske 401 (SSIF2011)."},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "planering",
+            "en": "Planning"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "design",
+            "en": "Design"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "vård",
+            "en": "Management"
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40506",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40506",
+      "prefLabelByLang": {
+        "sv": "Jordbruksekonomi och landsbygdsutveckling",
+        "en": "Agricultural Economics and Management and Rural development"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/405"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/40507",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "40507",
+      "prefLabelByLang": {
+        "sv": "Miljöekonomi och förvaltning",
+        "en": "Environmental Economics and Management"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/405"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/40599",
@@ -2702,7 +4338,7 @@
       },
       "commentByLang": {
         "sv": "exklusive tillämpad psykologi",
-        "en": "excluding Applied Psychology"
+        "en": "Excluding Applied Psychology"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/501"}
     },
@@ -2715,7 +4351,23 @@
         "sv": "Tillämpad psykologi",
         "en": "Applied Psychology"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/501"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/501"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "klinisk psykologi",
+            "en": "Clinical Psychology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "psykoterapi",
+            "en": "Psychotherapy"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/502",
@@ -2781,7 +4433,16 @@
         "sv": "Pedagogik",
         "en": "Pedagogy"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/503"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/503"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "special- och andra inriktningar av pedagogik",
+            "en": "Special Needs- and other orientations of Pedagogy"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/50302",
@@ -2792,18 +4453,16 @@
         "sv": "Didaktik",
         "en": "Didactics"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/503"}
-    },
-    {
-      "@id": "https://id.kb.se/term/ssif/50303",
-      "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "50303",
-      "prefLabelByLang": {
-        "sv": "Lärande",
-        "en": "Learning"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/503"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/503"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "allmän- och  ämnesdidaktik",
+            "en": "General and Subject Didactics"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/50304",
@@ -2812,9 +4471,32 @@
       "code": "50304",
       "prefLabelByLang": {
         "sv": "Pedagogiskt arbete",
-        "en": "Pedagogical Work"
+        "en": "Educational Work"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/503"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50303",
+      "@type": "Classification",
+      "code": "50303",
+      "hiddenLabel": "Lärande",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/50301"},
+        {"@id": "https://id.kb.se/term/ssif/50302"},
+        {"@id": "https://id.kb.se/term/ssif/50399"}
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50399",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50399",
+      "prefLabelByLang": {
+        "sv": "Annan utbildningsvetenskaplig forskning",
+        "en": "Other Educational Sciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/503"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/504",
@@ -2837,10 +4519,22 @@
         "en": "Sociology"
       },
       "commentByLang": {
-        "sv": "exklusive socialt arbete, socialpsykologi och socialantropologi",
-        "en": "excluding Social Work, Social Psychology and Social Anthropology"
+        "sv": "exklusive socialt arbete, socialantropologi, demografi och kriminologi",
+        "en": "Excluding Social Work, Social Anthropology, Demography and Criminology"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/504"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/504"},
+      "hiddenLabelByLang": {"sv": "Sociologi (exklusive socialt arbete, socialpsykologi och socialantropologi)"},
+      "scopeNoteByLang": {"sv": "Annan"},
+      "historyNoteByLang": {"sv": "Socialpsykologi  50403 (SSIF2011) ingår numera i Sociologi 50401 (SSIF2025). Demografi 50405 (SSIF2025) ingick tidigare i  Sociologi 50401 (SSIF2011) men utgör numera ett eget ämne."}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50403",
+      "@type": "Classification",
+      "code": "50403",
+      "hiddenLabel": "Socialpsykologi",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/50401"}
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/50402",
@@ -2854,17 +4548,6 @@
       "broader": {"@id": "https://id.kb.se/term/ssif/504"}
     },
     {
-      "@id": "https://id.kb.se/term/ssif/50403",
-      "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "50403",
-      "prefLabelByLang": {
-        "sv": "Socialpsykologi",
-        "en": "Social Psychology"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/504"}
-    },
-    {
       "@id": "https://id.kb.se/term/ssif/50404",
       "@type": "Classification",
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
@@ -2874,6 +4557,45 @@
         "en": "Social Anthropology"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/504"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50405",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50405",
+      "prefLabelByLang": {
+        "sv": "Demografi",
+        "en": "Demography"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/504"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50502",
+      "@type": "Classification",
+      "code": "50502",
+      "hiddenLabelByLang": {"sv": "Juridik och samhälle"},
+      "isReplacedBy": [
+        {
+          "@id": "https://id.kb.se/term/ssif/50406",
+          "@annotation": {
+            "commentByLang": {"sv": "Bytt forskningsämnesgrupp, Uppdelning av ämne"}
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50406",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50406",
+      "prefLabelByLang": {
+        "sv": "Kriminologi",
+        "en": "Criminology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/504"},
+      "scopeNoteByLang": {"sv": "Bytt forskningsämnesgrupp, Uppdelning av ämne"},
+      "historyNoteByLang": {"sv": "Kriminologi 50406 (SSIF2025) ingick tidigare i Juridik och samhälle 50502 (SSIF2011) men utgör nu ett eget ämne."}
     },
     {
       "@id": "https://id.kb.se/term/ssif/505",
@@ -2895,22 +4617,23 @@
         "sv": "Juridik",
         "en": "Law"
       },
-      "commentByLang": {
-        "sv": "exklusive juridik och samhälle",
-        "en": "excluding Law and Society"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/505"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/505"},
+      "hiddenLabelByLang": {"sv": "Juridik (exklusive juridik och samhälle)"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
-      "@id": "https://id.kb.se/term/ssif/50502",
+      "@id": "https://id.kb.se/term/ssif/50503",
       "@type": "Classification",
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "50502",
+      "code": "50503",
       "prefLabelByLang": {
-        "sv": "Juridik och samhälle",
-        "en": "Law and Society"
+        "sv": "Annan rättsvetenskaplig forskning",
+        "en": "Other Legal Research"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/505"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/505"},
+      "hiddenLabelByLang": {"sv": "Juridik och samhälle"},
+      "scopeNoteByLang": {"sv": "Annan"},
+      "historyNoteByLang": {"sv": "Kriminologi 50406 (SSIF2025) ingick tidigare i Juridik och samhälle 50502 (SSIF2011) men utgör nu ett eget ämne. Övrig forskning inom juridik och samhälle 50502 (SSIF2011) ingår numera i Annan rättsvetenskaplig forskning 50503(SSIF2025)."}
     },
     {
       "@id": "https://id.kb.se/term/ssif/506",
@@ -2933,32 +4656,49 @@
         "en": "Political Science"
       },
       "commentByLang": {
-        "sv": "exklusive studier av offentlig förvaltning och globaliseringsstudier",
-        "en": "excluding Public Administration Studies and Globalisation Studies"
+        "sv": "exklusive freds- och konfliktforskning",
+        "en": "Excluding Peace and Conflict Studies"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/506"}
     },
     {
-      "@id": "https://id.kb.se/term/ssif/50602",
+      "@id": "https://id.kb.se/term/ssif/50901",
+      "@type": "Classification",
+      "code": "50901",
+      "hiddenLabel": "Tvärvetenskapliga studier inom samhällsvetenskap",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/50999"}
+      ],
+      "related": [
+        {
+          "@id": "https://id.kb.se/term/ssif/50604",
+          "@annotation": {
+            "commentByLang": {"sv": "Uppdelning av ämne, bytt forskningsämnesgrupp"}
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50604",
       "@type": "Classification",
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "50602",
+      "code": "50604",
       "prefLabelByLang": {
-        "sv": "Studier av offentlig förvaltning",
-        "en": "Public Administration Studies"
+        "sv": "Freds- och konfliktforskning",
+        "en": "Peace and Conflict Studies"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/506"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/506"},
+      "scopeNoteByLang": {"sv": "Uppdelning av ämne, bytt forskningsämnesgrupp"},
+      "historyNoteByLang": {"sv": "Freds- och konfliktforskning 50604 (SSIF2025) ingick tidigare i Tvärvetenskapliga studier inom samhällsvetenskap 50901 (SSIF2011) men utgör nu ett eget ämne."}
     },
     {
       "@id": "https://id.kb.se/term/ssif/50603",
       "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "50603",
-      "prefLabelByLang": {
-        "sv": "Globaliseringsstudier",
-        "en": "Globalisation Studies"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/506"}
+      "hiddenLabel": "Globaliseringsstudier",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/50703"}
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/507",
@@ -2994,15 +4734,39 @@
       "broader": {"@id": "https://id.kb.se/term/ssif/507"}
     },
     {
+      "@id": "https://id.kb.se/term/ssif/50703",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50703",
+      "prefLabelByLang": {
+        "sv": "Andra geografiska studier",
+        "en": "Other Geographic Studies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/507"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"},
+      "historyNoteByLang": {"sv": "Turism ingick tidigare i Ekonomisk geografi 50702 (SSIF2011) men ingår nu i Andra geografiska studier 50703 (SSIF2025)."},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "turism-, urban-, rurala och globala studier",
+            "en": "Tourism, Urban, Rural, and Global Studies"
+          }
+        }
+      ]
+    },
+    {
       "@id": "https://id.kb.se/term/ssif/508",
       "@type": "Classification",
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "508",
       "prefLabelByLang": {
-        "sv": "Medie- och kommunikationsvetenskap",
+        "sv": "Medie-, kommunikations-, och informationsvetenskaper",
         "en": "Media and Communications"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/5"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/5"},
+      "hiddenLabelByLang": {"sv": "Medie- och kommunikationsvetenskap"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/50801",
@@ -3010,32 +4774,31 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "50801",
       "prefLabelByLang": {
-        "sv": "Medievetenskap",
-        "en": "Media Studies"
+        "sv": "Medie- och kommunikationsvetenskap",
+        "en": "Media and Communication Studies"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/508"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/508"},
+      "hiddenLabelByLang": {"sv": "Medievetenskap"},
+      "scopeNoteByLang": {"sv": "Sammanslagning av ämnen"},
+      "historyNoteByLang": {"sv": "Medievetenskap 50801 (SSIF2011) har slagits samman med Kommunikationsvetenskap 50802 (SSIF2011) och utgör tillsammans Medie- och kommunikationsvetenskap 50801 (SSIF2025)."}
     },
     {
       "@id": "https://id.kb.se/term/ssif/50802",
       "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "50802",
-      "prefLabelByLang": {
-        "sv": "Kommunikationsvetenskap",
-        "en": "Communication Studies"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/508"}
+      "hiddenLabel": "Kommunikationsvetenskap",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/50801"}
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/50803",
       "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "50803",
-      "prefLabelByLang": {
-        "sv": "Mänsklig interaktion med IKT",
-        "en": "Human Aspects of ICT"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/508"}
+      "hiddenLabel": "Mänsklig interaktion med IKT",
+      "isReplacedBy": [
+        {"@id": "https://id.kb.se/term/ssif/50804"}
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/50804",
@@ -3046,7 +4809,18 @@
         "sv": "Systemvetenskap, informationssystem och informatik med samhällsvetenskaplig inriktning",
         "en": "Information Systems, Social aspects"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/508"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/508"},
+      "scopeNoteByLang": {"sv": "Sammanslagning av ämnen"},
+      "historyNoteByLang": {"sv": "Mänsklig interaktion med IKT 50803 (SSIF2011) ingår numera i Systemvetenskap, informationssystem och informatik med samhällsvetenskaplig inriktning 50804 (SSIF2025)."},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "mänsklig interaktion med IKT",
+            "en": "Human Aspects of ICT"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/50805",
@@ -3054,7 +4828,7 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "50805",
       "prefLabelByLang": {
-        "sv": "Biblioteks- och informationsvetenskap",
+        "sv": "Biblioteks-och informationsvetenskap",
         "en": "Information Studies"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/508"}
@@ -3069,17 +4843,6 @@
         "en": "Other Social Sciences"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/5"}
-    },
-    {
-      "@id": "https://id.kb.se/term/ssif/50901",
-      "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "50901",
-      "prefLabelByLang": {
-        "sv": "Tvärvetenskapliga studier inom samhällsvetenskap",
-        "en": "Social Sciences Interdisciplinary"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/509"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/50902",
@@ -3114,6 +4877,117 @@
       },
       "altLabelByLang": {"sv": "IMER"},
       "broader": {"@id": "https://id.kb.se/term/ssif/509"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50602",
+      "@type": "Classification",
+      "code": "50602",
+      "hiddenLabelByLang": {"sv": "Studier av offentlig förvaltning"},
+      "isReplacedBy": [
+        {
+          "@id": "https://id.kb.se/term/ssif/50905",
+          "@annotation": {
+            "commentByLang": {"sv": "Bytt forskningsämnesgrupp"}
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50905",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50905",
+      "prefLabelByLang": {
+        "sv": "Studier av offentlig förvaltning",
+        "en": "Public Administration Studies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/509"},
+      "scopeNoteByLang": {"sv": "Bytt forskningsämnesgrupp"},
+      "historyNoteByLang": {"sv": "Studier av offentlig förvaltning 50905 (SSIF2025) ingick tidigare i Statsvetenskap 506 (SSIF2011)."}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50906",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50906",
+      "prefLabelByLang": {
+        "sv": "Utvecklingsstudier",
+        "en": "Development Studies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/509"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50907",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50907",
+      "prefLabelByLang": {
+        "sv": "Statistik inom samhällsvetenskap",
+        "en": "Statistics in Social Sciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/509"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50908",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50908",
+      "prefLabelByLang": {
+        "sv": "Samhällsvetenskapliga hälso- och koststudier",
+        "en": "Health and Diet Studies in Social Sciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/509"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50909",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50909",
+      "prefLabelByLang": {
+        "sv": "Miljövetenskapliga studier inom samhällsvetenskap",
+        "en": "Environmental Studies in Social Sciences"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/509"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50910",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50910",
+      "prefLabelByLang": {
+        "sv": "Barn- och ungdomsvetenskap",
+        "en": "Child and Youth Studies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/509"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50911",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50911",
+      "prefLabelByLang": {
+        "sv": "Krigs-, kris-, säkerhetsvetenskaper",
+        "en": "War, Crisis, and Security Studies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/509"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/50912",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "50912",
+      "prefLabelByLang": {
+        "sv": "Teknik och samhälle",
+        "en": "Science and Technology Studies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/509"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/50999",
@@ -3164,10 +5038,12 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "60102",
       "prefLabelByLang": {
-        "sv": "Teknikhistoria",
-        "en": "History of Technology"
+        "sv": "Teknik- och miljöhistoria",
+        "en": "Technology and Environmental History"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/601"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/601"},
+      "hiddenLabelByLang": {"sv": "Teknikhistoria"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/60103",
@@ -3179,6 +5055,60 @@
         "en": "Archaeology"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/601"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60305",
+      "@type": "Classification",
+      "code": "60305",
+      "hiddenLabelByLang": {"sv": "Idé- och lärdomshistoria"},
+      "isReplacedBy": [
+        {
+          "@id": "https://id.kb.se/term/ssif/60104",
+          "@annotation": {
+            "commentByLang": {"sv": "Bytt forskningsämnesgrupp"}
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60104",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60104",
+      "prefLabelByLang": {
+        "sv": "Idé- och lärdomshistoria",
+        "en": "History of Science and Ideas"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/601"},
+      "scopeNoteByLang": {"sv": "Bytt forskningsämnesgrupp"},
+      "historyNoteByLang": {"sv": "Idé- och lärdomshistoria 60104 (SSIF2025) ingick tidigare i Filosofi, etik och religion 603 (SSIF2011)."}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60501",
+      "@type": "Classification",
+      "code": "60501",
+      "hiddenLabelByLang": {"sv": "Antikvetenskap"},
+      "isReplacedBy": [
+        {
+          "@id": "https://id.kb.se/term/ssif/60105",
+          "@annotation": {
+            "commentByLang": {"sv": "Bytt forskningsämnesgrupp"}
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60105",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60105",
+      "prefLabelByLang": {
+        "sv": "Antikvetenskap",
+        "en": "Classical Archaeology and Ancient History"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/601"},
+      "scopeNoteByLang": {"sv": "Bytt forskningsämnesgrupp"},
+      "historyNoteByLang": {"sv": "Antikvetenskap 60105 (SSIF2025) ingick tidigare i Annan humaniora 605 (SSIF2011)."}
     },
     {
       "@id": "https://id.kb.se/term/ssif/602",
@@ -3198,7 +5128,7 @@
       "code": "60201",
       "prefLabelByLang": {
         "sv": "Jämförande språkvetenskap och allmän lingvistik",
-        "en": "General Language Studies and Linguistics"
+        "en": "Comparative Language Studies and Linguistics"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/602"}
     },
@@ -3209,7 +5139,7 @@
       "code": "60202",
       "prefLabelByLang": {
         "sv": "Studier av enskilda språk",
-        "en": "Specific Languages"
+        "en": "Studies of Specific Languages"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/602"}
     },
@@ -3220,9 +5150,18 @@
       "code": "60203",
       "prefLabelByLang": {
         "sv": "Litteraturvetenskap",
-        "en": "General Literary Studies"
+        "en": "General Literary studies"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/602"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/602"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "litteraturteori",
+            "en": "Literary Theory"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/60204",
@@ -3231,9 +5170,54 @@
       "code": "60204",
       "prefLabelByLang": {
         "sv": "Litteraturstudier",
-        "en": "Specific Literatures"
+        "en": "Studies of Specific Literatures"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/602"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/602"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "litteraturer från särskilda språkområden",
+            "en": "Literature from specific Language areas"
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60205",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60205",
+      "prefLabelByLang": {
+        "sv": "Filologi",
+        "en": "Philology"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/602"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60206",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60206",
+      "prefLabelByLang": {
+        "sv": "Översättningsvetenskap",
+        "en": "Translation Studies"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/602"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60207",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60207",
+      "prefLabelByLang": {
+        "sv": "Retorik",
+        "en": "Rhetoric"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/602"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/603",
@@ -3277,7 +5261,44 @@
         "sv": "Religionsvetenskap",
         "en": "Religious Studies"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/603"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/603"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "religionsbeteendevetenskap",
+            "en": "Social Sciences of Religions"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "tros- och livsåskådningsvetenskap/systematisk teologi",
+            "en": "Studies in Faiths and Ideologies/Systematic Theology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "bibelvetenskap",
+            "en": "Biblical Studies"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "kyrkovetenskap",
+            "en": "Ecclesiology/ Practical Theology"
+          }
+        },
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "kyrkohistoria",
+            "en": "Church History"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/60304",
@@ -3291,15 +5312,16 @@
       "broader": {"@id": "https://id.kb.se/term/ssif/603"}
     },
     {
-      "@id": "https://id.kb.se/term/ssif/60305",
+      "@id": "https://id.kb.se/term/ssif/60306",
       "@type": "Classification",
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "60305",
+      "code": "60306",
       "prefLabelByLang": {
-        "sv": "Idé- och lärdomshistoria",
-        "en": "History of Ideas"
+        "sv": "Estetik",
+        "en": "Aesthetics"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/603"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/603"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/604",
@@ -3313,72 +5335,6 @@
       "broader": {"@id": "https://id.kb.se/term/ssif/6"}
     },
     {
-      "@id": "https://id.kb.se/term/ssif/60401",
-      "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "60401",
-      "prefLabelByLang": {
-        "sv": "Bildkonst",
-        "en": "Visual Arts"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/604"}
-    },
-    {
-      "@id": "https://id.kb.se/term/ssif/60402",
-      "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "60402",
-      "prefLabelByLang": {
-        "sv": "Musik",
-        "en": "Music"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/604"}
-    },
-    {
-      "@id": "https://id.kb.se/term/ssif/60403",
-      "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "60403",
-      "prefLabelByLang": {
-        "sv": "Litterär gestaltning",
-        "en": "Literary Composition"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/604"}
-    },
-    {
-      "@id": "https://id.kb.se/term/ssif/60404",
-      "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "60404",
-      "prefLabelByLang": {
-        "sv": "Scenkonst",
-        "en": "Performing Arts"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/604"}
-    },
-    {
-      "@id": "https://id.kb.se/term/ssif/60405",
-      "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "60405",
-      "prefLabelByLang": {
-        "sv": "Arkitektur",
-        "en": "Architecture"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/604"}
-    },
-    {
-      "@id": "https://id.kb.se/term/ssif/60406",
-      "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "60406",
-      "prefLabelByLang": {
-        "sv": "Design",
-        "en": "Design"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/604"}
-    },
-    {
       "@id": "https://id.kb.se/term/ssif/60407",
       "@type": "Classification",
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
@@ -3387,7 +5343,16 @@
         "sv": "Konstvetenskap",
         "en": "Art History"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/604"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/604"},
+      "narrower": [
+        {
+          "@type": "Concept",
+          "prefLabelByLang": {
+            "sv": "textil-  och modevetenskap",
+            "en": "Textile and Fashion Design Studies"
+          }
+        }
+      ]
     },
     {
       "@id": "https://id.kb.se/term/ssif/60408",
@@ -3418,9 +5383,188 @@
       "code": "60410",
       "prefLabelByLang": {
         "sv": "Filmvetenskap",
-        "en": "Studies on Film"
+        "en": "Film Studies"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/604"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60411",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60411",
+      "prefLabelByLang": {
+        "sv": "Fri Konst",
+        "en": "Visual Arts"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/604"},
+      "hiddenLabelByLang": {"sv": "Bildkonst"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60402",
+      "@type": "Classification",
+      "code": "60402",
+      "hiddenLabelByLang": {"sv": "Musik"},
+      "isReplacedBy": [
+        {
+          "@id": "https://id.kb.se/term/ssif/60412",
+          "@annotation": {
+            "commentByLang": {"sv": "Ny kod"}
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60412",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60412",
+      "prefLabelByLang": {
+        "sv": "Musik",
+        "en": "Music"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/604"},
+      "scopeNoteByLang": {"sv": "Ny kod"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60403",
+      "@type": "Classification",
+      "code": "60403",
+      "hiddenLabelByLang": {"sv": "Litterär gestaltning"},
+      "isReplacedBy": [
+        {
+          "@id": "https://id.kb.se/term/ssif/60413",
+          "@annotation": {
+            "commentByLang": {"sv": "Ny kod"}
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60413",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60413",
+      "prefLabelByLang": {
+        "sv": "Litterär gestaltning",
+        "en": "Literary Composition"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/604"},
+      "scopeNoteByLang": {"sv": "Ny kod"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60404",
+      "@type": "Classification",
+      "code": "60404",
+      "hiddenLabelByLang": {"sv": "Scenkonst"},
+      "isReplacedBy": [
+        {
+          "@id": "https://id.kb.se/term/ssif/60414",
+          "@annotation": {
+            "commentByLang": {"sv": "Ny kod"}
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60414",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60414",
+      "prefLabelByLang": {
+        "sv": "Scenkonst",
+        "en": "Performing Arts"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/604"},
+      "scopeNoteByLang": {"sv": "Ny kod"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60405",
+      "@type": "Classification",
+      "code": "60405",
+      "hiddenLabelByLang": {"sv": "Arkitektur"},
+      "isReplacedBy": [
+        {
+          "@id": "https://id.kb.se/term/ssif/60415",
+          "@annotation": {
+            "commentByLang": {"sv": "Ny kod"}
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60415",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60415",
+      "prefLabelByLang": {
+        "sv": "Arkitektur",
+        "en": "Architecture"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/604"},
+      "scopeNoteByLang": {"sv": "Ny kod"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60406",
+      "@type": "Classification",
+      "code": "60406",
+      "hiddenLabelByLang": {"sv": "Design"},
+      "isReplacedBy": [
+        {
+          "@id": "https://id.kb.se/term/ssif/60416",
+          "@annotation": {
+            "commentByLang": {"sv": "Ny kod"}
+          }
+        }
+      ]
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60416",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60416",
+      "prefLabelByLang": {
+        "sv": "Design",
+        "en": "Design"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/604"},
+      "scopeNoteByLang": {"sv": "Ny kod"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60417",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60417",
+      "prefLabelByLang": {
+        "sv": "Film",
+        "en": "Film"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/604"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60418",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60418",
+      "prefLabelByLang": {
+        "sv": "Konsthantverk",
+        "en": "Crafts"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/604"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60419",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60419",
+      "prefLabelByLang": {
+        "sv": "Fotografi",
+        "en": "Photography"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/604"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/605",
@@ -3428,21 +5572,12 @@
       "inScheme": {"@id": "https://id.kb.se/term/ssif"},
       "code": "605",
       "prefLabelByLang": {
-        "sv": "Annan humaniora",
+        "sv": "Annan humaniora och konst",
         "en": "Other Humanities"
       },
-      "broader": {"@id": "https://id.kb.se/term/ssif/6"}
-    },
-    {
-      "@id": "https://id.kb.se/term/ssif/60501",
-      "@type": "Classification",
-      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
-      "code": "60501",
-      "prefLabelByLang": {
-        "sv": "Antikvetenskap",
-        "en": "Classical Archaeology and Ancient History"
-      },
-      "broader": {"@id": "https://id.kb.se/term/ssif/605"}
+      "broader": {"@id": "https://id.kb.se/term/ssif/6"},
+      "hiddenLabelByLang": {"sv": "Annan humaniora"},
+      "scopeNoteByLang": {"sv": "Bytt benämning"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/60502",
@@ -3465,6 +5600,18 @@
         "en": "Ethnology"
       },
       "broader": {"@id": "https://id.kb.se/term/ssif/605"}
+    },
+    {
+      "@id": "https://id.kb.se/term/ssif/60504",
+      "@type": "Classification",
+      "inScheme": {"@id": "https://id.kb.se/term/ssif"},
+      "code": "60504",
+      "prefLabelByLang": {
+        "sv": "Tvärdiciplinära studier i humaniora och konst",
+        "en": "Interdisciplinary Studies in Humanities and Arts"
+      },
+      "broader": {"@id": "https://id.kb.se/term/ssif/605"},
+      "scopeNoteByLang": {"sv": "Nytt ämne"}
     },
     {
       "@id": "https://id.kb.se/term/ssif/60599",
