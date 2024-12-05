@@ -5,8 +5,11 @@ from simplemma.langdetect import lang_detector
 
 from pipeline.storage import get_connection, dict_factory
 from pipeline.publication import Publication
-from pipeline.util import get_title_by_language, get_summary_by_language, SSIF_BASE
+from pipeline.util import get_title_by_language, get_summary_by_language, SSIF_SCHEME, SSIF_BASE
+from pipeline.ldcache import get_description
 
+OLD_SSIF_SCHEME = "https://id.kb.se/term/ssif"
+OLD_SSIF_BASE = f"{OLD_SSIF_SCHEME}/"
 
 def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_level=5):
     limit_sql = ""
@@ -26,6 +29,38 @@ def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_lev
             if row.get("data"):
                 finalized = orjson.loads(row["data"])
                 publication = Publication(finalized)
+
+                # Temporary special handling to make it possible to use old
+                # DB dump. Rewrites id.kb.se SSIF classifications to the
+                # new SSIF scheme/base. Also maps converts SSIF 2011->2025;
+                # duplicated from legacy_ssif.py.
+                classifications = publication.classifications
+                for classification in classifications:
+                    if classification.get("inScheme", {}).get("@id") == OLD_SSIF_SCHEME:
+                        classification["inScheme"]["@id"] = SSIF_SCHEME
+                        classification["@id"] = classification["@id"].replace(OLD_SSIF_BASE, SSIF_BASE)
+
+                    description = get_description(classification["@id"])
+                    if not description:
+                        continue
+                    is_replaced_bys = description.get("isReplacedBy", [])
+                    if is_replaced_bys:
+                        if len(is_replaced_bys) == 1:
+                            # If there's exactly one possible replacement, use it
+                            classification["@id"] = is_replaced_bys[0]["@id"]
+                        else:
+                            replaced_by_ids = list(map(lambda x: x["@id"].removeprefix(SSIF_BASE), is_replaced_bys))
+                            level_3 = replaced_by_ids[0][:3]
+                            if all(classification.startswith(level_3) for classification in replaced_by_ids):
+                                # All SSIF codes have the same level 3, so use it
+                                classification["@id"] = f"{SSIF_BASE}{level_3}"
+                            else:
+                                narrow_match = description.get("narrowMatch", [])
+                                if len(narrow_match) == 1:
+                                    classification["@id"] = narrow_match[0]["@id"]
+                                else:
+                                    print("No SSIF 2011->2025 mapping possible")
+                publication.classifications = classifications
 
                 # Get SSIF codes, filtered by min/max level, and skip records with
                 # no classification in the desired levels. For example, with
