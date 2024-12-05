@@ -9,7 +9,7 @@ class LegacySSIFAuditor(BaseAuditor):
         self.name = LegacySSIFAuditor.__name__
 
     def audit(self, publication, audit_events, _harvest_cache, _session):
-        has_legacy_ssif = False
+        #old_classifications = publication.classifications
 
         for classification in publication.classifications:
             description = get_description(classification["@id"])
@@ -17,7 +17,6 @@ class LegacySSIFAuditor(BaseAuditor):
                 continue
             is_replaced_bys = description.get("isReplacedBy", [])
             if is_replaced_bys:
-                has_legacy_ssif = True
                 if len(is_replaced_bys) == 1:
                     # If there's exactly one possible replacement, use it
                     classification["@id"] = is_replaced_bys[0]["@id"]
@@ -28,9 +27,11 @@ class LegacySSIFAuditor(BaseAuditor):
                         # All SSIF codes have the same level 3, so use it
                         classification["@id"] = f"{SSIF_BASE}{level_3}"
                     else:
-                        # The level 3 codes differ. Special handling?
-                        continue
-
-        audit_events.add_event(self.name, "has_legacy_SSIF", has_legacy_ssif)
+                        narrow_match = description.get("narrowMatch", [])
+                        if len(narrow_match) == 1:
+                            classification["@id"] = narrow_match[0]["@id"]
+                        else:
+                            print("No SSIF 2011->2025 mapping possible")
+                            audit_events.add_event(self.name, "SSIF_2011_not_migrated", has_legacy_ssif, publication.classifications, '')
 
         return publication, audit_events
