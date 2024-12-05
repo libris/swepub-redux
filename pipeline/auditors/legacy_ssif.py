@@ -32,6 +32,6 @@ class LegacySSIFAuditor(BaseAuditor):
                             classification["@id"] = narrow_match[0]["@id"]
                         else:
                             print("No SSIF 2011->2025 mapping possible")
-                            audit_events.add_event(self.name, "SSIF_2011_not_migrated", has_legacy_ssif, publication.classifications, '')
+                            audit_events.add_event(self.name, "SSIF_2011_not_migrated", '', publication.classifications, '')
 
         return publication, audit_events

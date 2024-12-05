@@ -33,7 +33,8 @@ def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_lev
                 # Temporary special handling to make it possible to use old
                 # DB dump. Rewrites id.kb.se SSIF classifications to the
                 # new SSIF scheme/base. Also maps converts SSIF 2011->2025;
-                # duplicated from legacy_ssif.py.
+                # duplicated from legacy_ssif.py. To be removed once we have
+                # SSIF 2025 terms in prod.
                 classifications = publication.classifications
                 for classification in classifications:
                     if classification.get("inScheme", {}).get("@id") == OLD_SSIF_SCHEME:
