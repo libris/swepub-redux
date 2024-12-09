@@ -35,33 +35,29 @@ def dump_tsv(target_language="en", number_of_records=10000, min_level=1, max_lev
                 # new SSIF scheme/base. Also maps converts SSIF 2011->2025;
                 # duplicated from legacy_ssif.py. To be removed once we have
                 # SSIF 2025 terms in prod.
-                classifications = publication.classifications
-                for classification in classifications:
+                updated_classifications = []
+                for classification in publication.classifications:
                     if classification.get("inScheme", {}).get("@id") == OLD_SSIF_SCHEME:
                         classification["inScheme"]["@id"] = SSIF_SCHEME
                         classification["@id"] = classification["@id"].replace(OLD_SSIF_BASE, SSIF_BASE)
-
-                    description = get_description(classification["@id"])
-                    if not description:
+                    if not (description := get_description(classification["@id"])):
                         continue
-                    is_replaced_bys = description.get("isReplacedBy", [])
-                    if is_replaced_bys:
+                    if is_replaced_bys := description.get("isReplacedBy", []):
                         if len(is_replaced_bys) == 1:
-                            # If there's exactly one possible replacement, use it
-                            classification["@id"] = is_replaced_bys[0]["@id"]
+                            classification = get_description(is_replaced_bys[0]["@id"])
                         else:
                             replaced_by_ids = list(map(lambda x: x["@id"].removeprefix(SSIF_BASE), is_replaced_bys))
                             level_3 = replaced_by_ids[0][:3]
                             if all(classification.startswith(level_3) for classification in replaced_by_ids):
-                                # All SSIF codes have the same level 3, so use it
-                                classification["@id"] = f"{SSIF_BASE}{level_3}"
+                                classification = get_description(f"{SSIF_BASE}{level_3}")
+                            elif (narrow_match := description.get("narrowMatch", [])) and len(narrow_match) == 1:
+                                classification = get_description(narrow_match[0]["@id"])
+                            elif (close_match := description.get("closeMatch", [])) and len(close_match) == 1:
+                                classification = get_description(close_match[0]["@id"])
                             else:
-                                narrow_match = description.get("narrowMatch", [])
-                                if len(narrow_match) == 1:
-                                    classification["@id"] = narrow_match[0]["@id"]
-                                else:
-                                    print("No SSIF 2011->2025 mapping possible")
-                publication.classifications = classifications
+                                continue
+                    updated_classifications.append(classification)
+                publication.classifications = updated_classifications
 
                 # Get SSIF codes, filtered by min/max level, and skip records with
                 # no classification in the desired levels. For example, with
