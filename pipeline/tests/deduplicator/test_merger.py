@@ -6,7 +6,7 @@ from pipeline.publication import Publication
 from pipeline.publication import Contribution
 from pipeline.publication import IsPartOf
 
-from pipeline.util import SWEPUB_CLASSIFIER_ID
+from pipeline.util import SWEPUB_CLASSIFIER_ID, SSIF_BASE
 
 from flexmock import flexmock
 
@@ -208,12 +208,12 @@ def test_merge_classifications():
         "instanceOf": {
             "classification": [
                 {
-                    "@id": "https://id.kb.se/term/ssif/10606",
+                    "@id": f"{SSIF_BASE}10606",
                     "@type": "Classification",
                     "prefLabelByLang": {"en": "Microbiology", "sv": "Mikrobiologi"}
                 },
                 {
-                    "@id": "https://id.kb.se/term/ssif/10203",
+                    "@id": f"{SSIF_BASE}10203",
                     "@type": "Classification",
                     "prefLabelByLang": {"en": "Bioinformatics", "sv": "Bioinformatik"}
                 }
@@ -225,12 +225,12 @@ def test_merge_classifications():
         "instanceOf": {
             "classification": [
                 {
-                    "@id": "https://id.kb.se/term/ssif/10606",
+                    "@id": f"{SSIF_BASE}10606",
                     "@type": "Classification",
                     "prefLabelByLang": {"en": "Microbiology", "sv": "Mikrobiologi"}
                 },
                 {
-                    "@id": "https://id.kb.se/term/ssif/30102",
+                    "@id": f"{SSIF_BASE}30102",
                     "@type": "Classification",
                     "prefLabelByLang": {"en": "Pharmacology and Toxicology", "sv": "Farmakologi och toxikologi"}
                 }
@@ -244,17 +244,17 @@ def test_merge_classifications():
 
     assert merged_master.classifications == [
         {
-            "@id": "https://id.kb.se/term/ssif/10606",
+            "@id": f"{SSIF_BASE}10606",
             "@type": "Classification",
             "prefLabelByLang": {"en": "Microbiology", "sv": "Mikrobiologi"}
         },
         {
-            "@id": "https://id.kb.se/term/ssif/10203",
+            "@id": f"{SSIF_BASE}10203",
             "@type": "Classification",
             "prefLabelByLang": {"en": "Bioinformatics", "sv": "Bioinformatik"}
         },
         {
-            "@id": "https://id.kb.se/term/ssif/30102",
+            "@id": f"{SSIF_BASE}30102",
             "@type": "Classification",
             "prefLabelByLang": {"en": "Pharmacology and Toxicology", "sv": "Farmakologi och toxikologi"}
         }
@@ -265,12 +265,12 @@ def test_merge_classifications_with_autoclassified_subject():
         "instanceOf": {
             "classification": [
                 {
-                    "@id": "https://id.kb.se/term/ssif/10606",
+                    "@id": f"{SSIF_BASE}10606",
                     "@type": "Classification",
                     "prefLabelByLang": {"en": "Microbiology", "sv": "Mikrobiologi"}
                 },
                 {
-                    "@id": "https://id.kb.se/term/ssif/10203",
+                    "@id": f"{SSIF_BASE}10203",
                     "@type": "Classification",
                     "prefLabelByLang": {"en": "Bioinformatics", "sv": "Bioinformatik"}
                 }
@@ -284,13 +284,13 @@ def test_merge_classifications_with_autoclassified_subject():
         "instanceOf": {
             "classification": [
                 {
-                    "@id": "https://id.kb.se/term/ssif/30105",
+                    "@id": f"{SSIF_BASE}30105",
                     "@type": "Classification",
                     "prefLabelByLang": {"en": "Neurosciences", "sv": "Neurovetenskaper"},
                     "@annotation": {"assigner": {"@id": SWEPUB_CLASSIFIER_ID}}
                 },
                 {
-                    "@id": "https://id.kb.se/term/ssif/30102",
+                    "@id": f"{SSIF_BASE}30102",
                     "@type": "Classification",
                     "prefLabelByLang": {"en": "Pharmacology and Toxicology", "sv": "Farmakologi och toxikologi"}
                 }
@@ -304,17 +304,17 @@ def test_merge_classifications_with_autoclassified_subject():
 
     assert merged_master.classifications == [
         {
-            "@id": "https://id.kb.se/term/ssif/10606",
+            "@id": f"{SSIF_BASE}10606",
             "@type": "Classification",
             "prefLabelByLang": {"en": "Microbiology", "sv": "Mikrobiologi"}
         },
         {
-            "@id": "https://id.kb.se/term/ssif/10203",
+            "@id": f"{SSIF_BASE}10203",
             "@type": "Classification",
             "prefLabelByLang": {"en": "Bioinformatics", "sv": "Bioinformatik"}
         },
         {
-            "@id": "https://id.kb.se/term/ssif/30102",
+            "@id": f"{SSIF_BASE}30102",
             "@type": "Classification",
             "prefLabelByLang": {"en": "Pharmacology and Toxicology", "sv": "Farmakologi och toxikologi"}
         }

@@ -1,14 +1,19 @@
 def make_mappings(data):
-    return {
-        term['code']: {
-            'eng': term['prefLabelByLang']['en'],
-            'swe': term['prefLabelByLang']['sv'],
-            'broader': term['broader']['@id'].rsplit('/', 1)[-1]
-            if 'broader' in term
-            else None,
-        }
-        for term in data['@graph']
-    }
+    mappings = {}
+    for term in data['@graph']:
+        if term.get("owl:deprecated", "") == True or term.get("@type", "") != "Concept":
+            continue
+
+        if term.get("prefLabelByLang", {}).get("sv"):
+            mappings[term["code"]] = {
+                "eng": term["prefLabelByLang"]["en"],
+                "swe": term["prefLabelByLang"]["sv"],
+            }
+            if "broader" in term:
+                mappings[term["code"]]["broader"] = term['broader']['@id'].rsplit('/', 1)[-1]
+            else:
+                mappings[term["code"]]["broader"] = None
+    return mappings
 
 
 def build_tree_form(mappings):

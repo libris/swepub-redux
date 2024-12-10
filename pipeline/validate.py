@@ -6,7 +6,7 @@ from os import path
 
 from pipeline.normalize import *
 
-from pipeline.util import get_at_path, remove_at_path, FieldMeta, Enrichment, Validation, Normalization
+from pipeline.util import get_at_path, remove_at_path, FieldMeta, Enrichment, Validation, Normalization, SSIF_SCHEME
 
 from pipeline.validators.datetime import validate_date_time
 from pipeline.validators.doi import validate_doi
@@ -59,7 +59,7 @@ PATHS = {
         'instanceOf.subject[?(@.@type=="Topic")].prefLabel',
         'instanceOf.hasNote[?(@.@type=="Note")].label',
     ),
-    "SSIF": ('instanceOf.classification[?(@.inScheme.@id=="https://id.kb.se/term/ssif")].code',),
+    "SSIF": (f"instanceOf.classification[*].@id",),
 }
 
 PRECOMPILED_PATHS = {k: [parse(p) for p in v] for k, v in PATHS.items()}
@@ -131,8 +131,10 @@ def validate_stuff(field_events, session, harvest_cache, body, source, cached_pa
                     validate_date_time(field)
                 if field.id_type == "creator_count":
                     validate_creator_count(field)
-                if field.id_type == "SSIF":
-                    validate_ssif(field)
+                # SSIF is not enriched, so don't validate it twice.
+                if field.validation_status == Validation.PENDING:
+                    if field.id_type == "SSIF":
+                        validate_ssif(field)
                 if field.id_type == "free_text":
                     field.validation_status = Validation.VALID  # formerly "AcceptingValidator"
 

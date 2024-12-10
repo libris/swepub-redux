@@ -6,6 +6,7 @@ from pipeline.auditors.creatorcount import CreatorCountAuditor
 from pipeline.auditors.ssif import SSIFAuditor
 from pipeline.auditors.contributor import ContributorAuditor
 from pipeline.auditors.issn import ISSNAuditor
+from pipeline.auditors.legacy_ssif import LegacySSIFAuditor
 from pipeline.auditors.subjects import SubjectsAuditor
 from pipeline.auditors.oa import OAAuditor
 from pipeline.auditors.autoclassifier import AutoclassifierAuditor
@@ -19,6 +20,7 @@ AUDITORS = [
     ContributorAuditor(),
     SSIFAuditor(),
     ISSNAuditor(),
+    LegacySSIFAuditor(),
     SubjectsAuditor(),
     OAAuditor(),
     AutoclassifierAuditor(),

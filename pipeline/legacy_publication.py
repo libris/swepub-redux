@@ -1,5 +1,6 @@
 import dateutil.parser
 from datetime import datetime
+from pipeline.util import SSIF_SCHEME
 
 genre_form_publication_mappings = {
     "https://id.kb.se/term/swepub/output/publication/editorial-letter": ["art"],
@@ -715,7 +716,7 @@ def _get_provision_activity_statement(body):
 
 
 def is_ssif_classification(term):
-    return term.get("inScheme", {}).get("@id", "").startswith(("https://id.kb.se/term/ssif", "https://id.kb.se/term/uka"))
+    return term.get("inScheme", {}).get("@id", "").startswith(("https://id.kb.se/term/ssif", "https://id.kb.se/term/uka", SSIF_SCHEME))
 
 
 def _format_date_as_year(date):

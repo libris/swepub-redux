@@ -11,6 +11,7 @@
 
     <xsl:output indent="yes" encoding="UTF-8"/>
 
+    <xsl:variable name="ssif_scheme" select="document('ssif_scheme.xml')/value" />
     <xsl:variable name="langmap" select="document('langmap.xml')/langmap/lang"/>
 
     <xsl:template match="/">
@@ -1308,7 +1309,8 @@
         <xsl:for-each select="mods:subject[@authority = 'uka.se' and @xlink:href]">
             <dict>
                 <string key="@id">
-                    <xsl:text>https://id.kb.se/term/ssif/</xsl:text>
+                    <xsl:value-of select="$ssif_scheme" />
+                    <xsl:text>/</xsl:text>
                     <xsl:value-of select="@xlink:href"/>
                 </string>
                 <string key="@type">Classification</string>
@@ -1328,7 +1330,7 @@
                 </xsl:choose>
                 <dict key="inScheme">
                     <string key="@type">ConceptScheme</string>
-                    <string key="@id">https://id.kb.se/term/ssif</string>
+                    <string key="@id"><xsl:value-of select="$ssif_scheme" /></string>
                 </dict>
             </dict>
         </xsl:for-each>
@@ -1390,7 +1392,8 @@
             <xsl:choose>
                 <xsl:when test="@authority = 'ssif'">
                     <string key="@id">
-                        <xsl:text>https://id.kb.se/term/ssif/</xsl:text>
+                        <xsl:value-of select="$ssif_scheme" />
+                        <xsl:text>/</xsl:text>
                         <xsl:choose>
                             <xsl:when test="@xlink:href">
                                 <xsl:value-of select="@xlink:href"/>

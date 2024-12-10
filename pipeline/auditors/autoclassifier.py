@@ -31,7 +31,7 @@ def _eligible_for_autoclassification(publication):
 
 
 def _create_classification(code):
-    classification = get_description(f"https://id.kb.se/term/ssif/{code}").copy()
+    classification = get_description(f"{SSIF_BASE}{code}").copy()
     classification["@annotation"] = {
         "assigner": {"@id": SWEPUB_CLASSIFIER_ID}
     }
