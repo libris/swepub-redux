@@ -131,8 +131,10 @@ def validate_stuff(field_events, session, harvest_cache, body, source, cached_pa
                     validate_date_time(field)
                 if field.id_type == "creator_count":
                     validate_creator_count(field)
-                if field.id_type == "SSIF":
-                    validate_ssif(field)
+                # SSIF is not enriched, so don't validate it twice.
+                if field.validation_status == Validation.PENDING:
+                    if field.id_type == "SSIF":
+                        validate_ssif(field)
                 if field.id_type == "free_text":
                     field.validation_status = Validation.VALID  # formerly "AcceptingValidator"
 

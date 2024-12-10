@@ -3,7 +3,7 @@ from pipeline.util import SSIF_BASE
 from pipeline.ldcache import get_description
 
 class LegacySSIFAuditor(BaseAuditor):
-    """Used to flag use of legacy SSIF codes, and migrate classifications to SSIF 2025 when possible"""
+    """Used to migrate classifications to SSIF 2025 when possible"""
 
     def __init__(self):
         self.name = LegacySSIFAuditor.__name__
@@ -25,9 +25,5 @@ class LegacySSIFAuditor(BaseAuditor):
                         classification["@id"] = narrow_match[0]["@id"]
                     elif (close_match := description.get("closeMatch", [])) and len(close_match) == 1:
                         classification["@id"] = close_match[0]["@id"]
-                    else:
-                        ssifs_not_migrated.add(classification["@id"])
-        if ssifs_not_migrated:
-            audit_events.add_event(self.name, "SSIF_2011_not_migrated", '', list(ssifs_not_migrated), '')
 
         return publication, audit_events
