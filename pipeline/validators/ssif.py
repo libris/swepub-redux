@@ -1,11 +1,11 @@
 import re
-from pipeline.util import make_event, Validation, Enrichment
+from pipeline.util import make_event, Validation, Enrichment, SSIF_BASE
 
 ssif_regexp = re.compile("^[0-9]$|^[0-9]{3}$|^[0-9]{5}$")
 
 
 def validate_ssif(field):
-    ssif = field.value
+    ssif = field.value.removeprefix(SSIF_BASE)
 
     hit = ssif_regexp.fullmatch(ssif)
     if hit is None:

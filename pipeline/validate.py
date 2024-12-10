@@ -59,7 +59,7 @@ PATHS = {
         'instanceOf.subject[?(@.@type=="Topic")].prefLabel',
         'instanceOf.hasNote[?(@.@type=="Note")].label',
     ),
-    "SSIF": (f"instanceOf.classification[?(@.inScheme.@id==\"{SSIF_SCHEME}\")].code",),
+    "SSIF": (f"instanceOf.classification[*].@id",),
 }
 
 PRECOMPILED_PATHS = {k: [parse(p) for p in v] for k, v in PATHS.items()}
