@@ -38,7 +38,7 @@ def _embellish(item_map, item, relations):
         if rel in embellished:
             value = embellished[rel]
             if isinstance(value, list):
-                embellished[rel] = [_embellish(v) for v in values]
+                embellished[rel] = [_embellish(item_map, v, relations) for v in value]
             elif isinstance(value, dict):
                 embellished[rel] = _embellish(item_map, value, relations)
 

@@ -26,7 +26,7 @@ class SubjectsAuditor(BaseAuditor):
                 continue
             seen.add(item["@id"])
 
-            embellished = embellish(item, ["broader"])
+            embellished = embellish(item, ["broader", "isReplacedBy"])
             new_items.append(embellished)
 
             if embellished is not item:
