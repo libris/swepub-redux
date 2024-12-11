@@ -56,7 +56,7 @@
     },
     "validation_flags_SSIF": {
       "title": "SSIF",
-      "text": "Ämnesklassificering enligt Standard för Svensk Indelning av Forskningsämnen (SSIF) ska anges minst på 3-siffernivå (forskningsämnesgrupp) och måste finnas i SSIF 2025."
+      "text": "Ämnesklassificering enligt Standard för Svensk Indelning av Forskningsämnen (SSIF) ska anges minst på 3-siffernivå (forskningsämnesgrupp) och behöver finnas i SSIF 2025."
     },
     "validation_flags_unicode": {
       "title": "Unicode",
