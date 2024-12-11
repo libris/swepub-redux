@@ -2,7 +2,7 @@
   "@context": {
     "owl": "http://www.w3.org/2002/07/owl#",
     "labelByLang": {
-      "@id": "rdfs:label",
+      "@id": "label",
       "@container": "@language"
     },
     "prefLabelByLang": {
@@ -14,7 +14,7 @@
       "@container": "@language"
     },
     "commentByLang": {
-      "@id": "rdfs:comment",
+      "@id": "comment",
       "@container": "@language"
     },
     "hiddenLabelByLang": {
@@ -29,14 +29,7 @@
       "@id": "historyNote",
       "@container": "@language"
     },
-    "@vocab": "http://www.w3.org/2004/02/skos/core#",
-    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-    "dct": "http://purl.org/dc/terms/",
-    "date": "dct:date",
-    "ratio": "rdf:value",
-    "code": "notation",
-    "isReplacedBy": "dct:isReplacedBy"
+    "@vocab": "https://id.kb.se/vocab/"
   },
   "@graph": [
     {
@@ -47,17 +40,18 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/1",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "1",
       "prefLabelByLang": {
         "sv": "Naturvetenskap",
         "en": "Natural sciences"
-      }
+      },
+      "topConceptOf": {"@id": "https://begrepp.uka.se/SSIF"}
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/101",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "101",
       "prefLabelByLang": {
@@ -68,7 +62,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10101",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10101",
       "prefLabelByLang": {
@@ -79,7 +73,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10102",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10102",
       "prefLabelByLang": {
@@ -90,7 +84,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10103",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10103",
       "prefLabelByLang": {
@@ -101,7 +95,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10104",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10104",
       "prefLabelByLang": {
@@ -112,7 +106,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10105",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10105",
       "prefLabelByLang": {
@@ -123,7 +117,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10106",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10106",
       "prefLabelByLang": {
@@ -139,7 +133,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10199",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10199",
       "prefLabelByLang": {
@@ -150,7 +144,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/102",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "102",
       "prefLabelByLang": {
@@ -162,7 +156,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10201",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10201",
       "prefLabelByLang": {
@@ -174,7 +168,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10202",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10202",
       "prefLabelByLang": {
@@ -189,7 +183,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10203",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10203",
       "prefLabelByLang": {
@@ -208,7 +202,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10204",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10204",
       "prefLabelByLang": {
@@ -224,7 +218,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10205",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10205",
       "prefLabelByLang": {
@@ -235,7 +229,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10206",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10206",
       "prefLabelByLang": {
@@ -246,7 +240,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10207",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10207",
       "prefLabelByLang": {
@@ -262,7 +256,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10208",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10208",
       "prefLabelByLang": {
@@ -274,7 +268,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10209",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "10209",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Medieteknik"},
@@ -286,7 +280,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10210",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10210",
       "prefLabelByLang": {
@@ -297,7 +291,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10211",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10211",
       "prefLabelByLang": {
@@ -308,7 +302,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10212",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10212",
       "prefLabelByLang": {
@@ -319,7 +313,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10213",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10213",
       "prefLabelByLang": {
@@ -330,7 +324,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10214",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10214",
       "prefLabelByLang": {
@@ -341,7 +335,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10299",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10299",
       "prefLabelByLang": {
@@ -352,7 +346,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/103",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "103",
       "prefLabelByLang": {
@@ -363,7 +357,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10301",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10301",
       "prefLabelByLang": {
@@ -408,7 +402,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10302",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10302",
       "prefLabelByLang": {
@@ -441,7 +435,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10303",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10303",
       "prefLabelByLang": {
@@ -452,7 +446,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10304",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10304",
       "prefLabelByLang": {
@@ -479,7 +473,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10305",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10305",
       "prefLabelByLang": {
@@ -490,7 +484,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10306",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "10306",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Acceleratorfysik och instrumentering"},
@@ -501,7 +495,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10603",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "10603",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Biofysik"},
@@ -511,7 +505,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10307",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10307",
       "prefLabelByLang": {
@@ -523,7 +517,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10308",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10308",
       "prefLabelByLang": {
@@ -534,7 +528,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10399",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10399",
       "prefLabelByLang": {
@@ -545,7 +539,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/104",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "104",
       "prefLabelByLang": {
@@ -556,7 +550,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10401",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10401",
       "prefLabelByLang": {
@@ -567,7 +561,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10402",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10402",
       "prefLabelByLang": {
@@ -588,7 +582,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10403",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10403",
       "prefLabelByLang": {
@@ -599,7 +593,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10404",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10404",
       "prefLabelByLang": {
@@ -610,7 +604,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10405",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10405",
       "prefLabelByLang": {
@@ -630,7 +624,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10406",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10406",
       "prefLabelByLang": {
@@ -641,7 +635,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10407",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10407",
       "prefLabelByLang": {
@@ -662,7 +656,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10602",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "10602",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Biokemi och molekylärbiologi"},
@@ -676,7 +670,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10408",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10408",
       "prefLabelByLang": {
@@ -688,7 +682,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10499",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10499",
       "prefLabelByLang": {
@@ -699,7 +693,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/105",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "105",
       "prefLabelByLang": {
@@ -711,7 +705,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10501",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10501",
       "prefLabelByLang": {
@@ -723,7 +717,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10502",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10502",
       "prefLabelByLang": {
@@ -738,7 +732,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10503",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10503",
       "prefLabelByLang": {
@@ -749,7 +743,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10504",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10504",
       "prefLabelByLang": {
@@ -764,7 +758,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10505",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10505",
       "prefLabelByLang": {
@@ -779,7 +773,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10506",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10506",
       "prefLabelByLang": {
@@ -790,7 +784,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10507",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10507",
       "prefLabelByLang": {
@@ -801,7 +795,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10508",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10508",
       "prefLabelByLang": {
@@ -813,7 +807,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10509",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10509",
       "prefLabelByLang": {
@@ -824,7 +818,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10510",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10510",
       "prefLabelByLang": {
@@ -835,7 +829,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10599",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10599",
       "prefLabelByLang": {
@@ -856,7 +850,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/106",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "106",
       "prefLabelByLang": {
@@ -871,7 +865,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10601",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10601",
       "prefLabelByLang": {
@@ -882,7 +876,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10604",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10604",
       "prefLabelByLang": {
@@ -893,7 +887,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10605",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10605",
       "prefLabelByLang": {
@@ -908,7 +902,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10606",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10606",
       "prefLabelByLang": {
@@ -923,7 +917,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10607",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10607",
       "prefLabelByLang": {
@@ -934,7 +928,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10608",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10608",
       "prefLabelByLang": {
@@ -945,7 +939,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10609",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10609",
       "prefLabelByLang": {
@@ -961,7 +955,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10610",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10610",
       "prefLabelByLang": {
@@ -993,7 +987,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10611",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10611",
       "prefLabelByLang": {
@@ -1022,7 +1016,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10612",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10612",
       "prefLabelByLang": {
@@ -1033,7 +1027,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10613",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10613",
       "prefLabelByLang": {
@@ -1044,7 +1038,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10614",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10614",
       "prefLabelByLang": {
@@ -1055,7 +1049,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10615",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10615",
       "prefLabelByLang": {
@@ -1066,7 +1060,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10616",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10616",
       "prefLabelByLang": {
@@ -1078,7 +1072,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10699",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10699",
       "prefLabelByLang": {
@@ -1089,7 +1083,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/107",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "107",
       "prefLabelByLang": {
@@ -1100,7 +1094,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/10799",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "10799",
       "prefLabelByLang": {
@@ -1112,17 +1106,18 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/2",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "2",
       "prefLabelByLang": {
         "sv": "Teknik",
         "en": "Engineering and Technology"
-      }
+      },
+      "topConceptOf": {"@id": "https://begrepp.uka.se/SSIF"}
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/201",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "201",
       "prefLabelByLang": {
@@ -1133,7 +1128,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20101",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20101",
       "prefLabelByLang": {
@@ -1144,7 +1139,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20102",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20102",
       "prefLabelByLang": {
@@ -1166,7 +1161,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20103",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20103",
       "prefLabelByLang": {
@@ -1177,7 +1172,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20104",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20104",
       "prefLabelByLang": {
@@ -1188,7 +1183,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20105",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20105",
       "prefLabelByLang": {
@@ -1199,7 +1194,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20106",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20106",
       "prefLabelByLang": {
@@ -1211,7 +1206,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20107",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20107",
       "prefLabelByLang": {
@@ -1222,7 +1217,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20108",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "20108",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Miljöanalys och bygginformationsteknik"},
@@ -1233,7 +1228,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20109",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20109",
       "prefLabelByLang": {
@@ -1244,7 +1239,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20110",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20110",
       "prefLabelByLang": {
@@ -1255,7 +1250,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20199",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20199",
       "prefLabelByLang": {
@@ -1266,7 +1261,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/202",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "202",
       "prefLabelByLang": {
@@ -1277,7 +1272,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20201",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20201",
       "prefLabelByLang": {
@@ -1289,7 +1284,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20202",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20202",
       "prefLabelByLang": {
@@ -1300,7 +1295,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20203",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20203",
       "prefLabelByLang": {
@@ -1311,7 +1306,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20204",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20204",
       "prefLabelByLang": {
@@ -1322,7 +1317,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20205",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20205",
       "prefLabelByLang": {
@@ -1333,7 +1328,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20206",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20206",
       "prefLabelByLang": {
@@ -1344,7 +1339,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20207",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20207",
       "prefLabelByLang": {
@@ -1355,7 +1350,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20208",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20208",
       "prefLabelByLang": {
@@ -1370,7 +1365,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20209",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20209",
       "prefLabelByLang": {
@@ -1381,7 +1376,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20299",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20299",
       "prefLabelByLang": {
@@ -1392,7 +1387,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/203",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "203",
       "prefLabelByLang": {
@@ -1403,7 +1398,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20301",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20301",
       "prefLabelByLang": {
@@ -1414,7 +1409,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20302",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20302",
       "prefLabelByLang": {
@@ -1437,7 +1432,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20303",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "20303",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Farkostteknik"},
@@ -1448,7 +1443,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20304",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20304",
       "prefLabelByLang": {
@@ -1459,7 +1454,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20305",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20305",
       "prefLabelByLang": {
@@ -1470,7 +1465,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20306",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20306",
       "prefLabelByLang": {
@@ -1483,7 +1478,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20307",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20307",
       "prefLabelByLang": {
@@ -1494,7 +1489,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20308",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "20308",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Tribologi (ytteknik omfattande friktion, nötning och smörjning)"},
@@ -1505,7 +1500,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20309",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20309",
       "prefLabelByLang": {
@@ -1516,7 +1511,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20399",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20399",
       "prefLabelByLang": {
@@ -1572,7 +1567,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20310",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20310",
       "prefLabelByLang": {
@@ -1584,7 +1579,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/204",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "204",
       "prefLabelByLang": {
@@ -1595,7 +1590,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20402",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20402",
       "prefLabelByLang": {
@@ -1616,7 +1611,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20403",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20403",
       "prefLabelByLang": {
@@ -1627,7 +1622,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20404",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "20404",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Farmaceutisk synteskemi"},
@@ -1638,7 +1633,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20401",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "20401",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Kemiska processer"},
@@ -1653,7 +1648,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20405",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20405",
       "prefLabelByLang": {
@@ -1665,7 +1660,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20406",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20406",
       "prefLabelByLang": {
@@ -1677,7 +1672,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/21101",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "21101",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Livsmedelsteknik"},
@@ -1688,7 +1683,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20407",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20407",
       "prefLabelByLang": {
@@ -1700,7 +1695,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20499",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20499",
       "prefLabelByLang": {
@@ -1711,7 +1706,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/205",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "205",
       "prefLabelByLang": {
@@ -1722,7 +1717,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20501",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20501",
       "prefLabelByLang": {
@@ -1734,7 +1729,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20502",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20502",
       "prefLabelByLang": {
@@ -1745,7 +1740,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20503",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20503",
       "prefLabelByLang": {
@@ -1756,7 +1751,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20504",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20504",
       "prefLabelByLang": {
@@ -1767,7 +1762,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20505",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20505",
       "prefLabelByLang": {
@@ -1778,7 +1773,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20506",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20506",
       "prefLabelByLang": {
@@ -1789,7 +1784,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20599",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20599",
       "prefLabelByLang": {
@@ -1800,7 +1795,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/206",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "206",
       "prefLabelByLang": {
@@ -1811,7 +1806,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20601",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20601",
       "prefLabelByLang": {
@@ -1824,7 +1819,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20602",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20602",
       "prefLabelByLang": {
@@ -1845,7 +1840,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20603",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20603",
       "prefLabelByLang": {
@@ -1857,7 +1852,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20604",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20604",
       "prefLabelByLang": {
@@ -1879,7 +1874,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20605",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20605",
       "prefLabelByLang": {
@@ -1891,7 +1886,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20606",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20606",
       "prefLabelByLang": {
@@ -1906,7 +1901,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20699",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20699",
       "prefLabelByLang": {
@@ -1917,7 +1912,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/207",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "207",
       "prefLabelByLang": {
@@ -1928,7 +1923,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20701",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "20701",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Geofysisk teknik"},
@@ -1939,7 +1934,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20702",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20702",
       "prefLabelByLang": {
@@ -1950,7 +1945,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20703",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20703",
       "prefLabelByLang": {
@@ -1993,7 +1988,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20704",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20704",
       "prefLabelByLang": {
@@ -2004,7 +1999,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20705",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20705",
       "prefLabelByLang": {
@@ -2030,7 +2025,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20706",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "20706",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Havs- och vattendragsteknik"},
@@ -2041,7 +2036,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20707",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20707",
       "prefLabelByLang": {
@@ -2053,7 +2048,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20799",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20799",
       "prefLabelByLang": {
@@ -2064,7 +2059,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/208",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "208",
       "prefLabelByLang": {
@@ -2075,7 +2070,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20801",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20801",
       "prefLabelByLang": {
@@ -2086,7 +2081,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20802",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20802",
       "prefLabelByLang": {
@@ -2097,7 +2092,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20803",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20803",
       "prefLabelByLang": {
@@ -2109,7 +2104,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20804",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "20804",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Bioteknisk etik"},
@@ -2120,7 +2115,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20899",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20899",
       "prefLabelByLang": {
@@ -2131,7 +2126,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/209",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "209",
       "prefLabelByLang": {
@@ -2142,7 +2137,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20901",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20901",
       "prefLabelByLang": {
@@ -2163,7 +2158,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20902",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20902",
       "prefLabelByLang": {
@@ -2174,7 +2169,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20903",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20903",
       "prefLabelByLang": {
@@ -2185,7 +2180,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20904",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20904",
       "prefLabelByLang": {
@@ -2197,7 +2192,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20905",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20905",
       "prefLabelByLang": {
@@ -2210,7 +2205,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20906",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20906",
       "prefLabelByLang": {
@@ -2221,7 +2216,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20907",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "20907",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Bioteknisk apparatteknik"},
@@ -2232,7 +2227,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20908",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "20908",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Medicinsk bioteknik"},
@@ -2243,7 +2238,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20909",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20909",
       "prefLabelByLang": {
@@ -2255,7 +2250,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/20999",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "20999",
       "prefLabelByLang": {
@@ -2266,7 +2261,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/210",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "210",
       "prefLabelByLang": {
@@ -2277,7 +2272,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/21001",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "21001",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Nanoteknik"},
@@ -2296,7 +2291,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/21002",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "21002",
       "prefLabelByLang": {
@@ -2307,7 +2302,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/21003",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "21003",
       "prefLabelByLang": {
@@ -2318,7 +2313,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/21004",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "21004",
       "prefLabelByLang": {
@@ -2329,7 +2324,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/21005",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "21005",
       "prefLabelByLang": {
@@ -2340,7 +2335,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/21099",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "21099",
       "prefLabelByLang": {
@@ -2351,7 +2346,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/211",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "211",
       "prefLabelByLang": {
@@ -2362,7 +2357,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/21102",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "21102",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Mediateknik"},
@@ -2373,7 +2368,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/21103",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "21103",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Interaktionsteknik"},
@@ -2384,7 +2379,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/21199",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "21199",
       "prefLabelByLang": {
@@ -2396,17 +2391,18 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/3",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "3",
       "prefLabelByLang": {
         "sv": "Medicin och hälsovetenskap",
         "en": "Medical and Health Sciences"
-      }
+      },
+      "topConceptOf": {"@id": "https://begrepp.uka.se/SSIF"}
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/301",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "301",
       "prefLabelByLang": {
@@ -2417,7 +2413,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30101",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30101",
       "prefLabelByLang": {
@@ -2428,7 +2424,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30102",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30102",
       "prefLabelByLang": {
@@ -2439,7 +2435,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30103",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30103",
       "prefLabelByLang": {
@@ -2454,7 +2450,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30104",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30104",
       "prefLabelByLang": {
@@ -2465,7 +2461,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30105",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30105",
       "prefLabelByLang": {
@@ -2476,7 +2472,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30106",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30106",
       "prefLabelByLang": {
@@ -2488,7 +2484,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30107",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30107",
       "prefLabelByLang": {
@@ -2509,7 +2505,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30108",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30108",
       "prefLabelByLang": {
@@ -2520,7 +2516,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30109",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30109",
       "prefLabelByLang": {
@@ -2531,7 +2527,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30110",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30110",
       "prefLabelByLang": {
@@ -2551,7 +2547,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30111",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30111",
       "prefLabelByLang": {
@@ -2571,7 +2567,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30112",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30112",
       "prefLabelByLang": {
@@ -2582,7 +2578,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30113",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30113",
       "prefLabelByLang": {
@@ -2593,7 +2589,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30114",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30114",
       "prefLabelByLang": {
@@ -2604,7 +2600,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30115",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30115",
       "prefLabelByLang": {
@@ -2615,7 +2611,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30302",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "30302",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Folkhälsovetenskap, global hälsa, socialmedicin och epidemiologi"},
@@ -2629,7 +2625,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30116",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30116",
       "prefLabelByLang": {
@@ -2641,7 +2637,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30117",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30117",
       "prefLabelByLang": {
@@ -2656,7 +2652,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30118",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30118",
       "prefLabelByLang": {
@@ -2667,7 +2663,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30199",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30199",
       "prefLabelByLang": {
@@ -2678,7 +2674,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/302",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "302",
       "prefLabelByLang": {
@@ -2689,7 +2685,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30201",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30201",
       "prefLabelByLang": {
@@ -2700,7 +2696,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30202",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30202",
       "prefLabelByLang": {
@@ -2711,7 +2707,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30203",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30203",
       "prefLabelByLang": {
@@ -2731,7 +2727,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30204",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30204",
       "prefLabelByLang": {
@@ -2742,7 +2738,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30205",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30205",
       "prefLabelByLang": {
@@ -2753,7 +2749,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30206",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30206",
       "prefLabelByLang": {
@@ -2765,7 +2761,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30207",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30207",
       "prefLabelByLang": {
@@ -2776,7 +2772,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30208",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30208",
       "prefLabelByLang": {
@@ -2787,7 +2783,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30209",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30209",
       "prefLabelByLang": {
@@ -2798,7 +2794,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30211",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30211",
       "prefLabelByLang": {
@@ -2809,7 +2805,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30212",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30212",
       "prefLabelByLang": {
@@ -2829,7 +2825,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30213",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30213",
       "prefLabelByLang": {
@@ -2841,7 +2837,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30215",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30215",
       "prefLabelByLang": {
@@ -2852,7 +2848,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30216",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30216",
       "prefLabelByLang": {
@@ -2863,7 +2859,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30217",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30217",
       "prefLabelByLang": {
@@ -2874,7 +2870,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30218",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30218",
       "prefLabelByLang": {
@@ -2885,7 +2881,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30219",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30219",
       "prefLabelByLang": {
@@ -2896,7 +2892,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30220",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30220",
       "prefLabelByLang": {
@@ -2908,7 +2904,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30221",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30221",
       "prefLabelByLang": {
@@ -2919,7 +2915,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30222",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30222",
       "prefLabelByLang": {
@@ -2930,7 +2926,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30223",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30223",
       "prefLabelByLang": {
@@ -2941,7 +2937,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30224",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30224",
       "prefLabelByLang": {
@@ -2952,7 +2948,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30210",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "30210",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Reumatologi och inflammation"},
@@ -2967,7 +2963,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30225",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30225",
       "prefLabelByLang": {
@@ -2979,7 +2975,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30226",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30226",
       "prefLabelByLang": {
@@ -2991,7 +2987,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30227",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30227",
       "prefLabelByLang": {
@@ -3002,7 +2998,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30214",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "30214",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Urologi och njurmedicin"},
@@ -3017,7 +3013,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30228",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30228",
       "prefLabelByLang": {
@@ -3029,7 +3025,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30229",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30229",
       "prefLabelByLang": {
@@ -3041,7 +3037,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30230",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30230",
       "prefLabelByLang": {
@@ -3052,7 +3048,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30299",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30299",
       "prefLabelByLang": {
@@ -3063,7 +3059,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/303",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "303",
       "prefLabelByLang": {
@@ -3074,7 +3070,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30301",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30301",
       "prefLabelByLang": {
@@ -3085,7 +3081,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30303",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30303",
       "prefLabelByLang": {
@@ -3096,7 +3092,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30304",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30304",
       "prefLabelByLang": {
@@ -3108,7 +3104,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30305",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30305",
       "prefLabelByLang": {
@@ -3119,7 +3115,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30306",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30306",
       "prefLabelByLang": {
@@ -3130,7 +3126,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30307",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30307",
       "prefLabelByLang": {
@@ -3142,7 +3138,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30308",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30308",
       "prefLabelByLang": {
@@ -3154,7 +3150,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30309",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30309",
       "prefLabelByLang": {
@@ -3166,7 +3162,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30310",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30310",
       "prefLabelByLang": {
@@ -3177,7 +3173,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30311",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30311",
       "prefLabelByLang": {
@@ -3189,7 +3185,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30312",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30312",
       "prefLabelByLang": {
@@ -3200,7 +3196,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30313",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30313",
       "prefLabelByLang": {
@@ -3211,7 +3207,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30314",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30314",
       "prefLabelByLang": {
@@ -3222,7 +3218,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30399",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30399",
       "prefLabelByLang": {
@@ -3233,7 +3229,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/304",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "304",
       "prefLabelByLang": {
@@ -3244,7 +3240,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30401",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30401",
       "prefLabelByLang": {
@@ -3259,7 +3255,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30402",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30402",
       "prefLabelByLang": {
@@ -3270,7 +3266,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30403",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30403",
       "prefLabelByLang": {
@@ -3281,7 +3277,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30499",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30499",
       "prefLabelByLang": {
@@ -3292,7 +3288,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/305",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "305",
       "prefLabelByLang": {
@@ -3303,7 +3299,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30501",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30501",
       "prefLabelByLang": {
@@ -3314,7 +3310,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30502",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30502",
       "prefLabelByLang": {
@@ -3329,7 +3325,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/30599",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "30599",
       "prefLabelByLang": {
@@ -3340,17 +3336,18 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/4",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "4",
       "prefLabelByLang": {
         "sv": "Lantbruksvetenskap och veterinärmedicin",
         "en": "Agricultural and Veterinary sciences"
-      }
+      },
+      "topConceptOf": {"@id": "https://begrepp.uka.se/SSIF"}
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/401",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "401",
       "prefLabelByLang": {
@@ -3362,7 +3359,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40101",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "40101",
       "prefLabelByLang": {
@@ -3423,7 +3420,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40102",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "40102",
       "prefLabelByLang": {
@@ -3434,7 +3431,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40103",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "40103",
       "prefLabelByLang": {
@@ -3471,7 +3468,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40104",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "40104",
       "prefLabelByLang": {
@@ -3560,7 +3557,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40105",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "40105",
       "prefLabelByLang": {
@@ -3581,7 +3578,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40106",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "40106",
       "prefLabelByLang": {
@@ -3626,7 +3623,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40107",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "40107",
       "prefLabelByLang": {
@@ -3672,7 +3669,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/402",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "402",
       "prefLabelByLang": {
@@ -3683,7 +3680,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40201",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "40201",
       "prefLabelByLang": {
@@ -3728,7 +3725,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/403",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "403",
       "prefLabelByLang": {
@@ -3739,7 +3736,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40301",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "40301",
       "prefLabelByLang": {
@@ -3776,7 +3773,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40302",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "40302",
       "prefLabelByLang": {
@@ -3837,7 +3834,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40303",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "40303",
       "prefLabelByLang": {
@@ -3913,7 +3910,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40304",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "40304",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Annan veterinärmedicin"},
@@ -3923,7 +3920,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40399",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "40399",
       "prefLabelByLang": {
@@ -3934,7 +3931,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/404",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "404",
       "prefLabelByLang": {
@@ -3945,7 +3942,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40401",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "40401",
       "prefLabelByLang": {
@@ -3970,7 +3967,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40402",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "40402",
       "prefLabelByLang": {
@@ -4014,7 +4011,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/405",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "405",
       "prefLabelByLang": {
@@ -4025,7 +4022,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40501",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "40501",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Förnyelsebar bioenergi"},
@@ -4036,7 +4033,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40502",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "40502",
       "prefLabelByLang": {
@@ -4072,7 +4069,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40504",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "40504",
       "prefLabelByLang": {
@@ -4101,7 +4098,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40503",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "40503",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Lantbrukets arbetsmiljö och säkerhet"},
@@ -4112,7 +4109,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40108",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "40108",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Landskapsarkitektur"},
@@ -4122,7 +4119,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40505",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "40505",
       "prefLabelByLang": {
@@ -4160,7 +4157,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40506",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "40506",
       "prefLabelByLang": {
@@ -4171,7 +4168,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40507",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "40507",
       "prefLabelByLang": {
@@ -4182,7 +4179,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/40599",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "40599",
       "prefLabelByLang": {
@@ -4193,17 +4190,18 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/5",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "5",
       "prefLabelByLang": {
         "sv": "Samhällsvetenskap",
         "en": "Social Sciences"
-      }
+      },
+      "topConceptOf": {"@id": "https://begrepp.uka.se/SSIF"}
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/501",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "501",
       "prefLabelByLang": {
@@ -4214,7 +4212,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50101",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50101",
       "prefLabelByLang": {
@@ -4229,7 +4227,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50102",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50102",
       "prefLabelByLang": {
@@ -4258,7 +4256,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/502",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "502",
       "prefLabelByLang": {
@@ -4269,7 +4267,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50201",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50201",
       "prefLabelByLang": {
@@ -4280,7 +4278,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50202",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50202",
       "prefLabelByLang": {
@@ -4291,7 +4289,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50203",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50203",
       "prefLabelByLang": {
@@ -4302,7 +4300,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/503",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "503",
       "prefLabelByLang": {
@@ -4313,7 +4311,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50301",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50301",
       "prefLabelByLang": {
@@ -4334,7 +4332,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50302",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50302",
       "prefLabelByLang": {
@@ -4355,7 +4353,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50304",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50304",
       "prefLabelByLang": {
@@ -4366,7 +4364,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50303",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "50303",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Lärande"},
@@ -4379,7 +4377,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50399",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50399",
       "prefLabelByLang": {
@@ -4390,7 +4388,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/504",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "504",
       "prefLabelByLang": {
@@ -4401,7 +4399,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50401",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50401",
       "prefLabelByLang": {
@@ -4418,7 +4416,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50403",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "50403",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Socialpsykologi"},
@@ -4429,7 +4427,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50402",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50402",
       "prefLabelByLang": {
@@ -4440,7 +4438,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50404",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50404",
       "prefLabelByLang": {
@@ -4451,7 +4449,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50405",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50405",
       "prefLabelByLang": {
@@ -4462,7 +4460,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50502",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "50502",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Juridik och samhälle"},
@@ -4472,7 +4470,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50406",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50406",
       "prefLabelByLang": {
@@ -4484,7 +4482,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/505",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "505",
       "prefLabelByLang": {
@@ -4495,7 +4493,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50501",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50501",
       "prefLabelByLang": {
@@ -4507,7 +4505,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50503",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50503",
       "prefLabelByLang": {
@@ -4520,7 +4518,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/506",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "506",
       "prefLabelByLang": {
@@ -4531,7 +4529,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50601",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50601",
       "prefLabelByLang": {
@@ -4546,7 +4544,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50901",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "50901",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Tvärvetenskapliga studier inom samhällsvetenskap"},
@@ -4560,7 +4558,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50604",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50604",
       "prefLabelByLang": {
@@ -4572,7 +4570,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50603",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "50603",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Globaliseringsstudier"},
@@ -4583,7 +4581,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/507",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "507",
       "prefLabelByLang": {
@@ -4594,7 +4592,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50701",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50701",
       "prefLabelByLang": {
@@ -4605,7 +4603,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50702",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50702",
       "prefLabelByLang": {
@@ -4616,7 +4614,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50703",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50703",
       "prefLabelByLang": {
@@ -4637,7 +4635,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/508",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "508",
       "prefLabelByLang": {
@@ -4649,7 +4647,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50801",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50801",
       "prefLabelByLang": {
@@ -4662,7 +4660,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50802",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "50802",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Kommunikationsvetenskap"},
@@ -4673,7 +4671,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50803",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "50803",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Mänsklig interaktion med IKT"},
@@ -4684,7 +4682,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50804",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50804",
       "prefLabelByLang": {
@@ -4705,7 +4703,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50805",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50805",
       "prefLabelByLang": {
@@ -4716,7 +4714,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/509",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "509",
       "prefLabelByLang": {
@@ -4727,7 +4725,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50902",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50902",
       "prefLabelByLang": {
@@ -4738,7 +4736,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50903",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50903",
       "prefLabelByLang": {
@@ -4749,7 +4747,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50904",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50904",
       "prefLabelByLang": {
@@ -4761,7 +4759,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50602",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "50602",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Studier av offentlig förvaltning"},
@@ -4771,7 +4769,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50905",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50905",
       "prefLabelByLang": {
@@ -4783,7 +4781,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50906",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50906",
       "prefLabelByLang": {
@@ -4794,7 +4792,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50907",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50907",
       "prefLabelByLang": {
@@ -4805,7 +4803,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50908",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50908",
       "prefLabelByLang": {
@@ -4816,7 +4814,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50909",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50909",
       "prefLabelByLang": {
@@ -4827,7 +4825,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50910",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50910",
       "prefLabelByLang": {
@@ -4838,7 +4836,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50911",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50911",
       "prefLabelByLang": {
@@ -4849,7 +4847,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50912",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50912",
       "prefLabelByLang": {
@@ -4860,7 +4858,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/50999",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "50999",
       "prefLabelByLang": {
@@ -4871,17 +4869,18 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/6",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "6",
       "prefLabelByLang": {
         "sv": "Humaniora och konst",
         "en": "Humanities and the Arts"
-      }
+      },
+      "topConceptOf": {"@id": "https://begrepp.uka.se/SSIF"}
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/601",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "601",
       "prefLabelByLang": {
@@ -4892,7 +4891,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60101",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60101",
       "prefLabelByLang": {
@@ -4903,7 +4902,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60102",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60102",
       "prefLabelByLang": {
@@ -4915,7 +4914,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60103",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60103",
       "prefLabelByLang": {
@@ -4926,7 +4925,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60305",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "60305",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Idé- och lärdomshistoria"},
@@ -4936,7 +4935,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60104",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60104",
       "prefLabelByLang": {
@@ -4948,7 +4947,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60501",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "60501",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Antikvetenskap"},
@@ -4958,7 +4957,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60105",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60105",
       "prefLabelByLang": {
@@ -4970,7 +4969,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/602",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "602",
       "prefLabelByLang": {
@@ -4981,7 +4980,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60201",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60201",
       "prefLabelByLang": {
@@ -4992,7 +4991,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60202",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60202",
       "prefLabelByLang": {
@@ -5003,7 +5002,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60203",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60203",
       "prefLabelByLang": {
@@ -5024,7 +5023,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60204",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60204",
       "prefLabelByLang": {
@@ -5045,7 +5044,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60205",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60205",
       "prefLabelByLang": {
@@ -5056,7 +5055,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60206",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60206",
       "prefLabelByLang": {
@@ -5067,7 +5066,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60207",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60207",
       "prefLabelByLang": {
@@ -5078,7 +5077,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/603",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "603",
       "prefLabelByLang": {
@@ -5089,7 +5088,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60301",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60301",
       "prefLabelByLang": {
@@ -5100,7 +5099,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60302",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60302",
       "prefLabelByLang": {
@@ -5111,7 +5110,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60303",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60303",
       "prefLabelByLang": {
@@ -5164,7 +5163,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60304",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60304",
       "prefLabelByLang": {
@@ -5175,7 +5174,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60306",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60306",
       "prefLabelByLang": {
@@ -5186,7 +5185,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/604",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "604",
       "prefLabelByLang": {
@@ -5197,7 +5196,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60407",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60407",
       "prefLabelByLang": {
@@ -5217,7 +5216,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60408",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60408",
       "prefLabelByLang": {
@@ -5228,7 +5227,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60409",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60409",
       "prefLabelByLang": {
@@ -5239,7 +5238,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60410",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60410",
       "prefLabelByLang": {
@@ -5250,7 +5249,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60411",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60411",
       "prefLabelByLang": {
@@ -5262,7 +5261,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60402",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "60402",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Musik"},
@@ -5272,7 +5271,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60412",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60412",
       "prefLabelByLang": {
@@ -5283,7 +5282,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60403",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "60403",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Litterär gestaltning"},
@@ -5293,7 +5292,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60413",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60413",
       "prefLabelByLang": {
@@ -5304,7 +5303,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60404",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "60404",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Scenkonst"},
@@ -5314,7 +5313,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60414",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60414",
       "prefLabelByLang": {
@@ -5325,7 +5324,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60405",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "60405",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Arkitektur"},
@@ -5335,7 +5334,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60415",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60415",
       "prefLabelByLang": {
@@ -5346,7 +5345,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60406",
-      "@type": "Concept",
+      "@type": "Classification",
       "code": "60406",
       "owl:deprecated": true,
       "labelByLang": {"sv": "Design"},
@@ -5356,7 +5355,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60416",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60416",
       "prefLabelByLang": {
@@ -5367,7 +5366,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60417",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60417",
       "prefLabelByLang": {
@@ -5378,7 +5377,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60418",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60418",
       "prefLabelByLang": {
@@ -5389,7 +5388,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60419",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60419",
       "prefLabelByLang": {
@@ -5400,7 +5399,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/605",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "605",
       "prefLabelByLang": {
@@ -5412,7 +5411,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60502",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60502",
       "prefLabelByLang": {
@@ -5423,7 +5422,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60503",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60503",
       "prefLabelByLang": {
@@ -5434,7 +5433,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60504",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60504",
       "prefLabelByLang": {
@@ -5445,7 +5444,7 @@
     },
     {
       "@id": "https://begrepp.uka.se/SSIF/60599",
-      "@type": "Concept",
+      "@type": "Classification",
       "inScheme": {"@id": "https://begrepp.uka.se/SSIF"},
       "code": "60599",
       "prefLabelByLang": {
