@@ -1,4 +1,5 @@
 from aenum import Enum
+from pathlib import Path
 
 from difflib import SequenceMatcher
 from jsonpath_rw import parse
@@ -10,6 +11,7 @@ from unidecode import unidecode
 
 from requests.adapters import Retry
 from random import random
+from lxml import etree
 
 from pipeline.swepublog import logger as log
 
@@ -39,7 +41,7 @@ ENRICHING_AUDITORS_CODES = [
 
 SWEPUB_CLASSIFIER_ID = "https://id.kb.se/generator/swepub-classifier"
 
-SSIF_SCHEME = 'https://id.kb.se/term/ssif'
+SSIF_SCHEME = etree.parse(Path(__file__).parent / "../resources/ssif_scheme.xml").getroot().text
 SSIF_BASE = f'{SSIF_SCHEME}/'
 
 

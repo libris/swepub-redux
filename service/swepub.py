@@ -31,7 +31,7 @@ from tempfile import NamedTemporaryFile
 from simplemma.langdetect import lang_detector
 
 from pipeline.convert import ModsParser
-from pipeline.util import Enrichment, Normalization, Validation, ENRICHING_AUDITORS_CODES
+from pipeline.util import Enrichment, Normalization, Validation, ENRICHING_AUDITORS_CODES, SSIF_SCHEME
 from pipeline.legacy_publication import Publication as LegacyPublication
 from pipeline.ldcache import embellish
 
@@ -466,7 +466,7 @@ def classify():
     else:
         status = "no match"
 
-    suggestions = [dict(embellish({"@id": f"https://id.kb.se/term/ssif/{code}"}, ["broader"]), **{"_score": score}) for code, score in subjects[:5]]
+    suggestions = [dict(embellish({"@id": f"{SSIF_SCHEME}/{code}"}, ["broader"]), **{"_score": score}) for code, score in subjects[:5]]
 
     return {
         "abstract": abstract,
