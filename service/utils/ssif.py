@@ -1,7 +1,7 @@
 def make_mappings(data):
     mappings = {}
     for term in data['@graph']:
-        if term.get("owl:deprecated", "") == True or term.get("@type", "") != "Concept":
+        if term.get("owl:deprecated", "") == True or term.get("@type", "") != "Classification":
             continue
 
         if term.get("prefLabelByLang", {}).get("sv"):
