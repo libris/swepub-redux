@@ -592,6 +592,21 @@ def test_merge_publication_information_agent_from_candidate():
     assert merged_master.publication_information.place is None
 
 
+def test_merge_publication_information_date_from_candidate():
+    master_without_date = Publication(
+        {'publication': [{'@type': 'Publication',
+                          'agent': {'@type': 'Agent', 'label': 'Candidate Agent'}}
+                         ]})
+
+    candidate_with_date_only = Publication(
+        {'publication': [{'@type': 'Publication',
+                          'date': '2011'}
+                         ]})
+    merged_master = merger._merge_publication_information(master_without_date, candidate_with_date_only)
+    assert merged_master.publication_information.agent == {'@type': 'Agent', 'label': 'Candidate Agent'}
+    assert merged_master.publication_information.date == '2011'
+
+
 def test_merge_publication_information_no_agent_and_no_place_in_both():
     master_without_agent_and_place = Publication(
         {'provisionActivity': [{'@type': 'Publication',
