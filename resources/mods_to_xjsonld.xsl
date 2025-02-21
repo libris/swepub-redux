@@ -280,7 +280,7 @@
 
             <xsl:if test="mods:originInfo">
                 <!-- If originInfo has *no* attributes *and* certain elements, *or* the attribute eventType='publication' and certain elements, consider it to be a publication -->
-                <xsl:if test="(mods:originInfo[not(@*)] and (mods:originInfo/mods:publisher or mods:originInfo/mods:place or mods:originInfo/mods:dateIssued)) or (mods:originInfo[@eventType = 'publication'] and (mods:originInfo/mods:agent/mods:role/mods:roleTerm[.='pbl'] or mods:originInfo/mods:agent/mods:role/mods:roleTerm[@valueURI = 'http://id.loc.gov/vocabulary/relators/pbl']))">
+                <xsl:if test="((mods:originInfo[not(@*)] or mods:originInfo[@eventType = 'publication']) and (mods:originInfo/mods:publisher or mods:originInfo/mods:place or mods:originInfo/mods:dateIssued)) or (mods:originInfo[@eventType = 'publication'] and (mods:originInfo/mods:agent/mods:role/mods:roleTerm[.='pbl'] or mods:originInfo/mods:agent/mods:role/mods:roleTerm[@valueURI = 'http://id.loc.gov/vocabulary/relators/pbl']))">
                     <array key="publication">
                         <xsl:for-each select="mods:originInfo[not(@*) or @eventType = 'publication']">
                             <xsl:if test="mods:publisher or mods:place or mods:dateIssued or (@eventType = 'publication' and (mods:agent/mods:role/mods:roleTerm[.='pbl'] or mods:agent/mods:role/mods:roleTerm[@valueURI = 'http://id.loc.gov/vocabulary/relators/pbl']))">
