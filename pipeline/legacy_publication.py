@@ -290,13 +290,26 @@ class Publication:
         2. rename date to year
         """
         body = self.body
-        if body.get("publication", []):
-            for publication in [
-                p for p in body.get("publication") if p.get("@type") == "Publication"
-            ]:
-                publication["@type"] = "PrimaryPublication"
-                # Set year as YYYY, if invalid format or missing, year will be current year.
-                publication["year"] = _format_date_as_year(publication.pop("date", None))
+        if body.get("publication"):
+            publications = [p for p in body.get("publication") if p.get("@type") == "Publication"]
+            if publications:
+                # Check if any of the publications has a date.
+                # If at least one publication has a date, we *don't* add a date to publications
+                # where the date is missing, because it'd just be a guess. If there's no date at
+                # all anywhere, we make a guess.
+                has_date_somewhere = any("date" in p and p.get("date") for p in publications)
+                for publication in publications:
+                    publication["@type"] = "PrimaryPublication"
+                    if publication.get("date"):
+                        publication["year"] = _format_date_as_year(publication.pop("date", None))
+                    elif has_date_somewhere == False:
+                        # There's no date in any publication, so we use a fallback value,
+                        # preferably meta.creationDate. If there's no meta.creationDate,
+                        # _format_date_as_year will return the current year.
+                        publication["year"] = _format_date_as_year(body.get("meta", {}).get("creationDate"))
+                        has_date_somewhere = True
+                    # Might still have an empty date here if we for some reason have an empty date, so pop it
+                    publication.pop("date", None)
 
         if not body.get("meta"):
             body["meta"] = {}

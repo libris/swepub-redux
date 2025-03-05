@@ -334,6 +334,9 @@ class PublicationMerger:
         if not master_publication_information.place and candidate.publication_information.place:
             master_publication_information.place = candidate_publication_information.place
 
+        if not master_publication_information.date and candidate.publication_information.date:
+            master_publication_information.date = candidate_publication_information.date
+
         master.publication_information = master_publication_information
         return master
 
