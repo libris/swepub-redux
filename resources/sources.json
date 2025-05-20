@@ -44,9 +44,16 @@
     "name": "Lunds universitet",
     "sets": [
       {
+        "url": "https://ludicris.lub.lu.se/ws/oai",
+        "subset": "publications:all",
+        "metadata_prefix": "mods_swepub",
+        "envs": ["DEV", "QA"]
+      },
+      {
         "url": "https://lucris.lub.lu.se/ws/oai",
         "subset": "publications:all",
-        "metadata_prefix": "mods_swepub"
+        "metadata_prefix": "mods_swepub",
+        "envs": ["PROD"]
       }
     ]
   },
