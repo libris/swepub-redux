@@ -17,14 +17,12 @@ def mangle_contributor_for_comparison(name):
 
     # Separate double capital letters, like "JO" (Waldner), so that they can may be
     # considered initials and match against "Jan Ove Waldner" or "Jan-Ove Waldner"
-    separated = ""
-    for i in range(0, len(name)-1):
-        if name[i].isupper() and name[i+1].isupper():
-            separated += name[i] + " "
-        else:
-            separated += name[i]
-    separated += name[-1]
-    name = separated
+    def separate_initials(word):
+        if word.isupper() and len(word) <= 3:
+            return ' '.join(list(word))
+        return word
+
+    name = ' '.join([separate_initials(w) for w in name.split()])
 
     name = name.lower()
     nfkd = unicodedata.normalize('NFKD', name)
