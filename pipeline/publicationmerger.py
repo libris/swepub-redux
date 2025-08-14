@@ -169,7 +169,10 @@ class PublicationMerger:
                         master_contrib.update_name_part(candidate_contrib)
 
                     if _should_replace_affiliation(master_contrib, candidate_contrib):
-                        master_contrib.affiliations = candidate_contrib.affiliations
+                        # Even if we should replace master's affililations with the ones
+                        # from the candidate, do keep master's ROR affiliations, if any.
+                        master_contrib.affiliations = _merge_contrib_ror_affiliations(
+                            candidate_contrib.affiliations, master_contrib.affiliations)
                     else:
                         master_contrib.affiliations = _merge_contrib_affiliations(
                             master_contrib.affiliations,
@@ -528,8 +531,8 @@ def _merge_contrib_identified_by(master_contrib_identified_bys, candidate_contri
     return master_contrib_identified_bys
 
 
-def _merge_contrib_affiliations(master_contrib_affiliations, canidate_contrib_affiliations):
-    for candidate_contrib_affiliation in canidate_contrib_affiliations:
+def _merge_contrib_affiliations(master_contrib_affiliations, candidate_contrib_affiliations):
+    for candidate_contrib_affiliation in candidate_contrib_affiliations:
         # Not a "fritextaffiliering": Should be handled as; add if not exact duplicate
         if "identifiedBy" in candidate_contrib_affiliation:
             if candidate_contrib_affiliation not in master_contrib_affiliations:
@@ -550,4 +553,17 @@ def _merge_contrib_affiliations(master_contrib_affiliations, canidate_contrib_af
                     break
             if not has_match:
                 master_contrib_affiliations.append(candidate_contrib_affiliation)
+    return master_contrib_affiliations
+
+
+def _merge_contrib_ror_affiliations(master_contrib_affiliations, candidate_contrib_affiliations):
+    for candidate_contrib_affiliation in candidate_contrib_affiliations:
+        if (
+            "identifiedBy" in candidate_contrib_affiliation
+            and isinstance(candidate_contrib_affiliation["identifiedBy"], list)
+            and len(candidate_contrib_affiliation["identifiedBy"]) > 0
+        ):
+            if isinstance(candidate_contrib_affiliation["identifiedBy"][0], dict):
+                if candidate_contrib_affiliation["identifiedBy"][0].get("@type", "") == "ROR":
+                    master_contrib_affiliations.append(candidate_contrib_affiliation)
     return master_contrib_affiliations
