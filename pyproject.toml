@@ -1,0 +1,32 @@
+[project]
+name = "swepub-redux"
+version = "0.1.0"
+readme = "README.md"
+# TODO: experienced weird sqlite issues with Python 3.10/3.11 earlier;
+# verify harvesting works fine with newer Python before removing <3.10 constraint
+requires-python = ">=3.9.22, <3.10"
+dependencies = [
+    "aenum==3.1.15",
+    "beautifulsoup4==4.12.2",
+    "flask==3.0.0",
+    "flask-cors==5.0.0",
+    "flexmock==0.11.3",
+    "gunicorn==23.0.0",
+    "jsonpath-rw-ext==1.2.2",
+    "levenshtein==0.22.0",
+    "lxml==4.9.3",
+    "mock>=1.0.1",
+    "mysql-connector-python==8.0.33",
+    "orjson==3.9.15",
+    "pathvalidate==3.2.0",
+    "psutil==5.9.5",
+    "pypika==0.48.9",
+    "pytest==7.4.2",
+    "python-dateutil==2.8.2",
+    "python-stdnum==1.19",
+    "requests==2.32.4",
+    "rfc3987==1.3.8",
+    "simplemma==0.9.1",
+    "unidecode==1.3.7",
+    "wheel>=0.45.1",
+]

@@ -1250,34 +1250,28 @@
                             </xsl:choose>
                         </xsl:for-each>
                     </xsl:if>
-                    <xsl:choose>
-                        <xsl:when test="mods:nameIdentifier[not(@invalid) and . != '']">
-                            <array key="identifiedBy">
-                                <xsl:for-each select="mods:nameIdentifier[not(@invalid) and . != '']">
-                                    <xsl:call-template name="identifier">
-                                        <xsl:with-param name="type" select="@type"/>
-                                        <xsl:with-param name="value" select="."/>
-                                    </xsl:call-template>
-                                </xsl:for-each>
-                            </array>
-                        </xsl:when>
-                        <xsl:when test="mods:description[@type = 'orcid'] or (@authority != '' and @xlink:href != '')">
-                            <array key="identifiedBy">
-                                <xsl:if test="mods:description[@type = 'orcid']">
-                                    <xsl:call-template name="identifier">
-                                        <xsl:with-param name="type">orcid</xsl:with-param>
-                                        <xsl:with-param name="value" select="mods:description[@type = 'orcid']"/>
-                                    </xsl:call-template>
-                                </xsl:if>
-                                <xsl:if test="@authority != '' and @xlink:href != ''">
-                                    <xsl:call-template name="identifier">
-                                        <xsl:with-param name="type" select="@authority"/>
-                                        <xsl:with-param name="value" select="@xlink:href"/>
-                                    </xsl:call-template>
-                                </xsl:if>
-                            </array>
-                        </xsl:when>
-                    </xsl:choose>
+                    <xsl:if test="mods:nameIdentifier[not(@invalid) and . != ''] or mods:description[@type = 'orcid'] or (@authority != '' and @xlink:href != '')">
+                        <array key="identifiedBy">
+                            <xsl:for-each select="mods:nameIdentifier[not(@invalid) and . != '']">
+                                <xsl:call-template name="identifier">
+                                    <xsl:with-param name="type" select="@type"/>
+                                    <xsl:with-param name="value" select="."/>
+                                </xsl:call-template>
+                            </xsl:for-each>
+                            <xsl:if test="mods:description[@type = 'orcid']">
+                                <xsl:call-template name="identifier">
+                                    <xsl:with-param name="type">orcid</xsl:with-param>
+                                    <xsl:with-param name="value" select="mods:description[@type = 'orcid']"/>
+                                </xsl:call-template>
+                            </xsl:if>
+                            <xsl:if test="@authority != '' and @xlink:href != ''">
+                                <xsl:call-template name="identifier">
+                                    <xsl:with-param name="type" select="@authority"/>
+                                    <xsl:with-param name="value" select="@xlink:href"/>
+                                </xsl:call-template>
+                            </xsl:if>
+                        </array>
+                    </xsl:if>
                     <xsl:if test="mods:nameIdentifier[@invalid = 'yes' and . != '']">
                         <array key="incorrectlyIdentifiedBy">
                             <xsl:for-each select="mods:nameIdentifier[@invalid = 'yes' and . != '']">

@@ -3374,10 +3374,10 @@ def test_name_identifiers_swpmods_3_invalid(parser):
     assert expected_incorrectly_identified_by == parser.parse_mods(raw_xml)['instanceOf']['contribution'][0]['agent']['incorrectlyIdentifiedBy']
 
 
-def test_ignore_swpmods2_if_name_identifier_present(parser):
+def test_dont_ignore_swpmods2_if_name_identifier_present(parser):
     raw_xml = MODS("""
-    <name type="personal" authority="lnu" xlink:href="ignorethis">
-        <description xsi:type="identifierDefinition" type="orcid">ignorethistoo</description>
+    <name type="personal" authority="lnu" xlink:href="somelocalid">
+        <description xsi:type="identifierDefinition" type="orcid">definitelyanorcid</description>
         <nameIdentifier type="issn">this-is-an-issn-i-promise</nameIdentifier>
         <nameIdentifier type="lnu">lolhum</nameIdentifier>
         <nameIdentifier type="lnu" invalid="yes">000</nameIdentifier>
@@ -3392,6 +3392,18 @@ def test_ignore_swpmods2_if_name_identifier_present(parser):
         {
             "@type": "Local",
             "value": "lolhum",
+            "source": {
+                "@type": "Source",
+                "code": "lnu",
+            },
+        },
+        {
+            "@type": "ORCID",
+            "value": "definitelyanorcid",
+        },
+        {
+            "@type": "Local",
+            "value": "somelocalid",
             "source": {
                 "@type": "Source",
                 "code": "lnu",

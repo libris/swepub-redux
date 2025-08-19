@@ -115,6 +115,37 @@ def test_merge_localid_from_candidate():
     ]
 
 
+def test_merge_name_from_candidate_with_localid():
+    master_without_localid = _get_master_contribution_kalle_without_localid()
+    candidate_with_localid = _get_candidate_contribution_kalle_with_localid()
+
+    mocked_master_contributions = flexmock(contributions=[master_without_localid])
+    mocked_candidate_contributions = flexmock(contributions=[candidate_with_localid])
+    merged_master = merger._merge_contribution(mocked_master_contributions, mocked_candidate_contributions)
+    assert len(merged_master.contributions) == 1
+    assert merged_master.contributions[0].identified_bys == [
+        {'@type': 'ORCID', 'value': 'https://orcid.org/0000-0003-0229-9999'},
+        {'@type': 'Local', 'value': 'foobar', 'source': {'@type': 'Source', 'code': 'kth'}}
+    ]
+    assert merged_master.contributions[0].agent_given_name == 'Kalle'
+    assert merged_master.contributions[0].agent_family_name == 'Ninja'
+
+
+def test_merge_longer_name_from_candidate():
+    master_with_shorter_name = _get_master_contribution_kalle_with_shorter_name()
+    candidate_with_longer_name = _get_candidate_contribution_kalle_with_longer_name()
+
+    mocked_master_contributions = flexmock(contributions=[master_with_shorter_name])
+    mocked_candidate_contributions = flexmock(contributions=[candidate_with_longer_name])
+    merged_master = merger._merge_contribution(mocked_master_contributions, mocked_candidate_contributions)
+    assert len(merged_master.contributions) == 1
+    assert merged_master.contributions[0].identified_bys == [
+        {'@type': 'ORCID', 'value': 'https://orcid.org/0000-0003-0229-9999'}
+    ]
+    assert merged_master.contributions[0].agent_given_name == 'Kalle'
+    assert merged_master.contributions[0].agent_family_name == 'Ninja'
+
+
 def test_merge_has_notes_publication_status_unchanged():
     published_publication = Publication(
         {'instanceOf': {'hasNote': [
@@ -1158,7 +1189,7 @@ def _get_master_contribution_kalle_without_localid():
             "agent": {
                 "@type": "Person",
                 "familyName": "Ninja",
-                "givenName": "Kalle",
+                "givenName": "K.",
                 "identifiedBy": [
                     {
                         "@type": "ORCID",
@@ -1192,6 +1223,38 @@ def _get_candidate_contribution_kalle_with_localid():
                         "value": "https://orcid.org/0000-0003-0229-9999"
                     }
                 ]
+            }
+        }
+    )
+
+
+def _get_master_contribution_kalle_with_shorter_name():
+    return Contribution(
+        {
+            "@type": "Contribution",
+            "agent": {
+                "@type": "Person",
+                "familyName": "Ninja",
+                "givenName": "K.",
+                "identifiedBy": [
+                    {
+                        "@type": "ORCID",
+                        "value": "https://orcid.org/0000-0003-0229-9999"
+                    }
+                ]
+            }
+        }
+    )
+
+
+def _get_candidate_contribution_kalle_with_longer_name():
+    return Contribution(
+        {
+            "@type": "Contribution",
+            "agent": {
+                "@type": "Person",
+                "familyName": "Ninja",
+                "givenName": "Kalle"
             }
         }
     )

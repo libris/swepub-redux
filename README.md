@@ -7,14 +7,7 @@ Swepub consists of two programs
 
 ## Setup
 
-To set the system up, clone this repo, create a Python virtual env and install required Python packages:
-```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-(Note that at the moment only Python 3.7 and 3.8 have been used for this project. Later versions may also work.)
+Assuming https://github.com/astral-sh/uv is installed, just clone this repo.
 
 ### Setup: Annif
 
@@ -27,24 +20,24 @@ To set it up, follow the instructions in https://github.com/libris/swepub-annif.
 To run the pipeline and harvest a few sources do:
 
 ```bash
-python3 -m pipeline.harvest --update --skip-unpaywall mdh miun mau
+uv run python -m pipeline.harvest --update --skip-unpaywall mdh miun mau
 ```
 
 (`--skip-unpaywall` avoids hitting a non-public Unpaywall mirror; alternatively, you could set `SWEPUB_SKIP_REMOTE` which skips both Unpaywall and other remote services (e.g. shortdoi.org, issn.org).)
 
 Expect this to take a few minutes. If you don't specify source(s) you instead get the full production data which takes a lot longer (~8 hours). Sources must exist in `pipeline/sources.json`. If the database doesn't exist, it will be created; if it already exists, sources will be incrementally updated (harvesting records added/updated/deleted since the previous execution of `pipeline.harvest --update`).
 
-To forcibly create a new database, run `python3 -m pipeline.harvest --force` (or `-f`).
+To forcibly create a new database, run `uv run python -m pipeline.harvest --force` (or `-f`).
 
-Run `python3 -m pipeline.harvest -h` to see all options. 
+Run `uv run python -m pipeline.harvest -h` to see all options.
 
 There are no running "services", nor any global state. Each time the pipeline is executed, an sqlite3 database is either created or updated. You may even run more than one harvester (with a different database path) in parallel if you like.
 
 You can `purge` (delete) one or more sources. In combination with a subsequent `update` command, this lets you completely remove a source and then harvest it fully, while keeping records from other sources in the database intact:
 
 ```bash
-python3 -m pipeline.harvest --purge uniarts
-python3 -m pipeline.harvest --update uniarts
+uv run python -m pipeline.harvest --purge uniarts
+uv run python -m pipeline.harvest --update uniarts
 ```
 
 (If you omit the source name, all sources' records will be purged and fully harvested.)
@@ -52,8 +45,8 @@ python3 -m pipeline.harvest --update uniarts
 For sources that keep track of deleted records, a much quicker way is:
 
 ```bash
-python3 -m pipeline.harvest --reset-harvest-time uniarts
-python3 -m pipeline.harvest --reset-harvest-time uniarts
+uv run python -m pipeline.harvest --reset-harvest-time uniarts
+uv run python -m pipeline.harvest --reset-harvest-time uniarts
 ```
 
 `--reset-harvest-time` removes the `last_harvest` entry for the specified source(s), meaning the next `--update` will trigger a full harvest.
@@ -82,8 +75,7 @@ For development, you can run `yarn --cwd service/vue-client/ build --mode=develo
 To start the Swepub service (which provides the API and serves the static frontend files, if they exist):
 
 ```bash
-# Make sure you're in the virtualenv created above
-python3 -m service.swepub
+uvr run python -m service.swepub
 ```
 
 Then visit http://localhost:5000. API docs are available on http://localhost:5000/api/v2/apidocs.
@@ -100,25 +92,24 @@ See https://github.com/libris/swepub-annif
 Unit tests:
 
 ```bash
-# Make sure you're in the virtualenv created above
-pytest
+uv run pytest
 
 # Also test embedded doctests:
-pytest --doctest-modules
+uv run pytest --doctest-modules
 ```
 
 To harvest specific test records, first start the mock API server:
 
 ```bash
-python3 -m tests.mock_api
+uv run python -m tests.mock_api
 ```
 
 Then, in another terminal:
 
 ```bash
 export SWEPUB_SOURCE_FILE=tests/sources_test.json
-python3 -m pipeline.harvest -f dedup
-python3 -m service.swepub
+uv run python -m pipeline.harvest -f dedup
+uv run python -m service.swepub
 ```
 
 To add a new test record, for example `foobar.xml`:
@@ -148,7 +139,7 @@ Now you should be able to harvest it:
 ```bash
 # Again, make sure the mock API server is rnning and that you've set
 # export SWEPUB_SOURCE_FILE=tests/sources_test.json
-python3 -m pipeline.harvest -f foobar
+uv run python -m pipeline.harvest -f foobar
 ```
 
 
@@ -160,17 +151,15 @@ you can harvest.
 
 
 ```bash
-# Make sure you're in the virtualenv created above
-
 # Harvest to disk
-python3 -m misc.fetch_records uniarts ths # Saves to ./_xml by default; -h for options
-# _or_, to fetch all sources: python3 -m misc.fetch_records
+uv run python -m misc.fetch_records uniarts ths # Saves to ./_xml by default; -h for options
+# _or_, to fetch all sources: uv run python -m misc.fetch_records
 
 # Start OAI-PMH server in the background or in another terminal
-python3 -m misc.oai_pmh_server # See -h for options
+uv run python -m misc.oai_pmh_server # See -h for options
 
 # Now harvest (--local-server defaults to http://localhost:8383/oai)
-python3 -m pipeline.harvest -f uniarts ths --local-server
+uv run python -m pipeline.harvest -f uniarts ths --local-server
 ```
 
 This "OAI-PMH server" supports only the very bare minimum for `pipeline.harvest` to work
@@ -181,7 +170,7 @@ You can also download only specific records (and when downloading specific recor
 the XML will be pretty-printed):
 
 ```bash
-python3 -m misc.fetch_records oai:DiVA.org:uniarts-1146 oai:DiVA.org:lnu-108145
+uv run python -m misc.fetch_records oai:DiVA.org:uniarts-1146 oai:DiVA.org:lnu-108145
 ```
 
 
@@ -189,14 +178,14 @@ python3 -m misc.fetch_records oai:DiVA.org:uniarts-1146 oai:DiVA.org:lnu-108145
 
 Having downloaded the XML of a record (see "Working with local XML files" above):
 ```bash
-python3 -m misc.fetch_records oai:DiVA.org:uniarts-1146
+uv run python -m misc.fetch_records oai:DiVA.org:uniarts-1146
 ```
 
 ...you can then test conversion from Swepub MODS XML to KBV/JSON-LD like so:
 
 
 ```bash
-python3 -m misc.mods_to_json resources/mods_to_xjsonld.xsl _xml/uniarts/oaiDiVA.orguniarts-1146.xml
+uv run python -m misc.mods_to_json resources/mods_to_xjsonld.xsl _xml/uniarts/oaiDiVA.orguniarts-1146.xml
 ```
 
 Then you can edit `resources/mods_to_xjsonld.xsl` and/or `_xml/uniarts/oaiDiVA.orguniarts-1146.xml`,
@@ -208,7 +197,7 @@ run `misc.mods_to_json` again, and see what happens.
 ## Testing conversion, enrichment and "legacy" export pipeline
 
 ```bash
-python3 -m misc.testpipe _xml/sometestfile.xml /tmp/swepub-testpipe/
+uv run python -m misc.testpipe _xml/sometestfile.xml /tmp/swepub-testpipe/
 ```
 Produces 3 files corresponding to conversion, audit and legacy steps:
 ```bash
