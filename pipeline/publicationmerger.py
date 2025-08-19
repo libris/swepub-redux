@@ -511,7 +511,11 @@ def has_affiliations(affiliations):
 
 
 def _should_replace_name_part(master_contrib, candidate_contrib):
-    return _has_local_id(candidate_contrib) and not _has_local_id(master_contrib)
+    if _has_local_id(candidate_contrib) and not _has_local_id(master_contrib):
+        return True
+    if len(candidate_contrib.agent_name) > len(master_contrib.agent_name):
+        return True
+    return False
 
 
 def _has_local_id(contrib):

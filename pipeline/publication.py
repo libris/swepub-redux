@@ -1200,6 +1200,10 @@ class Contribution:
         for key in ["givenName", "familyName", "lifeSpan", "termsOfAddress"]:
             if contrib.agent.get(key):
                 self._body["agent"][key] = contrib.agent[key]
+                if key == "givenName":
+                    self._agent_given_name = self._body.get('agent', {}).get('givenName', None)
+                if key == "familyName":
+                    self._agent_family_name = self._body.get('agent', {}).get('familyName', None)
             else:
                 self._body["agent"].pop(key, None)
 
