@@ -6,6 +6,8 @@
         media-type="text/xml"/>
     <!-- Transformerar DiVA:s MODS-format till Swepub MODS v 3 format -->
     <!-- Uppsala universitetsbibliotek, 2020 -->
+    <!-- Revision augusti 2025 -->
+    <!-- Tagit bort RI lokala indentifikator -->
     <!-- Revision januari 2024 -->
     <!-- Ändrat Swedish research subjects från subject till classification -->
     <!-- Ändrat libris till se-libr i type-attribut för identifier -->
@@ -472,7 +474,7 @@
                             </xsl:choose>
                         </xsl:for-each>
                         <!-- 13.1.2. Name identifier -->
-                        <xsl:for-each select="@authority">
+                        <xsl:for-each select="@authority[not(. = 'ri')]">
                             <nameIdentifier>
                                 <xsl:attribute name="type">
                                     <xsl:value-of select="."/>
