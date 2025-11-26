@@ -38,6 +38,7 @@ from pipeline.oai import RecordIterator
 from pipeline.validate import validate, should_be_rejected
 from pipeline.audit import audit
 from pipeline.legacy_sync import legacy_sync
+from pipeline.libris import generate_libris_dataset
 
 # To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..
 from pipeline.swepublog import logger as log
@@ -879,6 +880,12 @@ if __name__ == "__main__":
     diff = round(t1 - t0, 2)
     log.info(f"Phase 6 (generate processing stats) ran for {diff} seconds")
 
+    t0 = t1
+    generate_libris_dataset()
+    t1 = time.time()
+    diff = round(t1 - t0, 2)
+    log.info(f"Phase 7 (generate LibrisXL dataset) ran for {diff} seconds")
+
     if harvest_cache and not args.purge:
         log.info(f'Sources harvested: {" ".join(harvest_cache["meta"]["sources_succeeded"])}')
         if harvest_cache["meta"]["sources_failed"]:
@@ -905,4 +912,4 @@ if __name__ == "__main__":
         legacy_sync()
         t1 = time.time()
         diff = round(t1 - t0, 2)
-        log.info(f"Phase 7 (legacy search sync) ran for {diff} seconds")
+        log.info(f"Phase 8 (legacy search sync) ran for {diff} seconds")

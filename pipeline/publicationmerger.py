@@ -121,7 +121,20 @@ class PublicationMerger:
         if not publications:
             return None
         master = max(publications, key=lambda pub: pub.elements_size)
-        return Publication(copy.deepcopy(master.body))
+
+        # Select an @id for the master record ("first" alpha-numeric alternative)
+        oai_ids = []
+        for publication in publications:
+            root = publication.body
+            if (root["@id"]):
+                oai_ids.append(root["@id"])
+        oai_ids.sort()
+        selected_oai_id = oai_ids[0]
+
+        master_data = copy.deepcopy(master.body)
+        master_data["@id"] = selected_oai_id
+
+        return Publication(master_data)
 
     def _merge(self, master, candidate):
         """Merge master and candidate publication"""
