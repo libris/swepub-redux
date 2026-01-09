@@ -1,9 +1,10 @@
 import json
 from pipeline.storage import get_connection
 
-def clean(data):
+def clean(oai_id, data):
     root = json.loads(data)
     root.pop("@context", None) # Remove explicit context
+    root["@id"] = f"https://swepub.kb.se/bib/swepub:{oai_id}"
     return json.dumps(root)
 
 
@@ -15,10 +16,11 @@ def generate_libris_dataset():
         with get_connection() as connection:
             cursor = connection.cursor()
             for cluster_row in cursor.execute(
-                "SELECT data FROM finalized;"
+                "SELECT oai_id, data FROM finalized;"
             ):
-                data = cluster_row[0]
-                outFile.write(clean(data).encode('utf-8'))
+                oai_id = cluster_row[0]
+                data = cluster_row[1]
+                outFile.write(clean(oai_id, data).encode('utf-8'))
                 outFile.write("\n".encode('utf-8'))
 
 # For debugging
