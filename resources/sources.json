@@ -119,7 +119,14 @@
       {
         "url": "http://slubar.slu.se/sps/cgi/oai2",
         "subset": "swepub",
-        "metadata_prefix": "mods_sp30_sp3"
+        "metadata_prefix": "mods_sp30_sp3",
+        "envs": ["PROD"]
+      },
+      {
+        "url": "https://swedishagricultural-staging.elsevierpure.com/ws/oai",
+        "subset": "publications:all",
+        "metadata_prefix": "mods_swepub",
+        "envs": ["DEV", "QA"]
       }
     ]
   },
