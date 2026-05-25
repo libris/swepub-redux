@@ -2,7 +2,7 @@ import re
 
 from pipeline.auditors import BaseAuditor
 
-_is_three_or_five_digits = re.compile("^(\d{3}|\d{5})$").fullmatch
+_is_three_or_five_digits = re.compile(r"^(\d{3}|\d{5})$").fullmatch
 
 
 class SSIFAuditor(BaseAuditor):
