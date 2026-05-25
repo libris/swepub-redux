@@ -194,7 +194,7 @@ def harvest(source):
                                 batch = []
                                 batches_submitted += 1
                                 if batches_submitted % 100 == 0:
-                                    _log_harvest_cache_size(source["code"], record_count)
+                                    _log_harvest_cache_size(source["code"], record_count, executor)
                             record_count += 1
                         else:
                             num_failed += 1
@@ -378,11 +378,30 @@ def threaded_handle_harvested(source, source_subset, harvest_id, cached_paths, b
     ]
 
 
-def _log_harvest_cache_size(source_code, record_count):
+def _log_harvest_cache_size(source_code, record_count, executor=None):
     # Diagnostic for memory growth in the Manager-backed harvest_cache.
     # Each len() / max() here is an IPC round-trip, so call sparingly.
     try:
-        rss_mb = psutil.Process().memory_info().rss // (1024 * 1024)
+        parent = psutil.Process()
+        parent_rss_mb = parent.memory_info().rss // (1024 * 1024)
+        # Sum RSS across all descendants — workers + Manager + their forks.
+        children = parent.children(recursive=True)
+        worker_lines = []
+        children_total_mb = 0
+        for c in children:
+            try:
+                rss = c.memory_info().rss // (1024 * 1024)
+                children_total_mb += rss
+                worker_lines.append(f"{c.pid}={rss}MB")
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                continue
+        # Executor internal call-queue depth (private API — best-effort).
+        queue_depth = "?"
+        if executor is not None:
+            try:
+                queue_depth = str(executor._call_queue.qsize())
+            except Exception:
+                pass
         localid_wo_orcid = harvest_cache["localid_without_orcid"]
         localid_wo_orcid_len = len(localid_wo_orcid)
         max_val_len = 0
@@ -394,7 +413,9 @@ def _log_harvest_cache_size(source_code, record_count):
                     max_val_key = k
         enriched_len = len(harvest_cache["enriched_from_other_record"])
         log.info(
-            f"[cache-size] source={source_code} records={record_count} parent_rss={rss_mb}MB "
+            f"[cache-size] source={source_code} records={record_count} "
+            f"parent_rss={parent_rss_mb}MB children_total={children_total_mb}MB "
+            f"queue={queue_depth} children=[{', '.join(worker_lines)}] "
             f"doi_new={len(harvest_cache['doi_new'])} issn_new={len(harvest_cache['issn_new'])} "
             f"localid_to_orcid={len(harvest_cache['localid_to_orcid'])} "
             f"localid_without_orcid={localid_wo_orcid_len} max_val={max_val_len}B "
