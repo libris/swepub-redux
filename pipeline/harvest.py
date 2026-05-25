@@ -175,6 +175,7 @@ def harvest(source):
             ) as executor:
                 # fromtime = "2020-05-05T00:00:00Z"  # Only while debugging, use to force FROM date to get some incremental test data.
                 batch = []
+                batches_submitted = 0
                 try:
                     for record in record_iterator:
                         if record.is_successful():
@@ -191,6 +192,9 @@ def harvest(source):
                                 )
                                 executor.submit(func, batch)
                                 batch = []
+                                batches_submitted += 1
+                                if batches_submitted % 100 == 0:
+                                    _log_harvest_cache_size(source["code"], record_count)
                             record_count += 1
                         else:
                             num_failed += 1
@@ -372,6 +376,32 @@ def threaded_handle_harvested(source, source_subset, harvest_id, cached_paths, b
         harvest_cache["meta"][harvest_id][1] + num_rejected,
         harvest_cache["meta"][harvest_id][2] + num_deleted,
     ]
+
+
+def _log_harvest_cache_size(source_code, record_count):
+    # Diagnostic for memory growth in the Manager-backed harvest_cache.
+    # Each len() / max() here is an IPC round-trip, so call sparingly.
+    try:
+        rss_mb = psutil.Process().memory_info().rss // (1024 * 1024)
+        localid_wo_orcid = harvest_cache["localid_without_orcid"]
+        localid_wo_orcid_len = len(localid_wo_orcid)
+        max_val_len = 0
+        max_val_key = ""
+        if localid_wo_orcid_len:
+            for k, v in localid_wo_orcid.items():
+                if len(v) > max_val_len:
+                    max_val_len = len(v)
+                    max_val_key = k
+        enriched_len = len(harvest_cache["enriched_from_other_record"])
+        log.info(
+            f"[cache-size] source={source_code} records={record_count} parent_rss={rss_mb}MB "
+            f"doi_new={len(harvest_cache['doi_new'])} issn_new={len(harvest_cache['issn_new'])} "
+            f"localid_to_orcid={len(harvest_cache['localid_to_orcid'])} "
+            f"localid_without_orcid={localid_wo_orcid_len} max_val={max_val_len}B "
+            f"(key={max_val_key[:60]!r}) enriched_from_other={enriched_len}"
+        )
+    except Exception as e:
+        log.warning(f"[cache-size] failed to log harvest_cache size: {e}")
 
 
 def _get_source_ids(source_set):
