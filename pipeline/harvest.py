@@ -559,7 +559,7 @@ def _add_link_between_source_and_enriched():
 
 
 def _reprocess_affected_records(sources_to_process):
-    max_workers = max(psutil.cpu_count(logical=True) * 2, 8)
+    max_workers = max(psutil.cpu_count(logical=True), 8)
     with ProcessPoolExecutor(
         max_workers=max_workers,
         initializer=init,
@@ -827,7 +827,7 @@ if __name__ == "__main__":
         # network buffers full at all times, with data ready to consume for any core available.
         # Having many processes going at once is not a liability in terms of overhead.
         # Context switching is a cost paid per core, not per thread/process.
-        max_workers = max(psutil.cpu_count(logical=True) * 2, 8)
+        max_workers = max(psutil.cpu_count(logical=True), 8)
         with ProcessPoolExecutor(
             max_workers=max_workers,
             initializer=init,
