@@ -337,7 +337,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, cached_paths, b
                     elif not record.deleted:
                         num_rejected += 1
                 except Exception:
-                    log.warning(traceback.format_exc())
+                    log.warning(f"Failed processing record {record.oai_id!r} from {source}: {traceback.format_exc()}")
                     continue
 
                 lock.acquire()
@@ -368,7 +368,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, cached_paths, b
                             )
                             converted_rowids.append(converted_rowid)
                 except Exception:
-                    log.warning(traceback.format_exc())
+                    log.warning(f"Failed storing record {record.oai_id!r} from {source}: {traceback.format_exc()}")
                 finally:
                     lock.release()
 
