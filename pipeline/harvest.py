@@ -164,6 +164,7 @@ def harvest(source):
         try:
             with ProcessPoolExecutor(
                 max_workers=4,
+                max_tasks_per_child=50,
                 initializer=init,
                 initargs=(
                     lock,
@@ -325,10 +326,9 @@ def threaded_handle_harvested(source, source_subset, harvest_id, cached_paths, b
             read_only_cursor = read_only_connection.cursor()
             for record in batch:
                 xml = record.xml
-                rejected, min_level_errors = should_be_rejected(xml)
-                accepted = not rejected
-
                 try:
+                    rejected, min_level_errors = should_be_rejected(xml)
+                    accepted = not rejected
                     if accepted:
                         num_accepted += 1
                         converted = convert(xml)
@@ -571,6 +571,7 @@ def _reprocess_affected_records(sources_to_process):
     max_workers = max(psutil.cpu_count(logical=True), 8)
     with ProcessPoolExecutor(
         max_workers=max_workers,
+        max_tasks_per_child=1,
         initializer=init,
         initargs=(
             lock,
@@ -843,6 +844,7 @@ if __name__ == "__main__":
         max_workers = max(psutil.cpu_count(logical=True), 8)
         with ProcessPoolExecutor(
             max_workers=max_workers,
+            max_tasks_per_child=1,
             initializer=init,
             initargs=(
                 lock,
