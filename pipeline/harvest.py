@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import re
 import time
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, FIRST_COMPLETED, wait
 from multiprocessing import Lock, Manager
 import sys
 from datetime import datetime, timezone
@@ -175,6 +175,9 @@ def harvest(source):
             ) as executor:
                 # fromtime = "2020-05-05T00:00:00Z"  # Only while debugging, use to force FROM date to get some incremental test data.
                 batch = []
+                # Cap the number of pending batches to prevent OOMs
+                pending = set()
+                MAX_PENDING = 8
                 try:
                     for record in record_iterator:
                         if record.is_successful():
@@ -189,8 +192,12 @@ def harvest(source):
                                     harvest_id,
                                     cached_paths,
                                 )
-                                executor.submit(func, batch)
+                                pending.add(executor.submit(func, batch))
                                 batch = []
+                                if len(pending) >= MAX_PENDING:
+                                    done, pending = wait(pending, return_when=FIRST_COMPLETED)
+                                    for f in done:
+                                        f.result()
                             record_count += 1
                         else:
                             num_failed += 1
@@ -200,7 +207,9 @@ def harvest(source):
                 func = partial(
                     threaded_handle_harvested, source["code"], source_set.get("subset", ""), harvest_id, cached_paths
                 )
-                executor.submit(func, batch)
+                pending.add(executor.submit(func, batch))
+                for f in pending:
+                    f.result()
                 executor.shutdown(wait=True)
 
             # If we're doing incremental updating: Check if the source uses <deletedRecord>persistent</deletedRecord>.
@@ -571,8 +580,12 @@ def _reprocess_affected_records(sources_to_process):
             incremental,
         ),
     ) as executor:
-        for source in sources_to_process:
+        futures = [
             executor.submit(_handle_reprocess_affected_records, source)
+            for source in sources_to_process
+        ]
+        for f in futures:
+            f.result()
         executor.shutdown(wait=True)
 
 
