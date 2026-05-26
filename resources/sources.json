@@ -117,9 +117,9 @@
     "name": "Sveriges lantbruksuniversitet",
     "sets": [
       {
-        "url": "http://slubar.slu.se/sps/cgi/oai2",
-        "subset": "swepub",
-        "metadata_prefix": "mods_sp30_sp3",
+        "url": "https://research.slu.se/ws/oai",
+        "subset": "publications:all",
+        "metadata_prefix": "mods_swepub",
         "envs": ["PROD"]
       },
       {
