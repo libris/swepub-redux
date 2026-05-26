@@ -6,7 +6,7 @@ from os import getenv
 from pathlib import Path
 import requests
 
-from datetime import datetime
+from datetime import datetime, timezone
 import sqlite3
 from flask import (
     Flask,
@@ -340,7 +340,7 @@ def bibliometrics_api():
     fields = query_data.get("fields", [])
     if fields is None:
         fields = []
-    handled_at = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+    handled_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     # Results are streamed to the client so we're not bothered by limits
     def get_results():
@@ -1120,7 +1120,7 @@ def process_get_export(source=None):
     if offset:
         q = q.offset(offset)
 
-    handled_at = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+    handled_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     cur = get_db().cursor()
     cur.row_factory = dict_factory
     total_docs = cur.execute(str(q_total), list(flatten(values))).fetchone()["total"]

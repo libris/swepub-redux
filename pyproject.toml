@@ -4,7 +4,7 @@ version = "0.1.0"
 readme = "README.md"
 # TODO: experienced weird sqlite issues with Python 3.10/3.11 earlier;
 # verify harvesting works fine with newer Python before removing <3.10 constraint
-requires-python = ">=3.9.22, <3.10"
+requires-python = ">=3.14, <3.15"
 dependencies = [
     "aenum==3.1.15",
     "beautifulsoup4==4.12.2",
@@ -13,11 +13,11 @@ dependencies = [
     "flexmock==0.11.3",
     "gunicorn==23.0.0",
     "jsonpath-rw-ext==1.2.2",
-    "levenshtein==0.22.0",
-    "lxml==4.9.3",
+    "levenshtein==0.27.3",
+    "lxml==6.1.1",
     "mock>=1.0.1",
     "mysql-connector-python==8.0.33",
-    "orjson==3.9.15",
+    "orjson==3.11.9",
     "pathvalidate==3.2.0",
     "psutil==5.9.5",
     "pypika==0.48.9",

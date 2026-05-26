@@ -695,8 +695,7 @@ class Publication:
                                         '@type': 'SourceData',
                                         'label': 'Information om ÖT hämtad från DOAB.',
                                         'uri': 'https://www.doabooks.org/',
-                                        'date': datetime.datetime.utcnow().replace(
-                                            tzinfo=datetime.timezone.utc).isoformat()
+                                        'date': datetime.datetime.now(datetime.timezone.utc).isoformat()
                                     }
                                 ]
                             }
@@ -729,7 +728,7 @@ class Publication:
                             '@type': 'SourceData',
                             'label': 'Information om ÖT hämtad från Unpaywall.',
                             'uri': 'https://unpaywall.org/',
-                            'date': datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc).isoformat()
+                            'date': datetime.datetime.now(datetime.timezone.utc).isoformat()
                         }
                     ]
                 }
@@ -1010,7 +1009,7 @@ class Publication:
                     "@type": "SourceData",
                     "label": "Information hämtad från Crossref.",
                     "uri": "https://crossref.org/",
-                    "date": datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc).isoformat()
+                    "date": datetime.datetime.now(datetime.timezone.utc).isoformat()
                 }
             ]
         }
