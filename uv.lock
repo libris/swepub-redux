@@ -342,14 +342,16 @@ wheels = [
 
 [[package]]
 name = "mysql-connector-python"
-version = "8.0.33"
+version = "9.7.0"
 source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "protobuf" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/ac/b1/5cd6ee1bc750436e1ad2ca1e63d55c7611041c3d047f90123d28eaffc5e4/mysql-connector-python-8.0.33.tar.gz", hash = "sha256:9775331fa60b5d5a6925781d77eee4384e2b54a12dea694ffdefd1cf1a9c0fdb", size = 324946, upload-time = "2023-04-18T07:05:10.371Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/26/c9/a9446dbebbcdf7d828d0a3be9049607eab6eeffb4e46ef1ee8ac304baede/mysql_connector_python-9.7.0.tar.gz", hash = "sha256:933887e71c871b6e9d8908459fe8303ebcf8feb5cc1e1c49caa6490e525cf78e", size = 12254829, upload-time = "2026-04-30T07:55:39.797Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a9/98/3cd603a0130a4bc088942b51c142ce13de3bf21a26b4f960527859a780da/mysql_connector_python-8.0.33-py2.py3-none-any.whl", hash = "sha256:c20a85a69af41d2d7d5cf52106f0b9473775819d189487c6ff3d3f3946931ca2", size = 390125, upload-time = "2023-04-18T07:05:06.097Z" },
+    { url = "https://files.pythonhosted.org/packages/46/db/453c6916b4b1cad6c8e56631e67f81e0d01b52690de541894728c2122f70/mysql_connector_python-9.7.0-cp314-cp314-macosx_14_0_arm64.whl", hash = "sha256:9e17ceb79c1c4c137a5994f8ca8c6a1ce8ebf83eda3ccc21dd67f2c1398680f0", size = 20270277, upload-time = "2026-04-30T07:54:32.628Z" },
+    { url = "https://files.pythonhosted.org/packages/d7/6d/3ff4dc01806511a3741764eafd5c28b73de18d3a3dfb391d4e4cfe51e1ca/mysql_connector_python-9.7.0-cp314-cp314-macosx_14_0_x86_64.whl", hash = "sha256:272c4e8263f6a514e4ae65e9553ed214fc9d4cf1f0f6bedca30def20c2ae1d52", size = 19830318, upload-time = "2026-04-30T07:54:34.952Z" },
+    { url = "https://files.pythonhosted.org/packages/3e/79/b55c8f84a86071e5038567849c9cae4e3c96b211ce843c0f1808528bc202/mysql_connector_python-9.7.0-cp314-cp314-manylinux_2_28_aarch64.whl", hash = "sha256:9549a2974353407427b574f005c92f03972e303182b4c3b4a272bf4ca10855ed", size = 21924702, upload-time = "2026-04-30T07:54:37.418Z" },
+    { url = "https://files.pythonhosted.org/packages/61/3e/2ab7a525209826bde620f9029b2c8f340a16b4151384813827477d475569/mysql_connector_python-9.7.0-cp314-cp314-manylinux_2_28_x86_64.whl", hash = "sha256:ea4e05ab864ab8b0b5066d885d89ca51e5ba1320dba520c20a6f9388a8eca022", size = 21696426, upload-time = "2026-04-30T07:54:39.938Z" },
+    { url = "https://files.pythonhosted.org/packages/af/94/e370c40a6863752ba6886f20b960284daeef78b2a0e23f38d141b4aa7e76/mysql_connector_python-9.7.0-cp314-cp314-win_amd64.whl", hash = "sha256:5a5abbc152bc28cb2e64a04605ecd9941eff6b0dc5f9528cb84adb873e9a1e49", size = 18197576, upload-time = "2026-04-30T07:54:42.041Z" },
+    { url = "https://files.pythonhosted.org/packages/38/55/4ebb602d270108ea6e81ccdfe4aa0a511fedffdc3ef6c193ac9ff76402fe/mysql_connector_python-9.7.0-py2.py3-none-any.whl", hash = "sha256:af80b1e7179d5c2d983cf62470ad9b134a7e9ef05cf31108ae587f15873530cc", size = 480646, upload-time = "2026-04-30T07:54:43.82Z" },
 ]
 
 [[package]]
@@ -421,15 +423,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/e5/69/882ee5c9d017149285cab114ebeab373308ef0f874fcdac9beb90e0ac4da/ply-3.11.tar.gz", hash = "sha256:00c7c1aaa88358b9c765b6d3000c6eec0ba42abca5351b095321aef446081da3", size = 159130, upload-time = "2018-02-15T19:01:31.097Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a3/58/35da89ee790598a0700ea49b2a66594140f44dec458c07e8e3d4979137fc/ply-3.11-py2.py3-none-any.whl", hash = "sha256:096f9b8350b65ebd2fd1346b12452efe5b9607f7482813ffca50c22722a807ce", size = 49567, upload-time = "2018-02-15T19:01:27.172Z" },
-]
-
-[[package]]
-name = "protobuf"
-version = "3.20.3"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/55/5b/e3d951e34f8356e5feecacd12a8e3b258a1da6d9a03ad1770f28925f29bc/protobuf-3.20.3.tar.gz", hash = "sha256:2e3427429c9cffebf259491be0af70189607f365c2f41c7c3764af6f337105f2", size = 216768, upload-time = "2022-09-29T22:39:47.592Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/8d/14/619e24a4c70df2901e1f4dbc50a6291eb63a759172558df326347dce1f0d/protobuf-3.20.3-py2.py3-none-any.whl", hash = "sha256:a7ca6d488aa8ff7f329d4c545b2dbad8ac31464f1d8b1c87ad1346717731e4db", size = 162128, upload-time = "2022-09-29T22:39:44.547Z" },
 ]
 
 [[package]]
@@ -620,7 +613,7 @@ requires-dist = [
     { name = "levenshtein", specifier = "==0.27.3" },
     { name = "lxml", specifier = "==6.1.1" },
     { name = "mock", specifier = ">=1.0.1" },
-    { name = "mysql-connector-python", specifier = "==8.0.33" },
+    { name = "mysql-connector-python", specifier = "==9.7.0" },
     { name = "orjson", specifier = "==3.11.9" },
     { name = "pathvalidate", specifier = "==3.2.0" },
     { name = "psutil", specifier = "==5.9.5" },
