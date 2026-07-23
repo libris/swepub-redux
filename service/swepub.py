@@ -344,38 +344,41 @@ def bibliometrics_api():
 
     # Results are streamed to the client so we're not bothered by limits
     def get_results():
-        if export_as_csv:
-            yield f"# Swepub bibliometric export. Query handled at {handled_at}. Query parameters: {query_data}\n"
-        else:
-            yield f'{{"hits": ['
-
-        total = 0
-        output = ""
-        for row in cur.execute(str(q), list(flatten(values))):
-            (result, build_errors) = bibliometrics.build_result(row, fields)
+        with app.app_context():
+            stream_cur = get_db().cursor()
+            stream_cur.row_factory = dict_factory
             if export_as_csv:
-                output = f"{output}{bibliometrics_csv_export(result, fields, csv_flavor, total)}"
+                yield f"# Swepub bibliometric export. Query handled at {handled_at}. Query parameters: {query_data}\n"
             else:
-                maybe_comma = "," if total > 0 else ""
-                output = f"{output}{maybe_comma}{json.dumps(result)}"
-            total += 1
-            if total % 256 == 0:
-                yield output
-                output = ""
-        yield output
+                yield f'{{"hits": ['
 
-        if not export_as_csv:
-            yield "],"
-            if from_yr and to_yr:
-                yield f'"from": {from_yr},'
-                yield f'"to": {to_yr},'
-            yield (
-                f'"query": {json.dumps(query_data)},'
-                f'"query_handled_at": "{handled_at}",'
-                f'"matching_orgs": {json.dumps(matching_orgs_list)},'
-                f'"total": {total_docs}'
-                "}"
-            )
+            total = 0
+            output = ""
+            for row in stream_cur.execute(str(q), list(flatten(values))):
+                (result, build_errors) = bibliometrics.build_result(row, fields)
+                if export_as_csv:
+                    output = f"{output}{bibliometrics_csv_export(result, fields, csv_flavor, total)}"
+                else:
+                    maybe_comma = "," if total > 0 else ""
+                    output = f"{output}{maybe_comma}{json.dumps(result)}"
+                total += 1
+                if total % 256 == 0:
+                    yield output
+                    output = ""
+            yield output
+
+            if not export_as_csv:
+                yield "],"
+                if from_yr and to_yr:
+                    yield f'"from": {from_yr},'
+                    yield f'"to": {to_yr},'
+                yield (
+                    f'"query": {json.dumps(query_data)},'
+                    f'"query_handled_at": "{handled_at}",'
+                    f'"matching_orgs": {json.dumps(matching_orgs_list)},'
+                    f'"total": {total_docs}'
+                    "}"
+                )
 
     return app.response_class(stream_with_context(get_results()), mimetype=export_mimetype)
 
@@ -1125,57 +1128,63 @@ def process_get_export(source=None):
     cur.row_factory = dict_factory
     total_docs = cur.execute(str(q_total), list(flatten(values))).fetchone()["total"]
 
+    from_yr = g.from_yr
+    to_yr = g.to_yr
+
     def get_results():
         # Exports can be large and we don't want to load everything into memory, so we stream
         # the output (each yield is sent directly to the client).
         # Since we send one result at a time, we can't send a ready-made dict when JSON is selected.
-        if export_as_csv:
-            yield f"# Swepub data processing export. Query handled at {handled_at}. Query parameters: {request.args.to_dict()}\n"
-        else:
-            yield f'{{"code": "{source}",' f'"hits": ['
-        total = 0
-        output = ""
-        for row in cur.execute(str(q), list(flatten(values))):
-            flask_url = url_for("process_get_original_publication", record_id=row["oai_id"])
-            base_url, _parts = get_base_url(request)
-            mods_url = f"{base_url}{flask_url}"
-            export_result = build_export_result(
-                orjson.loads(row["data"]),
-                orjson.loads(row["events"]),
-                selected_flags,
-                row["oai_id"],
-                mods_url,
-            )
-
+        with app.app_context():
+            stream_cur = get_db().cursor()
+            stream_cur.row_factory = dict_factory
             if export_as_csv:
-                csv_result = process_csv_export(
-                    export_result,
-                    csv_flavor,
-                    request.args.to_dict(),
-                    handled_at,
-                    total_docs,
-                )
-                output = f"{output}{csv_result}"
+                yield f"# Swepub data processing export. Query handled at {handled_at}. Query parameters: {request.args.to_dict()}\n"
             else:
-                maybe_comma = "," if total > 0 else ""
-                output = f"{output}{maybe_comma}{json.dumps(export_result)}"
-            total += 1
-            if total % 256 == 0:
-                yield output
-                output = ""
-        yield output
-        if not export_as_csv:
-            yield "],"
-            if g.from_yr and g.to_yr:
-                yield f'"from": {g.from_yr},'
-                yield f'"to": {g.to_yr},'
-            yield (
-                f'"query": {json.dumps(request.args)},'
-                f'"query_handled_at": "{handled_at}",'
-                f'"source": "{INFO_API_SOURCE_ORG_MAPPING[source]["name"]}",'
-                f'"total": {total_docs}'
-                "}"
-            )
+                yield f'{{"code": "{source}",' f'"hits": ['
+            total = 0
+            output = ""
+            for row in stream_cur.execute(str(q), list(flatten(values))):
+                flask_url = url_for("process_get_original_publication", record_id=row["oai_id"])
+                base_url, _parts = get_base_url(request)
+                mods_url = f"{base_url}{flask_url}"
+                export_result = build_export_result(
+                    orjson.loads(row["data"]),
+                    orjson.loads(row["events"]),
+                    selected_flags,
+                    row["oai_id"],
+                    mods_url,
+                )
+
+                if export_as_csv:
+                    csv_result = process_csv_export(
+                        export_result,
+                        csv_flavor,
+                        request.args.to_dict(),
+                        handled_at,
+                        total_docs,
+                    )
+                    output = f"{output}{csv_result}"
+                else:
+                    maybe_comma = "," if total > 0 else ""
+                    output = f"{output}{maybe_comma}{json.dumps(export_result)}"
+                total += 1
+                if total % 256 == 0:
+                    yield output
+                    output = ""
+            yield output
+            if not export_as_csv:
+                yield "],"
+                if from_yr and to_yr:
+                    yield f'"from": {from_yr},'
+                    yield f'"to": {to_yr},'
+                yield (
+                    f'"query": {json.dumps(request.args)},'
+                    f'"query_handled_at": "{handled_at}",'
+                    f'"source": "{INFO_API_SOURCE_ORG_MAPPING[source]["name"]}",'
+                    f'"total": {total_docs}'
+                    "}"
+                )
 
     resp = app.response_class(stream_with_context(get_results()), mimetype=export_mimetype)
 
