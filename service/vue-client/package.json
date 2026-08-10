@@ -22,7 +22,7 @@
     "normalize.css": "^8.0.1",
     "parse-link-header": "^2.0.0",
     "v-tooltip": "^2.0.3",
-    "vue": "^2.6.12",
+    "vue": "^3.0.0",
     "vue-chartjs": "^3.5.1",
     "vue-clickaway": "^2.2.2",
     "vue-matomo": "^3.14.0-0",
