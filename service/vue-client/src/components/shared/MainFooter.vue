@@ -40,7 +40,7 @@ export default {
               <li><a :href="`${settings.apiPath}/apidocs/`">API-dokumentation</a></li>
             </ul>
             <ul class="MainFooter-links">
-              <li><a href="https://www.kb.se/swepub-ordlista">Swepub ordlista</a></li>
+              <li><a href="https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-swepub/datamodell/ordlista-for-swepub.html">Swepub ordlista</a></li>
               <li><a href="https://www.kb.se/om-oss/hantering-av-personuppgifter.html#Librisswepub">Om dataskydd (GDPR)</a></li>
               <li><a href="https://www.kb.se/digital-tillganglighet">Tillgänglighetsredogörelse</a></li>
             </ul>

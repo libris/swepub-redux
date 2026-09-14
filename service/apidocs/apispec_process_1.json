@@ -233,7 +233,7 @@
                 }
               }
             },
-            "description": "A Swepub JSON-LD record, see <a href=https://www.kb.se/samverkan-och-utveckling/swepub/datamodell/swepub-bibframe>https://www.kb.se/samverkan-och-utveckling/swepub/datamodell/swepub-bibframe</a> for more information.\n"
+            "description": "A Swepub JSON-LD record, see <a href=https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-swepub/datamodell/swepub-bibframe.html>https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-swepub/datamodell/swepub-bibframe.html</a> for more information.\n"
           },
           "404": {
             "content": {},

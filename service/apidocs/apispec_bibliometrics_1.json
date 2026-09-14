@@ -577,7 +577,7 @@
                 }
               }
             },
-            "description": "A collection of Swepub record objects. See <a href=https://www.kb.se/swepub-ordlista/>https://www.kb.se/swepub-ordlista</a> and <a href=https://www.kb.se/samverkan-och-utveckling/swepub/datamodell/swepub-bibframe>https://www.kb.se/samverkan-och-utveckling/swepub/datamodell/swepub-bibframe</a> for more information regarding the fields.\n"
+            "description": "A collection of Swepub record objects. See <a href=https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-swepub/datamodell/ordlista-for-swepub.html>https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-swepub/datamodell/ordlista-for-swepub.html</a> and <a href=https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-swepub/datamodell/swepub-bibframe.html>https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-swepub/datamodell/swepub-bibframe.html</a> for more information regarding the fields.\n"
           },
           "405": {
             "content": {},
@@ -613,7 +613,7 @@
                 }
               }
             },
-            "description": "A deduplicated Swepub JSON-LD record, see <a href=https://www.kb.se/samverkan-och-utveckling/swepub/datamodell/swepub-bibframe>https://www.kb.se/samverkan-och-utveckling/swepub/datamodell/swepub-bibframe</a> for more information.\n"
+            "description": "A deduplicated Swepub JSON-LD record, see <a href=https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-swepub/datamodell/swepub-bibframe.html>https://www.kb.se/for-bibliotekssektorn/tjanster-och-verktyg/arbeta-med-swepub/datamodell/swepub-bibframe.html</a> for more information.\n"
           },
           "404": {
             "content": {},
