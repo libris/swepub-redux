@@ -705,46 +705,74 @@
     </xsl:template>
 
     <xsl:template name="work_type">
-        <dict>
-            <xsl:choose>
-                <xsl:when test="mods:typeOfResource = 'text'">
+        <xsl:choose>
+            <xsl:when test="mods:typeOfResource = 'text'">
+                <dict>
                     <string key="@id">https://id.kb.se/term/rda/Text</string>
-                </xsl:when>
-                <xsl:when test="mods:typeOfResource = 'stillimage'">
+                </dict>
+            </xsl:when>
+            <xsl:when test="mods:typeOfResource = 'stillimage'">
+                <dict>
                     <string key="@id">https://id.kb.se/term/rda/StillImage</string>
-                </xsl:when>
-                <xsl:when test="mods:typeOfResource = 'sound recording - nonmusical'">
+                </dict>
+                <dict>
+                    <string key="@id">https://id.kb.se/term/saogf/Bilder</string>
+                </dict>
+            </xsl:when>
+            <xsl:when test="mods:typeOfResource = 'sound recording - nonmusical'">
+                <dict>
                     <string key="@id">https://id.kb.se/term/rda/Sounds</string>
-                </xsl:when>
-                <xsl:when test="mods:typeOfResource = 'sound recording - musical'">
+                </dict>
+            </xsl:when>
+            <xsl:when test="mods:typeOfResource = 'sound recording - musical'">
+                <dict>
+                    <string key="@id">https://id.kb.se/term/rda/PerformedMusic</string>
+                </dict>
+                <dict>
                     <string key="@id">https://id.kb.se/term/saogf/Musik</string>
-                </xsl:when>
-                <xsl:when test="mods:typeOfResource = 'sound recording'">
+                </dict>
+            </xsl:when>
+            <xsl:when test="mods:typeOfResource = 'sound recording'">
+                <dict>
                     <string key="@id">https://id.kb.se/term/ktg/Audio</string>
-                </xsl:when>
-                <xsl:when test="mods:typeOfResource = 'software, multimedia'">
+                </dict>
+            </xsl:when>
+            <xsl:when test="mods:typeOfResource = 'software, multimedia'">
+                <dict>
                     <string key="@id">https://id.kb.se/term/ktg/Software</string>
-                </xsl:when>
-                <xsl:when test="mods:typeOfResource = 'notated music'">
+                </dict>
+            </xsl:when>
+            <xsl:when test="mods:typeOfResource = 'notated music'">
+                <dict>
                     <string key="@id">https://id.kb.se/term/rda/NotatedMusic</string>
-                </xsl:when>
-                <xsl:when test="mods:typeOfResource = 'mixed material'">
+                </dict>
+            </xsl:when>
+            <xsl:when test="mods:typeOfResource = 'mixed material'">
+                <dict>
                     <string key="@id">https://id.kb.se/term/ktg/MixedMaterial</string>
-                </xsl:when>
-                <xsl:when test="mods:typeOfResource = 'cartographic'">
+                </dict>
+            </xsl:when>
+            <xsl:when test="mods:typeOfResource = 'cartographic'">
+                <dict>
                     <string key="@id">https://id.kb.se/term/saogf/Kartografiskt%20material</string>
-                </xsl:when>
-                <xsl:when test="mods:typeOfResource = 'three dimensional object'">
+                </dict>
+            </xsl:when>
+            <xsl:when test="mods:typeOfResource = 'three dimensional object'">
+                <dict>
                     <string key="@id">https://id.kb.se/term/rda/ThreeDimensionalForm</string>
-                </xsl:when>
-                <xsl:when test="mods:typeOfResource = 'moving image'">
+                </dict>
+            </xsl:when>
+            <xsl:when test="mods:typeOfResource = 'moving image'">
+                <dict>
                     <string key="@id">https://id.kb.se/term/ktg/MovingImage</string>
-                </xsl:when>
-                <xsl:otherwise>
+                </dict>
+            </xsl:when>
+            <xsl:otherwise>
+                <dict>
                     <string key="@id">https://id.kb.se/term/rda/Text</string>
-                </xsl:otherwise>
-            </xsl:choose>
-        </dict>
+                </dict>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template name="content_type">
