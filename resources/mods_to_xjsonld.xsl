@@ -22,47 +22,11 @@
         <dict>
             <string key="@context">https://id.kb.se/context.jsonld</string>
             <string key="@id"></string>
-            <string key="@type">Instance</string>
+            <xsl:apply-templates select="mods:physicalDescription/mods:form" mode="instance-type"/>
             <dict key="instanceOf">
-                <xsl:choose>
-                    <xsl:when test="mods:typeOfResource = 'text'">
-                        <string key="@type">Text</string>
-                    </xsl:when>
-                    <xsl:when test="mods:typeOfResource = 'stillimage'">
-                        <string key="@type">StillImage</string>
-                    </xsl:when>
-                    <xsl:when test="mods:typeOfResource = 'sound recording - nonmusical'">
-                        <string key="@type">NonMusicalAudio</string>
-                    </xsl:when>
-                    <xsl:when test="mods:typeOfResource = 'sound recording - musical'">
-                        <string key="@type">Music</string>
-                    </xsl:when>
-                    <xsl:when test="mods:typeOfResource = 'sound recording'">
-                        <string key="@type">Audio</string>
-                    </xsl:when>
-                    <xsl:when test="mods:typeOfResource = 'software, multimedia'">
-                        <string key="@type">Multimedia</string>
-                    </xsl:when>
-                    <xsl:when test="mods:typeOfResource = 'notated music'">
-                        <string key="@type">NotatedMusic</string>
-                    </xsl:when>
-                    <xsl:when test="mods:typeOfResource = 'mixed material'">
-                        <string key="@type">MixedMaterial</string>
-                    </xsl:when>
-                    <xsl:when test="mods:typeOfResource = 'cartographic'">
-                        <string key="@type">Cartography</string>
-                    </xsl:when>
-                    <xsl:when test="mods:typeOfResource = 'three dimensional object'">
-                        <string key="@type">Object</string>
-                    </xsl:when>
-                    <xsl:when test="mods:typeOfResource = 'moving image'">
-                        <string key="@type">MovingImage</string>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <string key="@type">Text</string>
-                    </xsl:otherwise>
-                </xsl:choose>
-                <array key="genreForm">
+                <string key="@type">Monograph</string>
+                <array key="category">
+                    <xsl:call-template name="work_type"/>
                     <xsl:call-template name="content_type"/>
                     <xsl:call-template name="type"/>
                     <xsl:call-template name="type_valueuri"/>
@@ -262,18 +226,6 @@
                                  <xsl:with-param name="date" select="mods:recordInfo/mods:recordChangeDate" />
                             </xsl:call-template>
                         </string>
-                    </xsl:if>
-                </dict>
-            </xsl:if>
-            <xsl:if test="mods:physicalDescription/mods:form">
-                <dict key="carrierType">
-                    <string key="@type">CarrierType</string>
-                    <string key="label"><xsl:value-of select="mods:physicalDescription/mods:form"/></string>
-                    <xsl:if test="mods:physicalDescription/mods:form[@authority = 'marcform']">
-                        <dict key="source">
-                            <string key="@type">Source</string>
-                            <string key="code"><xsl:value-of select="mods:physicalDescription/mods:form/@authority"/></string>
-                        </dict>
                     </xsl:if>
                 </dict>
             </xsl:if>
@@ -598,6 +550,40 @@
         </dict>
     </xsl:template>
 
+    <xsl:template match="mods:physicalDescription/mods:form[@authority = 'marcform' and normalize-space(.) = 'print']" mode="instance-type">
+        <string key="@type">PhysicalResource</string>
+        <array key="category">
+            <dict>
+                <string key="@id">https://id.kb.se/term/saobf/Print</string>
+            </dict>
+        </array>
+    </xsl:template>
+
+    <xsl:template match="mods:physicalDescription/mods:form[@authority = 'marcform' and normalize-space(.) = 'electronic']" mode="instance-type">
+        <string key="@type">DigitalResource</string>
+        <array key="category">
+            <dict>
+                <string key="@id">https://id.kb.se/term/rda/OnlineResource</string>
+            </dict>
+        </array>
+    </xsl:template>
+
+    <xsl:template match="mods:physicalDescription/mods:form" mode="instance-type" priority="-1">
+        <string key="@type">Instance</string>
+        <array key="category">
+            <dict>
+                <string key="@type">CarrierType</string>
+                <string key="label"><xsl:value-of select="."/></string>
+                <xsl:if test="@authority = 'marcform'">
+                    <dict key="source">
+                        <string key="@type">Source</string>
+                        <string key="code"><xsl:value-of select="@authority"/></string>
+                    </dict>
+                </xsl:if>
+            </dict>
+        </array>
+    </xsl:template>
+
     <xsl:template name="type">
         <xsl:for-each select="mods:genre[@type = 'outputType' and @authority = 'kb.se' and not(@valueURI)]">
             <dict>
@@ -740,6 +726,77 @@
         </xsl:for-each>
     </xsl:template>
 
+    <xsl:template name="work_type">
+        <xsl:choose>
+            <xsl:when test="mods:typeOfResource = 'text'">
+                <dict>
+                    <string key="@id">https://id.kb.se/term/rda/Text</string>
+                </dict>
+            </xsl:when>
+            <xsl:when test="mods:typeOfResource = 'stillimage'">
+                <dict>
+                    <string key="@id">https://id.kb.se/term/rda/StillImage</string>
+                </dict>
+                <dict>
+                    <string key="@id">https://id.kb.se/term/saogf/Bilder</string>
+                </dict>
+            </xsl:when>
+            <xsl:when test="mods:typeOfResource = 'sound recording - nonmusical'">
+                <dict>
+                    <string key="@id">https://id.kb.se/term/rda/Sounds</string>
+                </dict>
+            </xsl:when>
+            <xsl:when test="mods:typeOfResource = 'sound recording - musical'">
+                <dict>
+                    <string key="@id">https://id.kb.se/term/rda/PerformedMusic</string>
+                </dict>
+                <dict>
+                    <string key="@id">https://id.kb.se/term/saogf/Musik</string>
+                </dict>
+            </xsl:when>
+            <xsl:when test="mods:typeOfResource = 'sound recording'">
+                <dict>
+                    <string key="@id">https://id.kb.se/term/ktg/Audio</string>
+                </dict>
+            </xsl:when>
+            <xsl:when test="mods:typeOfResource = 'software, multimedia'">
+                <dict>
+                    <string key="@id">https://id.kb.se/term/ktg/Software</string>
+                </dict>
+            </xsl:when>
+            <xsl:when test="mods:typeOfResource = 'notated music'">
+                <dict>
+                    <string key="@id">https://id.kb.se/term/rda/NotatedMusic</string>
+                </dict>
+            </xsl:when>
+            <xsl:when test="mods:typeOfResource = 'mixed material'">
+                <dict>
+                    <string key="@id">https://id.kb.se/term/ktg/MixedMaterial</string>
+                </dict>
+            </xsl:when>
+            <xsl:when test="mods:typeOfResource = 'cartographic'">
+                <dict>
+                    <string key="@id">https://id.kb.se/term/saogf/Kartografiskt%20material</string>
+                </dict>
+            </xsl:when>
+            <xsl:when test="mods:typeOfResource = 'three dimensional object'">
+                <dict>
+                    <string key="@id">https://id.kb.se/term/rda/ThreeDimensionalForm</string>
+                </dict>
+            </xsl:when>
+            <xsl:when test="mods:typeOfResource = 'moving image'">
+                <dict>
+                    <string key="@id">https://id.kb.se/term/ktg/MovingImage</string>
+                </dict>
+            </xsl:when>
+            <xsl:otherwise>
+                <dict>
+                    <string key="@id">https://id.kb.se/term/rda/Text</string>
+                </dict>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
     <xsl:template name="content_type">
             <xsl:if test="mods:genre[@type = 'contentType' and @authority = 'svep' and not(@valueURI)]">
                 <xsl:if test="mods:genre[@type = 'contentType' and @authority = 'svep'] = 'ref' or mods:genre[@type = 'contentType' and @authority = 'svep'] = 'vet' or mods:genre[@type = 'contentType' and @authority = 'svep'] = 'pop'">
@@ -777,7 +834,7 @@
             </xsl:otherwise>
         </xsl:choose>
         <xsl:if test="mods:genre = 'project' or mods:genre = 'programme' or mods:genre = 'grantAgreement' or mods:genre = 'initiative' or mods:genre = 'event' or (mods:genre and mods:authority[@authority = 'mserialpubtype' or @authority = 'marcgt']) or mods:genre[@valueURI] or (mods:genre and not(mods:genre = 'dataset'))">
-            <array key="genreForm">
+            <array key="category">
                 <xsl:for-each select="mods:genre">
                     <xsl:choose>
                         <xsl:when test="current()/@valueURI">
