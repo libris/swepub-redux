@@ -22,19 +22,7 @@
         <dict>
             <string key="@context">https://id.kb.se/context.jsonld</string>
             <string key="@id"></string>
-            <string key="@type">Instance</string>
-            <xsl:if test="mods:physicalDescription/mods:form">
-                <dict key="category">
-                    <string key="@type">CarrierType</string>
-                    <string key="label"><xsl:value-of select="mods:physicalDescription/mods:form"/></string>
-                    <xsl:if test="mods:physicalDescription/mods:form[@authority = 'marcform']">
-                        <dict key="source">
-                            <string key="@type">Source</string>
-                            <string key="code"><xsl:value-of select="mods:physicalDescription/mods:form/@authority"/></string>
-                        </dict>
-                    </xsl:if>
-                </dict>
-            </xsl:if>
+            <xsl:apply-templates select="mods:physicalDescription/mods:form" mode="instance-type"/>
             <dict key="instanceOf">
                 <string key="@type">Monograph</string>
                 <array key="category">
@@ -560,6 +548,40 @@
                 </array>
             </xsl:if>
         </dict>
+    </xsl:template>
+
+    <xsl:template match="mods:physicalDescription/mods:form[@authority = 'marcform' and normalize-space(.) = 'print']" mode="instance-type">
+        <string key="@type">PhysicalResource</string>
+        <array key="category">
+            <dict>
+                <string key="@id">https://id.kb.se/term/saobf/Print</string>
+            </dict>
+        </array>
+    </xsl:template>
+
+    <xsl:template match="mods:physicalDescription/mods:form[@authority = 'marcform' and normalize-space(.) = 'electronic']" mode="instance-type">
+        <string key="@type">DigitalResource</string>
+        <array key="category">
+            <dict>
+                <string key="@id">https://id.kb.se/term/rda/OnlineResource</string>
+            </dict>
+        </array>
+    </xsl:template>
+
+    <xsl:template match="mods:physicalDescription/mods:form" mode="instance-type" priority="-1">
+        <string key="@type">Instance</string>
+        <array key="category">
+            <dict>
+                <string key="@type">CarrierType</string>
+                <string key="label"><xsl:value-of select="."/></string>
+                <xsl:if test="@authority = 'marcform'">
+                    <dict key="source">
+                        <string key="@type">Source</string>
+                        <string key="code"><xsl:value-of select="@authority"/></string>
+                    </dict>
+                </xsl:if>
+            </dict>
+        </array>
     </xsl:template>
 
     <xsl:template name="type">
