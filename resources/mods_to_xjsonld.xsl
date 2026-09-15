@@ -708,13 +708,13 @@
         <dict>
             <xsl:choose>
                 <xsl:when test="mods:typeOfResource = 'text'">
-                    <string key="@id">https://id.kb.se/term/ktg/WrittenText</string>
+                    <string key="@id">https://id.kb.se/term/rda/Text</string>
                 </xsl:when>
                 <xsl:when test="mods:typeOfResource = 'stillimage'">
-                    <string key="@id">https://id.kb.se/term/saogf/StillImage</string>
+                    <string key="@id">https://id.kb.se/term/rda/StillImage</string>
                 </xsl:when>
                 <xsl:when test="mods:typeOfResource = 'sound recording - nonmusical'">
-                    <string key="@id">https://id.kb.se/term/rda/NonMusicAudio</string>
+                    <string key="@id">https://id.kb.se/term/rda/Sounds</string>
                 </xsl:when>
                 <xsl:when test="mods:typeOfResource = 'sound recording - musical'">
                     <string key="@id">https://id.kb.se/term/saogf/Musik</string>
@@ -741,7 +741,7 @@
                     <string key="@id">https://id.kb.se/term/ktg/MovingImage</string>
                 </xsl:when>
                 <xsl:otherwise>
-                    <string key="@id">https://id.kb.se/term/ktg/WrittenText</string>
+                    <string key="@id">https://id.kb.se/term/rda/Text</string>
                 </xsl:otherwise>
             </xsl:choose>
         </dict>
