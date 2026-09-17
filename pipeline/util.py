@@ -447,14 +447,14 @@ def part_of_main_title(body):
     return None
 
 
-def genre_form(body):
-    """ Return array of values from instanceOf.genreForm.[*].@id """
-    genre_forms = []
-    genre_form_array = body.get('instanceOf', {}).get('genreForm', [])
-    for g_f in genre_form_array:
+def category(body):
+    """ Return array of values from instanceOf.category.[*].@id """
+    categories = []
+    category_array = body.get('instanceOf', {}).get('category', [])
+    for g_f in category_array:
         if isinstance(g_f, dict):
-            genre_forms.append(g_f.get('@id'))
-    return [gf for gf in genre_forms if gf]
+            categories.append(g_f.get('@id'))
+    return [gf for gf in categories if gf]
 
 
 def get_ids(body, path, id_type):

@@ -24,10 +24,10 @@ def test_is_duplicate(
     )
 
 
-def test_check_genre_form_for_non_conferance_papers():
+def test_check_category_for_non_conferance_papers():
     master_without_conference_paper = _get_test_data_publication(
         id="master_id",
-        genreForm=[{"@id": "https://id.kb.se/term/swepub/BookChapter"}],
+        category=[{"@id": "https://id.kb.se/term/swepub/BookChapter"}],
         identifiedBys=[{"@type": "URI", "value": "https://master_uri"}],
         is_part_of_title="No need to check me since I am not a conference paper",
         main_title="This is the main title",
@@ -36,7 +36,7 @@ def test_check_genre_form_for_non_conferance_papers():
 
     candidate_without_conference_paper = _get_test_data_publication(
         id="candidate_id",
-        genreForm=[{"@id": "https://id.kb.se/term/swepub/BookChapter"}],
+        category=[{"@id": "https://id.kb.se/term/swepub/BookChapter"}],
         identifiedBys=[{"@type": "URI", "value": "https://candidate_uri"}],
         is_part_of_title="Not the same isPartOf.mainTitle as master_without_conference_paper above",
         main_title="This is the main title",
@@ -51,7 +51,7 @@ def test_check_genre_form_for_non_conferance_papers():
 def test_check_is_part_of_main_title_for_conference_papers():
     master_without_conference_paper = _get_test_data_publication(
         id="master_id",
-        genreForm=[{"@id": "https://id.kb.se/term/swepub/BookChapter"}],
+        category=[{"@id": "https://id.kb.se/term/swepub/BookChapter"}],
         identifiedBys=[{"@type": "URI", "value": "https://master_uri"}],
         is_part_of_title="Check me since candidate is a conference paper",
         main_title="This is the main title",
@@ -61,7 +61,7 @@ def test_check_is_part_of_main_title_for_conference_papers():
     candidate_with_conference_paper_same_is_part_of_main_title_as_master = (
         _get_test_data_publication(
             id="candidate_id",
-            genreForm=[{"@id": "https://id.kb.se/term/swepub/ConferencePaper"}],
+            category=[{"@id": "https://id.kb.se/term/swepub/ConferencePaper"}],
             identifiedBys=[{"@type": "URI", "value": "https://candidate_uri"}],
             is_part_of_title="Check me since candidate is a conference paper",
             main_title="This is the main title",
@@ -71,7 +71,7 @@ def test_check_is_part_of_main_title_for_conference_papers():
 
     candidate_with_conference_paper_different_is_part_of_main_title_as_master = _get_test_data_publication(
         id="candidate_id",
-        genreForm=[{"@id": "https://id.kb.se/term/swepub/ConferencePaper"}],
+        category=[{"@id": "https://id.kb.se/term/swepub/ConferencePaper"}],
         identifiedBys=[{"@type": "URI", "value": "https://candidate_uri"}],
         is_part_of_title="Not the same isPartOf.mainTitle as master_without_conference_paper",
         main_title="This is the main title",
@@ -159,7 +159,7 @@ def test_main_and_subtitle_vs_main_title_only_different_doi():
 def _get_publication_main_title_and_subtitle(doi="DOI_1"):
     return _get_test_data_publication(
         id="master_id",
-        genreForm=[{"@id": "https://id.kb.se/term/swepub/BookChapter"}],
+        category=[{"@id": "https://id.kb.se/term/swepub/BookChapter"}],
         identifiedBys=[{"@type": "DOI", "value": doi}],
         is_part_of_title="No need to check me since I am not a conference paper",
         main_title="This is the main title",
@@ -170,7 +170,7 @@ def _get_publication_main_title_and_subtitle(doi="DOI_1"):
 def _get_publication_main_title_splitted(doi="DOI_1"):
     return _get_test_data_publication(
         id="master_id",
-        genreForm=[{"@id": "https://id.kb.se/term/swepub/BookChapter"}],
+        category=[{"@id": "https://id.kb.se/term/swepub/BookChapter"}],
         identifiedBys=[{"@type": "DOI", "value": doi}],
         is_part_of_title="No need to check me since I am not a conference paper",
         main_title="This is the main title:This is the sub title",
@@ -181,7 +181,7 @@ def _get_publication_main_title_splitted(doi="DOI_1"):
 def _get_publication_main_title_only(doi="DOI_1"):
     return _get_test_data_publication(
         id="candidate_id",
-        genreForm=[{"@id": "https://id.kb.se/term/swepub/BookChapter"}],
+        category=[{"@id": "https://id.kb.se/term/swepub/BookChapter"}],
         identifiedBys=[{"@type": "DOI", "value": doi}],
         is_part_of_title="Not the same isPartOf.mainTitle as master_without_conference_paper above",
         main_title="This is the main title",
@@ -190,13 +190,13 @@ def _get_publication_main_title_only(doi="DOI_1"):
 
 
 def _get_test_data_publication(
-    id, genreForm, identifiedBys, is_part_of_title, main_title, sub_title
+    id, category, identifiedBys, is_part_of_title, main_title, sub_title
 ):
     publication_dict = {
         "@id": id,
         "instanceOf": {
             "@type": "Text",
-            "genreForm": genreForm,
+            "category": category,
             "hasTitle": [
                 {"@type": "Title", "mainTitle": main_title, "subtitle": sub_title}
             ],

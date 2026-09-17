@@ -216,16 +216,16 @@ class BibframeSource:
 
     @property
     def output_types(self):
-        genre_forms = self.bibframe_master.get("instanceOf", {}).get("genreForm")
+        categories = self.bibframe_master.get("instanceOf", {}).get("category")
         svep_url = "https://id.kb.se/term/swepub/svep/"
         swedish_list_url = "https://id.kb.se/term/swepub/swedishlist"
         # Example output types: https://id.kb.se/term/swepub/output/publication/journal-article
         # or https://id.kb.se/term/swepub/output/publication
         output_type_re = r"^https://id\.kb\.se/term/swepub/output/[a-z_\-]+/*[a-z_\-]*$"
         output_types = []
-        if genre_forms:
-            for genre_form in genre_forms:
-                gf_id = genre_form.get("@id", "")
+        if categories:
+            for category in categories:
+                gf_id = category.get("@id", "")
                 if gf_id.strip().startswith(svep_url) or gf_id.strip().startswith(swedish_list_url):
                     continue
                 m = re.match(output_type_re, gf_id)
@@ -245,8 +245,8 @@ class BibframeSource:
     @property
     def content_marking(self):
         svep_url = "https://id.kb.se/term/swepub/svep/"
-        genre_form = self.bibframe_master.get("instanceOf", {}).get("genreForm", [])
-        for gf in genre_form:
+        category = self.bibframe_master.get("instanceOf", {}).get("category", [])
+        for gf in category:
             gf_id = gf.get("@id", "")
             if gf_id.strip().startswith(svep_url):
                 prefix_len = len(svep_url)
@@ -380,12 +380,12 @@ class BibframeSource:
 
     @property
     def publication_type(self):
-        genre_forms = self.bibframe_master.get("instanceOf", {}).get("genreForm", [])
+        categories = self.bibframe_master.get("instanceOf", {}).get("category", [])
         # Example publication type: https://id.kb.se/term/swepub/JournalArticle
         # Publication types don't contain another slash after swepub/
         pub_type_re = r"^https://id\.kb\.se/term/swepub/[A-Z]{1}[a-zA-Z_\-]+$"
-        for genre_form in genre_forms:
-            gf_id = genre_form.get("@id")
+        for category in categories:
+            gf_id = category.get("@id")
             m = re.match(pub_type_re, gf_id)
             if m is None:
                 continue
@@ -566,7 +566,7 @@ class BibframeSource:
 
     @property
     def publication_channel(self):
-        project_genreforms = [
+        project_categories = [
             "https://id.kb.se/term/swepub/project",
             "https://id.kb.se/term/swepub/programme",
             "https://id.kb.se/term/swepub/grantAgreement",
@@ -577,11 +577,11 @@ class BibframeSource:
             is_part_of_type = is_part_of.get("@type")
             if is_part_of_type and is_part_of_type == "Dataset":
                 continue
-            genreforms = is_part_of.get("genreForm", [])
+            categories = is_part_of.get("category", [])
             found_blacklisted_gf = False
-            for gf in genreforms:
+            for gf in categories:
                 gf_id = gf.get("@id")
-                if gf_id and gf_id in project_genreforms:
+                if gf_id and gf_id in project_categories:
                     found_blacklisted_gf = True
             if found_blacklisted_gf:
                 continue
@@ -609,8 +609,8 @@ class BibframeSource:
     @property
     def swedish_list(self):
         swedish_list_url = "https://id.kb.se/term/swepub/swedishlist/"
-        genreForm = self.bibframe_master.get("instanceOf", {}).get("genreForm", [])
-        for gf in genreForm:
+        category = self.bibframe_master.get("instanceOf", {}).get("category", [])
+        for gf in category:
             gf_id = gf.get("@id", "").strip()
             if gf_id.startswith(swedish_list_url):
                 return gf_id
@@ -814,11 +814,11 @@ class BibframeSource:
         """Return the publication's level according to the Swedish List."""
         if (
             "instanceOf" not in self._bibframe_master
-            or "genreForm" not in self._bibframe_master["instanceOf"]
+            or "category" not in self._bibframe_master["instanceOf"]
         ):
             return None
 
-        for gform in self._bibframe_master["instanceOf"]["genreForm"]:
+        for gform in self._bibframe_master["instanceOf"]["category"]:
             # Peer-reviewed always trumps non-peer-reviewed
             if "@id" in gform and gform["@id"] == str(Level.PEERREVIEWED):
                 return Level.PEERREVIEWED.value
@@ -829,8 +829,8 @@ class BibframeSource:
 
     @property
     def is_swedishlist(self):
-        # instanceOf.genreForm.@id": "https://id.kb.se/term/swepub/swedishlist/peer-reviewed"
-        for gf in self._bibframe_master.get("instanceOf", {}).get("genreForm", []):
+        # instanceOf.category.@id": "https://id.kb.se/term/swepub/swedishlist/peer-reviewed"
+        for gf in self._bibframe_master.get("instanceOf", {}).get("category", []):
             if gf.get("@id", "") == "https://id.kb.se/term/swepub/swedishlist/peer-reviewed":
                 return True
         return False
