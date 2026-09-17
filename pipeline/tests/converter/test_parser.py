@@ -13,6 +13,8 @@ MODS = """
     </record>
 """.format
 
+ID_TERM = "https://id.kb.se/term"
+
 
 def test_parser(parser):
     raw_xml = re.sub(r"\n\s*", "", """<record xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -192,10 +194,14 @@ def test_parser(parser):
     parsed_publication = {
         "@context": "https://id.kb.se/context.jsonld",
         "@id": "oai:DiVA.org:lnu-67642",
-        "@type": "Instance",
+        "@type": "PhysicalResource",
+        "category": [
+            {'@id': 'https://id.kb.se/term/saobf/Print'},
+        ],
         "instanceOf": {
-            "@type": "Text",
-            "genreForm": [
+            "@type": "Monograph",
+            "category": [
+                {'@id': 'https://id.kb.se/term/rda/Text'},
                 {'@id': 'https://id.kb.se/term/swepub/svep/ref'},
                 {'@id': 'https://id.kb.se/term/swepub/output/publication/journal-article'}
             ],
@@ -349,7 +355,10 @@ def test_parser(parser):
         },
         "isPartOf": [
             {
-                "@type": "Dataset",
+                "@type": "Integrating",
+                "category": [
+                    {"@id": "https://id.kb.se/term/rda/ComputerDataset"}
+                ],
                 "hasTitle": [
                     {
                         "@type": "Title",
@@ -384,7 +393,7 @@ def test_parser(parser):
             },
             {
                 "@type": "Work",
-                "genreForm": [
+                "category": [
                     {
                         "@id": "https://id.kb.se/term/swepub/project"
                     },
@@ -472,11 +481,6 @@ def test_parser(parser):
                 ]
             }
         ],
-        'carrierType': {
-            '@type': 'CarrierType',
-            'label': 'print',
-            'source': {'@type': 'Source', 'code': 'marcform'}
-        },
         'publication': [
             {
                 '@type': 'Publication',
@@ -1232,9 +1236,9 @@ def test_relateditem_genre_valueuri(parser):
         <genre valueURI="https://example.com">grantAgreement</genre>
     </relatedItem>
     """)
-    expected = [{'@id': 'https://example.com'}]
-    actual = parser.parse_mods(raw_xml)['isPartOf'][0]['genreForm']
-    assert actual == expected
+    expected = 'https://example.com'
+    actual = _collect_ids(parser.parse_mods(raw_xml)['isPartOf'][0]['category'])
+    assert expected in actual
 
 
 def test_relateditem_genre_valueuri_2(parser):
@@ -1244,12 +1248,13 @@ def test_relateditem_genre_valueuri_2(parser):
         <genre authority="mserialpubtype" valueURI="https://whatever.com">something else</genre>
     </relatedItem>
     """)
-    expected = [
-        {'@id': 'https://example.com'},
-        {'@id': 'https://whatever.com'}
-    ]
-    actual = parser.parse_mods(raw_xml)['isPartOf'][0]['genreForm']
-    assert actual == expected
+    expected = {
+        'https://example.com',
+        'https://whatever.com'
+    }
+
+    actual = _collect_ids(parser.parse_mods(raw_xml)['isPartOf'][0]['category'])
+    assert expected.issubset(actual)
 
 
 @pytest.mark.parametrize("authority, value, gf_id", [
@@ -1275,7 +1280,7 @@ def test_host_relateditem_authority_mserialpubtype_marcgt(authority, value, gf_i
         }
     ]
 
-    actual = parser.parse_mods(raw_xml)['isPartOf'][0]['genreForm']
+    actual = parser.parse_mods(raw_xml)['isPartOf'][0]['category']
     assert actual == expected
 
 
@@ -1291,7 +1296,7 @@ def test_host_relateditem_no_authority(parser):
         }
     ]
 
-    actual = parser.parse_mods(raw_xml)['isPartOf'][0]['genreForm']
+    actual = parser.parse_mods(raw_xml)['isPartOf'][0]['category']
     assert actual == expected
 
 
@@ -2066,37 +2071,36 @@ def test_affiliation_to_country(parser):
 
 def test_output_type_with_authority_kb_se_is_extracted(parser):
     raw_xml = MODS("""<genre authority="kb.se" type="outputType">dok</genre>""")
-    expected = [{'@id': 'https://id.kb.se/term/swepub/output/dok'}]
-    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
-    assert actual == expected
+    expected = 'https://id.kb.se/term/swepub/output/dok'
+    actual = _collect_ids(parser.parse_mods(raw_xml)['instanceOf']['category'])
+    assert expected in actual
 
 
 def test_output_type_with_unknown_authority_is_ignored(parser):
     raw_xml = MODS("""<genre authority="foo" type="outputType">dok</genre>""")
-    expected = []
-    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
-    assert actual == expected
+    actual = parser.parse_mods(raw_xml)['instanceOf']['category']
+    assert len(actual) == 1
 
 
 def test_output_type_with_authority_kb_se_and_valueuri(parser):
     raw_xml = MODS("""<genre authority="kb.se" type="outputType" valueURI="https://id.kb.se/foobar">dok</genre>""")
-    expected = [{'@id': 'https://id.kb.se/foobar'}]
-    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
-    assert actual == expected
+    expected = 'https://id.kb.se/foobar'
+    actual = _collect_ids(parser.parse_mods(raw_xml)['instanceOf']['category'])
+    assert expected in actual
 
 
 def test_publication_type_with_authority_svep_and_valueuri(parser):
     raw_xml = MODS("""<genre authority="svep" type="publicationType" valueURI="https://example.com">for</genre>""")
-    expected = [{'@id': 'https://example.com'}]
-    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
-    assert actual == expected
+    expected = 'https://example.com'
+    actual = _collect_ids(parser.parse_mods(raw_xml)['instanceOf']['category'])
+    assert expected in actual
 
 
 def test_content_type_with_authority_svep_and_valueuri(parser):
     raw_xml = MODS("""<genre authority="svep" type="contentType" valueURI="https://example.com">ref</genre>""")
-    expected = [{'@id': 'https://example.com'}]
-    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
-    assert actual == expected
+    expected = 'https://example.com'
+    actual = _collect_ids(parser.parse_mods(raw_xml)['instanceOf']['category'])
+    assert expected in actual
 
 
 @pytest.mark.parametrize("contenttype", [
@@ -2106,9 +2110,9 @@ def test_content_type_with_authority_svep_and_valueuri(parser):
 ])
 def test_content_type_with_authority_svep_and_valid_value(contenttype, parser):
     raw_xml = MODS(f"""<genre authority="svep" type="contentType">{contenttype}</genre>""")
-    expected = [{'@id': f"https://id.kb.se/term/swepub/svep/{contenttype}"}]
-    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
-    assert actual == expected
+    expected = f"https://id.kb.se/term/swepub/svep/{contenttype}"
+    actual = _collect_ids(parser.parse_mods(raw_xml)['instanceOf']['category'])
+    assert expected in actual
 
 
 @pytest.mark.parametrize("contenttype", [
@@ -2117,9 +2121,8 @@ def test_content_type_with_authority_svep_and_valid_value(contenttype, parser):
 ])
 def test_content_type_with_authority_svep_and_invalid_value(contenttype, parser):
     raw_xml = MODS(f"""<genre authority="svep" type="contentType">{contenttype}</genre>""")
-    expected = []
-    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
-    assert actual == expected
+    actual = parser.parse_mods(raw_xml)['instanceOf']['category']
+    assert len(actual) == 1
 
 
 @pytest.mark.parametrize("publicationtype, publicationtype_longform, contenttype, outputtype", [
@@ -2157,23 +2160,21 @@ def test_publication_and_output_type(publicationtype, publicationtype_longform, 
 
 
 def _test_publication_and_output_type(raw_xml, expected, parser):
-    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
+    actual = parser.parse_mods(raw_xml)['instanceOf']['category']
     for e in expected:
         assert e in actual
 
 
 def test_invalid_publication_type_is_ignored(parser):
     raw_xml = MODS("""<genre authority="svep" type="publicationType">foo</genre>""")
-    expected = []
-    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
-    assert actual == expected
+    actual = parser.parse_mods(raw_xml)['instanceOf']['category']
+    assert len(actual) == 1
 
 
 def test_valid_publication_type_with_invalid_authority(parser):
     raw_xml = MODS("""<genre authority="foo" type="publicationType">rap</genre>""")
-    expected = []
-    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
-    assert actual == expected
+    actual = parser.parse_mods(raw_xml)['instanceOf']['category']
+    assert len(actual) == 1
 
 
 def test_that_output_type_and_publication_type_can_be_used_together(parser):
@@ -2184,11 +2185,9 @@ def test_that_output_type_and_publication_type_can_be_used_together(parser):
           <genre authority="fo.oo" type="outputType">dok</genre>
     """)
     # If we get an outputType in the input, we don't map the publicationType
-    expected = [
-        {'@id': 'https://id.kb.se/term/swepub/output/dok'},
-    ]
-    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
-    assert actual == expected
+    expected = 'https://id.kb.se/term/swepub/output/dok'
+    actual = _collect_ids(parser.parse_mods(raw_xml)['instanceOf']['category'])
+    assert expected in actual
 
 
 def test_primary_electronic_locator_is_extracted(parser):
@@ -2574,29 +2573,30 @@ def test_alternative_title(parser):
     assert actual == expected
 
 
-@pytest.mark.parametrize("mods_type,bibframe_type", [
-    ('text', 'Text'),
-    ('stillimage', 'StillImage'),
-    ('sound recording - nonmusical', 'NonMusicalAudio'),
-    ('sound recording - musical', 'Music'),
-    ('sound recording', 'Audio'),
-    ('software, multimedia', 'Multimedia'),
-    ('notated music', 'NotatedMusic'),
-    ('mixed material', 'MixedMaterial'),
-    ('cartographic', 'Cartography'),
-    ('three dimensional object', 'Object'),
-    ('moving image', 'MovingImage')
+@pytest.mark.parametrize("mods_type, bibframe_type, categories", [
+    ('text', 'Monograph', {f'{ID_TERM}/rda/Text'}),
+    ('stillimage', 'Monograph', {f'{ID_TERM}/rda/StillImage'}),
+    ('sound recording - nonmusical', 'Monograph', {f'{ID_TERM}/rda/Sounds'}),
+    ('sound recording - musical', 'Monograph', {f'{ID_TERM}/rda/PerformedMusic'}),
+    ('sound recording', 'Monograph', {f'{ID_TERM}/ktg/Audio'}),
+    ('software, multimedia', 'Monograph', {f'{ID_TERM}/ktg/Software'}),
+    ('notated music', 'Monograph', {f'{ID_TERM}/rda/NotatedMusic'}),
+    ('mixed material', 'Monograph', {f'{ID_TERM}/ktg/MixedMaterial'}),
+    ('cartographic', 'Monograph', {f'{ID_TERM}/saogf/Kartografiskt%20material'}),
+    ('three dimensional object', 'Monograph', {f'{ID_TERM}/rda/ThreeDimensionalForm'}),
+    ('moving image', 'Monograph', {f'{ID_TERM}/ktg/MovingImage'})
 ])
-def test_type_of_resources(mods_type, bibframe_type, parser):
+def test_type_of_resources(mods_type, bibframe_type, categories, parser):
     raw_xml = MODS("""<typeOfResource>{}</typeOfResource>""".format(mods_type))
     actual = parser.parse_mods(raw_xml)['instanceOf']
     assert actual['@type'] == bibframe_type
+    assert categories.issubset(_collect_ids(actual['category'])), actual
 
 
 def test_missing_or_empty_type_of_resources_defaults_to_text(parser):
     raw_xml = MODS("""<note>foo</note>""")
     actual = parser.parse_mods(raw_xml)['instanceOf']
-    expected_type = 'Text'
+    expected_type = 'Monograph'
     assert actual['@type'] == expected_type
     raw_xml = MODS("""<typeOfResource/>""")
     assert parser.parse_mods(raw_xml)['instanceOf']['@type'] == expected_type
@@ -2850,32 +2850,38 @@ def test_date_other_open_access_with_start_date(parser):
     assert actual == expected
 
 
-@pytest.mark.parametrize("form", ['print', 'electronic'])
-def test_form_is_extracted_as_carrier_label(form, parser):
+@pytest.mark.parametrize("form, rtype, category", [
+    ('print','Instance', f'{ID_TERM}'),
+    ('electronic', 'Instance', f'{ID_TERM}')
+])
+def test_form_is_extracted_as_carrier_label(form, rtype, category, parser):
     raw_xml = MODS("""
         <physicalDescription>
             <form>{}</form>
         </physicalDescription>
     """.format(form))
+    result = parser.parse_mods(raw_xml)
 
-    actual = parser.parse_mods(raw_xml)['carrierType']
+    assert result['@type'] == rtype
     expected = {'@type': 'CarrierType', 'label': form}
+    assert expected in result['category']
 
-    assert actual == expected
 
-
-@pytest.mark.parametrize("form", ['print', 'electronic'])
-def test_marcform_is_extracted_as_carrier_source_label(form, parser):
+@pytest.mark.parametrize("form, rtype, category", [
+    ('print','PhysicalResource', f'{ID_TERM}/saobf/Print'),
+    ('electronic', 'DigitalResource', f'{ID_TERM}/rda/OnlineResource')
+])
+def test_marcform_is_extracted_as_carrier_source_label(form, rtype, category, parser):
     raw_xml = MODS("""
         <physicalDescription>
             <form authority="marcform">{}</form>
         </physicalDescription>
     """.format(form))
 
-    actual = parser.parse_mods(raw_xml)['carrierType']
-    expected = {'@type': 'CarrierType', 'label': form, 'source': {'@type': 'Source', 'code': 'marcform'}}
+    result = parser.parse_mods(raw_xml)
 
-    assert actual == expected
+    assert result['@type'] == rtype
+    assert category in _collect_ids(result['category'])
 
 
 def test_physical_description_extent_is_extracted(parser):
@@ -2988,12 +2994,12 @@ def test_newer_output_type_for_artistic_work_as_publication(parser):
         <genre authority="svep" type="publicationType">kfu</genre>
     """)
 
-    expected = [
-        {'@id': 'https://id.kb.se/term/swepub/output/publication/book'},
-        {'@id': 'https://id.kb.se/term/swepub/output/artistic-work'},
-    ]
-    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
-    assert actual == expected
+    expected = {
+        'https://id.kb.se/term/swepub/output/publication/book',
+        'https://id.kb.se/term/swepub/output/artistic-work',
+    }
+    actual = _collect_ids(parser.parse_mods(raw_xml)['instanceOf']['category'])
+    assert expected.issubset(actual), actual
 
 
 @pytest.mark.parametrize("givenoutputtype, convertedoutputtype", [
@@ -3004,11 +3010,9 @@ def test_changed_outputtypes_are_converted(givenoutputtype, convertedoutputtype,
         <genre authority="kb.se" type="outputType">{givenoutputtype}</genre>
     """)
 
-    expected = [
-        {'@id': 'https://id.kb.se/term/swepub/{}'.format(convertedoutputtype)}
-    ]
-    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
-    assert actual == expected
+    expected = 'https://id.kb.se/term/swepub/{}'.format(convertedoutputtype)
+    actual = _collect_ids(parser.parse_mods(raw_xml)['instanceOf']['category'])
+    assert expected in actual
 
 
 @pytest.mark.parametrize("givenoutputtype, convertedoutputtype", [
@@ -3020,32 +3024,25 @@ def test_changed_outputtypes_are_converted_2(givenoutputtype, convertedoutputtyp
         <genre authority="kb.se" type="outputType">{givenoutputtype}</genre>
     """)
 
-    expected = [
-        {'@id': 'https://id.kb.se/term/swepub/output/{}'.format(convertedoutputtype)}
-    ]
-    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
-    assert actual == expected
+    expected = 'https://id.kb.se/term/swepub/output/{}'.format(convertedoutputtype)
+
+    actual = _collect_ids(parser.parse_mods(raw_xml)['instanceOf']['category'])
+    assert expected in actual
 
 
 def test_conferance_publication_type(parser):
     raw_xml = MODS("""<genre authority="svep" type="publicationType">kon</genre>""")
-    expected = [
-        {'@id': 'https://id.kb.se/term/swepub/output/conference'},
-    ]
-    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
-    assert actual == expected
+    expected = 'https://id.kb.se/term/swepub/output/conference'
+    actual = _collect_ids(parser.parse_mods(raw_xml)['instanceOf']['category'])
+    assert expected in actual
 
     raw_xml = MODS("""
         <genre authority="svep" type="publicationType">kon</genre>
         <genre authority="kb.se" type="outputType">conference/paper</genre>
     """)
-    expected = [
-        {'@id': 'https://id.kb.se/term/swepub/output/conference/paper'},
-    ]
-    actual = parser.parse_mods(raw_xml)['instanceOf']['genreForm']
-    print(actual)
-    assert actual == expected
-
+    expected = 'https://id.kb.se/term/swepub/output/conference/paper'
+    actual = _collect_ids(parser.parse_mods(raw_xml)['instanceOf']['category'])
+    assert expected in actual
 
 @pytest.mark.parametrize("display_label", ['print', 'electronic'])
 def test_publication_identifier_with_display_label_is_extracted(display_label, parser):
@@ -3889,3 +3886,7 @@ def test_origininfo_copyrightdate(parser):
     ]
 
     assert actual == expected
+
+
+def _collect_ids(items: list[dict]) -> set[str]:
+    return {ctg_id for ctg in items if (ctg_id := ctg.get('@id'))}
