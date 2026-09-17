@@ -65,7 +65,7 @@ export default {
           to: this.getYearValue('to'),
         },
         classification: this.asArr(this.query.classification) || [],
-        genreForm: this.joinGenreForm(),
+        category: this.joinCategory(),
         keywords: this.query.keywords || '',
         publicationStatus: this.asArr(this.query.publicationStatus) || [],
         contentMarking: this.asArr(this.query.contentMarking) || [],
@@ -75,7 +75,7 @@ export default {
     },
     selectedAsFullPath() {
       // maps current state of form as url params
-      const selectedObj = this.splitGenreForm({ ...this.selected });
+      const selectedObj = this.splitCategory({ ...this.selected });
       selectedObj.from = selectedObj.years.from;
       selectedObj.to = selectedObj.years.to;
       delete selectedObj.years;
@@ -92,7 +92,7 @@ export default {
     },
     selectedAsReqObj() {
       // maps current state of form as request body for api
-      return this.splitGenreForm({ ...this.selected });
+      return this.splitCategory({ ...this.selected });
     },
   },
   methods: {
@@ -110,25 +110,25 @@ export default {
     doSearch() {
       this.search = this.selectedAsReqObj;
     },
-    splitGenreForm(obj) {
-      // splits shared genreForm into 'genreForm' and 'match-genreForm' params
+    splitCategory(obj) {
+      // splits shared category into 'category' and 'match-category' params
       const broad = [];
       const narrow = [];
-      if (obj.genreForm) {
-        obj.genreForm.forEach((el) => {
+      if (obj.category) {
+        obj.category.forEach((el) => {
           if (el.startsWith('*')) {
             broad.push(el.substr(1));
           } else narrow.push(el);
         });
-        obj.genreForm = narrow;
-        obj['match-genreForm'] = broad;
+        obj.category = narrow;
+        obj['match-category'] = broad;
       }
       return obj;
     },
-    joinGenreForm() {
-      // joins 'genreForm' and 'match-genreForm' params into shared genreForm obj
-      let broad = this.asArr(this.query['match-genreForm']) || [];
-      const narrow = this.asArr(this.query.genreForm) || [];
+    joinCategory() {
+      // joins 'category' and 'match-category' params into shared category obj
+      let broad = this.asArr(this.query['match-category']) || [];
+      const narrow = this.asArr(this.query.category) || [];
       broad = broad.map((genre) => `*${genre}`);
       return [...broad, ...narrow];
     },
@@ -196,7 +196,7 @@ export default {
         </div>
 
         <div class="Search-SelectContainer">
-          <select-output v-model="selected.genreForm" multiple>
+          <select-output v-model="selected.category" multiple>
             <template v-slot:helpbubble>
               <help-bubble bubbleKey="output"/>
             </template>

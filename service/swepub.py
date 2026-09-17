@@ -160,13 +160,13 @@ def bibliometrics_api():
         doi = query_data.get("DOI")
 
         # TODO: Ugly replacements, fix frontend
-        genre_form = [
+        category = [
             gf.strip().replace(".", "/").rstrip("/")
-            for gf in query_data.get("genreForm", [])
+            for gf in query_data.get("category", [])
             if len(gf.strip()) > 0
         ]
 
-        genre_form_broader = [gfb.strip() for gfb in query_data.get("match-genreForm", []) if len(gfb.strip()) > 0]
+        category_broader = [gfb.strip() for gfb in query_data.get("match-category", []) if len(gfb.strip()) > 0]
 
         orgs = [o.strip() for o in query_data.get("org", []) if len(o.strip()) > 0]
         title = query_data.get("title", "").replace(",", " ")
@@ -217,7 +217,7 @@ def bibliometrics_api():
         search_creator,
         search_fulltext,
         search_doi,
-        search_genre_form,
+        search_category,
         search_subject,
         search_org,
     ) = Tables(
@@ -226,7 +226,7 @@ def bibliometrics_api():
         "search_creator",
         "search_fulltext",
         "search_doi",
-        "search_genre_form",
+        "search_category",
         "search_subject",
         "search_org",
     )
@@ -300,22 +300,22 @@ def bibliometrics_api():
             if param[0] == search_org:
                 has_joined_search_org = True
 
-    if genre_form or genre_form_broader:
-        q = q.join(search_genre_form).on(search_single.finalized_id == search_genre_form.finalized_id)
+    if category or category_broader:
+        q = q.join(search_category).on(search_single.finalized_id == search_category.finalized_id)
 
-    if genre_form:
-        if isinstance(genre_form, list):
-            q = q.where(search_genre_form.value.isin([Parameter(", ".join(["?"] * len(genre_form)))]))
+    if category:
+        if isinstance(category, list):
+            q = q.where(search_category.value.isin([Parameter(", ".join(["?"] * len(category)))]))
         else:
-            q = q.where(search_genre_form.value == Parameter("?"))
-        values.append(genre_form)
+            q = q.where(search_category.value == Parameter("?"))
+        values.append(category)
 
-    if genre_form_broader:
+    if category_broader:
         criteria = []
-        for _gf_b in genre_form_broader:
-            criteria.append(search_genre_form.value.like(Parameter("?")))
+        for _gf_b in category_broader:
+            criteria.append(search_category.value.like(Parameter("?")))
         q = q.where(Criterion.any(criteria))
-        values.append(list(map(lambda x: f"{x}%", genre_form_broader)))
+        values.append(list(map(lambda x: f"{x}%", category_broader)))
 
     q_orgs = q.select(search_org.value).distinct()
     if not has_joined_search_org:

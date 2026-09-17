@@ -9,7 +9,7 @@ from pipeline.publication import Contribution, Publication
 from pipeline.util import is_autoclassified
 
 
-GENRE_FORMS_TO_MERGE = ["https://id.kb.se/term/swepub/ArtisticWork"]
+CATEGORIES_TO_MERGE = ["https://id.kb.se/term/swepub/ArtisticWork"]
 
 def mangle_contributor_for_comparison(name):
     undesired_name_separators = dict.fromkeys(map(ord, '-–_,.;:!?#\u00a0'), " ")
@@ -147,7 +147,7 @@ class PublicationMerger:
 
         master = self._merge_contribution(master, candidate)
         master = self._merge_has_notes(master, candidate)
-        master = self._merge_genre_forms(master, candidate)
+        master = self._merge_categories(master, candidate)
         master = self._merge_subjects(master, candidate)
         master = self._merge_classifications(master, candidate)
         master = self._merge_has_series(master, candidate)
@@ -221,10 +221,10 @@ class PublicationMerger:
         master.add_notes(candidate.notes)
         return master
 
-    def _merge_genre_forms(self, master, candidate):
-        """Merge genreform if both has GENRE_FORMS_TO_MERGE, currently artisticwork"""
-        if self._should_merge_genre_form(master) and self._should_merge_genre_form(candidate):
-            master.add_genre_form(candidate.genre_form)
+    def _merge_categories(self, master, candidate):
+        """Merge category if both has CATEGORIES_TO_MERGE, currently artisticwork"""
+        if self._should_merge_category(master) and self._should_merge_category(candidate):
+            master.add_category(candidate.category)
         return master
 
     @staticmethod
@@ -440,9 +440,9 @@ class PublicationMerger:
         return master
 
     @staticmethod
-    def _should_merge_genre_form(publication):
-        for genre_forms_to_merge in GENRE_FORMS_TO_MERGE:
-            if genre_forms_to_merge in publication.genre_form:
+    def _should_merge_category(publication):
+        for categories_to_merge in CATEGORIES_TO_MERGE:
+            if categories_to_merge in publication.category:
                 return True
         return False
 

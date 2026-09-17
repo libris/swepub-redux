@@ -226,15 +226,15 @@ CREATE INDEX idx_search_doi_finalized_id ON search_doi(finalized_id);
 CREATE INDEX idx_search_doi_value ON search_doi(value);
 
 
-CREATE TABLE search_genre_form (
+CREATE TABLE search_category (
     finalized_id INTEGER,
     value TEXT,
     FOREIGN KEY (finalized_id) REFERENCES finalized(id) ON DELETE CASCADE
 );
-CREATE INDEX idx_search_genre_form_finalized_id ON search_genre_form(finalized_id);
-CREATE INDEX idx_search_genre_form_value ON search_genre_form(value);
+CREATE INDEX idx_search_category_finalized_id ON search_category(finalized_id);
+CREATE INDEX idx_search_category_value ON search_category(value);
 -- case-insensitive index needed for LIKE searches
-CREATE INDEX idx_search_genre_form_value_nocase ON search_genre_form(value COLLATE NOCASE);
+CREATE INDEX idx_search_category_value_nocase ON search_category(value COLLATE NOCASE);
 
 
 CREATE TABLE search_subject (
