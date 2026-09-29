@@ -2,7 +2,7 @@
 import re
 import time
 from concurrent.futures import ProcessPoolExecutor, FIRST_COMPLETED, wait
-from multiprocessing import Lock, Manager
+from multiprocessing import get_context
 import sys
 from datetime import datetime, timezone
 import uuid
@@ -83,6 +83,8 @@ TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = [
 ]
 
 SWEPUB_USER_AGENT = getenv("SWEPUB_USER_AGENT", "https://github.com/libris")
+
+MP_CONTEXT = get_context("spawn")
 
 cached_paths = get_common_json_paths()
 
@@ -165,6 +167,7 @@ def harvest(source):
             with ProcessPoolExecutor(
                 max_workers=4,
                 max_tasks_per_child=50,
+                mp_context=MP_CONTEXT,
                 initializer=init,
                 initargs=(
                     lock,
@@ -572,6 +575,7 @@ def _reprocess_affected_records(sources_to_process):
     with ProcessPoolExecutor(
         max_workers=max_workers,
         max_tasks_per_child=1,
+        mp_context=MP_CONTEXT,
         initializer=init,
         initargs=(
             lock,
@@ -807,7 +811,7 @@ if __name__ == "__main__":
         sys.exit(0)
     else:
         # All harvest jobs have access to the same Manager-managed dictionaries
-        manager = Manager()
+        manager = MP_CONTEXT.Manager()
         harvest_cache = _get_harvest_cache_manager(manager)
         harvest_cache["meta"]["sources_to_go"] = manager.list(
             [source["code"] for source in sources_to_process]
@@ -833,7 +837,7 @@ if __name__ == "__main__":
         # starving some processes for a long time.
         # Instead, using an explicit lock should instead allow the kernel to fairly
         # distribute the database between the processes.
-        lock = Lock()
+        lock = MP_CONTEXT.Lock()
 
         # We want a lot of parallelism. The point of this is not only to saturate _our_ cores
         # which may well be "overloaded" during parts of the process, but also to keep as many
@@ -845,6 +849,7 @@ if __name__ == "__main__":
         with ProcessPoolExecutor(
             max_workers=max_workers,
             max_tasks_per_child=1,
+            mp_context=MP_CONTEXT,
             initializer=init,
             initargs=(
                 lock,
