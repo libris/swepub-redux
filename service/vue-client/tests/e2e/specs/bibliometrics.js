@@ -133,7 +133,7 @@ describe('Bibliometrics', () => {
     cy.visit('/bibliometrics');
     cy.get('#select-output-select').click().type('{enter}'); // select first available output type
     cy.get('#submit-btn').click();
-    cy.url().should('include', 'genreForm');
+    cy.url().should('include', 'category');
     cy.get('#preview-section').should('be.visible');
   });
 
@@ -205,7 +205,7 @@ describe('Bibliometrics', () => {
   });
 
   it('clears the form', () => {
-    cy.visit('/bibliometrics?classification=1&keywords=test&publicationStatus=published&publicationStatus=epub&publicationStatus=submitted&contentMarking=ref&contentMarking=vet&contentMarking=pop&swedishList=true&match-genreForm=intellectual-property&from=1900&to=1900');
+    cy.visit('/bibliometrics?classification=1&keywords=test&publicationStatus=published&publicationStatus=epub&publicationStatus=submitted&contentMarking=ref&contentMarking=vet&contentMarking=pop&swedishList=true&match-category=intellectual-property&from=1900&to=1900');
     cy.location().should((loc) => {
       expect(loc.search).to.not.be.empty;
     });

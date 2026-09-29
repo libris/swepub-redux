@@ -71,7 +71,7 @@ TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = [
     "finalized",
     "search_single",
     "search_doi",
-    "search_genre_form",
+    "search_category",
     "search_subject",
     "search_creator",
     "search_org",

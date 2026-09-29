@@ -2706,7 +2706,7 @@
         <!-- oai:DiVA.org:hb-11362 -->
         <!-- oai:gup.ub.gu.se/216759 -->
         <!-- Publications above should result in 2 deduplicates -->
-        <!-- Duplicate one with oai:gup.ub.gu.se/212822 and oai:DiVA.org:hb-11363 (same genreForm) -->
+        <!-- Duplicate one with oai:gup.ub.gu.se/212822 and oai:DiVA.org:hb-11363 (same category) -->
         <!-- Duplicate one with oai:DiVA.org:hb-11362 and oai:gup.ub.gu.se/216759 (same ISBN in identifiedBy -->
         <record>
           <header>
