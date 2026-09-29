@@ -1,5 +1,8 @@
 import json
+from os import getenv
 from pipeline.storage import get_connection
+
+DEV_SOURCES = ["kkh", "uniarts", "havochvatten", "rkh", "sh", "mau"]
 
 def clean(oai_id, data):
     root = json.loads(data)
@@ -9,6 +12,17 @@ def clean(oai_id, data):
 
 
 def generate_libris_dataset():
+    extraSql = ""
+
+    if getenv("SWEPUB_ENV") == "DEV":
+        extraSql = f"""
+        WHERE EXISTS (
+            SELECT 1
+            FROM search_org so
+            WHERE so.finalized_id = f.id
+              AND so.value IN ({', '.join(f"'{x}'" for x in DEV_SOURCES)})
+        )"""
+
     with open("/tmp/swepub.jsonld.lines", "wb") as outFile:
 
         outFile.write("""{"@id": "https://id.kb.se/dataset/swepub", "@type": "Dataset", "label": "Swepub", "created": "2025-11-24T13:37:00Z"}""".encode('utf-8'))
@@ -16,7 +30,7 @@ def generate_libris_dataset():
         with get_connection() as connection:
             cursor = connection.cursor()
             for cluster_row in cursor.execute(
-                "SELECT oai_id, data FROM finalized;"
+                f"SELECT oai_id, data FROM finalized f {extraSql};"
             ):
                 oai_id = cluster_row[0]
                 data = cluster_row[1]
