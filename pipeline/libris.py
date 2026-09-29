@@ -2,7 +2,7 @@ import json
 from os import getenv
 from pipeline.storage import get_connection
 
-DEV_SOURCES = ["kkh", "uniarts", "havochvatten", "rkh", "sh", "mau"]
+DEV_SOURCES = ["kkh", "uniarts", "havochvatten", "rkh", "sh"]
 
 def clean(oai_id, data):
     root = json.loads(data)
