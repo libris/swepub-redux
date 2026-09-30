@@ -2884,6 +2884,17 @@ def test_marcform_is_extracted_as_carrier_source_label(form, rtype, category, pa
     assert category in _collect_ids(result['category'])
 
 
+def test_default_instance_type(parser):
+    raw_xml = MODS("""
+        <recordInfo/>
+    """)
+
+    result = parser.parse_mods(raw_xml)
+
+    assert result['@type'] == 'Instance'
+    assert 'category' not in result
+
+
 def test_physical_description_extent_is_extracted(parser):
     raw_xml = MODS("""
         <physicalDescription>

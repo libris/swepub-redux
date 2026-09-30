@@ -22,7 +22,14 @@
         <dict>
             <string key="@context">https://id.kb.se/context.jsonld</string>
             <string key="@id"></string>
-            <xsl:apply-templates select="mods:physicalDescription/mods:form" mode="instance-type"/>
+            <xsl:choose>
+                <xsl:when test="mods:physicalDescription/mods:form">
+                    <xsl:apply-templates select="mods:physicalDescription/mods:form" mode="instance-type"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <string key="@type">Instance</string>
+                </xsl:otherwise>
+            </xsl:choose>
             <dict key="instanceOf">
                 <string key="@type">Monograph</string>
                 <array key="category">
