@@ -10,7 +10,7 @@ BODY = """
     "hasTitle": [{{"@type": "Title", "mainTitle": "{}", "subtitle": "{}"}}],
     "summary": [{{"@type": "Summary", "label": "{}"}}],
     "subject": [{}],
-    "genreForm": [{}],
+    "category": [{}],
     "hasNote": [{}]
   }},
   "identifiedBy": [
@@ -209,7 +209,7 @@ def candidate3_same_title_different_ids_summary():
 
 @pytest.fixture
 def candidate4_same_title_summary_pub_date_but_different_ids():
-    """Same Title, Subtitle, summary (lower case S), pubdate, genreform and different ID fields (all) than master"""
+    """Same Title, Subtitle, summary (lower case S), pubdate, category and different ID fields (all) than master"""
     body = json.loads(BODY('i_am_candiate_4',
                            'Title 1',
                            'Subtitle 1',

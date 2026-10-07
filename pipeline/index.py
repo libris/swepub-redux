@@ -55,7 +55,7 @@ def generate_search_tables():
                     else:
                         gf_shortened = gf
                     third_cursor.execute(
-                        "INSERT INTO search_genre_form (finalized_id, value) VALUES (?, ?)",
+                        "INSERT INTO search_category (finalized_id, value) VALUES (?, ?)",
                         (finalized_id, gf_shortened),
                     )
 
@@ -125,7 +125,7 @@ def get_publication_status(doc):
 
 
 def is_swedish_list(pub):
-    return "https://id.kb.se/term/swepub/swedishlist/peer-reviewed" in pub.genre_form
+    return "https://id.kb.se/term/swepub/swedishlist/peer-reviewed" in pub.category
 
 
 # For debugging

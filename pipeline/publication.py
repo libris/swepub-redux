@@ -258,14 +258,14 @@ class Publication:
         return access_policies, embargoes, links, others
 
     @property
-    def genre_form(self):
-        return genre_form(self.body)
+    def category(self):
+        return category(self.body)
 
-    def add_genre_form(self, new_genre_forms):
-        """ Sets array of genreforms for instanceOf.genreForm.[*].@id """
-        genre_forms = list(set(new_genre_forms) - set(self.genre_form))
-        for genre_form in genre_forms:
-            self.body['instanceOf']['genreForm'].append({'@id': genre_form})
+    def add_category(self, new_categories):
+        """ Sets array of categories for instanceOf.category.[*].@id """
+        categories = list(set(new_categories) - set(self.category))
+        for category in categories:
+            self.body['instanceOf']['category'].append({'@id': category})
 
     @property
     def contributions(self):
@@ -451,7 +451,7 @@ class Publication:
     def has_editors(self):
         """Return True if publication is proceeding or collection."""
         has_editors = False
-        for g_f in genre_form(self.body):
+        for g_f in category(self.body):
             if g_f in EDT_TYPES:
                 has_editors = True
                 break
@@ -461,7 +461,7 @@ class Publication:
     def is_report(self):
         """Return True if publication is report."""
         is_report = False
-        for g_f in genre_form(self.body):
+        for g_f in category(self.body):
             if g_f in REPORT_TYPES:
                 is_report = True
                 break
@@ -471,10 +471,10 @@ class Publication:
     def level(self):
         """Return the publication's level according to the Swedish List."""
         if ('instanceOf' not in self.body
-                or 'genreForm' not in self.body['instanceOf']):
+                or 'category' not in self.body['instanceOf']):
             return None
 
-        for gform in self.body['instanceOf']['genreForm']:
+        for gform in self.body['instanceOf']['category']:
             # Peer-reviewed always trumps non-peer-reviewed
             if '@id' in gform and gform['@id'] == str(Level.PEERREVIEWED):
                 return Level.PEERREVIEWED
@@ -494,11 +494,11 @@ class Publication:
 
         if 'instanceOf' not in self.body:
             self.body['instanceOf'] = {}
-        if 'genreForm' not in self.body['instanceOf']:
-            self.body['instanceOf']['genreForm'] = []
-        genreforms = self.body['instanceOf']['genreForm']
-        genreforms.append({'@id': str(level)})
-        self.body['instanceOf']['genreForm'] = genreforms
+        if 'category' not in self.body['instanceOf']:
+            self.body['instanceOf']['category'] = []
+        categories = self.body['instanceOf']['category']
+        categories.append({'@id': str(level)})
+        self.body['instanceOf']['category'] = categories
 
     @staticmethod
     def _is_unmarked(gform):
@@ -508,11 +508,11 @@ class Publication:
     def _purge_markings(self, publication):
         if 'instanceOf' not in publication:
             return publication
-        if 'genreForm' not in publication['instanceOf']:
+        if 'category' not in publication['instanceOf']:
             return publication
-        genreforms = publication['instanceOf']['genreForm']
-        new_gforms = [gform for gform in genreforms if self._is_unmarked(gform)]
-        publication['instanceOf']['genreForm'] = new_gforms
+        categories = publication['instanceOf']['category']
+        new_gforms = [gform for gform in categories if self._is_unmarked(gform)]
+        publication['instanceOf']['category'] = new_gforms
         return publication
 
     def ssifs(self, skip_autoclassified=False):
@@ -582,7 +582,7 @@ class Publication:
 
     @property
     def is_article(self):
-        for article in self.body.get("instanceOf", {}).get("genreForm", []):
+        for article in self.body.get("instanceOf", {}).get("category", []):
             if isinstance(article, dict) and article.get("@id") in ARTICLE_TYPES:
                 return True
         return False
@@ -1084,10 +1084,10 @@ class Publication:
         """True if publication has the same summary"""
         return compare_text(self.summary, publication.summary, self.STRING_MATCH_RATIO_SUMMARY, MAX_LENGTH_STRING_TO_COMPARE)
 
-    def has_same_genre_form(self, publication):
-        """True if publication has all the genreform the same"""
-        if self.genre_form and publication.genre_form:
-            return set(self.genre_form) == set(publication.genre_form)
+    def has_same_category(self, publication):
+        """True if publication has all the category the same"""
+        if self.category and publication.category:
+            return set(self.category) == set(publication.category)
         return False
 
     def has_higher_publication_status_ranking(self, publication):

@@ -804,7 +804,7 @@
            </metadata>
         </record>
 
-        <!-- Handling partoOf with genreform and contribution according to SWEPUB2-871, effects marc field 773 -->
+        <!-- Handling partoOf with category and contribution according to SWEPUB2-871, effects marc field 773 -->
         <record xmlns="http://www.openarchives.org/OAI/2.0/">
            <header xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
               <identifier>oai:DiVA.org:hh-41721</identifier>

@@ -14,7 +14,7 @@ STRING_MATCH_RATIO_MAIN_TITLE = 0.9
 STRING_MATCH_RATIO_SUB_TITLE = 0.9
 STRING_MATCH_RATIO_SUMMARY = 0.9
 
-CONFERENCE_PAPER_GENREFORM = "https://id.kb.se/term/swepub/ConferencePaper"
+CONFERENCE_PAPER_CATEGORY = "https://id.kb.se/term/swepub/ConferencePaper"
 
 known_poor_titles = {"Introduction", "Inledning", "Indledning", "Editorial", "Förord", "Preface",
 "Introduktion", "Review of", "Foreword", "Recensioner", "Conclusion", "Efterord", "Reply",

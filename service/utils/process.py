@@ -177,7 +177,7 @@ def _get_url(publication, pub_type):
     regex = pub_type_re
     if pub_type == "output":
         regex = output_type_re
-    for gf in publication["instanceOf"]["genreForm"]:
+    for gf in publication["instanceOf"]["category"]:
         gf_id = gf["@id"]
         if gf_id.startswith(markings_prefix):
             continue

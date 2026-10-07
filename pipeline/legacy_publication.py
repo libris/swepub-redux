@@ -2,7 +2,7 @@ import dateutil.parser
 from datetime import datetime
 from pipeline.util import SSIF_SCHEME
 
-genre_form_publication_mappings = {
+category_publication_mappings = {
     "https://id.kb.se/term/swepub/output/publication/editorial-letter": ["art"],
     "https://id.kb.se/term/swepub/output/publication/journal-article": ["art"],
     "https://id.kb.se/term/swepub/output/publication/magazine-article": ["art"],
@@ -78,8 +78,8 @@ top_subject_mappings = {
     }
 
 
-def get_publication_types(genre_form):
-    return genre_form_publication_mappings.get(genre_form, [])
+def get_publication_types(category):
+    return category_publication_mappings.get(category, [])
 
 
 def get_issuance_type(publication_type):
@@ -115,12 +115,12 @@ class Publication:
     def body_with_required_legacy_search_fields(self):
         self.add_meta_control_number_001()
         self.add_meta_system_name_003()
-        self.add_genre_form_007()
+        self.add_category_007()
         self.add_meta_created_008()
         self.add_publication_008()
         self.add_meta_duplicate_publications_009()
         self.add_identified_by_024()
-        self.add_genre_form_072()
+        self.add_category_072()
         self.add_meta_description_creator_040()
         self.add_meta_bibliography_sigel_042()
         self.add_instance_of_has_title_240()
@@ -147,11 +147,11 @@ class Publication:
             body["meta"] = {}
         body["meta"]["systemName"] = "SwePub"
 
-    def add_genre_form_007(self):
-        """Adds issuanceType from instanceOf.genreForm[@id] and genreform_mapper code, represents marc field 007"""
+    def add_category_007(self):
+        """Adds issuanceType from instanceOf.category[@id] and category_mapper code, represents marc field 007"""
         body = self.body
-        genre_forms = body.get("instanceOf", {}).get("genreForm", [])
-        for gf in genre_forms:
+        categories = body.get("instanceOf", {}).get("category", [])
+        for gf in categories:
             if gf.get("@id"):
                 p_t = get_publication_types(gf.get("@id"))
                 if p_t:
@@ -203,9 +203,9 @@ class Publication:
         if body.get("meta"):
             body["meta"]["bibliography"] = [{"@type": "Bibliography", "sigel": "SwePub"}]
 
-    def add_genre_form_072(self):
+    def add_category_072(self):
         """
-        Adds instanceOf.genreForm[@type=Concept) using genreform_mapper, represents marc field 072
+        Adds instanceOf.category[@type=Concept) using category_mapper, represents marc field 072
         1. Suffix of https://id.kb.se/term/swepub/svep/ is added as swepub-contenttype
         2. publication type determined by get_publication_types and added as swepub-publicationtype
         """
@@ -213,8 +213,8 @@ class Publication:
         if not body.get("instanceOf", {}).get("subject"):
             body["instanceOf"]["subject"] = []
         subjects = body.get("instanceOf", {}).get("subject", [])
-        genre_forms = body.get("instanceOf", {}).get("genreForm", [])
-        for gf in genre_forms:
+        categories = body.get("instanceOf", {}).get("category", [])
+        for gf in categories:
             if gf.get("@id"):
                 id = gf.get("@id")
                 if id and id.startswith("https://id.kb.se/term/swepub/svep"):
@@ -512,7 +512,7 @@ class Publication:
 
             provision_activity_statement = _get_provision_activity_statement(body)
             # Not all parts of 'isPartOf' should remain in body after conversion.
-            # Only take parts that has title and does not have 'genreForm' or 'Dataset' as type, ignore other parts.
+            # Only take parts that has title and does not have 'category' or 'Dataset' as type, ignore other parts.
 
             to_add_to_body = []
             before_convert = body.pop("isPartOf", [])
@@ -522,7 +522,7 @@ class Publication:
                 if (
                     is_part.get("hasTitle")
                     and len(is_part.get("hasTitle")) > 0
-                    and not is_part.get("genreForm")
+                    and not is_part.get("category")
                     and is_part["@type"] != "Dataset"
                 ):
 
