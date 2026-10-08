@@ -285,7 +285,7 @@ def harvest(source):
                     """
                 INSERT INTO last_harvest(source, last_successful_harvest) VALUES (?, ?)
                 ON CONFLICT(source) DO UPDATE SET last_successful_harvest = ?;""",
-                    (source["code"], harvest_start, harvest_start),
+                    (source["code"], harvest_start.isoformat(" "), harvest_start.isoformat(" ")),
                 )
 
             cur.execute(
