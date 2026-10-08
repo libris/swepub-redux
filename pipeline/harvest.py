@@ -330,7 +330,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, batch):
         adapter = requests.adapters.HTTPAdapter(max_retries=RandomisedRetry(total=4, backoff_factor=2))
         session.mount('http://', adapter)
         session.mount('https://', adapter)
-        with get_connection() as read_only_connection:
+        with get_connection() as read_only_connection, closing(get_connection()) as connection:
             read_only_cursor = read_only_connection.cursor()
             for record in batch:
                 xml = record.xml
@@ -350,7 +350,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, batch):
 
                 lock.acquire()
                 try:
-                    with get_connection() as connection:
+                    with connection:
                         original_rowid, deleted_from_db = store_original(
                             record.oai_id,
                             record.deleted,

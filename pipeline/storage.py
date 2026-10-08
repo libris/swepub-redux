@@ -103,16 +103,18 @@ def store_original(
         )
 
     # It *shouldn't* happen that an OAI ID occurs twice in the same dataset, but it can happen...
-    original_rowid = cur.execute(
+    inserted = cur.execute(
         """
     INSERT INTO
         original(source, source_subset, data, accepted, oai_id)
     VALUES
         (?, ?, ?, ?, ?)
     ON CONFLICT(oai_id) DO NOTHING
+    RETURNING id
     """,
         (source, source_subset, original, accepted, oai_id),
-    ).lastrowid
+    ).fetchone()
+    original_rowid = inserted[0] if inserted else None
 
     # ...and in the rare case that it does happen, we skip this record
     if not original_rowid:
