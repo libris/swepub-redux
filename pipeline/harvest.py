@@ -641,7 +641,7 @@ def init(l, c, a, lg, inc):
     global log
     global incremental
     lock = l
-    harvest_cache = c
+    harvest_cache = dict(c.items())
     added_converted_rowids = a
     log = lg
     incremental = inc
