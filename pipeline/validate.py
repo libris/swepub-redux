@@ -111,7 +111,7 @@ def get_record_info(field_events):
     return stats
 
 
-def validate_stuff(field_events, session, harvest_cache, body, source, cached_paths):
+def validate_stuff(field_events, session, harvest_cache, body, source):
     for id_type in field_events.values():
         for field in id_type.values():
             if field.validation_status != Validation.VALID:
@@ -120,7 +120,7 @@ def validate_stuff(field_events, session, harvest_cache, body, source, cached_pa
                 if field.id_type == "ISI":
                     validate_isi(field)
                 if field.id_type == "ORCID":
-                    validate_orcid(field, body, harvest_cache, source, cached_paths)
+                    validate_orcid(field, body, harvest_cache, source)
                 if field.id_type == "ISSN":
                     validate_issn(field, session, harvest_cache)
                 if field.id_type == "DOI":
@@ -139,26 +139,26 @@ def validate_stuff(field_events, session, harvest_cache, body, source, cached_pa
                     field.validation_status = Validation.VALID  # formerly "AcceptingValidator"
 
 
-def enrich_stuff(body, field_events, cached_paths):
+def enrich_stuff(body, field_events):
     created_fields = {}
     for id_type in field_events.values():
         for field in id_type.values():
             added_stuff = []
             if field.validation_status != Validation.VALID:
                 if field.id_type == "ISBN":
-                    added_stuff = recover_isbn(body, field, cached_paths)
+                    added_stuff = recover_isbn(body, field)
                 if field.id_type == "ISI":
-                    recover_isi(body, field, cached_paths)
+                    recover_isi(body, field)
                 if field.id_type == "ORCID":
-                    recover_orcid(body, field, cached_paths)
+                    recover_orcid(body, field)
                 if field.id_type == "ISSN":
-                    added_stuff = recover_issn(body, field, cached_paths)
+                    added_stuff = recover_issn(body, field)
                 if field.id_type == "DOI":
-                    recover_doi(body, field, cached_paths)
+                    recover_doi(body, field)
                 if field.id_type == "publication_year":
-                    recover_unicode(body, field, cached_paths)
+                    recover_unicode(body, field)
                 if field.id_type == "creator_count":
-                    recover_unicode(body, field, cached_paths)
+                    recover_unicode(body, field)
 
                 if added_stuff:
                     if field.id_type not in created_fields:
@@ -169,13 +169,13 @@ def enrich_stuff(body, field_events, cached_paths):
             field_events[id_type][field.path] = field
 
 
-def enrich_stuff_a_little_more(body, field_events, harvest_cache, source, cached_paths, read_only_cursor):
+def enrich_stuff_a_little_more(body, field_events, harvest_cache, source, read_only_cursor):
     created_fields = {}
     for id_type in field_events.values():
         for field in id_type.values():
             added_stuff = []
             if field.id_type == "PersonID":
-                added_stuff = recover_orcid_from_localid(body, field, harvest_cache, source, cached_paths, read_only_cursor)
+                added_stuff = recover_orcid_from_localid(body, field, harvest_cache, source, read_only_cursor)
 
             if added_stuff:
                 if field.id_type not in created_fields:
@@ -186,26 +186,26 @@ def enrich_stuff_a_little_more(body, field_events, harvest_cache, source, cached
             field_events[id_type][field.path] = field
 
 
-def normalize_stuff(body, field_events, cached_paths):
+def normalize_stuff(body, field_events):
     for id_type in field_events.values():
         for field in id_type.values():
             # Unlike with validations/enrichments we now only look at *valid* fields
             if field.validation_status == Validation.VALID:
                 if field.id_type == "ISBN":
-                    normalize_isbn(body, field, cached_paths)
+                    normalize_isbn(body, field)
                 if field.id_type == "ISI":
-                    normalize_isi(body, field, cached_paths)
+                    normalize_isi(body, field)
                 if field.id_type == "ORCID" or field.id_type == "PersonID":
-                    normalize_orcid(body, field, cached_paths)
+                    normalize_orcid(body, field)
                 if field.id_type == "ISSN":
-                    normalize_issn(body, field, cached_paths)
+                    normalize_issn(body, field)
                 if field.id_type == "DOI":
-                    normalize_doi(body, field, cached_paths)
+                    normalize_doi(body, field)
                 if field.id_type == "free_text":
-                    normalize_free_text(body, field, cached_paths)
+                    normalize_free_text(body, field)
 
 
-def move_incorrectlyIdentifiedBy(body, field_events, cached_paths):
+def move_incorrectlyIdentifiedBy(body, field_events):
     pathsToRemove = []
     for id_type in field_events.values():
         for field in id_type.values():
@@ -251,7 +251,7 @@ def move_incorrectlyIdentifiedBy(body, field_events, cached_paths):
 
 # The point of this is that invalid ORCIDs often contain other sorts of personal information
 # Which we _do not_ want to have on file, or in the worst case even publicly displayed.
-def censor_invalid_orcids(body, field_events, cached_paths):
+def censor_invalid_orcids(body, field_events):
     for id_type in field_events.values():
         for field in id_type.values():
             if field.validation_status != Validation.VALID and field.id_type == "ORCID":
@@ -265,7 +265,7 @@ def censor_invalid_orcids(body, field_events, cached_paths):
                         result=None,
                     )
                 )
-                update_at_path(body, field.path, "[redacted]", cached_paths)
+                update_at_path(body, field.path, "[redacted]")
 
 
 def get_clean_events(field_events):
@@ -284,7 +284,7 @@ def get_clean_events(field_events):
     return events_only
 
 
-def validate(body, harvest_cache, session, source, cached_paths, read_only_cursor):
+def validate(body, harvest_cache, session, source, read_only_cursor):
     field_events = {}
     # For each path, create a FieldMeta object that we'll use during all
     # enrichments/validations/normalizations to keep some necessary state
@@ -298,16 +298,16 @@ def validate(body, harvest_cache, session, source, cached_paths, read_only_curso
                     str(match.full_path), id_type, match.value
                 )
 
-    validate_stuff(field_events, session, harvest_cache, body, source, cached_paths)
-    enrich_stuff(body, field_events, cached_paths)
+    validate_stuff(field_events, session, harvest_cache, body, source)
+    enrich_stuff(body, field_events)
     # Second validation pass to see if enrichments made some values valid
-    validate_stuff(field_events, session, harvest_cache, body, source, cached_paths)
-    enrich_stuff_a_little_more(body, field_events, harvest_cache, source, cached_paths, read_only_cursor)
-    normalize_stuff(body, field_events, cached_paths)
+    validate_stuff(field_events, session, harvest_cache, body, source)
+    enrich_stuff_a_little_more(body, field_events, harvest_cache, source, read_only_cursor)
+    normalize_stuff(body, field_events)
     # Beware, after this point all field_event paths must be considered potentially corrupt,
     # as moving things around places them at new paths!
-    move_incorrectlyIdentifiedBy(body, field_events, cached_paths)
-    censor_invalid_orcids(body, field_events, cached_paths)
+    move_incorrectlyIdentifiedBy(body, field_events)
+    censor_invalid_orcids(body, field_events)
 
     record_info = get_record_info(field_events)
     events_only = get_clean_events(field_events)

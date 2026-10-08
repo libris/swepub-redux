@@ -56,7 +56,7 @@ def _test_localid_enricher(cache_data, source, test_data, expected_body, expecte
     else:
         mocked_cursor.execute.return_value.fetchone.return_value = {}
 
-    recover_orcid_from_localid(body, field, harvest_cache, source, {}, mocked_cursor)
+    recover_orcid_from_localid(body, field, harvest_cache, source, mocked_cursor)
 
     assert body == expected_body
     if len(field.events) > 0:

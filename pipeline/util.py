@@ -2,7 +2,8 @@ from aenum import Enum
 from pathlib import Path
 
 from difflib import SequenceMatcher
-from jsonpath_rw import parse
+from functools import lru_cache
+import jsonpath_rw
 import re
 import Levenshtein
 import hashlib
@@ -14,6 +15,8 @@ from random import random
 from lxml import etree
 
 from pipeline.swepublog import logger as log
+
+parse = lru_cache(maxsize=4096)(jsonpath_rw.parse)
 
 ENRICHING_AUDITORS = [
     "AutoclassifierAuditor",
@@ -113,12 +116,9 @@ def chunker(seq, size):
     return (seq[pos:pos + size] for pos in range(0, len(seq), size))
 
 
-def update_at_path(root, path, new_value, cached_paths=None):
+def update_at_path(root, path, new_value):
     base_path, key = path.rsplit('.', 1)
-    if cached_paths is not None:
-        found = get_set_compiled_path(base_path, cached_paths).find(root)
-    else:
-        found = parse(base_path).find(root)
+    found = parse(base_path).find(root)
     parent_object = found[0].value
     #print(f"Replacing {parent_object[key]} with {new_value} at {path}")
     parent_object[key] = new_value
@@ -157,75 +157,26 @@ def remove_at_path(root, path, min_prune_level):
             del current[key]
         prune_level += 1
 
-def add_sibling_at_path(root, path, type, value, cached_paths):
+def add_sibling_at_path(root, path, type, value):
     base_path, _, _ = path.rsplit('.', 2)
-    if cached_paths is not None:
-        found = get_set_compiled_path(base_path, cached_paths).find(root)
-    else:
-        found = parse(base_path).find(root)
+    found = parse(base_path).find(root)
     found[0].value.append({"@type": type, "value": value})
     # Figure out and return the path for the new sibling (surely there is a better
     # way to do this...)
     return f"{base_path}.[{len(found[0].value) - 1}].value"
 
 
-def get_at_path(root, path, cached_paths=None):
+def get_at_path(root, path):
     if path == "":
         return root
-    if cached_paths is not None:
-        found = get_set_compiled_path(path, cached_paths).find(root)[0].value
-    else:
-        found = parse(path).find(root)[0].value
+    found = parse(path).find(root)[0].value
     return found
 
 
-def append_at_path(root, path, type, new_value, cached_paths=None):
-    if cached_paths is not None:
-        found = get_set_compiled_path(path, cached_paths).find(root)
-    else:
-        found = parse(path).find(root)
+def append_at_path(root, path, type, new_value):
+    found = parse(path).find(root)
     found[0].value.append({"@type": type, "value": new_value})
     return f"{path}.[{len(found[0].value) - 1}].value"
-
-
-def get_set_compiled_path(path, cached_paths):
-    compiled_path = cached_paths.get(path)
-    if not compiled_path:
-        compiled_path = parse(path)
-        cached_paths[path] = compiled_path
-    return compiled_path
-
-
-def get_common_json_paths():
-    # Pre-parse the most commonly used JSON paths
-    paths_to_cache = [
-        "hasSeries.[0].identifiedBy.[0]",
-        "identifiedBy.[0]",
-        "identifiedBy.[1]",
-        "instanceOf.hasNote.[0]",
-        "instanceOf.hasNote.[1]",
-        "instanceOf.hasNote.[2]",
-        "instanceOf.hasTitle.[0]",
-        "instanceOf.summary.[0]",
-        "instanceOf.summary.[1]",
-
-    ]
-
-    for i in range(0, 11):
-        paths_to_cache.append(f"instanceOf.contribution.[{i}]")
-        paths_to_cache.append(f"instanceOf.contribution.[{i}].agent")
-        paths_to_cache.append(f"instanceOf.contribution.[{i}].agent.identifiedBy")
-        paths_to_cache.append(f"instanceOf.contribution.[{i}].agent.identifiedBy.[0]")
-        paths_to_cache.append(f"instanceOf.contribution.[{i}].agent.identifiedBy.[1]")
-        paths_to_cache.append(f"isPartOf.[{i}].identifiedBy")
-        paths_to_cache.append(f"isPartOf.[{i}].identifiedBy.[0]")
-        paths_to_cache.append(f"isPartOf.[{i}].identifiedBy.[1]")
-    cached_paths = {}
-
-    for path in paths_to_cache:
-        cached_paths[path] = parse(path)
-
-    return cached_paths
 
 
 # source: the code from sources.json (e.g. "kth", "uniarts")

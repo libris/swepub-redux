@@ -1,5 +1,4 @@
 import unicodedata
-import sys
 
 from urllib.parse import quote
 
@@ -12,20 +11,18 @@ from pipeline.util import make_event, Validation, Enrichment
 # Cc = control, e.g. tab and new line.
 # Cf = format, e.g. zero width space.
 # Z* = line and paragraph separator and white spaces.
-#
-# If making changes here, remember to update DOI enricher accordingly.
 INVALID_DOI_UNICODE_CATEGORIES = {"Cc", "Cf", "Zl", "Zp", "Zs"}
 
-# List containing unicode code points as integers.
-INVALID_DOI_UNICODE = list(
-    (
-        ord(c)
-        for c in (chr(i) for i in range(sys.maxunicode))
-        if unicodedata.category(c) in INVALID_DOI_UNICODE_CATEGORIES
-    )
-)
+class InvalidDoiCharacterTable(dict):
+    def __missing__(self, codepoint):
+        if unicodedata.category(chr(codepoint)) in INVALID_DOI_UNICODE_CATEGORIES:
+            self[codepoint] = None
+        else:
+            self[codepoint] = codepoint
+        return self[codepoint]
 
-TRANSLATE_DICT = {character: None for character in INVALID_DOI_UNICODE}
+
+TRANSLATE_DICT = InvalidDoiCharacterTable()
 
 DOI_HTTPS_PREFIX = "https://doi.org/"
 DOI_HTTP_PREFIX = "http://doi.org/"

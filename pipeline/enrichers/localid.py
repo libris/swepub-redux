@@ -1,13 +1,12 @@
 from pipeline.storage import dict_factory
 from pipeline.util import FieldMeta, Enrichment, Validation, get_at_path, append_at_path, get_localid_cache_key, make_event
-from jsonpath_rw import parse
 
 
-def recover_orcid_from_localid(body, field, harvest_cache, source, cached_paths={}, read_only_cursor=None):
+def recover_orcid_from_localid(body, field, harvest_cache, source, read_only_cursor=None):
     created_fields = []
     parent_path = field.path.rsplit(".", 1)[0]
 
-    all_ids_for_agent = get_at_path(body, parent_path, cached_paths)
+    all_ids_for_agent = get_at_path(body, parent_path)
 
     for id_value in all_ids_for_agent:
         if id_value.get("@type") == "ORCID":
@@ -18,7 +17,7 @@ def recover_orcid_from_localid(body, field, harvest_cache, source, cached_paths=
         return
 
     parent_path_2 = field.path.rsplit(".", 3)[0]
-    parent_path_2_value = get_at_path(body, parent_path_2, cached_paths)
+    parent_path_2_value = get_at_path(body, parent_path_2)
     person_name = f"{parent_path_2_value.get('agent', {}).get('familyName', '')}{parent_path_2_value.get('agent', {}).get('givenName', '')}".strip()
     if not person_name or len(person_name) < 4:
         return
@@ -32,7 +31,7 @@ def recover_orcid_from_localid(body, field, harvest_cache, source, cached_paths=
             orcid = result["orcid"]
             source_oai_id = result["source_oai_id"]
             #print(f"LocalID MATCH! source {source_oai_id}, enriched {body['@id']}, {person_name}")
-            new_path = append_at_path(body, parent_path, type="ORCID", new_value=orcid, cached_paths=cached_paths)
+            new_path = append_at_path(body, parent_path, type="ORCID", new_value=orcid)
             field.events.append(
                 make_event(
                     event_type="enrichment",

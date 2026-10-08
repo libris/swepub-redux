@@ -23,7 +23,7 @@ issn_regex = re.compile(
 )
 
 
-def recover_issn(body, field, cached_paths={}):
+def recover_issn(body, field):
     issn = field.value
     path = field.path
     created_fields = []
@@ -32,7 +32,7 @@ def recover_issn(body, field, cached_paths={}):
     if translated != issn:
         initial = issn
         issn = translated
-        update_at_path(body, path, issn, cached_paths)
+        update_at_path(body, path, issn)
         field.events.append(
             make_event(
                 event_type="enrichment",
@@ -60,7 +60,7 @@ def recover_issn(body, field, cached_paths={}):
                     result="enriched",
                 )
             )
-            update_at_path(body, path, recovered[0], cached_paths)
+            update_at_path(body, path, recovered[0])
             field.enrichment_status = Enrichment.ENRICHED
             field.value = recovered[0]
 
@@ -75,7 +75,7 @@ def recover_issn(body, field, cached_paths={}):
                         result="enriched",
                     )
                 )
-                new_path = add_sibling_at_path(body, path, type="ISSN", value=found_value, cached_paths=cached_paths)
+                new_path = add_sibling_at_path(body, path, type="ISSN", value=found_value)
                 created_fields.append(
                     FieldMeta(path=new_path, id_type=field.id_type, value=found_value)
                 )

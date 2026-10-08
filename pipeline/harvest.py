@@ -42,7 +42,7 @@ from pipeline.libris import generate_libris_dataset
 
 # To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..
 from pipeline.swepublog import logger as log
-from pipeline.util import chunker, get_common_json_paths, RandomisedRetry
+from pipeline.util import chunker, RandomisedRetry
 
 
 # TODO: Move configuration (some of which is shared with service/swepub.py) to a separate file
@@ -83,8 +83,6 @@ TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = [
 ]
 
 SWEPUB_USER_AGENT = getenv("SWEPUB_USER_AGENT", "https://github.com/libris")
-
-cached_paths = get_common_json_paths()
 
 set_forkserver_preload([
     "pipeline.audit",
@@ -202,7 +200,6 @@ def harvest(source):
                                     source["code"],
                                     source_set.get("subset", ""),
                                     harvest_id,
-                                    cached_paths,
                                 )
                                 pending.add(executor.submit(func, batch))
                                 batch = []
@@ -217,7 +214,7 @@ def harvest(source):
                     num_failed += 1
                     raise e
                 func = partial(
-                    threaded_handle_harvested, source["code"], source_set.get("subset", ""), harvest_id, cached_paths
+                    threaded_handle_harvested, source["code"], source_set.get("subset", ""), harvest_id
                 )
                 pending.add(executor.submit(func, batch))
                 for f in pending:
@@ -323,7 +320,7 @@ def harvest(source):
     return harvest_succeeded
 
 
-def threaded_handle_harvested(source, source_subset, harvest_id, cached_paths, batch):
+def threaded_handle_harvested(source, source_subset, harvest_id, batch):
     converted_rowids = []
     num_accepted = 0
     num_rejected = 0
@@ -343,7 +340,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, cached_paths, b
                     if accepted:
                         num_accepted += 1
                         converted = convert(xml)
-                        (field_events, record_info) = validate(converted, harvest_cache, session, source, cached_paths, read_only_cursor)
+                        (field_events, record_info) = validate(converted, harvest_cache, session, source, read_only_cursor)
                         (audited, audit_events) = audit(converted, harvest_cache, session)
                     elif not record.deleted:
                         num_rejected += 1
@@ -620,7 +617,7 @@ def _handle_reprocess_affected_records(source):
                 xml = cursor.execute("SELECT data FROM original WHERE oai_id = ?", [oai_id]).fetchone()["data"]
                 original_converted = cursor.execute("SELECT id, original_id, source FROM converted WHERE oai_id = ?", [oai_id]).fetchone()
                 converted = convert(xml)
-                (field_events, record_info) = validate(converted, harvest_cache, session, original_converted["source"], cached_paths, inner_cursor)
+                (field_events, record_info) = validate(converted, harvest_cache, session, original_converted["source"], inner_cursor)
                 (audited, audit_events) = audit(converted, harvest_cache, session)
 
                 lock.acquire()
