@@ -30,8 +30,7 @@ class ModsStylesheet:
                 file=sys.stderr,
             )
             return raw_xml
-        transform = et.XSLT(self.stylesheet)
-        transformed_xml = transform(parsed_xml)
+        transformed_xml = self.stylesheet(parsed_xml)
         return et.tostring(transformed_xml, encoding="unicode")
 
     def get_stylesheet(self):
@@ -42,7 +41,7 @@ class ModsStylesheet:
 
     def _get_parsed_xsl(self):
         xsl = self._get_xsl_file_path()
-        self.stylesheet = et.parse(xsl) if xsl else None
+        self.stylesheet = et.XSLT(et.parse(xsl)) if xsl else None
         self._add_to_cache()
 
     def _get_xsl_file_path(self):
