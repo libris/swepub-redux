@@ -2,7 +2,7 @@
 import re
 import time
 from concurrent.futures import ProcessPoolExecutor, FIRST_COMPLETED, wait
-from multiprocessing import Lock, Manager
+from multiprocessing import Lock, Manager, get_context, set_forkserver_preload
 import sys
 from datetime import datetime, timezone
 import uuid
@@ -86,6 +86,16 @@ SWEPUB_USER_AGENT = getenv("SWEPUB_USER_AGENT", "https://github.com/libris")
 
 cached_paths = get_common_json_paths()
 
+set_forkserver_preload([
+    "pipeline.audit",
+    "pipeline.convert",
+    "pipeline.deduplicate",
+    "pipeline.merge",
+    "pipeline.validate",
+    "requests",
+])
+MP_CONTEXT = get_context("forkserver")
+
 
 # Wrap the harvest function just to easily log errors from subprocesses
 def harvest_wrapper(source):
@@ -165,6 +175,7 @@ def harvest(source):
             with ProcessPoolExecutor(
                 max_workers=4,
                 max_tasks_per_child=50,
+                mp_context=MP_CONTEXT,
                 initializer=init,
                 initargs=(
                     lock,
@@ -572,6 +583,7 @@ def _reprocess_affected_records(sources_to_process):
     with ProcessPoolExecutor(
         max_workers=max_workers,
         max_tasks_per_child=1,
+        mp_context=MP_CONTEXT,
         initializer=init,
         initargs=(
             lock,
@@ -845,6 +857,7 @@ if __name__ == "__main__":
         with ProcessPoolExecutor(
             max_workers=max_workers,
             max_tasks_per_child=1,
+            mp_context=MP_CONTEXT,
             initializer=init,
             initargs=(
                 lock,

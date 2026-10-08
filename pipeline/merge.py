@@ -1,4 +1,4 @@
-from multiprocessing import Pool
+from multiprocessing import get_context
 import time
 
 import orjson as json
@@ -13,7 +13,7 @@ def merge():
     batch = []
     tasks = []
 
-    with Pool(processes=16) as pool:
+    with get_context("fork").Pool(processes=16) as pool:
         # For each cluster, generate a union-record, containing as much information as possible
         # from the clusters elements.
         with get_connection() as connection:

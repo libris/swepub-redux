@@ -1,5 +1,5 @@
 import time
-from multiprocessing import Pool
+from multiprocessing import get_context
 
 import orjson as json
 
@@ -154,7 +154,7 @@ def _generate_clusters():
     batch = []
     tasks = []
 
-    with Pool(processes=16) as pool:
+    with get_context("fork").Pool(processes=16) as pool:
 
         with get_connection() as connection:
             cursor = connection.cursor()
