@@ -11,13 +11,13 @@ isi_regex = re.compile(
 )
 
 
-def recover_isi(body, field, cached_paths={}):
+def recover_isi(body, field):
     original = field.value
     isi = field.value
     translated = unicode_translate(isi)
     if translated != isi:
         isi = translated
-        update_at_path(body, field.path, isi, cached_paths)
+        update_at_path(body, field.path, isi)
         field.events.append(
             make_event(
                 event_type="enrichment",
@@ -32,7 +32,7 @@ def recover_isi(body, field, cached_paths={}):
 
     hit = isi_regex.search(isi)
     if hit and hit.group() != isi:
-        update_at_path(body, field.path, hit.group(), cached_paths)
+        update_at_path(body, field.path, hit.group())
         field.events.append(
             make_event(
                 event_type="enrichment", code="recovery", value=hit.group(), initial_value=isi
@@ -42,7 +42,7 @@ def recover_isi(body, field, cached_paths={}):
         field.value = hit.group()
 
     if len(isi) == 30 and isi[:15] == isi[15:]:
-        update_at_path(body, field.path, isi[:15], cached_paths)
+        update_at_path(body, field.path, isi[:15])
         field.events.append(
             make_event(event_type="enrichment", code="double", value=isi[:15], initial_value=isi)
         )

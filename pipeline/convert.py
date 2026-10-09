@@ -2,14 +2,37 @@ import re
 from io import StringIO
 from os import path
 
-from lxml.etree import parse, XSLT, fromstring, LxmlError, XMLSyntaxError
+from lxml.etree import parse, XSLT, XMLParser, Resolver, fromstring, LxmlError, XMLSyntaxError
+
+
+# mods_to_xjsonld.xsl loads a couple of files from disk with document() on *every*
+# transformation, so let's cache them.
+class _CachingResolver(Resolver):
+    def __init__(self):
+        super().__init__()
+        self._cache = {}
+
+    def resolve(self, url, pubid, context):
+        if url not in self._cache:
+            if not path.isfile(url):
+                return None
+            with open(url, "rb") as f:
+                self._cache[url] = f.read()
+        return self.resolve_string(self._cache[url], context, base_url=url)
+
+
+def _xsl_parser():
+    parser = XMLParser()
+    parser.resolvers.add(_CachingResolver())
+    return parser
 
 
 class ModsParser(object):
     IDENTIFIER = "{http://www.openarchives.org/OAI/2.0/}identifier"
     MODS = "{http://www.loc.gov/mods/v3}mods"
     PARSED_XSL = parse(
-        path.join(path.dirname(path.abspath(__file__)), "../resources/mods_to_xjsonld.xsl")
+        path.join(path.dirname(path.abspath(__file__)), "../resources/mods_to_xjsonld.xsl"),
+        _xsl_parser(),
     )
     _convert = XSLT(PARSED_XSL)
     match = re.compile("&(?!(#\\d+|\\w+);)")

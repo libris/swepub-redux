@@ -2,6 +2,7 @@ import copy
 import unicodedata
 import re
 from collections import OrderedDict
+from functools import lru_cache
 import Levenshtein
 
 from pipeline.swepublog import logger as log
@@ -52,11 +53,14 @@ def equal_name_part(a, b):
         return True
     return False
 
+
+@lru_cache(maxsize=100_000)
+def _name_words(name):
+    return tuple(re.findall(r"\w+", mangle_contributor_for_comparison(name)))
+
 def probably_same_name(a, b):
-    a = mangle_contributor_for_comparison(a)
-    b = mangle_contributor_for_comparison(b)
-    name_words_a = re.findall(r"\w+", a)
-    name_words_b = re.findall(r"\w+", b)
+    name_words_a = _name_words(a)
+    name_words_b = _name_words(b)
     
     # Make sure a has fewer "words" than b, so that
     # "agata beata cristine" can match "agata beta" (we should only check for 2 matches in this case)
@@ -71,6 +75,7 @@ def probably_same_name(a, b):
         for word_b in name_words_b:
             if equal_name_part(word_a, word_b):
                 has_equal = True
+                break
         if not has_equal:
             return False
     return True
@@ -166,12 +171,13 @@ class PublicationMerger:
         Otherwise add candidate contributions
         """
         
+        master_contribs = master.contributions
         for candidate_contrib in list(candidate.contributions):
             candidate_contrib_name = candidate_contrib.agent_name
             if not candidate_contrib_name:
                 continue
             exists_in_master = False
-            for master_contrib in list(master.contributions):
+            for master_contrib in master_contribs:
                 master_contrib_name = master_contrib.agent_name
                 if not master_contrib_name:
                     continue
@@ -201,9 +207,8 @@ class PublicationMerger:
                 
             # If this contribution does _not_ exist in master (it is "new")
             if not exists_in_master:
-                tmp = list(master.contributions)
-                tmp.append(candidate_contrib)
-                master.contributions = tmp
+                master_contribs.append(candidate_contrib)
+                master.contributions = master_contribs
         
         return master
 

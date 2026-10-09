@@ -1,10 +1,10 @@
 from pipeline.util import update_at_path, make_event, unicode_translate, Enrichment
 
 
-def recover_unicode(body, field, cached_paths={}):
+def recover_unicode(body, field):
     translated = unicode_translate(field.value)
     if translated != field.value:
-        update_at_path(body, field.path, translated, cached_paths)
+        update_at_path(body, field.path, translated)
         field.events.append(
             make_event(
                 event_type="enrichment", code="unicode", initial_value=field.value, value=translated

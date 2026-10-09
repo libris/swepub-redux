@@ -1,5 +1,5 @@
 import time
-from multiprocessing import Pool
+from multiprocessing import get_context
 
 import orjson as json
 
@@ -120,26 +120,10 @@ def is_considered_similar_enough(a, b):
 
 
 # Are publications 'a' and 'b' similar enough to justify clustering them?
-# 'a' and 'b' are row IDs into the 'converted' table.
-def _is_close_enough(a_rowid, b_rowid):
-    with get_connection() as connection:
-        cursor = connection.cursor()
-        cursor.execute(
-            """
-        SELECT
-            data
-        FROM
-            converted
-        WHERE
-            rowid = ? OR rowid = ?;
-        """,
-            (a_rowid, b_rowid),
-        )
-        candidate_rows = cursor.fetchall()  # Will give exactly 2 rows, per definition
-        a = json.loads(candidate_rows[0][0])
-        b = json.loads(candidate_rows[1][0])
-
-        return is_considered_similar_enough(a, b)
+# 'a' and 'b' are row IDs into the 'converted' table, and docs maps row IDs to their data.
+def _is_close_enough(docs, a_rowid, b_rowid):
+    a_rowid, b_rowid = sorted((a_rowid, b_rowid), key=int)
+    return is_considered_similar_enough(docs[a_rowid], docs[b_rowid])
 
 
 # Generate clusters of publications, based on some shared piece of data
@@ -154,7 +138,7 @@ def _generate_clusters():
     batch = []
     tasks = []
 
-    with Pool(processes=16) as pool:
+    with get_context("fork").Pool(processes=16) as pool:
 
         with get_connection() as connection:
             cursor = connection.cursor()
@@ -179,7 +163,7 @@ def _generate_clusters():
 
                     if len(batch) >= 32:
                         while len(tasks) >= 32:
-                            time.sleep(1)
+                            time.sleep(0.01)
                             n = len(tasks)
                             i = n - 1
                             while i > -1:
@@ -199,7 +183,7 @@ def _generate_clusters():
                 tasks.append(pool.map_async(_check_candidate_groups, (batch,)))
             for task in tasks:
                 while not task.ready():
-                    time.sleep(1)
+                    time.sleep(0.01)
                 result = task.get()
                 write_detected_duplicate_pairs(result, inner_cursor, next_cluster_id)
                 next_cluster_id += len(result[0])
@@ -210,11 +194,21 @@ def _generate_clusters():
 
 def _check_candidate_groups(batch):
     pairs = []
-    for candidate_list in batch:
-        for a in candidate_list:
-            for b in candidate_list:
-                if a != b and _is_close_enough(a, b):
-                    pairs.append((a, b))
+    with get_connection() as connection:
+        cursor = connection.cursor()
+        for candidate_list in batch:
+            placeholders = ",".join("?" * len(candidate_list))
+            docs = {
+                str(rowid): json.loads(data)
+                for rowid, data in cursor.execute(
+                    f"SELECT rowid, data FROM converted WHERE rowid IN ({placeholders})",
+                    candidate_list,
+                )
+            }
+            for a in candidate_list:
+                for b in candidate_list:
+                    if a != b and _is_close_enough(docs, a, b):
+                        pairs.append((a, b))
     return pairs
 
 

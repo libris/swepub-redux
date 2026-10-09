@@ -1,30 +1,15 @@
-import unicodedata
-import sys
-
 from pipeline.util import update_at_path, make_event, Enrichment
+from pipeline.validators.doi import InvalidDoiCharacterTable
 
-# See DOI validator in validator service for more info on these.
-INVALID_DOI_UNICODE_CATEGORIES = {"Cc", "Cf", "Zl", "Zp", "Zs"}
-
-# List containing unicode code points as integers.
-INVALID_DOI_UNICODE = list(
-    (
-        ord(c)
-        for c in (chr(i) for i in range(sys.maxunicode))
-        if unicodedata.category(c) in INVALID_DOI_UNICODE_CATEGORIES
-    )
-)
-
-TRANSLATE_DICT = {character: None for character in INVALID_DOI_UNICODE}
-
-# Replace fraction slash with regular slash, as in UnicodeAsciiTranslator used in BaseEnricher.
-TRANSLATE_DICT[ord("\u2044")] = ord("/")
+# Remove the same characters as in the DOI validator, and replace fraction slash
+# with regular slash, as in UnicodeAsciiTranslator used in BaseEnricher.
+TRANSLATE_DICT = InvalidDoiCharacterTable({ord("\u2044"): ord("/")})
 
 DOI_START = "10."
 VALID_STARTS = (DOI_START, "https://doi.org/10.", "http://doi.org/10.")
 
 
-def recover_doi(body, field, cached_paths={}):
+def recover_doi(body, field):
     doi = field.value
     path = field.path
 
@@ -32,7 +17,7 @@ def recover_doi(body, field, cached_paths={}):
     translated = doi.translate(TRANSLATE_DICT)
     if translated != doi:
         doi = translated
-        update_at_path(body, path, doi, cached_paths)
+        update_at_path(body, path, doi)
         field.events.append(
             make_event(
                 event_type="enrichment",
@@ -52,7 +37,7 @@ def recover_doi(body, field, cached_paths={}):
         if hit != -1:
             if field.enrichment_status == Enrichment.ENRICHED:
                 initial = field.value
-            update_at_path(body, path, doi[hit:], cached_paths)
+            update_at_path(body, path, doi[hit:])
             field.events.append(
                 make_event(
                     event_type="enrichment",

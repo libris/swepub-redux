@@ -2,7 +2,7 @@
 import re
 import time
 from concurrent.futures import ProcessPoolExecutor, FIRST_COMPLETED, wait
-from multiprocessing import Lock, Manager
+from multiprocessing import Lock, Manager, get_context, set_forkserver_preload
 import sys
 from datetime import datetime, timezone
 import uuid
@@ -42,7 +42,7 @@ from pipeline.libris import generate_libris_dataset
 
 # To change log level, set SWEPUB_LOG_LEVEL environment variable to DEBUG, INFO, ..
 from pipeline.swepublog import logger as log
-from pipeline.util import chunker, get_common_json_paths, RandomisedRetry
+from pipeline.util import chunker, RandomisedRetry
 
 
 # TODO: Move configuration (some of which is shared with service/swepub.py) to a separate file
@@ -84,7 +84,15 @@ TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = [
 
 SWEPUB_USER_AGENT = getenv("SWEPUB_USER_AGENT", "https://github.com/libris")
 
-cached_paths = get_common_json_paths()
+set_forkserver_preload([
+    "pipeline.audit",
+    "pipeline.convert",
+    "pipeline.deduplicate",
+    "pipeline.merge",
+    "pipeline.validate",
+    "requests",
+])
+MP_CONTEXT = get_context("forkserver")
 
 
 # Wrap the harvest function just to easily log errors from subprocesses
@@ -165,6 +173,7 @@ def harvest(source):
             with ProcessPoolExecutor(
                 max_workers=4,
                 max_tasks_per_child=50,
+                mp_context=MP_CONTEXT,
                 initializer=init,
                 initargs=(
                     lock,
@@ -191,7 +200,6 @@ def harvest(source):
                                     source["code"],
                                     source_set.get("subset", ""),
                                     harvest_id,
-                                    cached_paths,
                                 )
                                 pending.add(executor.submit(func, batch))
                                 batch = []
@@ -206,7 +214,7 @@ def harvest(source):
                     num_failed += 1
                     raise e
                 func = partial(
-                    threaded_handle_harvested, source["code"], source_set.get("subset", ""), harvest_id, cached_paths
+                    threaded_handle_harvested, source["code"], source_set.get("subset", ""), harvest_id
                 )
                 pending.add(executor.submit(func, batch))
                 for f in pending:
@@ -274,7 +282,7 @@ def harvest(source):
                     """
                 INSERT INTO last_harvest(source, last_successful_harvest) VALUES (?, ?)
                 ON CONFLICT(source) DO UPDATE SET last_successful_harvest = ?;""",
-                    (source["code"], harvest_start, harvest_start),
+                    (source["code"], harvest_start.isoformat(" "), harvest_start.isoformat(" ")),
                 )
 
             cur.execute(
@@ -312,7 +320,7 @@ def harvest(source):
     return harvest_succeeded
 
 
-def threaded_handle_harvested(source, source_subset, harvest_id, cached_paths, batch):
+def threaded_handle_harvested(source, source_subset, harvest_id, batch):
     converted_rowids = []
     num_accepted = 0
     num_rejected = 0
@@ -322,7 +330,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, cached_paths, b
         adapter = requests.adapters.HTTPAdapter(max_retries=RandomisedRetry(total=4, backoff_factor=2))
         session.mount('http://', adapter)
         session.mount('https://', adapter)
-        with get_connection() as read_only_connection:
+        with get_connection() as read_only_connection, closing(get_connection()) as connection:
             read_only_cursor = read_only_connection.cursor()
             for record in batch:
                 xml = record.xml
@@ -332,7 +340,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, cached_paths, b
                     if accepted:
                         num_accepted += 1
                         converted = convert(xml)
-                        (field_events, record_info) = validate(converted, harvest_cache, session, source, cached_paths, read_only_cursor)
+                        (field_events, record_info) = validate(converted, harvest_cache, session, source, read_only_cursor)
                         (audited, audit_events) = audit(converted, harvest_cache, session)
                     elif not record.deleted:
                         num_rejected += 1
@@ -342,7 +350,7 @@ def threaded_handle_harvested(source, source_subset, harvest_id, cached_paths, b
 
                 lock.acquire()
                 try:
-                    with get_connection() as connection:
+                    with connection:
                         original_rowid, deleted_from_db = store_original(
                             record.oai_id,
                             record.deleted,
@@ -572,6 +580,7 @@ def _reprocess_affected_records(sources_to_process):
     with ProcessPoolExecutor(
         max_workers=max_workers,
         max_tasks_per_child=1,
+        mp_context=MP_CONTEXT,
         initializer=init,
         initargs=(
             lock,
@@ -608,7 +617,7 @@ def _handle_reprocess_affected_records(source):
                 xml = cursor.execute("SELECT data FROM original WHERE oai_id = ?", [oai_id]).fetchone()["data"]
                 original_converted = cursor.execute("SELECT id, original_id, source FROM converted WHERE oai_id = ?", [oai_id]).fetchone()
                 converted = convert(xml)
-                (field_events, record_info) = validate(converted, harvest_cache, session, original_converted["source"], cached_paths, inner_cursor)
+                (field_events, record_info) = validate(converted, harvest_cache, session, original_converted["source"], inner_cursor)
                 (audited, audit_events) = audit(converted, harvest_cache, session)
 
                 lock.acquire()
@@ -632,7 +641,7 @@ def init(l, c, a, lg, inc):
     global log
     global incremental
     lock = l
-    harvest_cache = c
+    harvest_cache = dict(c.items())
     added_converted_rowids = a
     log = lg
     incremental = inc
@@ -845,6 +854,7 @@ if __name__ == "__main__":
         with ProcessPoolExecutor(
             max_workers=max_workers,
             max_tasks_per_child=1,
+            mp_context=MP_CONTEXT,
             initializer=init,
             initargs=(
                 lock,
