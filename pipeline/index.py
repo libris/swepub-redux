@@ -5,6 +5,7 @@ from pipeline.bibframesource import BibframeSource
 from pipeline.storage import get_connection, checkpoint, SQL_SCHEMA_FILE
 
 OUTPUT_TYPE_PREFIX = "https://id.kb.se/term/swepub/output/"
+SEARCH_FIELDS = ["familyName", "givenName", "localId", "localIdBy", "ORCID", "classifications"]
 
 
 def _search_table_indexes():
@@ -32,7 +33,7 @@ def generate_search_tables():
             for row in second_cursor.execute(f"SELECT id, cluster_id, data FROM finalized LIMIT {limit} OFFSET {limit*n}"):
                 finalized_id = row[0]
                 cluster_id = row[1]
-                doc = BibframeSource(json.loads(row[2]))
+                doc = BibframeSource(json.loads(row[2]), SEARCH_FIELDS)
 
                 third_cursor.execute(
                     """
