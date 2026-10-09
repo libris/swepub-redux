@@ -18,7 +18,6 @@ def generate_search_tables():
         second_cursor = connection.cursor()
         third_cursor = connection.cursor()
         counter = 0
-        total = cursor.execute("SELECT COUNT(*) FROM converted WHERE deleted = 0").fetchone()[0]
         limit = 25000
 
         # We have lots of indexes which makes insertion a lot slower, so we drop them now and recreate them afterwards.
@@ -27,11 +26,14 @@ def generate_search_tables():
             cursor.execute(f"DROP INDEX IF EXISTS {name}")
         connection.commit()
 
-        for n in range(0, total//limit + 1):
+        last_id = 0
+        while True:
             # Necessary for WAL file not to grow too big
             checkpoint()
-            for row in second_cursor.execute(f"SELECT id, cluster_id, data FROM finalized LIMIT {limit} OFFSET {limit*n}"):
+            page_start_id = last_id
+            for row in second_cursor.execute("SELECT id, cluster_id, data FROM finalized WHERE id > ? ORDER BY id LIMIT ?", (last_id, limit),):
                 finalized_id = row[0]
+                last_id = finalized_id
                 cluster_id = row[1]
                 doc = BibframeSource(json.loads(row[2]), SEARCH_FIELDS)
 
@@ -116,6 +118,8 @@ def generate_search_tables():
                 counter += 1
                 if counter % 5000 == 0:
                     connection.commit()
+            if last_id == page_start_id:
+                break
         connection.commit()
 
         for name, definition in indexes:
