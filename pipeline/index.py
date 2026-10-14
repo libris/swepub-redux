@@ -29,9 +29,11 @@ def generate_search_tables():
         last_id = 0
         while True:
             # Necessary for WAL file not to grow too big
+            connection.commit()
             checkpoint()
-            page_start_id = last_id
+            rows_in_page = 0
             for row in second_cursor.execute("SELECT id, cluster_id, data FROM finalized WHERE id > ? ORDER BY id LIMIT ?", (last_id, limit),):
+                rows_in_page += 1
                 finalized_id = row[0]
                 last_id = finalized_id
                 cluster_id = row[1]
@@ -118,7 +120,7 @@ def generate_search_tables():
                 counter += 1
                 if counter % 5000 == 0:
                     connection.commit()
-            if last_id == page_start_id:
+            if rows_in_page < limit:
                 break
         connection.commit()
 
