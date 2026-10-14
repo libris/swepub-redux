@@ -272,7 +272,7 @@ def test_has_series_from_publication(master, candidate1_same_title_and_same_doi,
 def test_electronic_locator(master, candidate1_same_title_and_same_doi):
     assert len(master.electronic_locators) == 1
     electronic_locator_master = master.electronic_locators[0]
-    assert electronic_locator_master.type == 'Resource'
+    assert electronic_locator_master.type == 'Document'
     assert electronic_locator_master.uri == 'http://electronic_locator_1'
     assert electronic_locator_master.notes == [{"@type": "Note", "label": "free"}]
     electronic_locator_candidate1 = candidate1_same_title_and_same_doi.electronic_locators[0]
@@ -282,7 +282,7 @@ def test_electronic_locator(master, candidate1_same_title_and_same_doi):
 def test_set_electronic_locator(master, candidate4_same_title_summary_pub_date_but_different_ids):
     master.electronic_locators = candidate4_same_title_summary_pub_date_but_different_ids.electronic_locators
     electronic_locator_master = master.electronic_locators[0]
-    assert electronic_locator_master.type == 'Resource'
+    assert electronic_locator_master.type == 'Document'
     assert electronic_locator_master.uri == 'http://electronic_locator_3'
     assert electronic_locator_master.notes == [{"@type": "Note", "label": "free"},
                                                {"@type": "Note", "noteType": "URL usage", "label": "primary"}]
