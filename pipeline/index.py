@@ -1,10 +1,16 @@
+import re
 import orjson as json
 
 from pipeline.bibframesource import BibframeSource
-from pipeline.storage import get_connection, checkpoint
+from pipeline.storage import get_connection, checkpoint, SQL_SCHEMA_FILE
 
 OUTPUT_TYPE_PREFIX = "https://id.kb.se/term/swepub/output/"
+SEARCH_FIELDS = ["familyName", "givenName", "localId", "localIdBy", "ORCID", "classifications"]
 
+
+def _search_table_indexes():
+    with open(SQL_SCHEMA_FILE) as f:
+        return re.findall(r"^CREATE INDEX (\w+) ON (search_\w+.*);$", f.read(), re.MULTILINE)
 
 def generate_search_tables():
     with get_connection() as connection:
@@ -12,16 +18,26 @@ def generate_search_tables():
         second_cursor = connection.cursor()
         third_cursor = connection.cursor()
         counter = 0
-        total = cursor.execute("SELECT COUNT(*) FROM converted WHERE deleted = 0").fetchone()[0]
         limit = 25000
 
-        for n in range(0, total//limit + 1):
+        # We have lots of indexes which makes insertion a lot slower, so we drop them now and recreate them afterwards.
+        indexes = _search_table_indexes()
+        for name, _ in indexes:
+            cursor.execute(f"DROP INDEX IF EXISTS {name}")
+        connection.commit()
+
+        last_id = 0
+        while True:
             # Necessary for WAL file not to grow too big
+            connection.commit()
             checkpoint()
-            for row in second_cursor.execute(f"SELECT id, cluster_id, data FROM finalized LIMIT {limit} OFFSET {limit*n}"):
+            rows_in_page = 0
+            for row in second_cursor.execute("SELECT id, cluster_id, data FROM finalized WHERE id > ? ORDER BY id LIMIT ?", (last_id, limit),):
+                rows_in_page += 1
                 finalized_id = row[0]
+                last_id = finalized_id
                 cluster_id = row[1]
-                doc = BibframeSource(json.loads(row[2]))
+                doc = BibframeSource(json.loads(row[2]), SEARCH_FIELDS)
 
                 third_cursor.execute(
                     """
@@ -104,6 +120,12 @@ def generate_search_tables():
                 counter += 1
                 if counter % 5000 == 0:
                     connection.commit()
+            if rows_in_page < limit:
+                break
+        connection.commit()
+
+        for name, definition in indexes:
+            cursor.execute(f"CREATE INDEX IF NOT EXISTS {name} ON {definition}")
         connection.commit()
 
 

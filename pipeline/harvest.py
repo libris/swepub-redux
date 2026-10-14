@@ -67,8 +67,6 @@ KNOWN_DOI_FILE = path.join(FILE_PATH, "../resources/known_valid_doi.txt")
 
 DEFAULT_SWEPUB_SOURCE_FILE = path.join(FILE_PATH, "../resources/sources.json")
 TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = [
-    "cluster",
-    "finalized",
     "search_single",
     "search_doi",
     "search_category",
@@ -76,6 +74,8 @@ TABLES_DELETED_ON_INCREMENTAL_OR_PURGE = [
     "search_creator",
     "search_org",
     "search_fulltext",
+    "cluster",
+    "finalized",
     "stats_field_events",
     "stats_audit_events",
     "stats_converted",
