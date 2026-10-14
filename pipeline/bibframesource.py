@@ -481,7 +481,7 @@ class BibframeSource:
                         return False
 
             if (
-                electronic_locator.get("@type", "") == "Resource"
+                electronic_locator.get("@type", "") == "Document"
                 and len(electronic_locator.get("uri", "")) > 0
             ):
                 for note in electronic_locator.get("hasNote", []):
@@ -551,7 +551,7 @@ class BibframeSource:
         electronic_locators = self.bibframe_master.get("electronicLocator", [])
         for electronic_locator in electronic_locators:
             if (
-                electronic_locator.get("@type", "") == "Resource"
+                electronic_locator.get("@type", "") == "Document"
                 and len(electronic_locator.get("uri", "")) > 0
             ):
                 return electronic_locator.get("uri")

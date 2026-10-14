@@ -515,19 +515,19 @@ def test_parser(parser):
         "editionStatement": "2nd edition",
         "electronicLocator": [
             {
-                '@type': 'Resource',
+                '@type': 'Document',
                 'uri': 'http://hh.divaportal.org/smash/get/diva2:239322/FULLTEXT01',
                 'label': 'FULLTEXT',
                 'hasNote': [{'@type': 'Note', 'label': 'free/2015-01-01'}]
             },
             {
-                '@type': 'Resource',
+                '@type': 'Document',
                 'uri': 'http://hh.divaportal.org/smash/get/diva2:239322/FULLTEXT02',
                 'label': 'FULLTEXT',
                 'hasNote': [{'@type': 'Note', 'label': 'primary', 'noteType': 'URL usage'}]
             },
             {
-                '@type': 'Resource',
+                '@type': 'Document',
                 'uri': 'http://hh.diva-portal.org/smash/get/diva2:239322/FULLTEXT01',
                 'label': 'FULLTEXT',
                 'hasNote': [
@@ -2200,7 +2200,7 @@ def test_primary_electronic_locator_is_extracted(parser):
     """)
     expected = [
         {
-            '@type': 'Resource',
+            '@type': 'Document',
             'uri': 'http://hh.divaportal.org/smash/get/diva2:239322/FULLTEXT01',
             'label': 'FULLTEXT',
             'hasNote': [
@@ -2226,13 +2226,13 @@ def test_multiple_locations_are_extracted_as_resource_locator(parser):
     """)
     expected = [
         {
-            '@type': 'Resource',
+            '@type': 'Document',
             'uri': 'http://hh.divaportal.org/smash/get/diva2:239322/FULLTEXT01',
             'label': 'FULLTEXT1',
             'hasNote': [{'@type': 'Note', 'label': 'free/2015-01-01'}]
         },
         {
-            '@type': 'Resource',
+            '@type': 'Document',
             'uri': 'http://hh.divaportal.org/smash/get/diva2:239322/FULLTEXT02',
             'label': 'FULLTEXT2',
             'hasNote': [{'@type': 'Note', 'noteType': 'URL usage', 'label': 'primary'}]
@@ -2251,7 +2251,7 @@ def test_electronic_locator_is_extracted_without_notes(parser):
     """)
     expected = [
         {
-            '@type': 'Resource',
+            '@type': 'Document',
             'uri': 'http://hh.divaportal.org/smash/get/diva2:239322/FULLTEXT01'
         }
     ]

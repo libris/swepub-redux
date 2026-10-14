@@ -466,7 +466,7 @@
                   <array key="electronicLocator">
                     <xsl:for-each select="mods:location/*">
                       <dict>
-                        <string key="@type">Resource</string>
+                        <string key="@type">Document</string>
                         <string key="uri"><xsl:value-of select="text()"/></string>
                         <xsl:if test="@displayLabel != ''">
                             <string key="label"><xsl:value-of select="@displayLabel"/></string>

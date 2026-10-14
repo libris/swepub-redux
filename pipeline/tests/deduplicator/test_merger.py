@@ -414,7 +414,7 @@ def test_merge_electronic_locator_same_locator(master, candidate1_same_title_and
     merged_master = merger._merge_electronic_locators(master, candidate1_same_title_and_same_doi)
     assert len(merged_master.electronic_locators) == 1
     electronic_locator = merged_master.electronic_locators[0]
-    assert electronic_locator.type == 'Resource'
+    assert electronic_locator.type == 'Document'
     assert electronic_locator.uri == 'http://electronic_locator_1'
     assert electronic_locator.notes == [{"@type": "Note", "label": "free"},
                                         {"@type": "Note", "noteType": "URL usage", "label": "primary"}]
@@ -424,11 +424,11 @@ def test_merge_electronic_locator_different_locator(master, candidate4_same_titl
     merged_master = merger._merge_electronic_locators(master, candidate4_same_title_summary_pub_date_but_different_ids)
     assert len(merged_master.electronic_locators) == 2
     electronic_locator_master = merged_master.electronic_locators[0]
-    assert electronic_locator_master.type == 'Resource'
+    assert electronic_locator_master.type == 'Document'
     assert electronic_locator_master.uri == 'http://electronic_locator_1'
     assert electronic_locator_master.notes == [{"@type": "Note", "label": "free"}]
     electronic_locator_candidate4 = merged_master.electronic_locators[1]
-    assert electronic_locator_candidate4.type == 'Resource'
+    assert electronic_locator_candidate4.type == 'Document'
     assert electronic_locator_candidate4.uri == 'http://electronic_locator_3'
     assert electronic_locator_candidate4.notes == [{"@type": "Note", "label": "free"},
                                                    {"@type": "Note", "noteType": "URL usage", "label": "primary"}]

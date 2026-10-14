@@ -52,7 +52,7 @@ HAS_SERIES = """
 
 ELECTRONIC_LOCATOR = """
 {{
-    "@type": "Resource",
+    "@type": "Document",
     "uri": "{}",
     "hasNote": [{}]
 }}
