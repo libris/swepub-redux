@@ -1311,7 +1311,7 @@
                 </dict>
                 <array key="role">
                     <xsl:for-each select="mods:role/mods:roleTerm">
-                        <dict><string key="@id">http://id.kb.se/relator/<xsl:value-of select="."/></string></dict>
+                        <dict><string key="@id">http://id.loc.gov/vocabulary/relators/<xsl:value-of select="."/></string></dict>
                     </xsl:for-each>
                 </array>
                 <xsl:if test="./mods:affiliation">
