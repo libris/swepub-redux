@@ -161,7 +161,10 @@
             <xsl:if test="mods:physicalDescription/mods:extent">
                 <dict key="extent">
                     <string key="@type">Extent</string>
-                    <string key="label"><xsl:value-of select="mods:physicalDescription/mods:extent"/></string>
+                    <dict key="labelByLang">
+                        <string key="sv"><xsl:value-of select="mods:physicalDescription/mods:extent"/> sidor</string>
+                        <string key="en"><xsl:value-of select="mods:physicalDescription/mods:extent"/> pages</string>
+                    </dict>
                 </dict>
             </xsl:if>
 
@@ -883,6 +886,7 @@
                 <xsl:call-template name="relatedItemTitle"/>
             </xsl:if>
         </dict>
+
         <xsl:choose>
             <xsl:when test="mods:genre = 'dataset'">
                 <string key="@type">Instance</string>
