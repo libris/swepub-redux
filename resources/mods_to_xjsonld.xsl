@@ -947,7 +947,31 @@
                     </dict>
                 </xsl:for-each>
             </array>
+        </xsl:if>
+
+        <xsl:variable name="vol"   select="normalize-space(mods:part/mods:detail[@level='1' or @type='volume']/mods:number)"/>
+        <xsl:variable name="issue" select="normalize-space(mods:part/mods:detail[@level='2' or @type='issue']/mods:number)"/>
+        <xsl:variable name="artNo" select="normalize-space(mods:part/mods:detail[@type='artNo']/mods:number)"/>
+        <xsl:variable name="start" select="normalize-space(mods:part/mods:extent[@unit='page' or not(@unit)]/mods:start)"/>
+        <xsl:variable name="end"   select="normalize-space(mods:part/mods:extent[@unit='page' or not(@unit)]/mods:end)"/>
+
+        <xsl:if test="$vol != ''">
+            <string key="_volumeNumber"><xsl:value-of select="$vol"/></string>
+        </xsl:if>
+        <xsl:if test="$issue != ''">
+            <string key="_issueNumber"><xsl:value-of select="$issue"/></string>
+        </xsl:if>
+        <xsl:if test="artNo != ''">
+            <string key="_articleNumber"><xsl:value-of select="$artNo"/></string>
+        </xsl:if>
+        <xsl:if test="$start != '' and $start != '-'">
+            <string key="_pages">
+                <xsl:value-of select="$start"/>
+            <xsl:if test="$end != '' and $end != '-'">
+                <xsl:value-of select="concat('-', $end)"/>
             </xsl:if>
+            </string>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template name="relatedItemTitle">
