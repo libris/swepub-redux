@@ -632,6 +632,7 @@ def test_publication_with_series_and_host(parser):
 
     assert actual['isPartOf'] == expected_is_part_of
     assert actual['isPartOf'][0]['seriesMembership'] == expected_series
+    assert actual['part'] == ['5']
 
 
 def test_series_title_and_part_number_are_extracted(parser):

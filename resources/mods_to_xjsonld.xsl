@@ -19,15 +19,16 @@
     </xsl:template>
 
     <xsl:template match="mods:mods">
-        <!-- Classify relatedItems: hosts end up in isPartOf, relatedTo or as funding contributions -->
-        <xsl:variable name="is_part_of_hosts" select="mods:relatedItem[@type = 'host'][not(mods:genre = 'dataset')][not(mods:name/mods:role/mods:roleTerm = 'fnd' and not(mods:genre))]"/>
-        <xsl:variable name="related_to_hosts" select="mods:relatedItem[@type = 'host'][mods:genre = 'dataset']"/>
-        <xsl:variable name="funding_hosts" select="mods:relatedItem[@type = 'host'][not(mods:genre)][mods:name/mods:role/mods:roleTerm = 'fnd']"/>
+        <!-- classify relatedItems: some type = host are actually not hosts but end up as relatedTo or funding contributions -->
+        <xsl:variable name="is_part_of" select="mods:relatedItem[@type = 'host'][not(mods:genre = 'dataset')][not(mods:name/mods:role/mods:roleTerm = 'fnd' and not(mods:genre))]"/>
+        <xsl:variable name="related_to" select="mods:relatedItem[@type = 'host'][mods:genre = 'dataset']"/>
+        <xsl:variable name="funding_only" select="mods:relatedItem[@type = 'host'][not(mods:genre)][mods:name/mods:role/mods:roleTerm = 'fnd']"/>
         <xsl:variable name="series" select="mods:relatedItem[@type = 'series']"/>
         <xsl:variable name="constituents" select="mods:relatedItem[@type = 'constituent']"/>
+
         <dict>
             <string key="@context">https://id.kb.se/context.jsonld</string>
-            <string key="@id"></string>
+            <string key="@id"/>
             <xsl:choose>
                 <xsl:when test="mods:physicalDescription/mods:form">
                     <xsl:apply-templates select="mods:physicalDescription/mods:form" mode="instance-type"/>
@@ -93,7 +94,7 @@
                 </xsl:if>
                 <array key="contribution">
                     <xsl:call-template name="names"/>
-                     <xsl:for-each select="$funding_hosts">
+                     <xsl:for-each select="$funding_only">
                         <xsl:call-template name="names"/>
                     </xsl:for-each>
                 </array>
@@ -162,7 +163,9 @@
                 <xsl:apply-templates select="mods:titleInfo"/>
             </array>
             
-            <xsl:call-template name="Part"/>
+            <xsl:call-template name="part">
+                <xsl:with-param name="hosts" select="$is_part_of"/>
+            </xsl:call-template>
             
             <xsl:if test="mods:physicalDescription/mods:extent">
                 <dict key="extent">
@@ -173,9 +176,9 @@
 
             <xsl:call-template name="identifiers"/>
 
-            <xsl:if test="$is_part_of_hosts">
+            <xsl:if test="$is_part_of">
                 <array key="isPartOf">
-                    <xsl:for-each select="$is_part_of_hosts">
+                    <xsl:for-each select="$is_part_of">
                         <dict>
                             <xsl:call-template name="relatedItem">
                                 <xsl:with-param name="relatedItem" select="." />
@@ -191,15 +194,15 @@
             </xsl:if>
 
             <!-- With no hosting publication, series memberships go directly on the publication -->
-            <xsl:if test="$series and not($is_part_of_hosts)">
+            <xsl:if test="$series and not($is_part_of)">
                 <xsl:call-template name="seriesMembership">
                     <xsl:with-param name="series" select="$series"/>
                 </xsl:call-template>
             </xsl:if>
 
-            <xsl:if test="$related_to_hosts">
+            <xsl:if test="$related_to">
                 <array key="relatedTo">
-                    <xsl:for-each select="$related_to_hosts">
+                    <xsl:for-each select="$related_to">
                         <dict>
                             <xsl:call-template name="relatedItem">
                                 <xsl:with-param name="relatedItem" select="." />
@@ -1145,17 +1148,21 @@
         </dict>
     </xsl:template>
 
-    <xsl:template name="Part">
-        <xsl:variable name="vol"   select="normalize-space(mods:relatedItem/mods:part/mods:detail[@level='1' or @type='volume']/mods:number)"/>
-        <xsl:variable name="issue" select="normalize-space(mods:relatedItem/mods:part/mods:detail[@level='2' or @type='issue']/mods:number)"/>
-        <xsl:variable name="start" select="normalize-space(mods:relatedItem/mods:part/mods:extent[@unit='page' or not(@unit)]/mods:start)"/>
-        <xsl:variable name="end"   select="normalize-space(mods:relatedItem/mods:part/mods:extent[@unit='page' or not(@unit)]/mods:end)"/>
-        <xsl:if test="$vol != '' or normalize-space(mods:relatedItem/mods:part/mods:text) != ''">
-            <array key="part"> 
+    <xsl:template name="part">
+        <xsl:param name="hosts"/>
+        <!-- Only use position information from the first relatedItem host -->
+        <xsl:variable name="host" select="$hosts[1]"/>
+        <xsl:variable name="vol"   select="normalize-space($host/mods:part/mods:detail[@level='1' or @type='volume']/mods:number)"/>
+        <xsl:variable name="issue" select="normalize-space($host/mods:part/mods:detail[@level='2' or @type='issue']/mods:number)"/>
+        <xsl:variable name="start" select="normalize-space($host/mods:part/mods:extent[@unit='page' or not(@unit)]/mods:start)"/>
+        <xsl:variable name="end"   select="normalize-space($host/mods:part/mods:extent[@unit='page' or not(@unit)]/mods:end)"/>
+        <xsl:variable name="text"  select="normalize-space($host/mods:part/mods:text)"/>
+        <xsl:if test="$vol != '' or $text != ''">
+            <array key="part">
                 <string>
                     <xsl:choose>
-                        <xsl:when test="normalize-space(mods:relatedItem/mods:part/mods:text) != ''">
-                            <xsl:value-of select="normalize-space(mods:relatedItem/mods:part/mods:text)"/>
+                        <xsl:when test="$text != ''">
+                            <xsl:value-of select="$text"/>
                         </xsl:when>
                         <xsl:otherwise>
                             <xsl:value-of select="$vol"/>
@@ -1172,7 +1179,7 @@
                     </xsl:if>
                 </string>
             </array>
-        </xsl:if>       
+        </xsl:if>
     </xsl:template>
 
     <xsl:template name="names">
