@@ -197,6 +197,17 @@ def test_parser(parser):
         "@type": "PhysicalResource",
         "category": [
             {'@id': 'https://id.kb.se/term/saobf/Print'},
+            {'@id': 'https://id.kb.se/term/saobf/ComponentPart'},
+        ],
+        "hasTitle": [
+            {
+                "@type": "Title",
+                "mainTitle": "\"We stand here as sellers and buyers in relation to each other\"",
+                "subtitle": "on work, culture and consciousness among Swedish typographers in the late 19th and early 20th centuries"
+            }
+        ],
+        "part": [
+            "19:(3), sidorna 201-221"
         ],
         "instanceOf": {
             "@type": "Monograph",
@@ -212,13 +223,6 @@ def test_parser(parser):
                     'code': 'eng',
                     'langCode': 'eng',
                     'source': {'@type': 'Source', 'code': 'iso639-2b'}
-                }
-            ],
-            "hasTitle": [
-                {
-                    "@type": "Title",
-                    "mainTitle": "\"We stand here as sellers and buyers in relation to each other\"",
-                    "subtitle": "on work, culture and consciousness among Swedish typographers in the late 19th and early 20th centuries"
                 }
             ],
             'summary': [{'@type': 'Summary', 'label': 'Awesome abstract'}],
@@ -355,44 +359,66 @@ def test_parser(parser):
         },
         "isPartOf": [
             {
-                "@type": "Integrating",
-                "category": [
-                    {"@id": "https://id.kb.se/term/rda/ComputerDataset"}
-                ],
+                "instanceOf": {"@type": "Work"},
+                "@type": "Instance",
                 "hasTitle": [
                     {
                         "@type": "Title",
-                        "mainTitle": "Transfer of bacteriophages between the fingers of volunteers and water or saliva"
-                    }
-                ],
-                "identifiedBy": [
-                    {
-                        "@type": "DOI",
-                        "value": "10.25678/000099"
-                    }
-                ]
-            },
-            {
-                "@type": 'Work',
-                "hasTitle": [
-                    {
-                        "@type": "Title",
-                        'mainTitle': "Scandinavian Journal of History",
-                        'issueNumber': '3',
-                        'volumeNumber': '19'
+                        "mainTitle": "Scandinavian Journal of History"
                     }
                 ],
                 "identifiedBy": [
                     {"@type": "ISSN", "value": "0346-8755"},
-                    {'@type': 'ISSN', 'value': '1502-7716'}
+                    {"@type": "ISSN", "value": "1502-7716"}
                 ],
-                'hasInstance': {
-                    '@type': 'Instance',
-                    'extent': [{'@type': 'Extent', 'label': '201-221'}]
-                }
+                "_volumeNumber": "19",
+                "_issueNumber": "3",
+                "_pages": "201-221"
             },
             {
-                "@type": "Work",
+                "instanceOf": {
+                    "@type": "Work",
+                    "contribution": [
+                        {
+                            "@type": "Contribution",
+                            "agent": {
+                                "@type": "Organization",
+                                "name": "Swedish Research Council",
+                                "nameByLang": {
+                                    "swe": "Vetenskapsrådet"
+                                },
+                                "identifiedBy": [
+                                    {
+                                        "@type": "ISNI",
+                                        "value": "0000 0001 1504 010X"
+                                    },
+                                    {
+                                        "@type": "FundRef",
+                                        "value": "fundref",
+                                    },
+                                    {
+                                        "@type": "GRID",
+                                        "value": "grid",
+                                    },
+                                    {
+                                    "@type": "Ringgold",
+                                    "value": "ringgold"
+                                    },
+                                    {
+                                        "@type": "URI",
+                                        "value": "https://example.com"
+                                    }
+                                ]
+                            },
+                            "role": [
+                                {
+                                    "@id": "http://id.loc.gov/vocabulary/relators/fnd"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "@type": "Instance",
                 "category": [
                     {
                         "@id": "https://id.kb.se/term/swepub/project"
@@ -434,49 +460,31 @@ def test_parser(parser):
                         }
                     }
                 ],
-                "contribution": [
-                    {
-                        "@type": "Contribution",
-                        "agent": {
-                            "@type": "Organization",
-                            "name": "Swedish Research Council",
-                            "nameByLang": {
-                                "swe": "Vetenskapsrådet"
-                            },
-                            "identifiedBy": [
-                                {
-                                    "@type": "ISNI",
-                                    "value": "0000 0001 1504 010X"
-                                },
-                                {
-                                    "@type": "FundRef",
-                                    "value": "fundref",
-                                },
-                                {
-                                    "@type": "GRID",
-                                    "value": "grid"
-                                },
-                                {
-                                    "@type": "Ringgold",
-                                    "value": "ringgold"
-                                },
-                                {
-                                    "@type": "URI",
-                                    "value": "https://example.com"
-                                }
-                            ]
-                        },
-                        "role": [
-                            {
-                                "@id": "http://id.loc.gov/vocabulary/relators/fnd"
-                            }
-                        ]
-                    }
-                ],
                 "hasNote": [
                     {
                         "@type": "SFO",
                         "label": "E-vetenskap"
+                    }
+                ]
+            }
+        ],
+        "relatedTo": [
+            {
+                "instanceOf": {"@type": "Work"},
+                "@type": "Instance",
+                "category": [
+                    {"@id": "https://id.kb.se/term/rda/ComputerDataset"}
+                ],
+                "hasTitle": [
+                    {
+                        "@type": "Title",
+                        "mainTitle": "Transfer of bacteriophages between the fingers of volunteers and water or saliva"
+                    }
+                ],
+                "identifiedBy": [
+                    {
+                        "@type": "DOI",
+                        "value": "10.25678/000099"
                     }
                 ]
             }
@@ -587,26 +595,44 @@ def test_publication_with_series_and_host(parser):
     raw_xml = MODS("""
       <relatedItem type="series">
         <titleInfo><title>ISKO</title></titleInfo>
-        <part><detail type="volume">3</detail></part>
+        <part><detail type="volume"><number>3</number></detail></part>
       </relatedItem>
       <relatedItem type="host">
         <titleInfo><title>BOSE</title></titleInfo>
-        <part><detail type="volume">5</detail></part>
+        <part><detail type="volume"><number>5</number></detail></part>
       </relatedItem>
     """)
 
-    expected_has_series = [
-        {'@type': 'Work', 'hasTitle': [{'@type': 'Title', 'mainTitle': 'ISKO', 'volumeNumber': '3'}]}
-    ]
+    expected_series = [{
+        '@type': 'SeriesMembership',
+        'inSeries': {
+            '@type': 'Instance',
+            'instanceOf': {'@type': 'Work'},
+            'hasTitle': [{'@type': 'Title', 'mainTitle': 'ISKO'}],
+            '_volumeNumber': '3'
+        }
+    }]
 
     expected_is_part_of = [
-        {'@type': 'Work', 'hasTitle': [{'@type': 'Title', 'mainTitle': 'BOSE', 'volumeNumber': '5'}],
-         'hasSeries': expected_has_series}
+        {'@type': 'Instance',
+         'hasTitle': [{'@type': 'Title', 'mainTitle': 'BOSE'}],
+         'instanceOf': {'@type': 'Work'},
+         '_volumeNumber': '5',
+         'seriesMembership': [{
+        '@type': 'SeriesMembership',
+        'inSeries': {
+            '@type': 'Instance',
+            'instanceOf': {'@type': 'Work'},
+            'hasTitle': [{'@type': 'Title', 'mainTitle': 'ISKO'}],
+            '_volumeNumber': '3'
+        }
+    }]}
     ]
-
     actual = parser.parse_mods(raw_xml)
+
     assert actual['isPartOf'] == expected_is_part_of
-    assert actual['isPartOf'][0]['hasSeries'] == expected_has_series
+    assert actual['isPartOf'][0]['seriesMembership'] == expected_series
+    assert actual['part'] == ['5']
 
 
 def test_series_title_and_part_number_are_extracted(parser):
@@ -636,19 +662,19 @@ def test_series_title_and_part_number_are_extracted(parser):
         {'@type': 'Title', 'mainTitle': 'Some Title', 'partNumber': '3'},
     ]
 
-    assert len(parser.parse_mods(raw_xml)['hasSeries']) == 1
-    assert expected == parser.parse_mods(raw_xml)['hasSeries'][0]['hasTitle']
+    assert len(parser.parse_mods(raw_xml)['seriesMembership']) == 1
+    assert expected == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['hasTitle']
 
 
 def test_series_volume_number_is_extracted(parser):
     raw_xml = MODS("""
       <relatedItem type="series">
         <titleInfo><title>.</title></titleInfo>
-        <part><detail type="volume">1337</detail></part>
+        <part><detail type="volume"><number>1337</number></detail></part>
       </relatedItem>
     """)
 
-    assert '1337' == parser.parse_mods(raw_xml)['hasSeries'][0]['hasTitle'][0]['volumeNumber']
+    assert '1337' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['_volumeNumber']
 
 
 def test_series_part_number_is_extracted(parser):
@@ -658,7 +684,7 @@ def test_series_part_number_is_extracted(parser):
       </relatedItem>
     """)
 
-    assert '3' == parser.parse_mods(raw_xml)['hasSeries'][0]['hasTitle'][0]['partNumber']
+    assert '3' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['hasTitle'][0]['partNumber']
 
 
 def test_series_issue_number_identifier_is_extracted_as_part_number(parser):
@@ -669,7 +695,7 @@ def test_series_issue_number_identifier_is_extracted_as_part_number(parser):
       </relatedItem>
     """)
 
-    assert '4' == parser.parse_mods(raw_xml)['hasSeries'][0]['hasTitle'][0]['partNumber']
+    assert '4' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['hasTitle'][0]['partNumber']
 
 
 def test_series_prefer_mods_part_number_element(parser):
@@ -680,7 +706,7 @@ def test_series_prefer_mods_part_number_element(parser):
       </relatedItem>
     """)
 
-    assert '3' == parser.parse_mods(raw_xml)['hasSeries'][0]['hasTitle'][0]['partNumber']
+    assert '3' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['hasTitle'][0]['partNumber']
 
 
 def test_series_exclude_id_type_issue_number_1(parser):
@@ -692,7 +718,7 @@ def test_series_exclude_id_type_issue_number_1(parser):
     """)
     expected_identified_by = []
 
-    assert expected_identified_by == parser.parse_mods(raw_xml)['hasSeries'][0]['identifiedBy']
+    assert expected_identified_by == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['identifiedBy']
 
 
 def test_series_exclude_id_type_issue_number_2(parser):
@@ -719,7 +745,7 @@ def test_series_exclude_id_type_issue_number_2(parser):
         }
     ]
 
-    assert expected_identified_by == parser.parse_mods(raw_xml)['hasSeries'][0]['identifiedBy']
+    assert expected_identified_by == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['identifiedBy']
 
 
 def test_series_no_part_number(parser):
@@ -729,40 +755,40 @@ def test_series_no_part_number(parser):
       </relatedItem>
     """)
 
-    assert 'partNumber' not in parser.parse_mods(raw_xml)['hasSeries'][0]['hasTitle'][0]
+    assert 'partNumber' not in parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['hasTitle'][0]
 
 
 def test_host_volume_number_is_extracted(parser):
     raw_xml = MODS("""
       <relatedItem type="host">
         <titleInfo><title>.</title></titleInfo>
-        <part><detail type="volume">1337</detail></part>
+        <part><detail type="volume"><number>1337</number></detail></part>
       </relatedItem>
     """)
 
-    assert '1337' == parser.parse_mods(raw_xml)['isPartOf'][0]['hasTitle'][0]['volumeNumber']
+    assert '1337' == parser.parse_mods(raw_xml)['isPartOf'][0]['_volumeNumber']
 
 
 def test_series_issue_number_is_extracted(parser):
     raw_xml = MODS("""
       <relatedItem type="series">
         <titleInfo><title>.</title></titleInfo>
-        <part><detail type="issue">1337</detail></part>
+        <part><detail type="issue"><number>1337</number></detail></part>
       </relatedItem>
     """)
 
-    assert '1337' == parser.parse_mods(raw_xml)['hasSeries'][0]['hasTitle'][0]['issueNumber']
+    assert '1337' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['_issueNumber']
 
 
 def test_host_issue_number_is_extracted(parser):
     raw_xml = MODS("""
       <relatedItem type="host">
         <titleInfo><title>.</title></titleInfo>
-        <part><detail type="issue">1337</detail></part>
+        <part><detail type="issue"><number>1337</number></detail></part>
       </relatedItem>
     """)
 
-    assert '1337' == parser.parse_mods(raw_xml)['isPartOf'][0]['hasTitle'][0]['issueNumber']
+    assert '1337' == parser.parse_mods(raw_xml)['isPartOf'][0]['_issueNumber']
 
 
 def test_host_part_number_is_not_extracted(parser):
@@ -823,11 +849,10 @@ def test_series_article_number_is_extracted(parser):
     raw_xml = MODS("""
       <relatedItem type="series">
         <titleInfo><title>.</title></titleInfo>
-        <part><detail type="artNo">1337</detail></part>
+        <part><detail type="artNo"><number>1337</number></detail></part>
       </relatedItem>
     """)
-
-    assert '1337' == parser.parse_mods(raw_xml)['hasSeries'][0]['hasTitle'][0]['articleNumber']
+    assert '1337' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['_articleNumber']
 
 
 @pytest.mark.parametrize("mods_identifier,bibframe_type", [
@@ -869,20 +894,21 @@ def test_host_only_gets_position_information_on_forst_title_instance(parser):
     """)
 
     expected = {
-        '@type': 'Work',
+        'instanceOf': {'@type': 'Work'},
+        '@type': 'Instance',
         'hasTitle': [
             {
                 '@type': 'Title',
-                'mainTitle': 'First Title',
-                'articleNumber': '3',
-                'issueNumber': '4',
-                'volumeNumber': '1'
+                'mainTitle': 'First Title'
             },
             {
                 '@type': 'Title',
                 'mainTitle': 'Second Title'
             }
-        ]
+        ],
+        '_volumeNumber': '1',
+        '_issueNumber': '2',
+        '_articleNumber': '3'
     }
 
     assert expected == parser.parse_mods(raw_xml)['isPartOf'][0]
@@ -903,23 +929,24 @@ def test_series_only_gets_position_information_on_forst_title_instance(parser):
     """)
 
     expected = {
-        '@type': 'Work',
+        'instanceOf': {'@type': 'Work'},
+        '@type': 'Instance',
         'hasTitle': [
             {
                 '@type': 'Title',
-                'mainTitle': 'First Title',
-                'articleNumber': '3',
-                'issueNumber': '4',
-                'volumeNumber': '1'
+                'mainTitle': 'First Title'
             },
             {
                 '@type': 'Title',
                 'mainTitle': 'Second Title'
             }
-        ]
+        ],
+        '_volumeNumber': '1',
+        '_issueNumber': '2',
+        '_articleNumber': '3'
     }
 
-    assert expected == parser.parse_mods(raw_xml)['hasSeries'][0]
+    assert expected == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']
 
 
 @pytest.mark.parametrize("mods_identifier,bibframe_type", [
@@ -941,8 +968,8 @@ def test_series_identifier_is_extracted(mods_identifier, bibframe_type, parser):
         }
     ]
 
-    assert len(parser.parse_mods(raw_xml)['hasSeries']) == 1
-    assert identified_by == parser.parse_mods(raw_xml)['hasSeries'][0]['identifiedBy']
+    assert len(parser.parse_mods(raw_xml)['seriesMembership']) == 1
+    assert identified_by == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['identifiedBy']
 
 
 def test_series_note_is_extracted(parser):
@@ -955,8 +982,8 @@ def test_series_note_is_extracted(parser):
 
     notes = [{'@type': 'Note', 'label': 'foo'}, {'@type': 'Note', 'label': 'bar'}]
 
-    assert len(parser.parse_mods(raw_xml)['hasSeries']) == 1
-    assert notes == parser.parse_mods(raw_xml)['hasSeries'][0]['hasNote']
+    assert len(parser.parse_mods(raw_xml)['seriesMembership']) == 1
+    assert notes == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['hasNote']
 
 
 def test_host_note_is_extracted(parser):
@@ -1029,6 +1056,28 @@ def test_host_citation_is_extracted(parser):
     assert notes[3:] == parser.parse_mods(raw_xml)['isPartOf'][1]['hasNote']
 
 
+def test_host_citation_in_detail_element_is_extracted(parser):
+    raw_xml = MODS("""
+      <relatedItem type="host">
+        <part>
+            <detail type="volume"><number>31</number></detail>
+            <detail type="issue"><number>3</number></detail>
+            <detail type="citation"><caption>Vol. 31, no. 3, article no. 5</caption></detail>
+        </part>
+      </relatedItem>
+    """)
+
+    notes = [
+        {
+            '@type': 'Note',
+            'label': 'Vol. 31, no. 3, article no. 5',
+            'noteType': 'partText'
+        }
+    ]
+
+    assert notes == parser.parse_mods(raw_xml)['isPartOf'][0]['hasNote']
+
+
 def test_host_with_open_ended_extent(parser):
     raw_xml = MODS("""
       <relatedItem type="host">
@@ -1039,10 +1088,7 @@ def test_host_with_open_ended_extent(parser):
     """)
 
     assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
-    assert parser.parse_mods(raw_xml)['isPartOf'][0]['hasInstance'] == {
-        '@type': 'Instance',
-        'extent': [{'@type': 'Extent', 'label': '234-'}]
-    }
+    assert '234' == parser.parse_mods(raw_xml)['isPartOf'][0]['_pages']
 
 
 def test_host_with_empty_part_element(parser):
@@ -1050,7 +1096,7 @@ def test_host_with_empty_part_element(parser):
       <relatedItem type="host"><part/></relatedItem>
     """)
 
-    assert parser.parse_mods(raw_xml)['isPartOf'] == [{'@type': 'Work'}]
+    assert parser.parse_mods(raw_xml)['isPartOf'] == [{'instanceOf': {'@type': 'Work'}, '@type': 'Instance'}]
 
 
 def test_host_with_empty_extent_element(parser):
@@ -1058,7 +1104,7 @@ def test_host_with_empty_extent_element(parser):
       <relatedItem type="host"><part><extent/></part></relatedItem>
     """)
 
-    assert parser.parse_mods(raw_xml)['isPartOf'] == [{'@type': 'Work'}]
+    assert parser.parse_mods(raw_xml)['isPartOf'] == [{'instanceOf': {'@type': 'Work'}, '@type': 'Instance'}]
 
 
 def test_series_with_empty_part_element(parser):
@@ -1066,7 +1112,9 @@ def test_series_with_empty_part_element(parser):
       <relatedItem type="series"><part/></relatedItem>
     """)
 
-    assert parser.parse_mods(raw_xml)['hasSeries'] == [{'@type': 'Work'}]
+    assert parser.parse_mods(raw_xml)['seriesMembership'] == [
+        {'@type': 'SeriesMembership', 'inSeries': {'instanceOf': {'@type': 'Work'}, '@type': 'Instance'}}
+    ]
 
 
 def test_series_with_empty_extent_element(parser):
@@ -1074,7 +1122,9 @@ def test_series_with_empty_extent_element(parser):
       <relatedItem type="series"><part><extent/></part></relatedItem>
     """)
 
-    assert parser.parse_mods(raw_xml)['hasSeries'] == [{'@type': 'Work'}]
+    assert parser.parse_mods(raw_xml)['seriesMembership'] == [
+        {'@type': 'SeriesMembership', 'inSeries': {'instanceOf': {'@type': 'Work'}, '@type': 'Instance'}}
+    ]
 
 
 def test_host_with_open_beginning_extent(parser):
@@ -1087,10 +1137,7 @@ def test_host_with_open_beginning_extent(parser):
     """)
 
     assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
-    assert parser.parse_mods(raw_xml)['isPartOf'][0]['hasInstance'] == {
-        '@type': 'Instance',
-        'extent': [{'@type': 'Extent', 'label': '-234'}]
-    }
+    assert '_pages' not in parser.parse_mods(raw_xml)['isPartOf'][0]
 
 
 def test_empty_start_and_end_are_ignored(parser):
@@ -1105,7 +1152,7 @@ def test_empty_start_and_end_are_ignored(parser):
       </relatedItem>
     """)
     assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
-    assert 'hasInstance' not in parser.parse_mods(raw_xml)['isPartOf'][0]
+    assert '_pages' not in parser.parse_mods(raw_xml)['isPartOf'][0]
 
 
 def test_host_with_closed_extent(parser):
@@ -1120,10 +1167,7 @@ def test_host_with_closed_extent(parser):
       </relatedItem>
     """)
     assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
-    assert parser.parse_mods(raw_xml)['isPartOf'][0]['hasInstance'] == {
-        '@type': 'Instance',
-        'extent': [{'@type': 'Extent', 'label': '123-234'}]
-    }
+    assert '123-234' == parser.parse_mods(raw_xml)['isPartOf'][0]['_pages']
 
 
 def test_host_with_total_extent(parser):
@@ -1138,10 +1182,7 @@ def test_host_with_total_extent(parser):
     """)
 
     assert len(parser.parse_mods(raw_xml)['isPartOf']) == 1
-    assert parser.parse_mods(raw_xml)['isPartOf'][0]['hasInstance'] == {
-        '@type': 'Instance',
-        'extent': [{'@type': 'Extent', 'label': '123'}]
-    }
+    assert '_pages' not in parser.parse_mods(raw_xml)['isPartOf'][0]
 
 
 def test_host_with_multiple_extents(parser):
@@ -1172,21 +1213,8 @@ def test_host_with_multiple_extents(parser):
 
     actual = parser.parse_mods(raw_xml)['isPartOf']
     assert len(actual) == 2
-    assert actual[0]['hasInstance'] == {
-        '@type': 'Instance',
-        'extent': [
-            {'@type': 'Extent', 'label': '123-234'},
-            {'@type': 'Extent', 'label': '345'},
-            {'@type': 'Extent', 'label': '75-'},
-            {'@type': 'Extent', 'label': '-76'},
-            {'@type': 'Extent', 'label': '77'},
-            {'@type': 'Extent', 'label': '1-'}
-        ]
-    }
-    assert actual[1]['hasInstance'] == {
-        '@type': 'Instance',
-        'extent': [{'@type': 'Extent', 'label': '2-'}]
-    }
+    assert '123-234' == actual[0]['_pages']
+    assert '2' == actual[1]['_pages']
 
 
 @pytest.mark.parametrize("display_label", ['print', 'electronic'])
@@ -1216,7 +1244,7 @@ def test_empty_issn_series_identifier_does_not_create_bibframe_field(parser):
         """)
     identified_by = []
 
-    assert identified_by == parser.parse_mods(raw_xml)['hasSeries'][0]['identifiedBy']
+    assert identified_by == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['identifiedBy']
 
 
 def test_empty_issn_is_part_of_identifier_does_not_create_bibframe_field(parser):
@@ -1308,7 +1336,8 @@ def test_constituent_relateditem(parser):
     """)
     expected = [
         {
-            "@type": "Resource",
+            "instanceOf": {"@type": "Work"},
+            "@type": "Instance",
             "identifiedBy": [
                 {
                     "@type": "URI",
@@ -1320,6 +1349,162 @@ def test_constituent_relateditem(parser):
 
     actual = parser.parse_mods(raw_xml)['hasPart']
     assert actual == expected
+
+
+def test_dataset_host_relateditem_is_extracted_as_related_to(parser):
+    raw_xml = MODS("""
+      <relatedItem type="host">
+        <genre>dataset</genre>
+        <titleInfo>
+            <title>Transfer of bacteriophages between the fingers of volunteers and water or saliva</title>
+        </titleInfo>
+        <identifier type="doi">10.25678/000099</identifier>
+      </relatedItem>
+    """)
+    expected = [
+        {
+            "instanceOf": {"@type": "Work"},
+            "@type": "Instance",
+            "category": [
+                {"@id": "https://id.kb.se/term/rda/ComputerDataset"}
+            ],
+            "hasTitle": [
+                {
+                    "@type": "Title",
+                    "mainTitle": "Transfer of bacteriophages between the fingers of volunteers and water or saliva"
+                }
+            ],
+            "identifiedBy": [
+                {
+                    "@type": "DOI",
+                    "value": "10.25678/000099"
+                }
+            ]
+        }
+    ]
+
+    actual = parser.parse_mods(raw_xml)
+    assert 'isPartOf' not in actual
+    assert actual['relatedTo'] == expected
+
+
+def test_funder_host_without_genre_is_extracted_as_contribution(parser):
+    raw_xml = MODS("""
+      <relatedItem type="host">
+          <name type="corporate">
+              <namePart>Vetenskapsrådet</namePart>
+              <role>
+                  <roleTerm type="code" authority="marcrelator">fnd</roleTerm>
+              </role>
+          </name>
+          <identifier>2014-04004; 2017-06696</identifier>
+      </relatedItem>
+      <relatedItem type="host">
+          <name type="corporate">
+              <namePart>Knut och Alice Wallenbergs Stiftelse</namePart>
+              <role>
+                  <roleTerm type="code" authority="marcrelator">fnd</roleTerm>
+              </role>
+          </name>
+      </relatedItem>
+      <relatedItem type="host">
+          <name type="corporate">
+              <namePart>Stiftelsen för strategisk forskning (SSF)</namePart>
+              <role>
+                  <roleTerm type="code" authority="marcrelator">fnd</roleTerm>
+              </role>
+          </name>
+      </relatedItem>
+      <relatedItem type="host">
+          <name type="corporate">
+              <namePart>Vetenskapsrådet</namePart>
+              <role>
+                  <roleTerm type="code" authority="marcrelator">fnd</roleTerm>
+              </role>
+          </name>
+      </relatedItem>
+      <relatedItem type="host">
+          <name type="corporate">
+              <namePart>EU, FP7, Sjunde ramprogrammet</namePart>
+              <role>
+                  <roleTerm type="code" authority="marcrelator">fnd</roleTerm>
+              </role>
+          </name>
+          <identifier>115317</identifier>
+      </relatedItem>
+      <relatedItem type="host">
+          <name type="corporate">
+              <namePart>Cancerfonden</namePart>
+              <role>
+                  <roleTerm type="code" authority="marcrelator">fnd</roleTerm>
+              </role>
+          </name>
+      </relatedItem>
+    """)
+
+    def funder(name):
+        return {
+            '@type': 'Contribution',
+            'agent': {'@type': 'Organization', 'name': name},
+            'role': [{'@id': 'http://id.loc.gov/vocabulary/relators/fnd'}]
+        }
+
+    expected = [
+        funder('Vetenskapsrådet'),
+        funder('Knut och Alice Wallenbergs Stiftelse'),
+        funder('Stiftelsen för strategisk forskning (SSF)'),
+        funder('Vetenskapsrådet'),
+        funder('EU, FP7, Sjunde ramprogrammet'),
+        funder('Cancerfonden')
+    ]
+
+    actual = parser.parse_mods(raw_xml)
+    assert 'isPartOf' not in actual
+    assert expected == actual['instanceOf']['contribution']
+
+
+def test_funder_host_with_genre_is_extracted_as_is_part_of(parser):
+    raw_xml = MODS("""
+      <relatedItem type="host">
+          <genre>project</genre>
+          <titleInfo>
+              <title>A project</title>
+          </titleInfo>
+          <name type="corporate">
+              <namePart>Vetenskapsrådet</namePart>
+              <role>
+                  <roleTerm type="code" authority="marcrelator">fnd</roleTerm>
+              </role>
+          </name>
+      </relatedItem>
+    """)
+
+    expected = [
+        {
+            'instanceOf': {
+                '@type': 'Work',
+                'contribution': [
+                    {
+                        '@type': 'Contribution',
+                        'agent': {'@type': 'Organization', 'name': 'Vetenskapsrådet'},
+                        'role': [{'@id': 'http://id.loc.gov/vocabulary/relators/fnd'}]
+                    }
+                ]
+            },
+            '@type': 'Instance',
+            'category': [{'@id': 'https://id.kb.se/term/swepub/project'}],
+            'hasTitle': [
+                {
+                    '@type': 'Title',
+                    'mainTitle': 'A project'
+                }
+            ]
+        }
+    ]
+
+    actual = parser.parse_mods(raw_xml)
+    assert actual['isPartOf'] == expected
+    assert [c['agent'] for c in actual['instanceOf']['contribution']] == []
 
 
 def test_orcid_person_id_is_extracted(parser):
@@ -1554,7 +1739,7 @@ def test_affiliation_is_split_up_by_language(parser):
                     },
                 }
             ],
-            "hasAffiliation": [
+            "isPartOf": [
                 {
                     "@type": "Organization",
                     "nameByLang": {
@@ -1570,7 +1755,7 @@ def test_affiliation_is_split_up_by_language(parser):
                             },
                         }
                     ],
-                    "hasAffiliation": [
+                    "isPartOf": [
                         {
                             "@type": "Organization",
                             "nameByLang": {
@@ -1606,7 +1791,7 @@ def test_affiliation_is_split_up_by_language(parser):
                     },
                 }
             ],
-            "hasAffiliation": [
+            "isPartOf": [
                 {
                     "@type": "Organization",
                     "nameByLang": {
@@ -1622,7 +1807,7 @@ def test_affiliation_is_split_up_by_language(parser):
                             },
                         }
                     ],
-                    "hasAffiliation": [
+                    "isPartOf": [
                         {
                             "@type": "Organization",
                             "nameByLang": {
@@ -1672,7 +1857,7 @@ def test_affiliation_tree_is_extracted(parser):
                     },
                 }
             ],
-            "hasAffiliation": [
+            "isPartOf": [
                 {
                     "@type": "Organization",
                     "name": "B",
@@ -1686,7 +1871,7 @@ def test_affiliation_tree_is_extracted(parser):
                             },
                         }
                     ],
-                    "hasAffiliation": [
+                    "isPartOf": [
                         {
                             "@type": "Organization",
                             "name": "A",
@@ -1741,7 +1926,7 @@ def test_affiliation_with_identified_by(parser):
                     }
                 }
             ],
-            "hasAffiliation": [
+            "isPartOf": [
                 {
                     "@type": "Organization",
                     "nameByLang": {
@@ -1802,7 +1987,7 @@ def test_parallell_affiliation_trees_are_extracted(parser):
                     },
                 }
             ],
-            "hasAffiliation": [
+            "isPartOf": [
                 {
                     "@type": "Organization",
                     "name": "A1",
@@ -1832,7 +2017,7 @@ def test_parallell_affiliation_trees_are_extracted(parser):
                     },
                 }
             ],
-            "hasAffiliation": [
+            "isPartOf": [
                 {
                     "@type": "Organization",
                     "name": "A2",
@@ -1877,7 +2062,7 @@ def test_branched_affiliation_trees_are_extracted(parser):
                     },
                 }
             ],
-            "hasAffiliation": [
+            "isPartOf": [
                 {
                     "@type": "Organization",
                     "name": "A1",
@@ -1907,7 +2092,7 @@ def test_branched_affiliation_trees_are_extracted(parser):
                     },
                 }
             ],
-            "hasAffiliation": [
+            "isPartOf": [
                 {
                     "@type": "Organization",
                     "name": "A1",
@@ -2505,7 +2690,7 @@ def test_single_title_element_is_converted_as_main_title(parser):
             'mainTitle': 'Twenty years to nowhere : does land use affect regeneration perspectives?'
         }
     ]
-    actual = parser.parse_mods(raw_xml)['instanceOf']['hasTitle']
+    actual = parser.parse_mods(raw_xml)['hasTitle']
     assert actual == expected
 
 
@@ -2516,7 +2701,7 @@ def test_title_part_number_is_ignored(parser):
         <partNumber>3</partNumber>
     </titleInfo>
       """)
-    assert 'partNumber' not in parser.parse_mods(raw_xml)['instanceOf']['hasTitle'][0]
+    assert 'partNumber' not in parser.parse_mods(raw_xml)['hasTitle'][0]
 
 
 def test_multiple_title_elements_are_converted(parser):
@@ -2535,7 +2720,7 @@ def test_multiple_title_elements_are_converted(parser):
             'foo': 'bar'
         }
     ]
-    actual = parser.parse_mods(raw_xml)['instanceOf']['hasTitle']
+    actual = parser.parse_mods(raw_xml)['hasTitle']
     assert actual == expected
 
 
@@ -2552,7 +2737,7 @@ def test_titleInfo_can_be_repeated(parser):
         {'@type': 'Title', 'mainTitle': 'Twenty years to nowhere'},
         {'@type': 'Title', 'mainTitle': 'does land use affect regeneration perspectives?'}
     ]
-    actual = parser.parse_mods(raw_xml)['instanceOf']['hasTitle']
+    actual = parser.parse_mods(raw_xml)['hasTitle']
     assert actual == expected
 
 
@@ -2569,7 +2754,7 @@ def test_alternative_title(parser):
         {'@type': 'Title', 'mainTitle': 'Twenty years to nowhere'},
         {'@type': 'VariantTitle', 'mainTitle': 'does land use affect regeneration perspectives?'}
     ]
-    actual = parser.parse_mods(raw_xml)['instanceOf']['hasTitle']
+    actual = parser.parse_mods(raw_xml)['hasTitle']
     assert actual == expected
 
 

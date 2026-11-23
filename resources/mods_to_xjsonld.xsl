@@ -19,15 +19,30 @@
     </xsl:template>
 
     <xsl:template match="mods:mods">
+        <!-- classify relatedItems: some type = host are actually not hosts but end up as relatedTo or funding contributions -->
+        <xsl:variable name="is_part_of" select="mods:relatedItem[@type = 'host'][not(mods:genre = 'dataset')][not(mods:name/mods:role/mods:roleTerm = 'fnd' and not(mods:genre))]"/>
+        <xsl:variable name="related_to" select="mods:relatedItem[@type = 'host'][mods:genre = 'dataset']"/>
+        <xsl:variable name="funding_only" select="mods:relatedItem[@type = 'host'][not(mods:genre)][mods:name/mods:role/mods:roleTerm = 'fnd']"/>
+        <xsl:variable name="series" select="mods:relatedItem[@type = 'series']"/>
+        <xsl:variable name="constituents" select="mods:relatedItem[@type = 'constituent']"/>
+
         <dict>
             <string key="@context">https://id.kb.se/context.jsonld</string>
-            <string key="@id"></string>
+            <string key="@id"/>
             <xsl:choose>
                 <xsl:when test="mods:physicalDescription/mods:form">
                     <xsl:apply-templates select="mods:physicalDescription/mods:form" mode="instance-type"/>
                 </xsl:when>
                 <xsl:otherwise>
                     <string key="@type">Instance</string>
+                     <xsl:variable name="componentPart">
+                        <xsl:call-template name="component-part"/>
+                    </xsl:variable>
+                    <xsl:if test="string($componentPart) != ''">
+                        <array key="category">
+                            <xsl:copy-of select="$componentPart"/>
+                        </array>
+                    </xsl:if>
                 </xsl:otherwise>
             </xsl:choose>
             <dict key="instanceOf">
@@ -59,9 +74,7 @@
                         </dict>
                     </xsl:for-each>
                 </array>
-                <array key="hasTitle">
-                    <xsl:apply-templates select="mods:titleInfo"/>
-                </array>
+                
                 <xsl:if test="mods:abstract">
                     <array key="summary">
                         <xsl:for-each select="mods:abstract">
@@ -81,6 +94,9 @@
                 </xsl:if>
                 <array key="contribution">
                     <xsl:call-template name="names"/>
+                     <xsl:for-each select="$funding_only">
+                        <xsl:call-template name="names"/>
+                    </xsl:for-each>
                 </array>
                 <xsl:if test="mods:subject[(@authority != 'uka.se') or not(@authority)]">
                     <array key="subject">
@@ -143,6 +159,14 @@
                     </xsl:for-each>
                 </array>
             </dict>
+            <array key="hasTitle">
+                <xsl:apply-templates select="mods:titleInfo"/>
+            </array>
+            
+            <xsl:call-template name="part">
+                <xsl:with-param name="hosts" select="$is_part_of"/>
+            </xsl:call-template>
+            
             <xsl:if test="mods:physicalDescription/mods:extent">
                 <dict key="extent">
                     <string key="@type">Extent</string>
@@ -152,40 +176,33 @@
 
             <xsl:call-template name="identifiers"/>
 
-            <xsl:if test="mods:relatedItem[@type = 'host'] and mods:relatedItem[@type = 'series']" >
+            <xsl:if test="$is_part_of">
                 <array key="isPartOf">
-                    <xsl:for-each select="mods:relatedItem[@type = 'host']">
+                    <xsl:for-each select="$is_part_of">
                         <dict>
                             <xsl:call-template name="relatedItem">
                                 <xsl:with-param name="relatedItem" select="." />
                             </xsl:call-template>
-                            <array key="hasSeries">
-                                <xsl:for-each select="../mods:relatedItem[@type = 'series']">
-                                    <dict>
-                                        <xsl:call-template name="relatedItem">
-                                            <xsl:with-param name="relatedItem" select="." />
-                                        </xsl:call-template>
-                                    </dict>
-                                </xsl:for-each>
-                            </array>
+                            <xsl:if test="$series">
+                                <xsl:call-template name="seriesMembership">
+                                    <xsl:with-param name="series" select="$series"/>
+                                </xsl:call-template>
+                            </xsl:if>
                         </dict>
                     </xsl:for-each>
                 </array>
             </xsl:if>
-            <xsl:if test="mods:relatedItem[@type = 'host'] and not(mods:relatedItem[@type = 'series'])">
-                <array key="isPartOf">
-                    <xsl:for-each select="mods:relatedItem[@type = 'host']">
-                        <dict>
-                            <xsl:call-template name="relatedItem">
-                                <xsl:with-param name="relatedItem" select="." />
-                            </xsl:call-template>
-                        </dict>
-                    </xsl:for-each>
-                </array>
+
+            <!-- With no hosting publication, series memberships go directly on the publication -->
+            <xsl:if test="$series and not($is_part_of)">
+                <xsl:call-template name="seriesMembership">
+                    <xsl:with-param name="series" select="$series"/>
+                </xsl:call-template>
             </xsl:if>
-            <xsl:if test="mods:relatedItem[@type = 'series'] and not(mods:relatedItem[@type = 'host'])">
-                <array key="hasSeries">
-                    <xsl:for-each select="mods:relatedItem[@type = 'series']">
+
+            <xsl:if test="$related_to">
+                <array key="relatedTo">
+                    <xsl:for-each select="$related_to">
                         <dict>
                             <xsl:call-template name="relatedItem">
                                 <xsl:with-param name="relatedItem" select="." />
@@ -194,9 +211,10 @@
                     </xsl:for-each>
                 </array>
             </xsl:if>
-            <xsl:if test="mods:relatedItem[@type = 'constituent']">
+
+            <xsl:if test="$constituents">
                 <array key="hasPart">
-                    <xsl:for-each select="mods:relatedItem[@type = 'constituent']">
+                    <xsl:for-each select="$constituents">
                         <dict>
                             <xsl:call-template name="relatedItem">
                                 <xsl:with-param name="relatedItem" select="." />
@@ -382,7 +400,7 @@
                                             <array key="role">
                                                 <dict>
                                                     <xsl:if test="mods:agent/mods:role/mods:roleTerm">
-                                                        <string key="@id">http://id.loc.gov/vocabulary/relators/<xsl:value-of select="mods:agent/mods:role/mods:roleTerm"/></string>
+                                                        <string key="@id">http://id.kb.se/relator/<xsl:value-of select="mods:agent/mods:role/mods:roleTerm"/></string>
                                                     </xsl:if>
                                                     <xsl:if test="mods:agent/mods:role/mods:roleTerm[@valueURI]">
                                                         <string key="@id"><xsl:value-of select="mods:agent/mods:role/mods:roleTerm/@valueURI"/></string>
@@ -463,10 +481,10 @@
             </xsl:if>
 
             <xsl:if test="mods:location">
-                  <array key="electronicLocator">
+                <array key="electronicLocator">
                     <xsl:for-each select="mods:location/*">
                       <dict>
-                        <string key="@type">Document</string>
+                          <string key="@type">Document</string>
                         <string key="uri"><xsl:value-of select="text()"/></string>
                         <xsl:if test="@displayLabel != ''">
                             <string key="label"><xsl:value-of select="@displayLabel"/></string>
@@ -556,13 +574,13 @@
             </xsl:if>
         </dict>
     </xsl:template>
-
     <xsl:template match="mods:physicalDescription/mods:form[@authority = 'marcform' and normalize-space(.) = 'print']" mode="instance-type">
         <string key="@type">PhysicalResource</string>
         <array key="category">
             <dict>
                 <string key="@id">https://id.kb.se/term/saobf/Print</string>
             </dict>
+            <xsl:call-template name="component-part"/>
         </array>
     </xsl:template>
 
@@ -572,6 +590,7 @@
             <dict>
                 <string key="@id">https://id.kb.se/term/rda/OnlineResource</string>
             </dict>
+            <xsl:call-template name="component-part"/>
         </array>
     </xsl:template>
 
@@ -589,6 +608,23 @@
                 </xsl:if>
             </dict>
         </array>
+    </xsl:template>
+
+    <xsl:template name="component-part">
+        <xsl:variable name="genre" select="ancestor-or-self::mods:mods/mods:genre"/>
+        <xsl:variable name="outputType" select="$genre[@type = 'outputType' and @authority = 'kb.se']"/>
+        <xsl:variable name="contentType" select="$genre[@type = 'contentType' and @authority = 'svep']"/>
+        <xsl:if test="
+            ($genre[@type = 'publicationType' and @authority = 'svep'] = 'art'
+            and not($outputType)
+            and ($contentType = 'ref' or $contentType = 'vet' or $contentType = 'pop'))
+            or $outputType = 'publication/journal-article'
+            or $outputType = 'publication/magazine-article'
+            or $outputType = 'publication/newspaper-article'">
+            <dict>
+                <string key="@id">https://id.kb.se/term/saobf/ComponentPart</string>
+            </dict>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template name="type">
@@ -827,73 +863,41 @@
         <string><xsl:value-of select="$date"/></string>
     </xsl:template>
 
-    <xsl:template name="relatedItem">
-        <xsl:param name="relatedItem" />
-        <xsl:choose>
-            <xsl:when test="mods:genre = 'dataset'">
-                <string key="@type">Integrating</string>
-            </xsl:when>
-            <xsl:when test="@type = 'constituent'">
-                <string key="@type">Resource</string>
-            </xsl:when>
-            <xsl:otherwise>
-                <string key="@type">Work</string>
-            </xsl:otherwise>
-        </xsl:choose>
+     <xsl:template name="seriesMembership">
+        <xsl:param name="series"/>
+        <array key="seriesMembership">
+            <xsl:for-each select="$series">
+                <dict>
+                    <string key="@type">SeriesMembership</string>
+                    <dict key="inSeries">
+                        <xsl:call-template name="relatedItem">
+                            <xsl:with-param name="relatedItem" select="."/>
+                        </xsl:call-template>
+                    </dict>
+                </dict>
+            </xsl:for-each>
+        </array>
+    </xsl:template>
+
+     <xsl:template name="relatedItem">
+         <xsl:param name="relatedItem" />
+        
+         <dict key="instanceOf">
+             <string key="@type">Work</string>
+             <xsl:if test="mods:name">
+                 <array key="contribution">
+                     <xsl:call-template name="names"/>
+                 </array>
+             </xsl:if>
+         </dict>
+         <string key="@type">Instance</string>
         <xsl:if test="mods:genre">
             <array key="category">
                 <xsl:apply-templates select="mods:genre"/>
             </array>
         </xsl:if>
-        <xsl:if test="mods:titleInfo/*">
-            <array key="hasTitle">
-                <xsl:for-each select="mods:titleInfo">
-                    <dict>
-                        <xsl:choose>
-                            <xsl:when test="@type = 'alternative'"><string key="@type">VariantTitle</string></xsl:when>
-                            <xsl:otherwise><string key="@type">Title</string></xsl:otherwise>
-                        </xsl:choose>
-                        <xsl:if test="../@type = 'series'">
-                            <xsl:choose>
-                                <xsl:when test="mods:partNumber[. != '']">
-                                    <string key="partNumber"><xsl:value-of select="mods:partNumber"/></string>
-                                </xsl:when>
-                                <xsl:when test="../mods:identifier[@type = 'issue number']">
-                                    <string key="partNumber"><xsl:value-of select="../mods:identifier[@type = 'issue number']"/></string>
-                                </xsl:when>
-                            </xsl:choose>
-                        </xsl:if>
-                        <xsl:if test="position()=1">
-                            <xsl:if test="../mods:part/mods:detail[@type = 'volume'] != ''">
-                                <string key="volumeNumber"><xsl:value-of select="../mods:part/mods:detail[@type = 'volume']"/></string>
-                            </xsl:if>
-                            <xsl:if test="../mods:part/mods:detail[@type = 'issue'] != ''">
-                                <string key="issueNumber"><xsl:value-of select="../mods:part/mods:detail[@type = 'issue']"/></string>
-                            </xsl:if>
-                            <xsl:if test="../mods:part/mods:detail[@type = 'issue number'] != ''">
-                                <string key="issueNumber"><xsl:value-of select="../mods:part/mods:detail[@type = 'issue number']"/></string>
-                            </xsl:if>
-                            <xsl:if test="../mods:part/mods:detail[@type = 'artNo'] != ''">
-                                <string key="articleNumber"><xsl:value-of select="../mods:part/mods:detail[@type = 'artNo']"/></string>
-                            </xsl:if>
-                        </xsl:if>
-                        <xsl:for-each select="*">
-                            <xsl:choose>
-                                <xsl:when test="local-name() = 'title'"><string key="mainTitle"><xsl:value-of select="."/></string></xsl:when>
-                                <xsl:when test="local-name() = 'subTitle'"><string key="subtitle"><xsl:value-of select="."/></string></xsl:when>
-                                <xsl:when test="local-name() = 'partNumber'"></xsl:when>
-                                <xsl:otherwise><string key="{@type}"><xsl:value-of select="."/></string></xsl:otherwise>
-                            </xsl:choose>
-                        </xsl:for-each>
-                    </dict>
-                </xsl:for-each>
-            </array>
-        </xsl:if>
-        <xsl:if test="mods:name">
-            <array key="contribution">
-                <xsl:call-template name="names"/>
-            </array>
-        </xsl:if>
+        
+        <xsl:call-template name="relatedItemTitle"/>
         <xsl:if test="mods:identifier">
             <xsl:choose>
                 <xsl:when test="@type = 'series'">
@@ -906,38 +910,9 @@
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:if>
-        <xsl:if test="mods:part/mods:extent/mods:start != '' or mods:part/mods:extent/mods:end != '' or mods:part/mods:extent/mods:total != ''">
-            <dict key="hasInstance">
-                <string key="@type">Instance</string>
-                <array key="extent">
-                    <xsl:for-each select="mods:part/mods:extent">
-                        <xsl:if test="mods:start != '' or mods:end != ''">
-                            <dict>
-                                <string key="@type">Extent</string>
-                                <xsl:choose>
-                                    <xsl:when test="mods:start and not(mods:end)">
-                                        <string key="label"><xsl:value-of select="mods:start" />-</string>
-                                    </xsl:when>
-                                    <xsl:when test="mods:end and not(mods:start)">
-                                        <string key="label">-<xsl:value-of select="mods:end" /></string>
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                        <string key="label"><xsl:value-of select="mods:start" />-<xsl:value-of select="mods:end" /></string>
-                                    </xsl:otherwise>
-                                </xsl:choose>
-                            </dict>
-                        </xsl:if>
-                        <xsl:if test="mods:total != ''">
-                            <dict>
-                                <string key="@type">Extent</string>
-                                <string key="label"><xsl:value-of select="mods:total" /></string>
-                            </dict>
-                        </xsl:if>
-                    </xsl:for-each>
-                </array>
-            </dict>
-        </xsl:if>
-        <xsl:if test="mods:note or mods:part/mods:citation/mods:caption">
+       
+             
+        <xsl:if test="mods:note or mods:part/mods:detail[@type = 'citation']/mods:caption or mods:part/mods:citation/mods:caption">
             <array key="hasNote">
                 <xsl:for-each select="mods:note">
                     <xsl:choose>
@@ -955,11 +930,68 @@
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:for-each>
-                <xsl:for-each select="mods:part/mods:citation/mods:caption">
+                <xsl:for-each select="mods:part/mods:detail[@type = 'citation']/mods:caption | mods:part/mods:citation/mods:caption">
                     <dict>
                         <string key="@type">Note</string>
                         <string key="noteType">partText</string>
                         <string key="label"><xsl:value-of select="." /></string>
+                    </dict>
+                </xsl:for-each>
+            </array>
+        </xsl:if>
+
+        <xsl:variable name="vol"   select="normalize-space(mods:part/mods:detail[@level='1' or @type='volume']/mods:number)"/>
+        <xsl:variable name="issue" select="normalize-space(mods:part/mods:detail[@level='2' or @type='issue']/mods:number)"/>
+        <xsl:variable name="artNo" select="normalize-space(mods:part/mods:detail[@type='artNo']/mods:number)"/>
+        <xsl:variable name="start" select="normalize-space(mods:part/mods:extent[@unit='page' or not(@unit)]/mods:start)"/>
+        <xsl:variable name="end"   select="normalize-space(mods:part/mods:extent[@unit='page' or not(@unit)]/mods:end)"/>
+
+        <xsl:if test="$vol != ''">
+            <string key="_volumeNumber"><xsl:value-of select="$vol"/></string>
+        </xsl:if>
+        <xsl:if test="$issue != ''">
+            <string key="_issueNumber"><xsl:value-of select="$issue"/></string>
+        </xsl:if>
+        <xsl:if test="$artNo != ''">
+            <string key="_articleNumber"><xsl:value-of select="$artNo"/></string>
+        </xsl:if>
+        <xsl:if test="$start != '' and $start != '-'">
+            <string key="_pages">
+                <xsl:value-of select="$start"/>
+            <xsl:if test="$end != '' and $end != '-'">
+                <xsl:value-of select="concat('-', $end)"/>
+            </xsl:if>
+            </string>
+        </xsl:if>
+    </xsl:template>
+
+    <xsl:template name="relatedItemTitle">
+               <xsl:if test="mods:titleInfo/*">
+                    <array key="hasTitle">
+                        <xsl:for-each select="mods:titleInfo">
+                            <dict>
+                                <xsl:choose>
+                                    <xsl:when test="@type = 'alternative'"><string key="@type">VariantTitle</string></xsl:when>
+                                    <xsl:otherwise><string key="@type">Title</string></xsl:otherwise>
+                                </xsl:choose>
+                                <xsl:if test="../@type = 'series'">
+                                    <xsl:choose>
+                                        <xsl:when test="mods:partNumber[. != '']">
+                                            <string key="partNumber"><xsl:value-of select="mods:partNumber"/></string>
+                                        </xsl:when>
+                                        <xsl:when test="../mods:identifier[@type = 'issue number']">
+                                            <string key="partNumber"><xsl:value-of select="../mods:identifier[@type = 'issue number']"/></string>
+                                        </xsl:when>
+                                    </xsl:choose>
+                                </xsl:if>
+                              <xsl:for-each select="*">
+                                    <xsl:choose>
+                                        <xsl:when test="local-name() = 'title'"><string key="mainTitle"><xsl:value-of select="."/></string></xsl:when>
+                                        <xsl:when test="local-name() = 'subTitle'"><string key="subtitle"><xsl:value-of select="."/></string></xsl:when>
+                                        <xsl:when test="local-name() = 'partNumber'"></xsl:when>
+                                        <xsl:otherwise><string key="{@type}"><xsl:value-of select="."/></string></xsl:otherwise>
+                                    </xsl:choose>
+                                </xsl:for-each>
                     </dict>
                 </xsl:for-each>
             </array>
@@ -1069,7 +1101,7 @@
                         <xsl:choose>
                             <xsl:when test="$lang = ''">
                                 <xsl:if test="$orgs/mods:affiliation[@valueURI = current()/@authority and (not(@lang) or @lang = $lang)]">
-                                    <array key="hasAffiliation">
+                                    <array key="isPartOf">
                                         <xsl:for-each select="$orgs/mods:affiliation[@valueURI = current()/@authority and (not(@lang) or @lang = $lang)]">
                                             <xsl:call-template name="affiliation">
                                                 <xsl:with-param name="org" select="." />
@@ -1082,7 +1114,7 @@
                             </xsl:when>
                             <xsl:otherwise>
                                 <xsl:if test="$orgs/mods:affiliation[@valueURI = current()/@authority and @lang = $lang]">
-                                    <array key="hasAffiliation">
+                                    <array key="isPartOf">
                                         <xsl:for-each select="$orgs/mods:affiliation[@valueURI = current()/@authority and @lang = $lang]">
                                             <xsl:call-template name="affiliation">
                                                 <xsl:with-param name="org" select="." />
@@ -1114,6 +1146,40 @@
                 </xsl:choose>
             </xsl:for-each>
         </dict>
+    </xsl:template>
+
+    <xsl:template name="part">
+        <xsl:param name="hosts"/>
+        <!-- Only use position information from the first relatedItem host -->
+        <xsl:variable name="host" select="$hosts[1]"/>
+        <xsl:variable name="vol"   select="normalize-space($host/mods:part/mods:detail[@level='1' or @type='volume']/mods:number)"/>
+        <xsl:variable name="issue" select="normalize-space($host/mods:part/mods:detail[@level='2' or @type='issue']/mods:number)"/>
+        <xsl:variable name="start" select="normalize-space($host/mods:part/mods:extent[@unit='page' or not(@unit)]/mods:start)"/>
+        <xsl:variable name="end"   select="normalize-space($host/mods:part/mods:extent[@unit='page' or not(@unit)]/mods:end)"/>
+        <xsl:variable name="text"  select="normalize-space($host/mods:part/mods:text)"/>
+        <xsl:if test="$vol != '' or $text != ''">
+            <array key="part">
+                <string>
+                    <xsl:choose>
+                        <xsl:when test="$text != ''">
+                            <xsl:value-of select="$text"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="$vol"/>
+                            <xsl:if test="$issue != ''">
+                                <xsl:value-of select="concat(':(', $issue, ')')"/>
+                            </xsl:if>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                    <xsl:if test="$start != '' and $start != '-'">
+                        <xsl:value-of select="concat(', sidorna ', $start)"/>
+                        <xsl:if test="$end != '' and $end != '-'">
+                            <xsl:value-of select="concat('-', $end)"/>
+                        </xsl:if>
+                    </xsl:if>
+                </string>
+            </array>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template name="names">
