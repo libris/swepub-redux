@@ -19,6 +19,12 @@
     </xsl:template>
 
     <xsl:template match="mods:mods">
+        <!-- Classify relatedItems: hosts end up in isPartOf, relatedTo or as funding contributions -->
+        <xsl:variable name="is_part_of_hosts" select="mods:relatedItem[@type = 'host'][not(mods:genre = 'dataset')][not(mods:name/mods:role/mods:roleTerm = 'fnd' and not(mods:genre))]"/>
+        <xsl:variable name="related_to_hosts" select="mods:relatedItem[@type = 'host'][mods:genre = 'dataset']"/>
+        <xsl:variable name="funding_hosts" select="mods:relatedItem[@type = 'host'][not(mods:genre)][mods:name/mods:role/mods:roleTerm = 'fnd']"/>
+        <xsl:variable name="series" select="mods:relatedItem[@type = 'series']"/>
+        <xsl:variable name="constituents" select="mods:relatedItem[@type = 'constituent']"/>
         <dict>
             <string key="@context">https://id.kb.se/context.jsonld</string>
             <string key="@id"></string>
@@ -87,7 +93,7 @@
                 </xsl:if>
                 <array key="contribution">
                     <xsl:call-template name="names"/>
-                     <xsl:for-each select="mods:relatedItem[@type = 'host'][not(mods:genre)][mods:name/mods:role/mods:roleTerm = 'fnd']">
+                     <xsl:for-each select="$funding_hosts">
                         <xsl:call-template name="names"/>
                     </xsl:for-each>
                 </array>
@@ -167,59 +173,33 @@
 
             <xsl:call-template name="identifiers"/>
 
-            <xsl:if test="mods:relatedItem[@type = 'host'][not(mods:genre = 'dataset')][not(mods:name/mods:role/mods:roleTerm = 'fnd' and not(mods:genre))] and mods:relatedItem[@type = 'series']">
+            <xsl:if test="$is_part_of_hosts">
                 <array key="isPartOf">
-                    <xsl:for-each select="mods:relatedItem[@type = 'host'][not(mods:genre = 'dataset')][not(mods:name/mods:role/mods:roleTerm = 'fnd' and not(mods:genre))]">
+                    <xsl:for-each select="$is_part_of_hosts">
                         <dict>
                             <xsl:call-template name="relatedItem">
                                 <xsl:with-param name="relatedItem" select="." />
                             </xsl:call-template>
-                            <array key="seriesMembership">
-                                <xsl:for-each select="../mods:relatedItem[@type = 'series']">
-                                    <dict>
-                                        <string key="@type">SeriesMembership</string>
-                                        <dict key="inSeries">
-                                        <xsl:call-template name="relatedItem">
-                                                <xsl:with-param name="relatedItem" select="."/>
-                                        </xsl:call-template>
-                                        </dict>
-                                    </dict>
-                                </xsl:for-each>
-                            </array>
+                            <xsl:if test="$series">
+                                <xsl:call-template name="seriesMembership">
+                                    <xsl:with-param name="series" select="$series"/>
+                                </xsl:call-template>
+                            </xsl:if>
                         </dict>
                     </xsl:for-each>
                 </array>
             </xsl:if>
-            
-            <xsl:if test="mods:relatedItem[@type = 'host'][not(mods:genre = 'dataset')][not(mods:name/mods:role/mods:roleTerm = 'fnd' and not(mods:genre))] and not(mods:relatedItem[@type = 'series'])">
-                <array key="isPartOf">
-                    <xsl:for-each select="mods:relatedItem[@type = 'host'][not(mods:genre = 'dataset')][not(mods:name/mods:role/mods:roleTerm = 'fnd' and not(mods:genre))]">
-                        <dict>
-                            <xsl:call-template name="relatedItem">
-                                <xsl:with-param name="relatedItem" select="." />
-                            </xsl:call-template>
-                        </dict>
-                    </xsl:for-each>
-                </array>
+
+            <!-- With no hosting publication, series memberships go directly on the publication -->
+            <xsl:if test="$series and not($is_part_of_hosts)">
+                <xsl:call-template name="seriesMembership">
+                    <xsl:with-param name="series" select="$series"/>
+                </xsl:call-template>
             </xsl:if>
-            <xsl:if test="mods:relatedItem[@type = 'series'] and not(mods:relatedItem[@type = 'host'][not(mods:genre = 'dataset')][not(mods:name/mods:role/mods:roleTerm = 'fnd' and not(mods:genre))])">
-                <array key="seriesMembership">
-                    <xsl:for-each select="mods:relatedItem[@type = 'series']">
-                        <dict>
-                            <string key="@type">SeriesMembership</string>
-                            <dict key="inSeries">
-                            <xsl:call-template name="relatedItem">
-                                    <xsl:with-param name="relatedItem" select="."/>
-                            </xsl:call-template>
-                            </dict>
-                        </dict>
-                    </xsl:for-each>
-                </array>
-            </xsl:if>
-            
-            <xsl:if test="mods:relatedItem[@type = 'host'][mods:genre = 'dataset']">
+
+            <xsl:if test="$related_to_hosts">
                 <array key="relatedTo">
-                    <xsl:for-each select="mods:relatedItem[@type = 'host'][mods:genre = 'dataset']">
+                    <xsl:for-each select="$related_to_hosts">
                         <dict>
                             <xsl:call-template name="relatedItem">
                                 <xsl:with-param name="relatedItem" select="." />
@@ -228,10 +208,10 @@
                     </xsl:for-each>
                 </array>
             </xsl:if>
-            
-            <xsl:if test="mods:relatedItem[@type = 'constituent']">
+
+            <xsl:if test="$constituents">
                 <array key="hasPart">
-                    <xsl:for-each select="mods:relatedItem[@type = 'constituent']">
+                    <xsl:for-each select="$constituents">
                         <dict>
                             <xsl:call-template name="relatedItem">
                                 <xsl:with-param name="relatedItem" select="." />
@@ -880,32 +860,38 @@
         <string><xsl:value-of select="$date"/></string>
     </xsl:template>
 
-    <xsl:template name="relatedItem">
-        <xsl:param name="relatedItem" />
-        <xsl:param name="titleInWork" select="@type = 'series'"/>
+     <xsl:template name="seriesMembership">
+        <xsl:param name="series"/>
+        <array key="seriesMembership">
+            <xsl:for-each select="$series">
+                <dict>
+                    <string key="@type">SeriesMembership</string>
+                    <dict key="inSeries">
+                        <xsl:call-template name="relatedItem">
+                            <xsl:with-param name="relatedItem" select="."/>
+                        </xsl:call-template>
+                    </dict>
+                </dict>
+            </xsl:for-each>
+        </array>
+    </xsl:template>
+
+     <xsl:template name="relatedItem">
+         <xsl:param name="relatedItem" />
+         <xsl:param name="titleInWork" select="@type = 'series'"/>
         
-        <dict key="instanceOf">
-            <string key="@type">Work</string>
-            <xsl:if test="mods:name">
-                <array key="contribution">
-                    <xsl:call-template name="names"/>
-                </array>
-            </xsl:if>
-            <xsl:if test="$titleInWork">
-                <xsl:call-template name="relatedItemTitle"/>
-            </xsl:if>
-        </dict>
-        <xsl:choose>
-            <xsl:when test="mods:genre = 'dataset'">
-                <string key="@type">Instance</string>
-            </xsl:when>
-            <xsl:when test="@type = 'constituent'">
-                <string key="@type">Instance</string>
-            </xsl:when>
-            <xsl:otherwise>
-                <string key="@type">Instance</string>
-            </xsl:otherwise>
-        </xsl:choose>
+         <dict key="instanceOf">
+             <string key="@type">Work</string>
+             <xsl:if test="mods:name">
+                 <array key="contribution">
+                     <xsl:call-template name="names"/>
+                 </array>
+             </xsl:if>
+             <xsl:if test="$titleInWork">
+                 <xsl:call-template name="relatedItemTitle"/>
+             </xsl:if>
+         </dict>
+         <string key="@type">Instance</string>
         <xsl:if test="mods:genre">
             <array key="category">
                 <xsl:apply-templates select="mods:genre"/>
