@@ -217,7 +217,7 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
         # add the vowels of the last N chars of the summary as a clustering identifier
         vowels = "AaEeIiOoUuYyÅåÄäÖö"
 
-        for title in converted["instanceOf"]["hasTitle"]:
+        for title in converted.get("hasTitle", []):
             combined_title = title.get("mainTitle")
             sub_title = title.get("subtitle")
             if sub_title is not None and isinstance(sub_title, str) and isinstance(combined_title, str):

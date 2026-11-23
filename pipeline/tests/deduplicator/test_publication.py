@@ -664,14 +664,14 @@ def test_is_part_of_has_series():
 def test_right_has_serie_is_returned():
     publication = Publication(
         {
-            'hasSeries': [
-                _get_test_data_has_serie_dict(mainTitle='Publication hasSerie',
+            'seriesMembership': [
+                _get_test_data_series_membership(mainTitle='Publication hasSerie',
                                               partNumber='partNumber_1',
                                               identifiedBys=[{'@type': 'ISSN', 'value': 'isnn_1'}])
             ],
             'isPartOf': [{
-                'hasSeries': [
-                    _get_test_data_has_serie_dict(mainTitle='Publication hasSerie',
+                'seriesMembership': [
+                    _get_test_data_series_membership(mainTitle='Publication hasSerie',
                                                   partNumber='partNumber_1',
                                                   identifiedBys=[{'@type': 'ISSN', 'value': 'isnn_1'}])
                 ]
@@ -690,8 +690,8 @@ def test_right_has_serie_is_returned():
 def test_add_series_publication():
     publication = Publication(
         {
-            'hasSeries': [
-                _get_test_data_has_serie_dict(mainTitle='Publication hasSerie',
+            'seriesMembership': [
+                _get_test_data_series_membership(mainTitle='Publication hasSerie',
                                               partNumber='partNumber_1',
                                               identifiedBys=[{'@type': 'ISSN', 'value': 'isnn_1'}])
             ]
@@ -699,8 +699,8 @@ def test_add_series_publication():
 
     publication_different_serie = Publication(
         {
-            'hasSeries': [
-                _get_test_data_has_serie_dict(mainTitle='different',
+            'seriesMembership': [
+                _get_test_data_series_membership(mainTitle='different',
                                               partNumber='different',
                                               identifiedBys=[{'@type': 'ISSN', 'value': 'isnn_1'}])
             ]
@@ -711,8 +711,8 @@ def test_add_series_publication():
 
     publication_same_serie = Publication(
         {
-            'hasSeries': [
-                _get_test_data_has_serie_dict(mainTitle='different',
+            'seriesMembership': [
+                _get_test_data_series_membership(mainTitle='different',
                                               partNumber='partNumber_1',
                                               identifiedBys=[{'@type': 'ISSN', 'value': 'isnn_1'}])
             ]
@@ -725,8 +725,8 @@ def test_add_series_is_part_of():
     publication = Publication(
         {
             'isPartOf': [{
-                'hasSeries': [
-                    _get_test_data_has_serie_dict(mainTitle='Publication hasSerie',
+                'seriesMembership': [
+                    _get_test_data_series_membership(mainTitle='Publication hasSerie',
                                                   partNumber='partNumber_1',
                                                   identifiedBys=[{'@type': 'ISSN', 'value': 'isnn_1'}])
                 ]
@@ -736,8 +736,8 @@ def test_add_series_is_part_of():
     publication_same_serie = Publication(
         {
             'isPartOf': [{
-                'hasSeries': [
-                    _get_test_data_has_serie_dict(mainTitle='different',
+                'seriesMembership': [
+                    _get_test_data_series_membership(mainTitle='different',
                                                   partNumber='different',
                                                   identifiedBys=[{'@type': 'ISSN', 'value': 'isnn_1'}])
                 ]
@@ -751,8 +751,8 @@ def test_add_series_is_part_of():
     publication_different_serie = Publication(
         {
             'isPartOf': [{
-                'hasSeries': [
-                    _get_test_data_has_serie_dict(mainTitle='different',
+                'seriesMembership': [
+                    _get_test_data_series_membership(mainTitle='different',
                                                   identifiedBys=[{'@type': 'ISSN', 'value': 'isnn_2'}])
                 ]
             }]
@@ -761,9 +761,18 @@ def test_add_series_is_part_of():
     assert len(publication.is_part_of[0].has_series) == 2
 
 
+
+def _get_test_data_series_membership(mainTitle='', partNumber='', identifiedBys=[]):
+    return {
+        '@type': 'SeriesMembership',
+        'inSeries': _get_test_data_has_serie_dict(mainTitle=mainTitle,
+                                                  partNumber=partNumber,
+                                                  identifiedBys=identifiedBys),
+    }
+
 def _get_test_data_has_serie_dict(mainTitle='', partNumber='', identifiedBys=[]):
     has_serie_dict = {
-        '@type': 'Work',
+        '@type': 'Instance',
         'hasTitle': [
             {
                 '@type': 'Title',
@@ -784,38 +793,38 @@ def _get_test_data_has_serie_dict(mainTitle='', partNumber='', identifiedBys=[])
 
 def test_title_and_subtitle():
     publication_main_and_sub_title = Publication(
-        {'instanceOf': {'hasTitle': [{'@type': 'Title',
+        {'hasTitle': [{'@type': 'Title',
                                       'mainTitle': 'This is the main title',
                                       'subtitle': 'This is the sub title'}
-                                     ]}})
+                                 ]})
     assert publication_main_and_sub_title.main_title == 'This is the main title'
     assert publication_main_and_sub_title.sub_title == 'This is the sub title'
 
 
 def test_title_only():
     publication_main_title_only = Publication(
-        {'instanceOf': {'hasTitle': [{'@type': 'Title',
+        {'hasTitle': [{'@type': 'Title',
                                       'mainTitle': 'This is the main title'}
-                                     ]}})
+                                 ]})
     assert publication_main_title_only.main_title == 'This is the main title'
     assert publication_main_title_only.sub_title is None
 
 
 def test_splited_title_only():
     publication_main_title_mixed_with_sub_title = Publication(
-        {'instanceOf': {'hasTitle': [{'@type': 'Title',
+        {'hasTitle': [{'@type': 'Title',
                                       'mainTitle': 'This is the main title:This is the sub title'}
-                                     ]}})
+                                 ]})
     assert publication_main_title_mixed_with_sub_title.main_title == 'This is the main title'
     assert publication_main_title_mixed_with_sub_title.sub_title == 'This is the sub title'
 
 
 def test_splited_title_and_subtitle():
     publication_main_title_mixed_with_sub_title_and_subtitle = Publication(
-        {'instanceOf': {'hasTitle': [{'@type': 'Title',
+        {'hasTitle': [{'@type': 'Title',
                                       'mainTitle': 'This is the main title:This is NOT the sub title',
                                       'subtitle': 'This is the sub title'}
-                                     ]}})
+                                 ]})
     assert publication_main_title_mixed_with_sub_title_and_subtitle.main_title == 'This is the main title:This is NOT the sub title'
     assert publication_main_title_mixed_with_sub_title_and_subtitle.sub_title == 'This is the sub title'
 

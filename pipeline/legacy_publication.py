@@ -240,11 +240,15 @@ class Publication:
                             subjects.append(publicationtype)
 
     def add_has_series_490(self):
-        """Adds SeriesMembership from hasSeries, represents marc field 490"""
+        """Adds legacy SeriesMembership from seriesMembership.inSeries, represents marc field 490"""
         body = self.body
-        if body.get("hasSeries") and body.get("hasSeries")[0].get("hasTitle"):
+        series_instances = []
+        for membership in body.get("seriesMembership", []):
+            if isinstance(membership, dict) and isinstance(membership.get("inSeries"), dict):
+                series_instances.append(membership["inSeries"])
+        if series_instances and series_instances[0].get("hasTitle"):
             series_member_ships = []
-            for serie in body.get("hasSeries"):
+            for serie in series_instances:
                 series_member_ship = {
                     "@type": "SeriesMembership",
                     "marc:seriesTracingPolicy": "0",
@@ -501,9 +505,8 @@ class Publication:
         """
         Reconstruct isPartOf, affects marc field 773
         1. Sets @type to Instance for each (is)PartOf
-        2. Moves isPartOf.hasInstance.extent to isPartOf.extent. Removes the rest of hasInstance
-        3. Creates isPartOf.marc:enumerationAndFirstPage  with volumeNumber and issueNumber
-        3. Creates part with volumeNumber and issueNumber
+        2. Creates isPartOf.marc:enumerationAndFirstPage  with _volumeNumber, _issueNumber and _pages
+        3. Creates part with _volumeNumber, _issueNumber and _pages
         """
         body = self.body
         if body.get("isPartOf"):
@@ -527,22 +530,24 @@ class Publication:
                 ):
 
                     is_part["@type"] = "Instance"
-                    has_title = is_part["hasTitle"][0]
-                    volume_number = has_title.pop("volumeNumber", None)
+                    instance_of = is_part.pop("instanceOf", {})
+                    if instance_of.get("contribution"):
+                        is_part["contribution"] = instance_of.get("contribution")
+                    volume_number = is_part.pop("_volumeNumber", None)
                     if volume_number:
                         part = volume_number
                         marc_enumeration_and_first_page = volume_number
-                    issue_number = has_title.pop("issueNumber", None)
+                    issue_number = is_part.pop("_issueNumber", None)
                     if issue_number:
                         part = part + ":" + issue_number
                         marc_enumeration_and_first_page = (
                             marc_enumeration_and_first_page + ":" + issue_number
                         )
-                    if len(is_part.get("hasInstance", {}).get("extent", [])) > 0:
-                        extent_label = is_part.get("hasInstance", {}).get("extent")[0].get("label")
-                        part = part + ", s. " + extent_label
+                    pages = is_part.pop("_pages", None)
+                    if pages:
+                        part = part + ", s. " + pages
                         marc_enumeration_and_first_page = (
-                            marc_enumeration_and_first_page + "<" + extent_label
+                            marc_enumeration_and_first_page + "<" + pages
                         )
                     if part:
                         body["part"] = [part]

@@ -194,12 +194,12 @@ def _get_test_data_publication(
 ):
     publication_dict = {
         "@id": id,
+        "hasTitle": [
+            {"@type": "Title", "mainTitle": main_title, "subtitle": sub_title}
+        ],
         "instanceOf": {
             "@type": "Text",
             "category": category,
-            "hasTitle": [
-                {"@type": "Title", "mainTitle": main_title, "subtitle": sub_title}
-            ],
             "summary": [
                 {
                     "@type": "Summary",
@@ -225,6 +225,6 @@ def _get_test_data_publication(
         ],
     }
     if empty_string(sub_title):
-        del publication_dict["instanceOf"]["hasTitle"][0]["subtitle"]
+        del publication_dict["hasTitle"][0]["subtitle"]
 
     return Publication(publication_dict)

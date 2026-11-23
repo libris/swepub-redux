@@ -363,10 +363,10 @@ def test_merge_has_series(master, candidate1_same_title_and_same_doi):
 
 
 def test_merge_has_no_series(master, candidate1_same_title_and_same_doi):
-    del master.body['hasSeries']
-    del candidate1_same_title_and_same_doi.body['hasSeries']
+    del master.body['seriesMembership']
+    del candidate1_same_title_and_same_doi.body['seriesMembership']
     merged_master = merger._merge_has_series(master, candidate1_same_title_and_same_doi)
-    exists = merged_master.body.get('hasSeries', 'does not exist')
+    exists = merged_master.body.get('seriesMembership', 'does not exist')
     assert exists == 'does not exist'
 
 
@@ -524,8 +524,9 @@ def test_merge_is_part_of_has_series_same_title():
         'identifiedBy': [{'@type': 'ISSN', 'value': 'ispartof_2'}],
         'hasTitle': [{'@type': 'Title', 'mainTitle': 'Beyond professional monologue',
                       'subtitle': 'Rendering Oppressed Voices', 'volumeNumber': '28', 'issueNumber': '4'}],
-        'hasSeries': [{'@type': 'Work',
-                       'hasTitle': [{'@type': 'Title', 'mainTitle': 'is_part_of_serie_title_master'}]}]
+        'seriesMembership': [{'@type': 'SeriesMembership',
+                          'inSeries': {'@type': 'Instance',
+                                       'hasTitle': [{'@type': 'Title', 'mainTitle': 'is_part_of_serie_title_master'}]}}]
     })
     # Same is_part_ofs since mainTitle, subtitle, volume_number and issue_number are the same
     assert is_part_of_master == is_part_of_candidate_same_hasseries_title
@@ -546,12 +547,14 @@ def test_merge_is_part_of_has_series_same_issn():
         'identifiedBy': [{'@type': 'ISSN', 'value': 'ispartof_2'}],
         'hasTitle': [{'@type': 'Title', 'mainTitle': 'Beyond professional monologue',
                       'subtitle': 'Rendering Oppressed Voices', 'volumeNumber': '28', 'issueNumber': '4'}],
-        'hasSeries': [{'@type': 'Work',
-                       'hasTitle': [{'@type': 'Title', 'mainTitle': 'is_part_of_serie_title_candidate',
-                                     'partNumber': 'issue_numer_1'}],
-                       'identifiedBy': [{'@type': 'ISSN', 'value': 'has_serie_issn_1'}]
-                       }
-                      ]
+        'seriesMembership': [{'@type': 'SeriesMembership',
+                          'inSeries': {'@type': 'Instance',
+                                       'hasTitle': [{'@type': 'Title', 'mainTitle': 'is_part_of_serie_title_candidate',
+                                                     'partNumber': 'issue_numer_1'}],
+                                       'identifiedBy': [{'@type': 'ISSN', 'value': 'has_serie_issn_1'}]
+                                       }
+                          }
+                         ]
     })
     # Same is_part_ofs since mainTitle, subtitle, volume_number and issue_number are the same
     assert is_part_of_master == is_part_of_candidate_same_hasseries_issn_and_issue_number
@@ -572,12 +575,14 @@ def test_merge_is_part_of_has_series_not_merged_when_title_and_issn_differ():
         'identifiedBy': [{'@type': 'ISSN', 'value': 'ispartof_2'}],
         'hasTitle': [{'@type': 'Title', 'mainTitle': 'Beyond professional monologue',
                       'subtitle': 'Rendering Oppressed Voices', 'volumeNumber': '28', 'issueNumber': '4'}],
-        'hasSeries': [{'@type': 'Work',
-                       'hasTitle': [{'@type': 'Title', 'mainTitle': 'is_part_of_serie_title_candidate',
-                                     'partNumber': 'issue_numer_1'}],
-                       'identifiedBy': [{'@type': 'ISSN', 'value': 'has_serie_issn_2'}]
-                       }
-                      ]
+        'seriesMembership': [{'@type': 'SeriesMembership',
+                          'inSeries': {'@type': 'Instance',
+                                       'hasTitle': [{'@type': 'Title', 'mainTitle': 'is_part_of_serie_title_candidate',
+                                                     'partNumber': 'issue_numer_1'}],
+                                       'identifiedBy': [{'@type': 'ISSN', 'value': 'has_serie_issn_2'}]
+                                       }
+                          }
+                         ]
     })
     # Same is_part_ofs since mainTitle, subtitle, volume_number and issue_number are the same
     assert is_part_of_master == is_part_of_candidate_different_hasseries_issn
@@ -718,12 +723,14 @@ def _get_master_is_part_of():
         'identifiedBy': [{'@type': 'ISSN', 'value': 'ispartof_1'}],
         'hasTitle': [{'@type': 'Title', 'mainTitle': 'Beyond professional monologue',
                       'subtitle': 'rendering oppressed voices', 'volumeNumber': '28', 'issueNumber': '4'}],
-        'hasSeries': [{'@type': 'Work',
-                       'hasTitle': [{'@type': 'Title', 'mainTitle': 'is_part_of_serie_title_master',
-                                     'partNumber': 'issue_numer_1'}],
-                       'identifiedBy': [{'@type': 'ISSN', 'value': 'has_serie_issn_1'}]
-                       }
-                      ]
+        'seriesMembership': [{'@type': 'SeriesMembership',
+                          'inSeries': {'@type': 'Instance',
+                                       'hasTitle': [{'@type': 'Title', 'mainTitle': 'is_part_of_serie_title_master',
+                                                     'partNumber': 'issue_numer_1'}],
+                                       'identifiedBy': [{'@type': 'ISSN', 'value': 'has_serie_issn_1'}]
+                                       }
+                          }
+                         ]
     })
 
 

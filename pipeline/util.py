@@ -364,7 +364,7 @@ def compare_text(master_text, candidate_text, match_ratio, max_length_string_to_
 
 def get_combined_title(body):
     """Return the main title with and subtitle appended."""
-    has_title_array = body.get('instanceOf', {}).get('hasTitle', [])
+    has_title_array = body.get('hasTitle', [])
     for h_t in has_title_array:
         if isinstance(h_t, dict) and h_t.get('@type') == 'Title':
             main_title = h_t.get('mainTitle')
@@ -505,7 +505,7 @@ def get_title_by_language(publication, language):
     # no language code; sometimes mainTitle is in English and variantTitle
     # is in Swedish, and vice versa.
     title = ""
-    for t in publication.body.get('instanceOf', {}).get('hasTitle', []):
+    for t in publication.body.get('hasTitle', []):
         whole_title = t.get("mainTitle", "").strip()
         sub_title = t.get("subtitle", "").strip()
         if sub_title:

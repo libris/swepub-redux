@@ -27,6 +27,21 @@ def _create_title_string(title_dict):
     return title_string
 
 
+def _in_series_instances(body):
+    """Return the inSeries Instance dicts from top-level seriesMembership
+    and from seriesMembership nested under isPartOf."""
+    series = []
+    for membership in body.get("seriesMembership", []):
+        if isinstance(membership, dict) and isinstance(membership.get("inSeries"), dict):
+            series.append(membership["inSeries"])
+    for is_part_of in body.get("isPartOf", []):
+        if isinstance(is_part_of, dict):
+            for membership in is_part_of.get("seriesMembership", []):
+                if isinstance(membership, dict) and isinstance(membership.get("inSeries"), dict):
+                    series.append(membership["inSeries"])
+    return series
+
+
 def _get_ids_from_dict(root_dict, label, id_type):
     result_list = []
     id_list = root_dict.get(label, [])
@@ -372,7 +387,7 @@ class BibframeSource:
 
     @property
     def title(self):
-        titles = self.bibframe_master.get("instanceOf", {}).get("hasTitle", [])
+        titles = self.bibframe_master.get("hasTitle", [])
         for title in titles:
             if title.get("@type", "") == "Title":
                 return _create_title_string(title)
@@ -757,13 +772,15 @@ class BibframeSource:
         id_list.extend(
             _get_root_dict_ids(root_dict=self.bibframe_master, label="isPartOf", id_type=id_type)
         )
-        for is_part_of in self.bibframe_master.get("isPartOf", []):
+        for in_series in _in_series_instances(self.bibframe_master):
             id_list.extend(
-                _get_root_dict_ids(root_dict=is_part_of, label="hasSeries", id_type=id_type)
+                _get_ids_from_dict(root_dict=in_series, label="identifiedBy", id_type=id_type)
             )
-        id_list.extend(
-            _get_root_dict_ids(root_dict=self.bibframe_master, label="hasSeries", id_type=id_type)
-        )
+            id_list.extend(
+                _get_ids_from_dict(
+                    root_dict=in_series, label="indirectlyIdentifiedBy", id_type=id_type
+                )
+            )
         id_list.extend(
             _get_ids_from_dict(
                 root_dict=self.bibframe_master, label="identifiedBy", id_type=id_type
@@ -778,11 +795,7 @@ class BibframeSource:
 
     @property
     def series_title(self):
-        serials = self.bibframe_master.get("hasSeries", [])
-        for is_part_of in self.bibframe_master.get("isPartOf", []):
-            for serial in is_part_of.get("hasSeries", []):
-                serials.append(serial)
-        for serial in serials:
+        for serial in _in_series_instances(self.bibframe_master):
             titles = serial.get("hasTitle", [])
             for title in titles:
                 if title.get("@type", "") == "Title":
@@ -792,13 +805,7 @@ class BibframeSource:
     @property
     def series(self):
         _series = []
-        serials = self.bibframe_master.get("hasSeries", [])
-
-        for is_part_of in self.bibframe_master.get("isPartOf", []):
-            for serial in is_part_of.get("hasSeries", []):
-                serials.append(serial)
-
-        for serial in serials:
+        for serial in _in_series_instances(self.bibframe_master):
             obj = {}
             if serial.get("hasTitle", None):
                 obj["hasTitle"] = serial.get("hasTitle")

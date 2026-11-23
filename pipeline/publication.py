@@ -48,6 +48,21 @@ ARTICLE_TYPES = [
 
 NO_PARENS_REGEX = re.compile(r"\([^()]*\)")
 
+def _series_instances(body):
+    """Return the inSeries Instance dicts from top-level seriesMembership
+    and from seriesMembership nested under isPartOf."""
+    series = []
+    for membership in body.get("seriesMembership", []):
+        if isinstance(membership, dict) and isinstance(membership.get("inSeries"), dict):
+            series.append(membership["inSeries"])
+    for is_part_of in body.get("isPartOf", []):
+        if isinstance(is_part_of, dict):
+            for membership in is_part_of.get("seriesMembership", []):
+                if isinstance(membership, dict) and isinstance(membership.get("inSeries"), dict):
+                    series.append(membership["inSeries"])
+    return series
+
+
 class Publication:
     """Abstract publication format and API to access its properties """
 
@@ -100,13 +115,13 @@ class Publication:
 
     @property
     def main_title(self):
-        """Return value of instanceOf.hasTitle[?(@.@type=="Title")].mainTitle if it exists and
+        """Return value of hasTitle[?(@.@type=="Title")].mainTitle if it exists and
             there is no subtitle.
             If a subtitle exist then the return value is split at the first colon and the first string
             is returned,
             i.e 'main:sub' returns main.
             None otherwise """
-        has_title_array = self.body.get('instanceOf', {}).get('hasTitle', [])
+        has_title_array = self.body.get('hasTitle', [])
         main_title_raw = None
         sub_title_raw = None
         for h_t in has_title_array:
@@ -124,7 +139,7 @@ class Publication:
 
     @property
     def sub_title(self):
-        sub_title_array = self.body.get('instanceOf', {}).get('hasTitle', [])
+        sub_title_array = self.body.get('hasTitle', [])
         main_title_raw = None
         for h_t in sub_title_array:
             if isinstance(h_t, dict) and h_t.get('@type') == 'Title' and h_t.get('subtitle'):
@@ -201,15 +216,15 @@ class Publication:
     def issns(self):
         """Return a list of all ISSNs ordered by importance."""
         issns = set()
-        for is_part_of in self.body.get("isPartOf", []) + self.body.get("hasSeries", []):
+        for is_part_of in self.body.get("isPartOf", []):
             if isinstance(is_part_of, dict):
                 for el in is_part_of.get("identifiedBy", []) + is_part_of.get("indirectlyIdentifiedBy", []):
                     if el.get("@type") == "ISSN":
                         issns.add(el.get("value"))
-                for series in is_part_of.get("hasSeries", []):
-                    for el in series.get("identifiedBy", []) + series.get("indirectlyIdentifiedBy", []):
-                        if el.get("@type") == "ISSN":
-                            issns.add(el.get("value"))
+        for series in _series_instances(self.body):
+            for el in series.get("identifiedBy", []) + series.get("indirectlyIdentifiedBy", []):
+                if el.get("@type") == "ISSN":
+                    issns.add(el.get("value"))
         for issn in self.body.get("identifiedBy", []) + self.body.get("indirectlyIdentifiedBy", []):
             if isinstance(issn, dict) and issn.get("@type") == "ISSN":
                 issns.add(issn.get("value"))
@@ -604,22 +619,24 @@ class Publication:
 
     @property
     def has_series(self):
-        """ Return array of HasSeries objects from hasSeries """
+        """ Return array of HasSeries objects from top-level seriesMembership.inSeries """
         has_series_objects = []
-        has_series_json_array = self.body.get('hasSeries', [])
-        for serie in has_series_json_array:
-            if isinstance(serie, dict):
-                has_series_objects.append(HasSeries(serie))
+        for membership in self.body.get('seriesMembership', []):
+            if isinstance(membership, dict) and isinstance(membership.get('inSeries'), dict):
+                has_series_objects.append(HasSeries(membership['inSeries']))
         return has_series_objects
 
-    def add_series(self, is_part_of):
-        new_has_series = is_part_of.has_series
+    def add_series(self, publication):
+        new_has_series = publication.has_series
         self_has_series = self.has_series
         for new_has_serie in new_has_series:
             if new_has_serie not in self_has_series:
                 self_has_series.append(new_has_serie)
         if len(self_has_series) > 0:
-            self.body['hasSeries'] = [has_serie.body for has_serie in self_has_series]
+            self.body['seriesMembership'] = [
+                {'@type': 'SeriesMembership', 'inSeries': has_serie.body}
+                for has_serie in self_has_series
+            ]
 
     @property
     def missing_issn_or_any_empty_issn(self):
@@ -887,8 +904,8 @@ class Publication:
                 if new_issn_is_part_of.get("hasTitle"):
                     issn_event_log_value = f"{crossref_container_title}: {issn_event_log_value}"
 
-                # Now check if there's an existing isPartOf or isPartOf.hasSeries that
-                # we should add the new ISSN(s) to
+                # Now check if there's an existing isPartOf (or one of its series)
+                # that we should add the new ISSN(s) to
                 if crossref_container_title:
                     for outer_is_part_of in self.is_part_of:
                         for is_part_of in [outer_is_part_of] + outer_is_part_of.has_series:
@@ -1217,7 +1234,7 @@ def safe_concat(first, second, separator=' '):
 
 
 class HasSeries:
-    """Abstract hasSeries format and API to access its properties
+    """Abstract series (seriesMembership.inSeries) format and API to access its properties
     Populated by Publication.has_series or IsPartOf.has_series"""
 
     """Match ratios for various isPartOf fields, see SequenceMatcher """
@@ -1402,20 +1419,13 @@ class IsPartOf:
 
     @property
     def volume_number(self):
-        """Return value for hasTitle[?(@.@type=="Title")].volumeNumber, None if not exist """
-        volume_number_array = self.body.get('hasTitle', [])
-        for v in volume_number_array:
-            if isinstance(v, dict) and v.get('@type') == 'Title':
-                return v.get('volumeNumber')
-        return None
+        """Return value for _volumeNumber, None if not exist """
+        return self.body.get('_volumeNumber')
 
     @property
     def issue_number(self):
-        """Return value for hasTitle[?(@.@type=="Title")].issueNumber, None if not exist """
-        issue_number_array = self.body.get('hasTitle', [])
-        for v in issue_number_array:
-            if isinstance(v, dict) and v.get('@type') == 'Title':
-                return v.get('issueNumber')
+        """Return value for _issueNumber, None if not exist """
+        return self.body.get('_issueNumber')
 
     @property
     def issns(self):
@@ -1468,12 +1478,11 @@ class IsPartOf:
 
     @property
     def has_series(self):
-        """ Return array of IsPartOfHasSeries objects from hasSeries field """
+        """ Return array of IsPartOfHasSeries objects from seriesMembership.inSeries """
         has_series = []
-        has_series_json_array = self.body.get('hasSeries', [])
-        if has_series_json_array is not None:
-            for serie in has_series_json_array:
-                has_series.append(IsPartOfHasSeries(serie))
+        for membership in self.body.get('seriesMembership', []):
+            if isinstance(membership, dict) and isinstance(membership.get('inSeries'), dict):
+                has_series.append(IsPartOfHasSeries(membership['inSeries']))
         return has_series
 
     def add_series(self, is_part_of):
@@ -1483,7 +1492,10 @@ class IsPartOf:
             if new_has_serie not in self_has_series:
                 self_has_series.append(new_has_serie)
         if len(self_has_series) > 0:
-            self.body['hasSeries'] = [has_serie.body for has_serie in self_has_series]
+            self.body['seriesMembership'] = [
+                {'@type': 'SeriesMembership', 'inSeries': has_serie.body}
+                for has_serie in self_has_series
+            ]
 
     def has_same_main_title(self, is_part_of):
         """True if is_part_of has the same main title"""

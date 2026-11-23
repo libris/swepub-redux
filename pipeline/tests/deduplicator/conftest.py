@@ -6,8 +6,8 @@ from pipeline.publication import Publication
 BODY = """
 {{
   "@id": "{}",
+  "hasTitle": [{{"@type": "Title", "mainTitle": "{}", "subtitle": "{}"}}],
   "instanceOf": {{
-    "hasTitle": [{{"@type": "Title", "mainTitle": "{}", "subtitle": "{}"}}],
     "summary": [{{"@type": "Summary", "label": "{}"}}],
     "subject": [{}],
     "category": [{}],
@@ -42,11 +42,14 @@ AFFILIATION = """
 """.format
 
 
-HAS_SERIES = """
+SERIES_MEMBERSHIP = """
 {{
-    "@type": "Work",
-    "hasTitle": [{{"@type": "Title", "mainTitle": "{}", "partNumber":"{}"}}],
-    "identifiedBy": [{{"@type": "ISSN", "value": "{}"}}]
+    "@type": "SeriesMembership",
+    "inSeries": {{
+        "@type": "Instance",
+        "hasTitle": [{{"@type": "Title", "mainTitle": "{}", "partNumber":"{}"}}],
+        "identifiedBy": [{{"@type": "ISSN", "value": "{}"}}]
+    }}
 }}
 """.format
 
@@ -83,8 +86,10 @@ def master():
                            '2016-02-01',
                            '{'
                            ' "identifiedBy": [{"@type": "ISSN", "value": "ispartof_1"}],'
-                           ' "hasTitle": [{"@type": "Title", "mainTitle": "Beyond professional monologue", "subtitle": "rendering oppressed voices", "volumeNumber": "28", "issueNumber": "4"}],'
-                           ' "hasSeries": [{"@type": "Work", "hasTitle": [{"@type": "Title", "mainTitle": "part_of_serie_title", "partNumber":"1"}]}]'
+                           ' "hasTitle": [{"@type": "Title", "mainTitle": "Beyond professional monologue", "subtitle": "rendering oppressed voices"}],'
+                           ' "_volumeNumber": "28",'
+                           ' "_issueNumber": "4",'
+                           ' "seriesMembership": [{"@type": "SeriesMembership", "inSeries": {"@type": "Instance", "hasTitle": [{"@type": "Title", "mainTitle": "part_of_serie_title", "partNumber":"1"}]}}]'
                            '}'
                            ))
 
@@ -98,8 +103,8 @@ def master():
     contribution_kalle = json.loads(CONTRIBUTION('Kalle', 'Kula'))
     contribution_kalle['hasAffiliation'] = [affiliation_kalle]
     body['instanceOf']['contribution'] = [contribution_asbjorg, contribution_kalle]
-    has_series = json.loads(HAS_SERIES('hasSeriesTitle1', 'IssueNumber1', 'ISSN_1'))
-    body['hasSeries'] = [has_series]
+    series_membership = json.loads(SERIES_MEMBERSHIP('hasSeriesTitle1', 'IssueNumber1', 'ISSN_1'))
+    body['seriesMembership'] = [series_membership]
     electronic_locator = json.loads(
         ELECTRONIC_LOCATOR('http://electronic_locator_1', '{"@type": "Note", "label": "free"}'))
     body['electronicLocator'] = [electronic_locator]
@@ -145,8 +150,8 @@ def candidate1_same_title_and_same_doi():
         = [{'@type': 'ORCID', 'value': 'ORCID_2'},
            {'@type': 'Local', 'value': 'lavnik', 'source': {'@type': 'Source', 'code': 'hj'}}]
     body['instanceOf']['contribution'] = [contribution_asbjorg]
-    has_series = json.loads(HAS_SERIES('hasSeriesTitle_not_the_same_as_master', 'IssueNumber1', 'ISSN_1'))
-    body['hasSeries'] = [has_series]
+    series_membership = json.loads(SERIES_MEMBERSHIP('hasSeriesTitle_not_the_same_as_master', 'IssueNumber1', 'ISSN_1'))
+    body['seriesMembership'] = [series_membership]
     electronic_locator = json.loads(ELECTRONIC_LOCATOR(
         'http://electronic_locator_1', '{"@type": "Note", "noteType": "URL usage", "label": "primary"}'))
     body['electronicLocator'] = [electronic_locator]
@@ -173,7 +178,7 @@ def candidate2_different_title_and_same_pmid():
                                        '2017',
                                        '{'
                                        ' "identifiedBy": [{"@type": "ISSN", "value": "ispartof_1"}, {"@type": "ISBN", "value": "ispartof_2"}, {"@type": "ISBN", "value": "ispartof_3"}],'
-                                       ' "hasSeries": [{"@type": "Work", "hasTitle": [{"@type": "Title", "mainTitle": "differenet part_of_serie_title", "partNumber":"2"}]}]'
+                                       ' "seriesMembership": [{"@type": "SeriesMembership", "inSeries": {"@type": "Instance", "hasTitle": [{"@type": "Title", "mainTitle": "differenet part_of_serie_title", "partNumber":"2"}]}}]'
 
                                        '}'
                                        )))
@@ -228,11 +233,13 @@ def candidate4_same_title_summary_pub_date_but_different_ids():
                            '2016',
                            '{'
                            ' "identifiedBy": [{"@type": "ISSN", "value": "ispartof_2"}],'
-                           ' "hasTitle": [{"@type": "Title", "mainTitle": "Beyond Professional Monologue.", "subtitle": "Rendering Oppressed Voices", "volumeNumber": "28", "issueNumber": "4"}]'
+                           ' "hasTitle": [{"@type": "Title", "mainTitle": "Beyond Professional Monologue.", "subtitle": "Rendering Oppressed Voices"}],'
+                           ' "_volumeNumber": "28",'
+                           ' "_issueNumber": "4"'
                            '}'
                            ))
-    has_series = json.loads(HAS_SERIES('hasSeriesTitle_not_the_same_as_master', 'IssueNumber2', 'ISSN_2'))
-    body['hasSeries'] = [has_series]
+    series_membership = json.loads(SERIES_MEMBERSHIP('hasSeriesTitle_not_the_same_as_master', 'IssueNumber2', 'ISSN_2'))
+    body['seriesMembership'] = [series_membership]
     electronic_locator = json.loads(ELECTRONIC_LOCATOR(
         'http://electronic_locator_3', '{"@type": "Note", "label": "free"},'
                                        '{"@type": "Note", "noteType": "URL usage", "label": "primary"}'))
@@ -264,8 +271,10 @@ def candidate5_updated_publication():
                            '2016-02-01',
                            '{'
                            ' "identifiedBy": [{"@type": "ISSN", "value": "ispartof_1"}],'
-                           ' "hasTitle": [{"@type": "Title", "mainTitle": "Beyond professional monologue", "subtitle": "rendering oppressed voices", "volumeNumber": "28", "issueNumber": "4"}],'
-                           ' "hasSeries": [{"@type": "Work", "hasTitle": [{"@type": "Title", "mainTitle": "part_of_serie_title", "partNumber":"1"}]}]'
+                           ' "hasTitle": [{"@type": "Title", "mainTitle": "Beyond professional monologue", "subtitle": "rendering oppressed voices"}],'
+                           ' "_volumeNumber": "28",'
+                           ' "_issueNumber": "4",'
+                           ' "seriesMembership": [{"@type": "SeriesMembership", "inSeries": {"@type": "Instance", "hasTitle": [{"@type": "Title", "mainTitle": "part_of_serie_title", "partNumber":"1"}]}}]'
                            '}'
                            ))
 
@@ -279,8 +288,8 @@ def candidate5_updated_publication():
     contribution_kalle = json.loads(CONTRIBUTION('Kalle', 'Kula'))
     contribution_kalle['hasAffiliation'] = [affiliation_kalle]
     body['instanceOf']['contribution'] = [contribution_asbjorg, contribution_kalle]
-    has_series = json.loads(HAS_SERIES('hasSeriesTitle1', 'IssueNumber1', 'ISSN_1'))
-    body['hasSeries'] = [has_series]
+    series_membership = json.loads(SERIES_MEMBERSHIP('hasSeriesTitle1', 'IssueNumber1', 'ISSN_1'))
+    body['seriesMembership'] = [series_membership]
     electronic_locator = json.loads(
         ELECTRONIC_LOCATOR('http://electronic_locator_1', '{"@type": "Note", "label": "free"}'))
     body['electronicLocator'] = [electronic_locator]
