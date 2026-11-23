@@ -197,6 +197,17 @@ def test_parser(parser):
         "@type": "PhysicalResource",
         "category": [
             {'@id': 'https://id.kb.se/term/saobf/Print'},
+            {'@id': 'https://id.kb.se/term/saobf/ComponentPart'},
+        ],
+        "hasTitle": [
+            {
+                "@type": "Title",
+                "mainTitle": "\"We stand here as sellers and buyers in relation to each other\"",
+                "subtitle": "on work, culture and consciousness among Swedish typographers in the late 19th and early 20th centuries"
+            }
+        ],
+        "part": [
+            "19:(3), sidorna 201-221"
         ],
         "instanceOf": {
             "@type": "Monograph",
@@ -212,13 +223,6 @@ def test_parser(parser):
                     'code': 'eng',
                     'langCode': 'eng',
                     'source': {'@type': 'Source', 'code': 'iso639-2b'}
-                }
-            ],
-            "hasTitle": [
-                {
-                    "@type": "Title",
-                    "mainTitle": "\"We stand here as sellers and buyers in relation to each other\"",
-                    "subtitle": "on work, culture and consciousness among Swedish typographers in the late 19th and early 20th centuries"
                 }
             ],
             'summary': [{'@type': 'Summary', 'label': 'Awesome abstract'}],
@@ -370,7 +374,10 @@ def test_parser(parser):
                         "@type": "DOI",
                         "value": "10.25678/000099"
                     }
-                ]
+                ],
+                "_volumeNumber": "19",
+                "_issueNumber": "3",
+                "_pages": "201-221"
             },
             {
                 "@type": 'Work',
