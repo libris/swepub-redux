@@ -489,10 +489,10 @@
             </xsl:if>
 
             <xsl:if test="mods:location">
-                <array key="associatedMedia">
+                <array key="electronicLocator">
                     <xsl:for-each select="mods:location/*">
                       <dict>
-                          <string key="@type">MediaObject</string>
+                          <string key="@type">Document</string>
                         <string key="uri"><xsl:value-of select="text()"/></string>
                         <xsl:if test="@displayLabel != ''">
                             <string key="label"><xsl:value-of select="@displayLabel"/></string>
