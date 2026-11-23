@@ -261,43 +261,6 @@ def test_parser(parser):
                     },
                     "role": [{"@id": "http://id.loc.gov/vocabulary/relators/aut"}],
                     "hasAffiliation": [{'@type': 'Organization', 'name': 'Lund University'}]
-                },
-                {
-                    "@type": "Contribution",
-                    "agent": {
-                        "@type": "Organization",
-                        "name": "Swedish Research Council",
-                        "nameByLang": {
-                            "swe": "Vetenskapsrådet"
-                        },
-                        "identifiedBy": [
-                            {
-                                "@type": "ISNI",
-                                "value": "0000 0001 1504 010X"
-                            },
-                            {
-                                "@type": "FundRef",
-                                "value": "fundref",
-                            },
-                            {
-                                "@type": "GRID",
-                                "value": "grid",
-                            },
-                            {
-                                "@type": "Ringgold",
-                                "value": "ringgold",
-                            },
-                            {
-                                "@type": "URI",
-                                "value": "https://example.com"
-                            }
-                        ]
-                    },
-                    "role": [
-                        {
-                            "@id": "http://id.loc.gov/vocabulary/relators/fnd"
-                        }
-                    ]
                 }
             ],
             "subject": [
@@ -411,6 +374,98 @@ def test_parser(parser):
                 "_volumeNumber": "19",
                 "_issueNumber": "3",
                 "_pages": "201-221"
+            },
+            {
+                "instanceOf": {
+                    "@type": "Work",
+                    "contribution": [
+                        {
+                            "@type": "Contribution",
+                            "agent": {
+                                "@type": "Organization",
+                                "name": "Swedish Research Council",
+                                "nameByLang": {
+                                    "swe": "Vetenskapsrådet"
+                                },
+                                "identifiedBy": [
+                                    {
+                                        "@type": "ISNI",
+                                        "value": "0000 0001 1504 010X"
+                                    },
+                                    {
+                                        "@type": "FundRef",
+                                        "value": "fundref",
+                                    },
+                                    {
+                                        "@type": "GRID",
+                                        "value": "grid",
+                                    },
+                                    {
+                                    "@type": "Ringgold",
+                                    "value": "ringgold"
+                                    },
+                                    {
+                                        "@type": "URI",
+                                        "value": "https://example.com"
+                                    }
+                                ]
+                            },
+                            "role": [
+                                {
+                                    "@id": "http://id.loc.gov/vocabulary/relators/fnd"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "@type": "Instance",
+                "category": [
+                    {
+                        "@id": "https://id.kb.se/term/swepub/project"
+                    },
+                    {
+                        "@id": "https://id.kb.se/term/swepub/programme"
+                    },
+                    {
+                        "@id": "https://id.kb.se/term/swepub/grantAgreement"
+                    },
+                    {
+                        "@id": "https://id.kb.se/term/swepub/initiative"
+                    },
+                    {
+                        "@id": "https://id.kb.se/term/swepub/event"
+                    }
+                ],
+                "hasTitle": [
+                    {
+                        "@type": "Title",
+                        "mainTitle": "An experimental view on the molecular phase space"
+                    }
+                ],
+                "identifiedBy": [
+                    {
+                        "@type": "SweCRIS",
+                        "value": "2017-05336"
+                    },
+                    {
+                        "@type": "CORDIS",
+                        "value": "2017-05337"
+                    },
+                    {
+                        "@type": "Local",
+                        "value": "lnu1",
+                        "source": {
+                            "@type": "Source",
+                            "code": "lnu"
+                        }
+                    }
+                ],
+                "hasNote": [
+                    {
+                        "@type": "SFO",
+                        "label": "E-vetenskap"
+                    }
+                ]
             }
         ],
         "relatedTo": [
@@ -1308,6 +1363,125 @@ def test_dataset_host_relateditem_is_extracted_as_related_to(parser):
     actual = parser.parse_mods(raw_xml)
     assert 'isPartOf' not in actual
     assert actual['relatedTo'] == expected
+
+
+def test_funder_host_without_genre_is_extracted_as_contribution(parser):
+    raw_xml = MODS("""
+      <relatedItem type="host">
+          <name type="corporate">
+              <namePart>Vetenskapsrådet</namePart>
+              <role>
+                  <roleTerm type="code" authority="marcrelator">fnd</roleTerm>
+              </role>
+          </name>
+          <identifier>2014-04004; 2017-06696</identifier>
+      </relatedItem>
+      <relatedItem type="host">
+          <name type="corporate">
+              <namePart>Knut och Alice Wallenbergs Stiftelse</namePart>
+              <role>
+                  <roleTerm type="code" authority="marcrelator">fnd</roleTerm>
+              </role>
+          </name>
+      </relatedItem>
+      <relatedItem type="host">
+          <name type="corporate">
+              <namePart>Stiftelsen för strategisk forskning (SSF)</namePart>
+              <role>
+                  <roleTerm type="code" authority="marcrelator">fnd</roleTerm>
+              </role>
+          </name>
+      </relatedItem>
+      <relatedItem type="host">
+          <name type="corporate">
+              <namePart>Vetenskapsrådet</namePart>
+              <role>
+                  <roleTerm type="code" authority="marcrelator">fnd</roleTerm>
+              </role>
+          </name>
+      </relatedItem>
+      <relatedItem type="host">
+          <name type="corporate">
+              <namePart>EU, FP7, Sjunde ramprogrammet</namePart>
+              <role>
+                  <roleTerm type="code" authority="marcrelator">fnd</roleTerm>
+              </role>
+          </name>
+          <identifier>115317</identifier>
+      </relatedItem>
+      <relatedItem type="host">
+          <name type="corporate">
+              <namePart>Cancerfonden</namePart>
+              <role>
+                  <roleTerm type="code" authority="marcrelator">fnd</roleTerm>
+              </role>
+          </name>
+      </relatedItem>
+    """)
+
+    def funder(name):
+        return {
+            '@type': 'Contribution',
+            'agent': {'@type': 'Organization', 'name': name},
+            'role': [{'@id': 'http://id.loc.gov/vocabulary/relators/fnd'}]
+        }
+
+    expected = [
+        funder('Vetenskapsrådet'),
+        funder('Knut och Alice Wallenbergs Stiftelse'),
+        funder('Stiftelsen för strategisk forskning (SSF)'),
+        funder('Vetenskapsrådet'),
+        funder('EU, FP7, Sjunde ramprogrammet'),
+        funder('Cancerfonden')
+    ]
+
+    actual = parser.parse_mods(raw_xml)
+    assert 'isPartOf' not in actual
+    assert expected == actual['instanceOf']['contribution']
+
+
+def test_funder_host_with_genre_is_extracted_as_is_part_of(parser):
+    raw_xml = MODS("""
+      <relatedItem type="host">
+          <genre>project</genre>
+          <titleInfo>
+              <title>A project</title>
+          </titleInfo>
+          <name type="corporate">
+              <namePart>Vetenskapsrådet</namePart>
+              <role>
+                  <roleTerm type="code" authority="marcrelator">fnd</roleTerm>
+              </role>
+          </name>
+      </relatedItem>
+    """)
+
+    expected = [
+        {
+            'instanceOf': {
+                '@type': 'Work',
+                'contribution': [
+                    {
+                        '@type': 'Contribution',
+                        'agent': {'@type': 'Organization', 'name': 'Vetenskapsrådet'},
+                        'role': [{'@id': 'http://id.loc.gov/vocabulary/relators/fnd'}]
+                    }
+                ]
+            },
+            '@type': 'Instance',
+            'category': [{'@id': 'https://id.kb.se/term/swepub/project'}],
+            'hasTitle': [
+                {
+                    '@type': 'Title',
+                    'mainTitle': 'A project'
+                }
+            ]
+        }
+    ]
+
+    actual = parser.parse_mods(raw_xml)
+    assert actual['isPartOf'] == expected
+    assert [c['agent'] for c in actual['instanceOf']['contribution']] == []
 
 
 def test_orcid_person_id_is_extracted(parser):

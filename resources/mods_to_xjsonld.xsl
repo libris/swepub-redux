@@ -87,7 +87,7 @@
                 </xsl:if>
                 <array key="contribution">
                     <xsl:call-template name="names"/>
-                     <xsl:for-each select="mods:relatedItem[@type = 'host'][mods:name/mods:role/mods:roleTerm = 'fnd']">
+                     <xsl:for-each select="mods:relatedItem[@type = 'host'][not(mods:genre)][mods:name/mods:role/mods:roleTerm = 'fnd']">
                         <xsl:call-template name="names"/>
                     </xsl:for-each>
                 </array>
@@ -167,9 +167,9 @@
 
             <xsl:call-template name="identifiers"/>
 
-            <xsl:if test="mods:relatedItem[@type = 'host'][not(mods:genre = 'dataset')][not(mods:name/mods:role/mods:roleTerm = 'fnd')] and mods:relatedItem[@type = 'series']">
+            <xsl:if test="mods:relatedItem[@type = 'host'][not(mods:genre = 'dataset')][not(mods:name/mods:role/mods:roleTerm = 'fnd' and not(mods:genre))] and mods:relatedItem[@type = 'series']">
                 <array key="isPartOf">
-                    <xsl:for-each select="mods:relatedItem[@type = 'host'][not(mods:genre = 'dataset')][not(mods:name/mods:role/mods:roleTerm = 'fnd')]">
+                    <xsl:for-each select="mods:relatedItem[@type = 'host'][not(mods:genre = 'dataset')][not(mods:name/mods:role/mods:roleTerm = 'fnd' and not(mods:genre))]">
                         <dict>
                             <xsl:call-template name="relatedItem">
                                 <xsl:with-param name="relatedItem" select="." />
@@ -191,9 +191,9 @@
                 </array>
             </xsl:if>
             
-            <xsl:if test="mods:relatedItem[@type = 'host'][not(mods:genre = 'dataset')][not(mods:name/mods:role/mods:roleTerm = 'fnd')] and not(mods:relatedItem[@type = 'series'])">
+            <xsl:if test="mods:relatedItem[@type = 'host'][not(mods:genre = 'dataset')][not(mods:name/mods:role/mods:roleTerm = 'fnd' and not(mods:genre))] and not(mods:relatedItem[@type = 'series'])">
                 <array key="isPartOf">
-                    <xsl:for-each select="mods:relatedItem[@type = 'host'][not(mods:genre = 'dataset')][not(mods:name/mods:role/mods:roleTerm = 'fnd')]">
+                    <xsl:for-each select="mods:relatedItem[@type = 'host'][not(mods:genre = 'dataset')][not(mods:name/mods:role/mods:roleTerm = 'fnd' and not(mods:genre))]">
                         <dict>
                             <xsl:call-template name="relatedItem">
                                 <xsl:with-param name="relatedItem" select="." />
@@ -202,7 +202,7 @@
                     </xsl:for-each>
                 </array>
             </xsl:if>
-            <xsl:if test="mods:relatedItem[@type = 'series'] and not(mods:relatedItem[@type = 'host'][not(mods:genre = 'dataset')][not(mods:name/mods:role/mods:roleTerm = 'fnd')])">
+            <xsl:if test="mods:relatedItem[@type = 'series'] and not(mods:relatedItem[@type = 'host'][not(mods:genre = 'dataset')][not(mods:name/mods:role/mods:roleTerm = 'fnd' and not(mods:genre))])">
                 <array key="seriesMembership">
                     <xsl:for-each select="mods:relatedItem[@type = 'series']">
                         <dict>
