@@ -398,6 +398,25 @@ def test_parser(parser):
             {
                 "instanceOf": {"@type": "Work"},
                 "@type": "Instance",
+                "hasTitle": [
+                    {
+                        "@type": "Title",
+                        "mainTitle": "Scandinavian Journal of History"
+                    }
+                ],
+                "identifiedBy": [
+                    {"@type": "ISSN", "value": "0346-8755"},
+                    {"@type": "ISSN", "value": "1502-7716"}
+                ],
+                "_volumeNumber": "19",
+                "_issueNumber": "3",
+                "_pages": "201-221"
+            }
+        ],
+        "relatedTo": [
+            {
+                "instanceOf": {"@type": "Work"},
+                "@type": "Instance",
                 "category": [
                     {"@id": "https://id.kb.se/term/rda/ComputerDataset"}
                 ],
@@ -413,23 +432,6 @@ def test_parser(parser):
                         "value": "10.25678/000099"
                     }
                 ]
-            },
-            {
-                "instanceOf": {"@type": "Work"},
-                "@type": "Instance",
-                "hasTitle": [
-                    {
-                        "@type": "Title",
-                        "mainTitle": "Scandinavian Journal of History"
-                    }
-                ],
-                "identifiedBy": [
-                    {"@type": "ISSN", "value": "0346-8755"},
-                    {"@type": "ISSN", "value": "1502-7716"}
-                ],
-                "_volumeNumber": "19",
-                "_issueNumber": "3",
-                "_pages": "201-221"
             }
         ],
         'publication': [
@@ -1269,6 +1271,43 @@ def test_constituent_relateditem(parser):
 
     actual = parser.parse_mods(raw_xml)['hasPart']
     assert actual == expected
+
+
+def test_dataset_host_relateditem_is_extracted_as_related_to(parser):
+    raw_xml = MODS("""
+      <relatedItem type="host">
+        <genre>dataset</genre>
+        <titleInfo>
+            <title>Transfer of bacteriophages between the fingers of volunteers and water or saliva</title>
+        </titleInfo>
+        <identifier type="doi">10.25678/000099</identifier>
+      </relatedItem>
+    """)
+    expected = [
+        {
+            "instanceOf": {"@type": "Work"},
+            "@type": "Instance",
+            "category": [
+                {"@id": "https://id.kb.se/term/rda/ComputerDataset"}
+            ],
+            "hasTitle": [
+                {
+                    "@type": "Title",
+                    "mainTitle": "Transfer of bacteriophages between the fingers of volunteers and water or saliva"
+                }
+            ],
+            "identifiedBy": [
+                {
+                    "@type": "DOI",
+                    "value": "10.25678/000099"
+                }
+            ]
+        }
+    ]
+
+    actual = parser.parse_mods(raw_xml)
+    assert 'isPartOf' not in actual
+    assert actual['relatedTo'] == expected
 
 
 def test_orcid_person_id_is_extracted(parser):
