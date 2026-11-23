@@ -1055,6 +1055,28 @@ def test_host_citation_is_extracted(parser):
     assert notes[3:] == parser.parse_mods(raw_xml)['isPartOf'][1]['hasNote']
 
 
+def test_host_citation_in_detail_element_is_extracted(parser):
+    raw_xml = MODS("""
+      <relatedItem type="host">
+        <part>
+            <detail type="volume"><number>31</number></detail>
+            <detail type="issue"><number>3</number></detail>
+            <detail type="citation"><caption>Vol. 31, no. 3, article no. 5</caption></detail>
+        </part>
+      </relatedItem>
+    """)
+
+    notes = [
+        {
+            '@type': 'Note',
+            'label': 'Vol. 31, no. 3, article no. 5',
+            'noteType': 'partText'
+        }
+    ]
+
+    assert notes == parser.parse_mods(raw_xml)['isPartOf'][0]['hasNote']
+
+
 def test_host_with_open_ended_extent(parser):
     raw_xml = MODS("""
       <relatedItem type="host">

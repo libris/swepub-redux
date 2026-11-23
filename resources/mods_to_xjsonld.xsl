@@ -909,7 +909,7 @@
         </xsl:if>
        
              
-        <xsl:if test="mods:note or mods:part/mods:citation/mods:caption">
+        <xsl:if test="mods:note or mods:part/mods:detail[@type = 'citation']/mods:caption or mods:part/mods:citation/mods:caption">
             <array key="hasNote">
                 <xsl:for-each select="mods:note">
                     <xsl:choose>
@@ -927,7 +927,7 @@
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:for-each>
-                <xsl:for-each select="mods:part/mods:citation/mods:caption">
+                <xsl:for-each select="mods:part/mods:detail[@type = 'citation']/mods:caption | mods:part/mods:citation/mods:caption">
                     <dict>
                         <string key="@type">Note</string>
                         <string key="noteType">partText</string>
