@@ -594,26 +594,42 @@ def test_publication_with_series_and_host(parser):
     raw_xml = MODS("""
       <relatedItem type="series">
         <titleInfo><title>ISKO</title></titleInfo>
-        <part><detail type="volume">3</detail></part>
+        <part><detail type="volume"><number>3</number></detail></part>
       </relatedItem>
       <relatedItem type="host">
         <titleInfo><title>BOSE</title></titleInfo>
-        <part><detail type="volume">5</detail></part>
+        <part><detail type="volume"><number>5</number></detail></part>
       </relatedItem>
     """)
 
-    expected_has_series = [
-        {'@type': 'Work', 'hasTitle': [{'@type': 'Title', 'mainTitle': 'ISKO', 'volumeNumber': '3'}]}
-    ]
+    expected_series = [{
+        '@type': 'SeriesMembership',
+        'inSeries': {
+            '@type': 'Instance',
+            'instanceOf': {'@type': 'Work', 'hasTitle': [{'@type': 'Title', 'mainTitle': 'ISKO'}]},
+            '_volumeNumber': '3'
+        }
+    }]
 
     expected_is_part_of = [
-        {'@type': 'Work', 'hasTitle': [{'@type': 'Title', 'mainTitle': 'BOSE', 'volumeNumber': '5'}],
-         'hasSeries': expected_has_series}
+        {'@type': 'Instance',
+         'hasTitle': [{'@type': 'Title', 'mainTitle': 'BOSE'}],
+         'instanceOf': {'@type': 'Work'},
+         '_volumeNumber': '5',
+         'seriesMembership': [{
+        '@type': 'SeriesMembership',
+        'inSeries': {
+            '@type': 'Instance',
+            'instanceOf': {'@type': 'Work', 'hasTitle': [{'@type': 'Title', 'mainTitle': 'ISKO'}]},
+            '_volumeNumber': '3'
+        }
+    }]}
     ]
-
+    print(parser.parse_mods(raw_xml))
     actual = parser.parse_mods(raw_xml)
+
     assert actual['isPartOf'] == expected_is_part_of
-    assert actual['isPartOf'][0]['hasSeries'] == expected_has_series
+    assert actual['isPartOf'][0]['seriesMembership'] == expected_series
 
 
 def test_series_title_and_part_number_are_extracted(parser):
@@ -643,19 +659,19 @@ def test_series_title_and_part_number_are_extracted(parser):
         {'@type': 'Title', 'mainTitle': 'Some Title', 'partNumber': '3'},
     ]
 
-    assert len(parser.parse_mods(raw_xml)['hasSeries']) == 1
-    assert expected == parser.parse_mods(raw_xml)['hasSeries'][0]['hasTitle']
+    assert len(parser.parse_mods(raw_xml)['seriesMembership']) == 1
+    assert expected == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['instanceOf']['hasTitle']
 
 
 def test_series_volume_number_is_extracted(parser):
     raw_xml = MODS("""
       <relatedItem type="series">
         <titleInfo><title>.</title></titleInfo>
-        <part><detail type="volume">1337</detail></part>
+        <part><detail type="volume"><number>1337</number></detail></part>
       </relatedItem>
     """)
 
-    assert '1337' == parser.parse_mods(raw_xml)['hasSeries'][0]['hasTitle'][0]['volumeNumber']
+    assert '1337' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['_volumeNumber']
 
 
 def test_series_part_number_is_extracted(parser):
@@ -687,7 +703,7 @@ def test_series_prefer_mods_part_number_element(parser):
       </relatedItem>
     """)
 
-    assert '3' == parser.parse_mods(raw_xml)['hasSeries'][0]['hasTitle'][0]['partNumber']
+    assert '3' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['instanceOf']['hasTitle'][0]['partNumber']
 
 
 def test_series_exclude_id_type_issue_number_1(parser):
@@ -699,7 +715,7 @@ def test_series_exclude_id_type_issue_number_1(parser):
     """)
     expected_identified_by = []
 
-    assert expected_identified_by == parser.parse_mods(raw_xml)['hasSeries'][0]['identifiedBy']
+    assert expected_identified_by == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['identifiedBy']
 
 
 def test_series_exclude_id_type_issue_number_2(parser):
@@ -736,18 +752,18 @@ def test_series_no_part_number(parser):
       </relatedItem>
     """)
 
-    assert 'partNumber' not in parser.parse_mods(raw_xml)['hasSeries'][0]['hasTitle'][0]
+    assert 'partNumber' not in parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['instanceOf']['hasTitle'][0]
 
 
 def test_host_volume_number_is_extracted(parser):
     raw_xml = MODS("""
       <relatedItem type="host">
         <titleInfo><title>.</title></titleInfo>
-        <part><detail type="volume">1337</detail></part>
+        <part><detail type="volume"><number>1337</number></detail></part>
       </relatedItem>
     """)
 
-    assert '1337' == parser.parse_mods(raw_xml)['isPartOf'][0]['hasTitle'][0]['volumeNumber']
+    assert '1337' == parser.parse_mods(raw_xml)['isPartOf'][0]['_volumeNumber']
 
 
 def test_series_issue_number_is_extracted(parser):
@@ -758,7 +774,7 @@ def test_series_issue_number_is_extracted(parser):
       </relatedItem>
     """)
 
-    assert '1337' == parser.parse_mods(raw_xml)['hasSeries'][0]['hasTitle'][0]['issueNumber']
+    assert '1337' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['instanceOf']['hasTitle'][0]['issueNumber']
 
 
 def test_host_issue_number_is_extracted(parser):
@@ -830,11 +846,11 @@ def test_series_article_number_is_extracted(parser):
     raw_xml = MODS("""
       <relatedItem type="series">
         <titleInfo><title>.</title></titleInfo>
-        <part><detail type="artNo">1337</detail></part>
+        <part><detail type="artNo"><number>1337</number></detail></part>
       </relatedItem>
     """)
-
-    assert '1337' == parser.parse_mods(raw_xml)['hasSeries'][0]['hasTitle'][0]['articleNumber']
+    print(parser.parse_mods(raw_xml))
+    assert '1337' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['_articleNumber']
 
 
 @pytest.mark.parametrize("mods_identifier,bibframe_type", [
@@ -1073,7 +1089,9 @@ def test_series_with_empty_part_element(parser):
       <relatedItem type="series"><part/></relatedItem>
     """)
 
-    assert parser.parse_mods(raw_xml)['hasSeries'] == [{'@type': 'Work'}]
+    assert parser.parse_mods(raw_xml)['seriesMembership'] == [
+        {'@type': 'SeriesMembership', 'inSeries': {'instanceOf': {'@type': 'Work'}, '@type': 'Instance'}}
+    ]
 
 
 def test_series_with_empty_extent_element(parser):

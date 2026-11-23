@@ -957,7 +957,7 @@
         <xsl:if test="$issue != ''">
             <string key="_issueNumber"><xsl:value-of select="$issue"/></string>
         </xsl:if>
-        <xsl:if test="artNo != ''">
+        <xsl:if test="$artNo != ''">
             <string key="_articleNumber"><xsl:value-of select="$artNo"/></string>
         </xsl:if>
         <xsl:if test="$start != '' and $start != '-'">
