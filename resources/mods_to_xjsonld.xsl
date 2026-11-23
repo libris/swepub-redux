@@ -878,7 +878,6 @@
 
      <xsl:template name="relatedItem">
          <xsl:param name="relatedItem" />
-         <xsl:param name="titleInWork" select="@type = 'series'"/>
         
          <dict key="instanceOf">
              <string key="@type">Work</string>
@@ -886,9 +885,6 @@
                  <array key="contribution">
                      <xsl:call-template name="names"/>
                  </array>
-             </xsl:if>
-             <xsl:if test="$titleInWork">
-                 <xsl:call-template name="relatedItemTitle"/>
              </xsl:if>
          </dict>
          <string key="@type">Instance</string>
@@ -898,9 +894,7 @@
             </array>
         </xsl:if>
         
-        <xsl:if test="not($titleInWork)">
-            <xsl:call-template name="relatedItemTitle"/>
-        </xsl:if>
+        <xsl:call-template name="relatedItemTitle"/>
         <xsl:if test="mods:identifier">
             <xsl:choose>
                 <xsl:when test="@type = 'series'">

@@ -607,7 +607,8 @@ def test_publication_with_series_and_host(parser):
         '@type': 'SeriesMembership',
         'inSeries': {
             '@type': 'Instance',
-            'instanceOf': {'@type': 'Work', 'hasTitle': [{'@type': 'Title', 'mainTitle': 'ISKO'}]},
+            'instanceOf': {'@type': 'Work'},
+            'hasTitle': [{'@type': 'Title', 'mainTitle': 'ISKO'}],
             '_volumeNumber': '3'
         }
     }]
@@ -621,7 +622,8 @@ def test_publication_with_series_and_host(parser):
         '@type': 'SeriesMembership',
         'inSeries': {
             '@type': 'Instance',
-            'instanceOf': {'@type': 'Work', 'hasTitle': [{'@type': 'Title', 'mainTitle': 'ISKO'}]},
+            'instanceOf': {'@type': 'Work'},
+            'hasTitle': [{'@type': 'Title', 'mainTitle': 'ISKO'}],
             '_volumeNumber': '3'
         }
     }]}
@@ -660,7 +662,7 @@ def test_series_title_and_part_number_are_extracted(parser):
     ]
 
     assert len(parser.parse_mods(raw_xml)['seriesMembership']) == 1
-    assert expected == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['instanceOf']['hasTitle']
+    assert expected == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['hasTitle']
 
 
 def test_series_volume_number_is_extracted(parser):
@@ -681,7 +683,7 @@ def test_series_part_number_is_extracted(parser):
       </relatedItem>
     """)
 
-    assert '3' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['instanceOf']['hasTitle'][0]['partNumber']
+    assert '3' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['hasTitle'][0]['partNumber']
 
 
 def test_series_issue_number_identifier_is_extracted_as_part_number(parser):
@@ -692,7 +694,7 @@ def test_series_issue_number_identifier_is_extracted_as_part_number(parser):
       </relatedItem>
     """)
 
-    assert '4' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['instanceOf']['hasTitle'][0]['partNumber']
+    assert '4' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['hasTitle'][0]['partNumber']
 
 
 def test_series_prefer_mods_part_number_element(parser):
@@ -703,7 +705,7 @@ def test_series_prefer_mods_part_number_element(parser):
       </relatedItem>
     """)
 
-    assert '3' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['instanceOf']['hasTitle'][0]['partNumber']
+    assert '3' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['hasTitle'][0]['partNumber']
 
 
 def test_series_exclude_id_type_issue_number_1(parser):
@@ -752,7 +754,7 @@ def test_series_no_part_number(parser):
       </relatedItem>
     """)
 
-    assert 'partNumber' not in parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['instanceOf']['hasTitle'][0]
+    assert 'partNumber' not in parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['hasTitle'][0]
 
 
 def test_host_volume_number_is_extracted(parser):
@@ -926,20 +928,18 @@ def test_series_only_gets_position_information_on_forst_title_instance(parser):
     """)
 
     expected = {
-        'instanceOf': {
-            '@type': 'Work',
-            'hasTitle': [
-                {
-                    '@type': 'Title',
-                    'mainTitle': 'First Title'
-                },
-                {
-                    '@type': 'Title',
-                    'mainTitle': 'Second Title'
-                }
-            ]
-        },
+        'instanceOf': {'@type': 'Work'},
         '@type': 'Instance',
+        'hasTitle': [
+            {
+                '@type': 'Title',
+                'mainTitle': 'First Title'
+            },
+            {
+                '@type': 'Title',
+                'mainTitle': 'Second Title'
+            }
+        ],
         '_volumeNumber': '1',
         '_issueNumber': '2',
         '_articleNumber': '3'
