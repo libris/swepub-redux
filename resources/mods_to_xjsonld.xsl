@@ -1101,7 +1101,7 @@
                         <xsl:choose>
                             <xsl:when test="$lang = ''">
                                 <xsl:if test="$orgs/mods:affiliation[@valueURI = current()/@authority and (not(@lang) or @lang = $lang)]">
-                                    <array key="hasAffiliation">
+                                    <array key="isPartOf">
                                         <xsl:for-each select="$orgs/mods:affiliation[@valueURI = current()/@authority and (not(@lang) or @lang = $lang)]">
                                             <xsl:call-template name="affiliation">
                                                 <xsl:with-param name="org" select="." />
@@ -1114,7 +1114,7 @@
                             </xsl:when>
                             <xsl:otherwise>
                                 <xsl:if test="$orgs/mods:affiliation[@valueURI = current()/@authority and @lang = $lang]">
-                                    <array key="hasAffiliation">
+                                    <array key="isPartOf">
                                         <xsl:for-each select="$orgs/mods:affiliation[@valueURI = current()/@authority and @lang = $lang]">
                                             <xsl:call-template name="affiliation">
                                                 <xsl:with-param name="org" select="." />

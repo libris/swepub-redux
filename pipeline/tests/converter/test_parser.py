@@ -1739,7 +1739,7 @@ def test_affiliation_is_split_up_by_language(parser):
                     },
                 }
             ],
-            "hasAffiliation": [
+            "isPartOf": [
                 {
                     "@type": "Organization",
                     "nameByLang": {
@@ -1755,7 +1755,7 @@ def test_affiliation_is_split_up_by_language(parser):
                             },
                         }
                     ],
-                    "hasAffiliation": [
+                    "isPartOf": [
                         {
                             "@type": "Organization",
                             "nameByLang": {
@@ -1791,7 +1791,7 @@ def test_affiliation_is_split_up_by_language(parser):
                     },
                 }
             ],
-            "hasAffiliation": [
+            "isPartOf": [
                 {
                     "@type": "Organization",
                     "nameByLang": {
@@ -1807,7 +1807,7 @@ def test_affiliation_is_split_up_by_language(parser):
                             },
                         }
                     ],
-                    "hasAffiliation": [
+                    "isPartOf": [
                         {
                             "@type": "Organization",
                             "nameByLang": {
@@ -1857,7 +1857,7 @@ def test_affiliation_tree_is_extracted(parser):
                     },
                 }
             ],
-            "hasAffiliation": [
+            "isPartOf": [
                 {
                     "@type": "Organization",
                     "name": "B",
@@ -1871,7 +1871,7 @@ def test_affiliation_tree_is_extracted(parser):
                             },
                         }
                     ],
-                    "hasAffiliation": [
+                    "isPartOf": [
                         {
                             "@type": "Organization",
                             "name": "A",
@@ -1926,7 +1926,7 @@ def test_affiliation_with_identified_by(parser):
                     }
                 }
             ],
-            "hasAffiliation": [
+            "isPartOf": [
                 {
                     "@type": "Organization",
                     "nameByLang": {
@@ -1987,7 +1987,7 @@ def test_parallell_affiliation_trees_are_extracted(parser):
                     },
                 }
             ],
-            "hasAffiliation": [
+            "isPartOf": [
                 {
                     "@type": "Organization",
                     "name": "A1",
@@ -2017,7 +2017,7 @@ def test_parallell_affiliation_trees_are_extracted(parser):
                     },
                 }
             ],
-            "hasAffiliation": [
+            "isPartOf": [
                 {
                     "@type": "Organization",
                     "name": "A2",
@@ -2062,7 +2062,7 @@ def test_branched_affiliation_trees_are_extracted(parser):
                     },
                 }
             ],
-            "hasAffiliation": [
+            "isPartOf": [
                 {
                     "@type": "Organization",
                     "name": "A1",
@@ -2092,7 +2092,7 @@ def test_branched_affiliation_trees_are_extracted(parser):
                     },
                 }
             ],
-            "hasAffiliation": [
+            "isPartOf": [
                 {
                     "@type": "Organization",
                     "name": "A1",
