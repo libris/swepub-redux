@@ -142,6 +142,8 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
         doc = BibframeSource(converted)
         converted_events = {"audit_events": audit_events, "field_events": field_events}
 
+        # `modified` must be bumped on update too, since the legacy search sync relies on it, e.g.
+        # when a deleted/rejected record reappears or a record is reprocessed after enrichment
         cur.execute(
             """
         INSERT INTO
@@ -149,7 +151,7 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
         VALUES
             (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(oai_id) DO UPDATE SET
-            data = excluded.data, original_id = excluded.original_id, oai_id = excluded.oai_id, date = excluded.date, source = excluded.source, is_open_access = excluded.is_open_access, has_ssif_1 = excluded.has_ssif_1, classification_level = excluded.classification_level, events = excluded.events, deleted = 0, should_be_reprocessed = 0
+            data = excluded.data, original_id = excluded.original_id, oai_id = excluded.oai_id, date = excluded.date, source = excluded.source, is_open_access = excluded.is_open_access, has_ssif_1 = excluded.has_ssif_1, classification_level = excluded.classification_level, events = excluded.events, deleted = 0, should_be_reprocessed = 0, modified = (strftime('%s', 'now'))
         """,
             (
                 json.dumps(converted),
