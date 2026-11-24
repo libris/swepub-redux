@@ -1055,11 +1055,9 @@
                     </xsl:choose>
                     <xsl:choose>
                         <xsl:when test="$org/@lang">
+                            <xsl:variable name="langtag" select="$langmap[@code=$org/@lang]/@tag"/>
                             <dict key="nameByLang">
-                                <string>
-                                    <xsl:attribute name="key">
-                                        <xsl:value-of select="$org/@lang"/>
-                                    </xsl:attribute>
+                                <string key="{$langtag | $org/@lang[not($langtag)]}">
                                     <xsl:value-of select="$org"/>
                                 </string>
                             </dict>
@@ -1193,7 +1191,8 @@
                             <xsl:if test="mods:namePart[@lang]">
                                 <dict key="nameByLang">
                                     <xsl:for-each select="mods:namePart[@lang]">
-                                        <string key="{@lang}"><xsl:value-of select="."/></string>
+                                        <xsl:variable name="langtag" select="$langmap[@code=current()/@lang]/@tag"/>
+                                        <string key="{$langtag | @lang[not($langtag)]}"><xsl:value-of select="."/></string>
                                     </xsl:for-each>
                                 </dict>
                             </xsl:if>
@@ -1233,7 +1232,8 @@
                             <xsl:if test="mods:namePart[@lang]">
                                 <dict key="nameByLang">
                                     <xsl:for-each select="mods:namePart[@lang]">
-                                        <string key="{@lang}"><xsl:value-of select="."/></string>
+                                        <xsl:variable name="langtag" select="$langmap[@code=current()/@lang]/@tag"/>
+                                        <string key="{$langtag | @lang[not($langtag)]}"><xsl:value-of select="."/></string>
                                     </xsl:for-each>
                                 </dict>
                             </xsl:if>

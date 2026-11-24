@@ -631,7 +631,7 @@ def _set_contribution_marc_affiliation(contribution, affiliation):
     else:
         marc_affiliations_list = []
     # affiliations can have a single name *or* multiple names in nameByLang...
-    marc_affiliations = [affiliation.get("name"), affiliation.get("nameByLang", {}).get("swe"), affiliation.get("nameByLang", {}).get("eng")]
+    marc_affiliations = [affiliation.get("name"), affiliation.get("nameByLang", {}).get("sv"), affiliation.get("nameByLang", {}).get("en")]
 
     # ...so add each one of them
     for marc_affiliation in [a for a in marc_affiliations if a is not None]:
@@ -644,7 +644,7 @@ def _set_contribution_marc_affiliation(contribution, affiliation):
 
 
 def _set_global_organizational_contribution_for_marc_field_710(body, affiliation):
-    affiliation_name = affiliation.get("name") or affiliation.get("nameByLang", {}).get("swe") or affiliation.get("nameByLang", {}).get("eng")
+    affiliation_name = affiliation.get("name") or affiliation.get("nameByLang", {}).get("sv") or affiliation.get("nameByLang", {}).get("en")
     if body.get("tmp_global_organizational_contribution"):
         agent = body.get("tmp_global_organizational_contribution").get("agent", {})
         agent_name = agent.get("name", {})

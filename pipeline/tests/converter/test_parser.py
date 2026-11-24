@@ -385,7 +385,7 @@ def test_parser(parser):
                                 "@type": "Organization",
                                 "name": "Swedish Research Council",
                                 "nameByLang": {
-                                    "swe": "Vetenskapsrådet"
+                                    "sv": "Vetenskapsrådet"
                                 },
                                 "identifiedBy": [
                                     {
@@ -1727,7 +1727,7 @@ def test_affiliation_is_split_up_by_language(parser):
         {
             "@type": "Organization",
             "nameByLang": {
-                "swe": "Sektion 3"
+                "sv": "Sektion 3"
             },
             "identifiedBy": [
                 {
@@ -1743,7 +1743,7 @@ def test_affiliation_is_split_up_by_language(parser):
                 {
                     "@type": "Organization",
                     "nameByLang": {
-                        "swe": "Språk- och litteraturcentrum"
+                        "sv": "Språk- och litteraturcentrum"
                     },
                     "identifiedBy": [
                         {
@@ -1759,7 +1759,7 @@ def test_affiliation_is_split_up_by_language(parser):
                         {
                             "@type": "Organization",
                             "nameByLang": {
-                                "swe": "Institutioner"
+                                "sv": "Institutioner"
                             },
                             "identifiedBy": [
                                 {
@@ -1779,7 +1779,7 @@ def test_affiliation_is_split_up_by_language(parser):
         {
             "@type": "Organization",
             "nameByLang": {
-                "eng": "Section 3"
+                "en": "Section 3"
             },
             "identifiedBy": [
                 {
@@ -1795,7 +1795,7 @@ def test_affiliation_is_split_up_by_language(parser):
                 {
                     "@type": "Organization",
                     "nameByLang": {
-                        "eng": "Centre for Languages and Literature"
+                        "en": "Centre for Languages and Literature"
                     },
                     "identifiedBy": [
                         {
@@ -1811,7 +1811,7 @@ def test_affiliation_is_split_up_by_language(parser):
                         {
                             "@type": "Organization",
                             "nameByLang": {
-                                "eng": "Departments"
+                                "en": "Departments"
                             },
                             "identifiedBy": [
                                 {
@@ -1914,7 +1914,7 @@ def test_affiliation_with_identified_by(parser):
         {
             "@type": "Organization",
             "nameByLang": {
-                "swe": "Elektronik"
+                "sv": "Elektronik"
             },
             "identifiedBy": [
                 {
@@ -1930,7 +1930,7 @@ def test_affiliation_with_identified_by(parser):
                 {
                     "@type": "Organization",
                     "nameByLang": {
-                        "swe": "KTH"
+                        "sv": "KTH"
                     },
                     "identifiedBy": [
                         {
@@ -2126,7 +2126,7 @@ def test_affiliation_language_is_extracted(parser):
         {
             '@type': 'Organization',
             "nameByLang": {
-                "swe": "Affiliation Name"
+                "sv": "Affiliation Name"
             },
         }
     ]
@@ -2225,7 +2225,7 @@ def test_affiliation_non_organizational(parser):
         {
             "@type": "Collaboration",
             "nameByLang": {
-                "eng": "Affiliation Name"
+                "en": "Affiliation Name"
             },
             "identifiedBy": [
                 {

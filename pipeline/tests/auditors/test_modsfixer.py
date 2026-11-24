@@ -23,7 +23,7 @@ body = {
                                 "value": "example.com",
                             }
                         ],
-                        "nameByLang": {"swe": "authority kb.se, svenska"},
+                        "nameByLang": {"sv": "authority kb.se, svenska"},
                     },
                     {
                         "@type": "Organization",
@@ -34,21 +34,21 @@ body = {
                                 "value": "example.com",
                             }
                         ],
-                        "nameByLang": {"eng": "authority kb.se, English"},
+                        "nameByLang": {"en": "authority kb.se, English"},
                     },
                     {
                         "@type": "Organization",
                         "identifiedBy": [
                             {"@type": "ROR", "value": "https://ror.org/12345"}
                         ],
-                        "nameByLang": {"eng": "ROR org in English"},
+                        "nameByLang": {"en": "ROR org in English"},
                     },
                     {
                         "@type": "Organization",
                         "identifiedBy": [
                             {"@type": "ROR", "value": "https://ror.org/12345"}
                         ],
-                        "nameByLang": {"swe": "ROR-org på svenska"},
+                        "nameByLang": {"sv": "ROR-org på svenska"},
                     },
                     {"@type": "Organization", "name": "Org without language specified"},
                 ],
@@ -76,14 +76,14 @@ def test_should_merge_identical_ror_ids():
                                 "identifiedBy": [
                                     {"@type": "ROR", "value": "https://ror.org/12345"}
                                 ],
-                                "nameByLang": {"eng": "ROR org in English"},
+                                "nameByLang": {"en": "ROR org in English"},
                             },
                             {
                                 "@type": "Organization",
                                 "identifiedBy": [
                                     {"@type": "ROR", "value": "https://ror.org/12345"}
                                 ],
-                                "nameByLang": {"swe": "ROR-org på svenska"},
+                                "nameByLang": {"sv": "ROR-org på svenska"},
                             },
                             {
                                 "@type": "Organization",
@@ -101,7 +101,7 @@ def test_should_merge_identical_ror_ids():
     assert new_publication.contributions[0].affiliations == [
         {
             "@type": "Organization",
-            "nameByLang": {"eng": "ROR org in English", "swe": "ROR-org på svenska"},
+            "nameByLang": {"en": "ROR org in English", "sv": "ROR-org på svenska"},
             "identifiedBy": [{"@type": "ROR", "value": "https://ror.org/12345"}],
         },
         {"@type": "Organization", "name": "Org without language specified"},
@@ -126,14 +126,14 @@ def test_should_not_merge_nonidentical_ror_ids():
                                 "identifiedBy": [
                                     {"@type": "ROR", "value": "https://ror.org/12345"}
                                 ],
-                                "nameByLang": {"eng": "ROR org in English"},
+                                "nameByLang": {"en": "ROR org in English"},
                             },
                             {
                                 "@type": "Organization",
                                 "identifiedBy": [
                                     {"@type": "ROR", "value": "https://ror.org/67890"}
                                 ],
-                                "nameByLang": {"swe": "ROR-org på svenska"},
+                                "nameByLang": {"sv": "ROR-org på svenska"},
                             },
                         ],
                     }
@@ -147,12 +147,12 @@ def test_should_not_merge_nonidentical_ror_ids():
     assert new_publication.contributions[0].affiliations == [
         {
             "@type": "Organization",
-            "nameByLang": {"eng": "ROR org in English"},
+            "nameByLang": {"en": "ROR org in English"},
             "identifiedBy": [{"@type": "ROR", "value": "https://ror.org/12345"}],
         },
         {
             "@type": "Organization",
-            "nameByLang": {"swe": "ROR-org på svenska"},
+            "nameByLang": {"sv": "ROR-org på svenska"},
             "identifiedBy": [{"@type": "ROR", "value": "https://ror.org/67890"}],
         },
     ]
@@ -180,7 +180,7 @@ def test_should_merge_kb_se_authority_if_different_languages():
                                         "value": "example.com",
                                     }
                                 ],
-                                "nameByLang": {"swe": "authority kb.se, svenska"},
+                                "nameByLang": {"sv": "authority kb.se, svenska"},
                             },
                             {
                                 "@type": "Organization",
@@ -191,7 +191,7 @@ def test_should_merge_kb_se_authority_if_different_languages():
                                         "value": "example.com",
                                     }
                                 ],
-                                "nameByLang": {"eng": "authority kb.se, English"},
+                                "nameByLang": {"en": "authority kb.se, English"},
                             },
                         ],
                     }
@@ -206,8 +206,8 @@ def test_should_merge_kb_se_authority_if_different_languages():
         {
             "@type": "Organization",
             "nameByLang": {
-                "swe": "authority kb.se, svenska",
-                "eng": "authority kb.se, English",
+                "sv": "authority kb.se, svenska",
+                "en": "authority kb.se, English",
             },
             "identifiedBy": [
                 {
@@ -242,7 +242,7 @@ def test_should_not_merge_kb_se_authority_if_same_language():
                                         "value": "example.com",
                                     }
                                 ],
-                                "nameByLang": {"swe": "en institution"},
+                                "nameByLang": {"sv": "en institution"},
                             },
                             {
                                 "@type": "Organization",
@@ -253,7 +253,7 @@ def test_should_not_merge_kb_se_authority_if_same_language():
                                         "value": "example.com",
                                     }
                                 ],
-                                "nameByLang": {"swe": "en annan institution"},
+                                "nameByLang": {"sv": "en annan institution"},
                             },
                         ],
                     }
@@ -274,7 +274,7 @@ def test_should_not_merge_kb_se_authority_if_same_language():
                     "value": "example.com",
                 }
             ],
-            "nameByLang": {"swe": "en institution"},
+            "nameByLang": {"sv": "en institution"},
         },
         {
             "@type": "Organization",
@@ -285,7 +285,7 @@ def test_should_not_merge_kb_se_authority_if_same_language():
                     "value": "example.com",
                 }
             ],
-            "nameByLang": {"swe": "en annan institution"},
+            "nameByLang": {"sv": "en annan institution"},
         },
     ]
 
