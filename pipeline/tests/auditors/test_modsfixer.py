@@ -288,3 +288,95 @@ def test_should_not_merge_kb_se_authority_if_same_language():
             "nameByLang": {"swe": "en annan institution"},
         },
     ]
+
+
+def test_should_merge_multiple_orgs_split_by_language():
+    publication = Publication(
+        {
+            "instanceOf": {
+                "contribution": [
+                    {
+                        "@type": "Contribution",
+                        "agent": {
+                            "@type": "Person",
+                            "familyName": "Bar",
+                            "givenName": "Foo",
+                        },
+                        "hasAffiliation": [
+                            {
+                                "@type": "Organization",
+                                "identifiedBy": [
+                                    {
+                                        "@type": "URI",
+                                        "source": {"@type": "Source", "code": "kb.se"},
+                                        "value": "example.com",
+                                    }
+                                ],
+                                "nameByLang": {"swe": "Exempeluniversitetet"},
+                            },
+                            {
+                                "@type": "Organization",
+                                "identifiedBy": [
+                                    {
+                                        "@type": "URI",
+                                        "source": {"@type": "Source", "code": "kb.se"},
+                                        "value": "example.com",
+                                    }
+                                ],
+                                "nameByLang": {"eng": "Example University"},
+                            },
+                            {
+                                "@type": "Organization",
+                                "identifiedBy": [
+                                    {
+                                        "@type": "URI",
+                                        "source": {"@type": "Source", "code": "kb.se"},
+                                        "value": "other.com",
+                                    }
+                                ],
+                                "nameByLang": {"swe": "Annat universitet"},
+                            },
+                            {
+                                "@type": "Organization",
+                                "identifiedBy": [
+                                    {
+                                        "@type": "URI",
+                                        "source": {"@type": "Source", "code": "kb.se"},
+                                        "value": "other.com",
+                                    }
+                                ],
+                                "nameByLang": {"eng": "Other University"},
+                            },
+                        ],
+                    }
+                ]
+            }
+        }
+    )
+
+    new_publication, _audit_events = modsfixer.audit(publication, [], None, None)
+
+    assert new_publication.contributions[0].affiliations == [
+        {
+            "@type": "Organization",
+            "nameByLang": {"swe": "Exempeluniversitetet", "eng": "Example University"},
+            "identifiedBy": [
+                {
+                    "@type": "URI",
+                    "source": {"@type": "Source", "code": "kb.se"},
+                    "value": "example.com",
+                }
+            ],
+        },
+        {
+            "@type": "Organization",
+            "nameByLang": {"swe": "Annat universitet", "eng": "Other University"},
+            "identifiedBy": [
+                {
+                    "@type": "URI",
+                    "source": {"@type": "Source", "code": "kb.se"},
+                    "value": "other.com",
+                }
+            ],
+        },
+    ]

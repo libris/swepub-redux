@@ -554,15 +554,25 @@ def _merge_contrib_identified_by(master_contrib_identified_bys, candidate_contri
 
 
 def _merge_contrib_affiliations(master_contrib_affiliations, candidate_contrib_affiliations):
+    # Affiliations nested under isPartOf must be considered too, so that an
+    # org that already exists (possibly only as a parent of another org)
+    # isn't added again at the top level.
+    all_master_affiliations = _flatten_affiliations(master_contrib_affiliations)
     for candidate_contrib_affiliation in candidate_contrib_affiliations:
-        # Not a "fritextaffiliering": Should be handled as; add if not exact duplicate
+        # Not a "fritextaffiliering": Should be handled as; add if not the same organization
         if "identifiedBy" in candidate_contrib_affiliation:
-            if candidate_contrib_affiliation not in master_contrib_affiliations:
+            same_affiliation = _find_identified_affiliation(
+                all_master_affiliations, candidate_contrib_affiliation
+            )
+            if same_affiliation is None:
+                all_master_affiliations.append(candidate_contrib_affiliation)
                 master_contrib_affiliations.append(candidate_contrib_affiliation)
+            else:
+                _merge_affiliation_name_by_lang(same_affiliation, candidate_contrib_affiliation)
         else:
             candidate_name = candidate_contrib_affiliation.get("name", "")
             has_match = False
-            for master_contrib_affiliation in master_contrib_affiliations:
+            for master_contrib_affiliation in all_master_affiliations:
                 master_name = master_contrib_affiliation.get("name", "")
                 if probably_same_affiliation_name(candidate_name, master_name):
                     has_match = True
@@ -574,8 +584,60 @@ def _merge_contrib_affiliations(master_contrib_affiliations, candidate_contrib_a
 
                     break
             if not has_match:
+                all_master_affiliations.append(candidate_contrib_affiliation)
                 master_contrib_affiliations.append(candidate_contrib_affiliation)
     return master_contrib_affiliations
+
+
+def _flatten_affiliations(affiliations):
+    flat = []
+    for affiliation in affiliations:
+        flat.append(affiliation)
+        flat.extend(_flatten_affiliations(affiliation.get("isPartOf") or []))
+    return flat
+
+
+def _kb_se_uri(affiliation):
+    for id_by in affiliation.get("identifiedBy", []):
+        if (
+            id_by.get("@type", "") == "URI"
+            and id_by.get("source", {}).get("code", "") == "kb.se"
+        ):
+            return id_by.get("value")
+    return None
+
+
+def _find_identified_affiliation(existing_affiliations, candidate_affiliation):
+    candidate_uri = _kb_se_uri(candidate_affiliation)
+    for existing_affiliation in existing_affiliations:
+        if existing_affiliation == candidate_affiliation:
+            return existing_affiliation
+        if candidate_uri is not None and _kb_se_uri(existing_affiliation) == candidate_uri:
+            # Same kb.se URI: the same organization, unless their names differ
+            # in a language they share, in which case they probably express
+            # specific institutions (same reasoning as in ModsFixer).
+            if _same_affiliation_names(existing_affiliation, candidate_affiliation):
+                return existing_affiliation
+    return None
+
+
+def _same_affiliation_names(existing_affiliation, candidate_affiliation):
+    existing_name_by_lang = existing_affiliation.get("nameByLang", {})
+    candidate_name_by_lang = candidate_affiliation.get("nameByLang", {})
+    shared_languages = set(existing_name_by_lang) & set(candidate_name_by_lang)
+    return all(
+        existing_name_by_lang[language] == candidate_name_by_lang[language]
+        for language in shared_languages
+    )
+
+
+def _merge_affiliation_name_by_lang(existing_affiliation, candidate_affiliation):
+    candidate_name_by_lang = candidate_affiliation.get("nameByLang")
+    existing_name_by_lang = existing_affiliation.get("nameByLang")
+    if not candidate_name_by_lang or not isinstance(existing_name_by_lang, dict):
+        return
+    for language, name in candidate_name_by_lang.items():
+        existing_name_by_lang.setdefault(language, name)
 
 
 def _merge_contrib_ror_affiliations(master_contrib_affiliations, candidate_contrib_affiliations):

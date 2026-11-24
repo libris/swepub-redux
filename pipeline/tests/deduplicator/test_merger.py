@@ -1,5 +1,3 @@
-import copy
-
 from pipeline.publicationmerger import has_kb_se_affiliation
 from pipeline.publicationmerger import has_affiliations
 from pipeline.publicationmerger import PublicationMerger
@@ -75,12 +73,7 @@ def test_merge_contribution_affiliations_no_master_kb_affiliations():
     master_contribution_kalle.affiliations = [
         {
             '@type': 'Organization',
-            'name': 'University of Ankeborg',
-            'language': {
-                '@type': 'Language',
-                '@id': 'https://id.kb.se/language/eng',
-                'code': 'eng'
-            },
+            'nameByLang': {'eng': 'University of Ankeborg'},
             'identifiedBy': [
                 {
                     '@type': 'Local',
@@ -105,7 +98,13 @@ def test_merge_contribution_affiliations_no_master_kb_affiliations():
 
 def test_merge_contribution_affiliations_master_kb_affiliation_nested_in_is_part_of():
     master_contribution_per = _get_master_contribution_per()
-    master_contribution_per.affiliations = [
+    assert has_kb_se_affiliation(master_contribution_per)
+    candidate_contribution_per = _get_candidate_contribution_per()
+    mocked_master_contributions = flexmock(contributions=[master_contribution_per])
+    mocked_candidate_contributions = flexmock(contributions=[candidate_contribution_per])
+    merged_master = merger._merge_contribution(mocked_master_contributions, mocked_candidate_contributions)
+    merged_contribution_per = merged_master.contributions[0]
+    assert merged_contribution_per.affiliations == [
         {
             '@type': 'Organization',
             'nameByLang': {'swe': 'Elektronik'},
@@ -119,7 +118,7 @@ def test_merge_contribution_affiliations_master_kb_affiliation_nested_in_is_part
             'isPartOf': [
                 {
                     '@type': 'Organization',
-                    'nameByLang': {'swe': 'Högskolan i Gävle'},
+                    'nameByLang': {'swe': 'Högskolan i Gävle', 'eng': 'University of Gävle'},
                     'identifiedBy': [
                         {
                             '@type': 'URI',
@@ -130,16 +129,81 @@ def test_merge_contribution_affiliations_master_kb_affiliation_nested_in_is_part
                 }
             ]
         },
-        {'@type': 'Organization', 'name': 'Chalmers'}
+        {'@type': 'Organization', 'name': 'Chalmers'},
+        {
+            '@type': 'Collaboration',
+            'nameByLang': {'eng': 'Affiliation Name'},
+            'identifiedBy': [
+                {
+                    '@type': 'URI',
+                    'value': 'e-science.se'
+                }
+            ]
+        },
+        {
+            '@id': 'https://id.kb.se/country/xxx'
+        },
+        {
+            '@type': 'Organization',
+            'nameByLang': {'swe': 'Chalmers tekniska högskola', 'eng': 'Chalmers University of Technology'},
+            'identifiedBy': [
+                {
+                    '@type': 'URI',
+                    'value': 'chalmers.se',
+                    'source': {'@type': 'Source', 'code': 'kb.se'}
+                }
+            ]
+        },
     ]
+
+
+def test_merge_contribution_affiliations_language_consolidated_candidate():
+    master_contribution_per = _get_master_contribution_per()
     candidate_contribution_per = _get_candidate_contribution_per()
-    assert has_kb_se_affiliation(master_contribution_per)
-    master_affiliations = copy.deepcopy(master_contribution_per.affiliations)
+    candidate_contribution_per.affiliations = [
+        {
+            '@type': 'Organization',
+            'nameByLang': {'swe': 'Högskolan i Gävle', 'eng': 'University of Gävle'},
+            'identifiedBy': [
+                {
+                    '@type': 'URI',
+                    'value': 'hig.se',
+                    'source': {'@type': 'Source', 'code': 'kb.se'}
+                }
+            ]
+        },
+    ]
     mocked_master_contributions = flexmock(contributions=[master_contribution_per])
     mocked_candidate_contributions = flexmock(contributions=[candidate_contribution_per])
     merged_master = merger._merge_contribution(mocked_master_contributions, mocked_candidate_contributions)
     merged_contribution_per = merged_master.contributions[0]
-    assert merged_contribution_per.affiliations == master_affiliations + candidate_contribution_per.affiliations
+    assert merged_contribution_per.affiliations == [
+        {
+            '@type': 'Organization',
+            'nameByLang': {'swe': 'Elektronik'},
+            'identifiedBy': [
+                {
+                    '@type': 'Local',
+                    'value': 'Elektronik',
+                    'source': {'@type': 'Source', 'code': 'hig.se'}
+                }
+            ],
+            'isPartOf': [
+                {
+                    '@type': 'Organization',
+                    'nameByLang': {'swe': 'Högskolan i Gävle', 'eng': 'University of Gävle'},
+                    'identifiedBy': [
+                        {
+                            '@type': 'URI',
+                            'value': 'hig.se',
+                            'source': {'@type': 'Source', 'code': 'kb.se'}
+                        }
+                    ]
+                }
+            ]
+        },
+        {'@type': 'Organization', 'name': 'Chalmers'},
+    ]
 
 
 def test_has_kb_se_affiliation_checks_affiliations_after_nested():
@@ -830,12 +894,7 @@ def _get_master_contribution_per():
             'hasAffiliation': [
                 {
                     '@type': 'Organization',
-                    'name': 'Elektronik',
-                    'language': {
-                        '@type': 'Language',
-                        '@id': 'https://id.kb.se/language/swe',
-                        'code': 'swe'
-                    },
+                    'nameByLang': {'swe': 'Elektronik'},
                     'identifiedBy': [
                         {
                             '@type': 'Local',
@@ -849,12 +908,7 @@ def _get_master_contribution_per():
                     'isPartOf': [
                         {
                             '@type': 'Organization',
-                            'name': 'Högskolan i Gävle',
-                            'language': {
-                                '@type': 'Language',
-                                '@id': 'https://id.kb.se/language/swe',
-                                'code': 'swe'
-                            },
+                            'nameByLang': {'swe': 'Högskolan i Gävle'},
                             'identifiedBy': [
                                 {
                                     '@type': 'URI',
@@ -913,12 +967,7 @@ def _get_candidate_contribution_per():
             'hasAffiliation': [
                 {
                     "@type": "Collaboration",
-                    "name": "Affiliation Name",
-                    "language": {
-                        "@type": "Language",
-                        "code": "eng",
-                        "@id": "https://id.kb.se/language/eng"
-                    },
+                    "nameByLang": {"eng": "Affiliation Name"},
                     "identifiedBy": [
                         {
                             "@type": "URI",
@@ -931,12 +980,7 @@ def _get_candidate_contribution_per():
                 },
                 {
                     '@type': 'Organization',
-                    'name': 'Högskolan i Gävle',
-                    'language': {
-                        '@type': 'Language',
-                        '@id': 'https://id.kb.se/language/swe',
-                        'code': 'swe'
-                    },
+                    'nameByLang': {'swe': 'Högskolan i Gävle'},
                     'identifiedBy': [
                         {
                             '@type': 'URI',
@@ -950,12 +994,7 @@ def _get_candidate_contribution_per():
                 },
                 {
                     '@type': 'Organization',
-                    'name': 'Chalmers tekniska högskola',
-                    'language': {
-                        '@type': 'Language',
-                        '@id': 'https://id.kb.se/language/swe',
-                        'code': 'swe'
-                    },
+                    'nameByLang': {'swe': 'Chalmers tekniska högskola'},
                     'identifiedBy': [
                         {
                             '@type': 'URI',
@@ -969,12 +1008,7 @@ def _get_candidate_contribution_per():
                 },
                 {
                     '@type': 'Organization',
-                    'name': 'University of Gävle',
-                    'language': {
-                        '@type': 'Language',
-                        '@id': 'https://id.kb.se/language/eng',
-                        'code': 'eng'
-                    },
+                    'nameByLang': {'eng': 'University of Gävle'},
                     'identifiedBy': [
                         {
                             '@type': 'URI',
@@ -988,12 +1022,7 @@ def _get_candidate_contribution_per():
                 },
                 {
                     '@type': 'Organization',
-                    'name': 'Chalmers University of Technology',
-                    'language': {
-                        '@type': 'Language',
-                        '@id': 'https://id.kb.se/language/eng',
-                        'code': 'eng'
-                    },
+                    'nameByLang': {'eng': 'Chalmers University of Technology'},
                     'identifiedBy': [
                         {
                             '@type': 'URI',
@@ -1036,12 +1065,7 @@ def _get_expected_merged_contribution_per():
             'hasAffiliation': [
                 {
                     '@type': 'Organization',
-                    'name': 'Elektronik',
-                    'language': {
-                        '@type': 'Language',
-                        '@id': 'https://id.kb.se/language/swe',
-                        'code': 'swe'
-                    },
+                    'nameByLang': {'swe': 'Elektronik'},
                     'identifiedBy': [
                         {
                             '@type': 'Local',
@@ -1055,12 +1079,7 @@ def _get_expected_merged_contribution_per():
                     'isPartOf': [
                         {
                             '@type': 'Organization',
-                            'name': 'Högskolan i Gävle',
-                            'language': {
-                                '@type': 'Language',
-                                '@id': 'https://id.kb.se/language/swe',
-                                'code': 'swe'
-                            },
+                            'nameByLang': {'swe': 'Högskolan i Gävle', 'eng': 'University of Gävle'},
                             'identifiedBy': [
                                 {
                                     '@type': 'URI',
@@ -1080,12 +1099,7 @@ def _get_expected_merged_contribution_per():
                 },
                 {
                     "@type": "Collaboration",
-                    "name": "Affiliation Name",
-                    "language": {
-                        "@type": "Language",
-                        "code": "eng",
-                        "@id": "https://id.kb.se/language/eng"
-                    },
+                    "nameByLang": {"eng": "Affiliation Name"},
                     "identifiedBy": [
                         {
                             "@type": "URI",
@@ -1098,69 +1112,7 @@ def _get_expected_merged_contribution_per():
                 },
                 {
                     '@type': 'Organization',
-                    'name': 'Högskolan i Gävle',
-                    'language': {
-                        '@type': 'Language',
-                        '@id': 'https://id.kb.se/language/swe',
-                        'code': 'swe'
-                    },
-                    'identifiedBy': [
-                        {
-                            '@type': 'URI',
-                            'value': 'hig.se',
-                            'source': {
-                                '@type': 'Source',
-                                'code': 'kb.se'
-                            }
-                        }
-                    ]
-                },
-                {
-                    '@type': 'Organization',
-                    'name': 'Chalmers tekniska högskola',
-                    'language': {
-                        '@type': 'Language',
-                        '@id': 'https://id.kb.se/language/swe',
-                        'code': 'swe'
-                    },
-                    'identifiedBy': [
-                        {
-                            '@type': 'URI',
-                            'value': 'chalmers.se',
-                            'source': {
-                                '@type': 'Source',
-                                'code': 'kb.se'
-                            }
-                        }
-                    ]
-                },
-                {
-                    '@type': 'Organization',
-                    'name': 'University of Gävle',
-                    'language': {
-                        '@type': 'Language',
-                        '@id': 'https://id.kb.se/language/eng',
-                        'code': 'eng'
-                    },
-                    'identifiedBy': [
-                        {
-                            '@type': 'URI',
-                            'value': 'hig.se',
-                            'source': {
-                                '@type': 'Source',
-                                'code': 'kb.se'
-                            }
-                        }
-                    ]
-                },
-                {
-                    '@type': 'Organization',
-                    'name': 'Chalmers University of Technology',
-                    'language': {
-                        '@type': 'Language',
-                        '@id': 'https://id.kb.se/language/eng',
-                        'code': 'eng'
-                    },
+                    'nameByLang': {'swe': 'Chalmers tekniska högskola', 'eng': 'Chalmers University of Technology'},
                     'identifiedBy': [
                         {
                             '@type': 'URI',
@@ -1232,12 +1184,7 @@ def _get_candidate_contribution_kalle():
             'hasAffiliation': [
                 {
                     '@type': 'Organization',
-                    'name': 'University of Gävle',
-                    'language': {
-                        '@type': 'Language',
-                        '@id': 'https://id.kb.se/language/eng',
-                        'code': 'eng'
-                    },
+                    'nameByLang': {'eng': 'University of Gävle'},
                     'identifiedBy': [
                         {
                             '@type': 'URI',

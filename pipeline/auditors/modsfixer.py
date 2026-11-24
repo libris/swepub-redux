@@ -19,16 +19,6 @@ class ModsFixer(BaseAuditor):
     def _handle_affiliations(self, affiliations):
         grouped = {}
         not_grouped = []
-        kb_se_count = 0
-        kb_se_langs = set()
-
-        for affiliation in affiliations:
-            if affiliation.get("identifiedBy"):
-                if affiliation["identifiedBy"][0].get("source", {}).get("code", "") == "kb.se":
-                    kb_se_count += 1
-            language = list(affiliation.get("nameByLang", {}))
-            if language:
-                kb_se_langs.add(language[0])
 
         for affiliation in affiliations:
             id_by = affiliation.get("identifiedBy", [])
@@ -40,16 +30,21 @@ class ModsFixer(BaseAuditor):
                 # Merge affiliations that have @type ROR and the same identifiedBy value (i.e., ROR ID).
                 if id_by[0].get("@type", "") == "ROR":
                     key = f"ROR-{id_by_value}"
-                # If we have two affiliations with source/authority kb.se and identical identifiedBy value
-                # *AND* they have *different* languages, we merge them into one; if they have the same
-                # language, we don't, because in that case they probably express specific institutions. 
-                elif id_by[0].get("source", {}).get("code", "") == "kb.se" and kb_se_count == 2 and len(kb_se_langs) == 2:
+                # Merge affiliations with source/authority kb.se and identical identifiedBy value
+                # *if* they have *different* languages; if they have the same
+                # language, we don't, because in that case they probably express specific institutions.
+                elif id_by[0].get("source", {}).get("code", "") == "kb.se":
                     key = f"kb.se-{id_by_value}"
 
                 if key:
                     if key not in grouped:
                         grouped[key] = {'@type': 'Organization', 'nameByLang': {}, 'identifiedBy': id_by}
-                    grouped[key]['nameByLang'][language] = name
+                    if language not in grouped[key]['nameByLang']:
+                        grouped[key]['nameByLang'][language] = name
+                    elif id_by[0].get("@type", "") == "ROR":
+                        grouped[key]['nameByLang'][language] = name
+                    else:
+                        not_grouped.append(affiliation)
                 else:
                     not_grouped.append(affiliation)
             else:
