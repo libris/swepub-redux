@@ -514,9 +514,9 @@ def has_kb_se_affiliation(affiliations):
                     and id_by.get("source", {}).get("code", "") == "kb.se"
                 ):
                     return True
-        nested_affiliations = affiliation.get("hasAffiliation", [])
-        if len(nested_affiliations) > 0:
-            return has_kb_se_affiliation(nested_affiliations)
+        nested_affiliations = affiliation.get("isPartOf", [])
+        if has_kb_se_affiliation(nested_affiliations):
+            return True
     return False
 
 

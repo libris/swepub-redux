@@ -424,7 +424,7 @@ class BibframeSource:
                         return person
 
             # check if there are nested affiliations
-            nested_affiliations = affiliation.get("hasAffiliation", [])
+            nested_affiliations = affiliation.get("isPartOf", [])
             if nested_affiliations is not None and len(nested_affiliations) > 0:
                 person = self._add_affiliation_to_person_recursive(person, nested_affiliations)
 
@@ -454,7 +454,7 @@ class BibframeSource:
         affil_names_by_lang = affiliation.get("nameByLang", {})
         for affil_name_by_lang in list(affil_names_by_lang.values()):
             nested_affils.append(affil_name_by_lang)
-        sub_affils = affiliation.get("hasAffiliation", [])
+        sub_affils = affiliation.get("isPartOf", [])
         for sub_affil in sub_affils:
             subsub_affils = self._get_freetext_affiliations(sub_affil)
             if subsub_affils:
