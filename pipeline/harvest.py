@@ -34,7 +34,7 @@ from pipeline.storage import (
 )
 from pipeline.index import generate_search_tables
 from pipeline.stats import generate_processing_stats
-from pipeline.oai import RecordIterator
+from pipeline.oai import Record, RecordIterator
 from pipeline.validate import validate, should_be_rejected
 from pipeline.audit import audit
 from pipeline.legacy_sync import legacy_sync
@@ -96,11 +96,11 @@ MP_CONTEXT = get_context("forkserver")
 
 
 # Wrap the harvest function just to easily log errors from subprocesses
-def harvest_wrapper(source):
+def harvest_wrapper(source, rebuild=False):
     harvest_cache["meta"]["sources_to_go"].remove(source["code"])
     harvest_cache["meta"]["sources_in_progress"].append(source["code"])
     try:
-        success = harvest(source)
+        success = harvest(source, rebuild)
         if success:
             harvest_cache["meta"]["sources_in_progress"].remove(source["code"])
             harvest_cache["meta"]["sources_succeeded"].append(source["code"])
@@ -121,14 +121,16 @@ def harvest_wrapper(source):
         log.info(f'Sources not yet started: {harvest_cache["meta"]["sources_to_go"]}')
 
 
-def harvest(source):
+def harvest(source, rebuild=False):
+    # With rebuild=True, records are "harvested" from the `original` table instead of from the
+    # source, and processed and stored just like an incremental harvest would.
     log.info(f"[STARTED]\t{source['code']}")
     fromtime = None
     # If we're doing an incremental update (default), first check if we've successfully harvested the source before.
     # If we have, then we only need to fetch records created/updated/modified since that time.
     # If we haven't, it's either because we've never tried harvesting that source before, or we tried but failed. In
     # that case fromtime will be None, meaning we fetch everything.
-    if incremental:
+    if incremental and not rebuild:
         with get_connection() as con:
             cur = con.cursor()
             cur.execute(
@@ -162,12 +164,15 @@ def harvest(source):
     num_failed = 0
 
     for source_set in source["sets"]:
-        if environ.get("SWEPUB_LOCAL_SERVER"):
-            if "diva" in source_set["url"]:
-                source_set["url"] = f"{environ.get('SWEPUB_LOCAL_SERVER')}/diva/{source['code']}"
-            else:
-                source_set["url"] = f"{environ.get('SWEPUB_LOCAL_SERVER')}/foo/{source['code']}"
-        record_iterator = RecordIterator(source["code"], source_set, fromtime, None, SWEPUB_USER_AGENT)
+        if rebuild:
+            record_iterator = _stored_records(source["code"], source_set.get("subset", ""))
+        else:
+            if environ.get("SWEPUB_LOCAL_SERVER"):
+                if "diva" in source_set["url"]:
+                    source_set["url"] = f"{environ.get('SWEPUB_LOCAL_SERVER')}/diva/{source['code']}"
+                else:
+                    source_set["url"] = f"{environ.get('SWEPUB_LOCAL_SERVER')}/foo/{source['code']}"
+            record_iterator = RecordIterator(source["code"], source_set, fromtime, None, SWEPUB_USER_AGENT)
         # For each set we put records into batches and let a number of workers handle these batches.
         try:
             with ProcessPoolExecutor(
@@ -277,7 +282,7 @@ def harvest(source):
         cur = con.cursor()
         lock.acquire()
         try:
-            if harvest_succeeded:
+            if harvest_succeeded and not rebuild:
                 cur.execute(
                     """
                 INSERT INTO last_harvest(source, last_successful_harvest) VALUES (?, ?)
@@ -318,6 +323,34 @@ def harvest(source):
             f'[ABORTED]\t{source["code"]} ({round(finish_time-start_time, 2)} seconds, {record_count} records, {record_per_s} records/s)'
         )
     return harvest_succeeded
+
+
+def _stored_records(source_code, source_subset):
+    # Records are deleted and re-inserted (with new IDs) in `original` while we iterate,
+    # so take a snapshot of the IDs first.
+    with get_connection() as con:
+        ids = [
+            row[0]
+            for row in con.execute(
+                "SELECT id FROM original WHERE source = ? AND source_subset IS ? ORDER BY id",
+                (source_code, source_subset),
+            )
+        ]
+        for group in chunker(ids, 128):
+            rows = con.execute(
+                f"SELECT oai_id, data FROM original WHERE id IN ({','.join('?' * len(group))}) ORDER BY id",
+                group,
+            ).fetchall()
+            for oai_id, xml in rows:
+                yield Record(oai_id, False, xml)
+
+
+def _get_stored_sources():
+    sources = {}
+    with get_connection() as con:
+        for code, subset in con.execute("SELECT DISTINCT source, source_subset FROM original ORDER BY source, source_subset"):
+            sources.setdefault(code, {"code": code, "sets": []})["sets"].append({"subset": subset})
+    return list(sources.values())
 
 
 def threaded_handle_harvested(source, source_subset, harvest_id, batch):
@@ -677,7 +710,7 @@ def handle_args():
     group.add_argument(
         "--rebuild",
         action="store_true",
-        help="Skip harvesting and rebuild everything derived from the already harvested records (deduplication, merging, search tables, stats, LibrisXL dataset). Sources, if specified, are ignored.",
+        help="Don't harvest; instead reprocess all records already in the database (conversion, validation, audit, deduplication, merging, etc.). Sources, if specified, are ignored.",
     )
 
     parser.add_argument(
@@ -800,9 +833,18 @@ if __name__ == "__main__":
             ]
             sources_to_process.append(source)
 
+    if args.rebuild:
+        if not storage_exists():
+            log.error(f"Database {get_sqlite_path()} doesn't exist; nothing to rebuild")
+            sys.exit(1)
+        # Rebuilding is essentially an incremental harvest of every record already in the database,
+        # but by reading them from the database instead of from the sources.
+        incremental = True
+        sources_to_process = _get_stored_sources()
+
     harvest_cache = None
     t1 = None
-    # If we're purging or rebuilding we skip the harvesting phase but do the rest.
+    # If we're purging we skip the harvesting phase but do the rest.
     if args.purge:
         log.info("Purging " + " ".join([source["code"] for source in sources_to_process]))
         with get_connection() as connection:
@@ -810,15 +852,6 @@ if __name__ == "__main__":
             for source in sources_to_process:
                 cursor.execute("DELETE FROM original WHERE source = ?", [source["code"]])
                 cursor.execute("DELETE FROM last_harvest WHERE source = ?", [source["code"]])
-            for table in TABLES_DELETED_ON_INCREMENTAL_OR_PURGE:
-                cursor.execute(f"DELETE FROM {table}")
-    elif args.rebuild:
-        if not storage_exists():
-            log.error(f"Database {get_sqlite_path()} doesn't exist; nothing to rebuild")
-            sys.exit(1)
-        log.info("Rebuilding from already harvested records (no harvesting)")
-        with get_connection() as connection:
-            cursor = connection.cursor()
             for table in TABLES_DELETED_ON_INCREMENTAL_OR_PURGE:
                 cursor.execute(f"DELETE FROM {table}")
     elif args.reset_harvest_time:
@@ -840,7 +873,10 @@ if __name__ == "__main__":
         harvest_cache["meta"]["sources_failed"] = manager.list()
         added_converted_rowids = manager.dict()
 
-        log.info("Harvesting " + " ".join([source["code"] for source in sources_to_process]))
+        if args.rebuild:
+            log.info("Rebuilding (reprocessing stored records of) " + " ".join([source["code"] for source in sources_to_process]))
+        else:
+            log.info("Harvesting " + " ".join([source["code"] for source in sources_to_process]))
 
         t0 = time.time()
         if incremental:
@@ -848,6 +884,11 @@ if __name__ == "__main__":
                 cursor = connection.cursor()
                 for table in TABLES_DELETED_ON_INCREMENTAL_OR_PURGE:
                     cursor.execute(f"DELETE FROM {table}")
+                if args.rebuild:
+                    # Like in a full harvest, relearn everything learned from other records
+                    # (phase 2 then uses it to reprocess affected records).
+                    cursor.execute("DELETE FROM localid_to_orcid")
+                    cursor.execute("DELETE FROM enriched_from_other_record")
         else:
             clean_and_init_storage()
 
@@ -879,7 +920,7 @@ if __name__ == "__main__":
             ),
         ) as executor:
             for source in sources_to_process:
-                executor.submit(harvest_wrapper, source)
+                executor.submit(harvest_wrapper, source, args.rebuild)
             executor.shutdown(wait=True)
 
         t1 = time.time()

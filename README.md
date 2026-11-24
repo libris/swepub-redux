@@ -51,7 +51,7 @@ uv run python -m pipeline.harvest --reset-harvest-time uniarts
 
 `--reset-harvest-time` removes the `last_harvest` entry for the specified source(s), meaning the next `--update` will trigger a full harvest.
 
-To rerun everything after the harvest step on the records already in the database, without harvesting anything, use `--rebuild`:
+To reprocess the records already in the database (rejection check, conversion, validation/enrichment, audit, and everything after that) without harvesting anything, use `--rebuild`. This is useful after changing e.g. the conversion or validation code. Source arguments are ignored, so all records are reprocessed. It works like an incremental harvest (`--update`) in which every record already in the database is "harvested" again, but from the database rather than from the source. Each rebuild adds an entry per source to the harvest history, and every record gets a new `modified` timestamp, so the next legacy search sync will update all of them. The `last_harvest` time is not changed, so the next `--update` still fetches everything changed since the last real harvest:
 
 ```bash
 uv run python -m pipeline.harvest --rebuild
