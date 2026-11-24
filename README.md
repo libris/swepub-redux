@@ -51,6 +51,12 @@ uv run python -m pipeline.harvest --reset-harvest-time uniarts
 
 `--reset-harvest-time` removes the `last_harvest` entry for the specified source(s), meaning the next `--update` will trigger a full harvest.
 
+To rerun everything after the harvest step on the records already in the database, without harvesting anything, use `--rebuild`:
+
+```bash
+uv run python -m pipeline.harvest --rebuild
+```
+
 The resulting sqlite3 database has roughly the following structure (see storage.py for details):
 
 | Table | Description |

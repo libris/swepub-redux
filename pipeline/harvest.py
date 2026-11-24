@@ -674,6 +674,11 @@ def handle_args():
         action="store_true",
         help="Delete records (from specified sources, if sources are specified, otherwise everything (but harvest history is kept)",
     )
+    group.add_argument(
+        "--rebuild",
+        action="store_true",
+        help="Skip harvesting and rebuild everything derived from the already harvested records (deduplication, merging, search tables, stats, LibrisXL dataset). Sources, if specified, are ignored.",
+    )
 
     parser.add_argument(
         "-d",
@@ -797,7 +802,7 @@ if __name__ == "__main__":
 
     harvest_cache = None
     t1 = None
-    # If we're purging we skip the harvesting phase but do the rest.
+    # If we're purging or rebuilding we skip the harvesting phase but do the rest.
     if args.purge:
         log.info("Purging " + " ".join([source["code"] for source in sources_to_process]))
         with get_connection() as connection:
@@ -805,6 +810,15 @@ if __name__ == "__main__":
             for source in sources_to_process:
                 cursor.execute("DELETE FROM original WHERE source = ?", [source["code"]])
                 cursor.execute("DELETE FROM last_harvest WHERE source = ?", [source["code"]])
+            for table in TABLES_DELETED_ON_INCREMENTAL_OR_PURGE:
+                cursor.execute(f"DELETE FROM {table}")
+    elif args.rebuild:
+        if not storage_exists():
+            log.error(f"Database {get_sqlite_path()} doesn't exist; nothing to rebuild")
+            sys.exit(1)
+        log.info("Rebuilding from already harvested records (no harvesting)")
+        with get_connection() as connection:
+            cursor = connection.cursor()
             for table in TABLES_DELETED_ON_INCREMENTAL_OR_PURGE:
                 cursor.execute(f"DELETE FROM {table}")
     elif args.reset_harvest_time:
