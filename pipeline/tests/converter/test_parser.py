@@ -263,7 +263,7 @@ def test_parser(parser):
                     "hasAffiliation": [{'@type': 'Organization', 'name': 'Lund University'}]
                 }
             ],
-            "subject": [
+            "keyword": [
                 {
                     "@type": "Topic",
                     "prefLabelByLang": {"sv": "Typografer"},
@@ -2540,7 +2540,7 @@ def test_non_uka_but_hardcoded_authority_subject(authority, authority_id, parser
             'prefLabelByLang': {'sv': 'Foobar'},
         }
     ]
-    actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
+    actual = parser.parse_mods(raw_xml)['instanceOf']['keyword']
     assert actual == expected
 
 
@@ -2567,7 +2567,7 @@ def test_non_uka_but_hardcoded_authority_subject_with_valueuri(authority, author
             'prefLabelByLang': {'sv': topic},
         }
     ]
-    actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
+    actual = parser.parse_mods(raw_xml)['instanceOf']['keyword']
     assert actual == expected
 
 
@@ -2588,7 +2588,7 @@ def test_non_uka_subject(parser):
             "prefLabelByLang": {"sv": "Humaniora"},
         }
     ]
-    actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
+    actual = parser.parse_mods(raw_xml)['instanceOf']['keyword']
     assert actual == expected
 
 
@@ -2609,7 +2609,7 @@ def test_non_uka_subject_without_language_property(parser):
             'prefLabel': 'Humaniora',
         }
     ]
-    actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
+    actual = parser.parse_mods(raw_xml)['instanceOf']['keyword']
     assert actual == expected
 
 
@@ -2625,7 +2625,7 @@ def test_non_uka_subject_without_href_or_authority_extract_only_basic_informatio
             "prefLabelByLang": {"sv": "Humaniora"},
         }
     ]
-    actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
+    actual = parser.parse_mods(raw_xml)['instanceOf']['keyword']
     assert actual == expected
 
 
@@ -2645,7 +2645,7 @@ def test_non_uka_subject_without_href(parser):
             "prefLabelByLang": {"sv": "Humaniora"},
         }
     ]
-    actual = parser.parse_mods(raw_xml)['instanceOf']['subject']
+    actual = parser.parse_mods(raw_xml)['instanceOf']['keyword']
     assert actual == expected
 
 

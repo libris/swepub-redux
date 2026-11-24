@@ -113,6 +113,7 @@ class Publication:
 
     @property
     def body_with_required_legacy_search_fields(self):
+        self.rename_keyword_to_subject()
         self.add_meta_control_number_001()
         self.add_meta_system_name_003()
         self.add_category_007()
@@ -132,6 +133,13 @@ class Publication:
         self.add_is_part_of_773()
         self.add_electronic_locator_and_identified_by_856()
         return self.body
+
+    def rename_keyword_to_subject(self):
+        """Renames instanceOf.keyword to instanceOf.subject"""
+        instance_of = self.body.setdefault("instanceOf", {})
+        keywords = instance_of.pop("keyword", [])
+        if keywords:
+            instance_of.setdefault("subject", []).extend(keywords)
 
     def add_meta_control_number_001(self):
         """Adds meta.controlNumber from self.id , represents part of marc field 001"""

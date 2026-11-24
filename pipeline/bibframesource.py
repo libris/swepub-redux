@@ -698,7 +698,7 @@ class BibframeSource:
 
     @property
     def keywords(self):
-        subjects = self.bibframe_master.get("instanceOf", {}).get("subject", []) + self.bibframe_master.get("instanceOf", {}).get("classification", [])
+        subjects = self.bibframe_master.get("instanceOf", {}).get("keyword", []) + self.bibframe_master.get("instanceOf", {}).get("classification", [])
         return self._get_keywords(subjects)
 
     def _get_keywords(self, subjects):

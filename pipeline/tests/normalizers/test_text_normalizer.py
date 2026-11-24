@@ -4,7 +4,7 @@ from pipeline.normalize import normalize_free_text
 
 def test_text_cleaner_succeeds():
     body = {
-        "instanceOf": {"subject": [{"prefLabel": "<p>Performance\rEnhancement &amp; Health</p>"}]}
+        "instanceOf": {"keyword": [{"prefLabel": "<p>Performance\rEnhancement &amp; Health</p>"}]}
     }
 
     test_data = "<p>Performance\rEnhancement &amp; Health</p>"
@@ -13,7 +13,7 @@ def test_text_cleaner_succeeds():
         value=test_data,
         normalization_status="unchanged",
         validation_status="valid",
-        path="instanceOf.subject.[0].prefLabel",
+        path="instanceOf.keyword.[0].prefLabel",
     )
     normalize_free_text(body, field)
     assert field.value == expected_result
@@ -24,13 +24,13 @@ def test_text_cleaner_succeeds():
 
 # TODO: Need to fix so that the cleaner doesn't fail on this
 def test_text_tag_cleaner_fail():
-    body = {"instanceOf": {"subject": [{"prefLabel": "Id<e om nåt roligt."}]}}
+    body = {"instanceOf": {"keyword": [{"prefLabel": "Id<e om nåt roligt."}]}}
 
     test_data = "Id<e om nåt roligt."
     expected_result = "Id"
     field = FieldMeta(
         value=test_data,
-        path="instanceOf.subject.[0].prefLabel",
+        path="instanceOf.keyword.[0].prefLabel",
     )
     normalize_free_text(body, field)
     assert field.value == expected_result

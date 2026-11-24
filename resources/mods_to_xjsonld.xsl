@@ -99,7 +99,7 @@
                     </xsl:for-each>
                 </array>
                 <xsl:if test="mods:subject[(@authority != 'uka.se') or not(@authority)]">
-                    <array key="subject">
+                    <array key="keyword">
                         <xsl:call-template name="subjects"/>
                     </array>
                 </xsl:if>

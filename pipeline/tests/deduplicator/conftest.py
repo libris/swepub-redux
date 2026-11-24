@@ -9,7 +9,7 @@ BODY = """
   "hasTitle": [{{"@type": "Title", "mainTitle": "{}", "subtitle": "{}"}}],
   "instanceOf": {{
     "summary": [{{"@type": "Summary", "label": "{}"}}],
-    "subject": [{}],
+    "keyword": [{}],
     "category": [{}],
     "hasNote": [{}]
   }},

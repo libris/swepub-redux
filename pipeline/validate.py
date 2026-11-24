@@ -56,7 +56,7 @@ PATHS = {
         "hasTitle[*].mainTitle",
         "hasTitle[*].subtitle",
         "instanceOf.summary[*].label",
-        'instanceOf.subject[?(@.@type=="Topic")].prefLabel',
+        'instanceOf.keyword[?(@.@type=="Topic")].prefLabel',
         'instanceOf.hasNote[?(@.@type=="Note")].label',
     ),
     "SSIF": (f"instanceOf.classification[*].@id",),

@@ -373,16 +373,16 @@ class Publication:
 
     @property
     def subjects(self):
-        """ Return array of subjects from instanceOf.subject """
-        subjects_json_array = self.body.get('instanceOf', {}).get('subject', [])
+        """ Return array of subjects from instanceOf.keyword """
+        subjects_json_array = self.body.get('instanceOf', {}).get('keyword', [])
         if subjects_json_array is None:
             return []
         return subjects_json_array
 
     @subjects.setter
     def subjects(self, subjects):
-        """ Sets array of subjects for instanceOf.subject """
-        self._body['instanceOf']['subject'] = subjects
+        """ Sets array of subjects for instanceOf.keyword """
+        self._body['instanceOf']['keyword'] = subjects
 
     @property
     def classifications(self):
