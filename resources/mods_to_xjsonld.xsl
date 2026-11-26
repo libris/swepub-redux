@@ -947,13 +947,13 @@
         <xsl:variable name="end"   select="normalize-space(mods:part/mods:extent[@unit='page' or not(@unit)]/mods:end)"/>
 
         <xsl:if test="$vol != ''">
-            <string key="_volumeNumber"><xsl:value-of select="$vol"/></string>
+            <string key="volumeNumber"><xsl:value-of select="$vol"/></string>
         </xsl:if>
         <xsl:if test="$issue != ''">
-            <string key="_issueNumber"><xsl:value-of select="$issue"/></string>
+            <string key="issueNumber"><xsl:value-of select="$issue"/></string>
         </xsl:if>
         <xsl:if test="$artNo != ''">
-            <string key="_articleNumber"><xsl:value-of select="$artNo"/></string>
+            <string key="articleNumber"><xsl:value-of select="$artNo"/></string>
         </xsl:if>
         <xsl:if test="$start != '' and $start != '-'">
             <string key="_pages">

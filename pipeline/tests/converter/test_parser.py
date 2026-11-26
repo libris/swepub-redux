@@ -371,8 +371,8 @@ def test_parser(parser):
                     {"@type": "ISSN", "value": "0346-8755"},
                     {"@type": "ISSN", "value": "1502-7716"}
                 ],
-                "_volumeNumber": "19",
-                "_issueNumber": "3",
+                "volumeNumber": "19",
+                "issueNumber": "3",
                 "_pages": "201-221"
             },
             {
@@ -609,7 +609,7 @@ def test_publication_with_series_and_host(parser):
             '@type': 'Instance',
             'instanceOf': {'@type': 'Work'},
             'hasTitle': [{'@type': 'Title', 'mainTitle': 'ISKO'}],
-            '_volumeNumber': '3'
+            'volumeNumber': '3'
         }
     }]
 
@@ -617,14 +617,14 @@ def test_publication_with_series_and_host(parser):
         {'@type': 'Instance',
          'hasTitle': [{'@type': 'Title', 'mainTitle': 'BOSE'}],
          'instanceOf': {'@type': 'Work'},
-         '_volumeNumber': '5',
+         'volumeNumber': '5',
          'seriesMembership': [{
         '@type': 'SeriesMembership',
         'inSeries': {
             '@type': 'Instance',
             'instanceOf': {'@type': 'Work'},
             'hasTitle': [{'@type': 'Title', 'mainTitle': 'ISKO'}],
-            '_volumeNumber': '3'
+            'volumeNumber': '3'
         }
     }]}
     ]
@@ -674,7 +674,7 @@ def test_series_volume_number_is_extracted(parser):
       </relatedItem>
     """)
 
-    assert '1337' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['_volumeNumber']
+    assert '1337' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['volumeNumber']
 
 
 def test_series_part_number_is_extracted(parser):
@@ -766,7 +766,7 @@ def test_host_volume_number_is_extracted(parser):
       </relatedItem>
     """)
 
-    assert '1337' == parser.parse_mods(raw_xml)['isPartOf'][0]['_volumeNumber']
+    assert '1337' == parser.parse_mods(raw_xml)['isPartOf'][0]['volumeNumber']
 
 
 def test_series_issue_number_is_extracted(parser):
@@ -777,7 +777,7 @@ def test_series_issue_number_is_extracted(parser):
       </relatedItem>
     """)
 
-    assert '1337' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['_issueNumber']
+    assert '1337' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['issueNumber']
 
 
 def test_host_issue_number_is_extracted(parser):
@@ -788,7 +788,7 @@ def test_host_issue_number_is_extracted(parser):
       </relatedItem>
     """)
 
-    assert '1337' == parser.parse_mods(raw_xml)['isPartOf'][0]['_issueNumber']
+    assert '1337' == parser.parse_mods(raw_xml)['isPartOf'][0]['issueNumber']
 
 
 def test_host_part_number_is_not_extracted(parser):
@@ -852,7 +852,7 @@ def test_series_article_number_is_extracted(parser):
         <part><detail type="artNo"><number>1337</number></detail></part>
       </relatedItem>
     """)
-    assert '1337' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['_articleNumber']
+    assert '1337' == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']['articleNumber']
 
 
 @pytest.mark.parametrize("mods_identifier,bibframe_type", [
@@ -906,9 +906,9 @@ def test_host_only_gets_position_information_on_forst_title_instance(parser):
                 'mainTitle': 'Second Title'
             }
         ],
-        '_volumeNumber': '1',
-        '_issueNumber': '2',
-        '_articleNumber': '3'
+        'volumeNumber': '1',
+        'issueNumber': '2',
+        'articleNumber': '3'
     }
 
     assert expected == parser.parse_mods(raw_xml)['isPartOf'][0]
@@ -941,9 +941,9 @@ def test_series_only_gets_position_information_on_forst_title_instance(parser):
                 'mainTitle': 'Second Title'
             }
         ],
-        '_volumeNumber': '1',
-        '_issueNumber': '2',
-        '_articleNumber': '3'
+        'volumeNumber': '1',
+        'issueNumber': '2',
+        'articleNumber': '3'
     }
 
     assert expected == parser.parse_mods(raw_xml)['seriesMembership'][0]['inSeries']

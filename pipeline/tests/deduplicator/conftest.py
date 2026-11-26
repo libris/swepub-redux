@@ -87,8 +87,8 @@ def master():
                            '{'
                            ' "identifiedBy": [{"@type": "ISSN", "value": "ispartof_1"}],'
                            ' "hasTitle": [{"@type": "Title", "mainTitle": "Beyond professional monologue", "subtitle": "rendering oppressed voices"}],'
-                           ' "_volumeNumber": "28",'
-                           ' "_issueNumber": "4",'
+                           ' "volumeNumber": "28",'
+                           ' "issueNumber": "4",'
                            ' "seriesMembership": [{"@type": "SeriesMembership", "inSeries": {"@type": "Instance", "hasTitle": [{"@type": "Title", "mainTitle": "part_of_serie_title", "partNumber":"1"}]}}]'
                            '}'
                            ))
@@ -234,8 +234,8 @@ def candidate4_same_title_summary_pub_date_but_different_ids():
                            '{'
                            ' "identifiedBy": [{"@type": "ISSN", "value": "ispartof_2"}],'
                            ' "hasTitle": [{"@type": "Title", "mainTitle": "Beyond Professional Monologue.", "subtitle": "Rendering Oppressed Voices"}],'
-                           ' "_volumeNumber": "28",'
-                           ' "_issueNumber": "4"'
+                           ' "volumeNumber": "28",'
+                           ' "issueNumber": "4"'
                            '}'
                            ))
     series_membership = json.loads(SERIES_MEMBERSHIP('hasSeriesTitle_not_the_same_as_master', 'IssueNumber2', 'ISSN_2'))
@@ -272,8 +272,8 @@ def candidate5_updated_publication():
                            '{'
                            ' "identifiedBy": [{"@type": "ISSN", "value": "ispartof_1"}],'
                            ' "hasTitle": [{"@type": "Title", "mainTitle": "Beyond professional monologue", "subtitle": "rendering oppressed voices"}],'
-                           ' "_volumeNumber": "28",'
-                           ' "_issueNumber": "4",'
+                           ' "volumeNumber": "28",'
+                           ' "issueNumber": "4",'
                            ' "seriesMembership": [{"@type": "SeriesMembership", "inSeries": {"@type": "Instance", "hasTitle": [{"@type": "Title", "mainTitle": "part_of_serie_title", "partNumber":"1"}]}}]'
                            '}'
                            ))

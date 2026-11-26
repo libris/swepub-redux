@@ -1419,13 +1419,13 @@ class IsPartOf:
 
     @property
     def volume_number(self):
-        """Return value for _volumeNumber, None if not exist """
-        return self.body.get('_volumeNumber')
+        """Return value for volumeNumber, None if not exist """
+        return self.body.get('volumeNumber')
 
     @property
     def issue_number(self):
-        """Return value for _issueNumber, None if not exist """
-        return self.body.get('_issueNumber')
+        """Return value for issueNumber, None if not exist """
+        return self.body.get('issueNumber')
 
     @property
     def issns(self):

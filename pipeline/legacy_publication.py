@@ -513,8 +513,8 @@ class Publication:
         """
         Reconstruct isPartOf, affects marc field 773
         1. Sets @type to Instance for each (is)PartOf
-        2. Creates isPartOf.marc:enumerationAndFirstPage  with _volumeNumber, _issueNumber and _pages
-        3. Creates part with _volumeNumber, _issueNumber and _pages
+        2. Creates isPartOf.marc:enumerationAndFirstPage  with volumeNumber, issueNumber and _pages
+        3. Creates part with volumeNumber, issueNumber and _pages
         """
         body = self.body
         if body.get("isPartOf"):
@@ -541,11 +541,11 @@ class Publication:
                     instance_of = is_part.pop("instanceOf", {})
                     if instance_of.get("contribution"):
                         is_part["contribution"] = instance_of.get("contribution")
-                    volume_number = is_part.pop("_volumeNumber", None)
+                    volume_number = is_part.pop("volumeNumber", None)
                     if volume_number:
                         part = volume_number
                         marc_enumeration_and_first_page = volume_number
-                    issue_number = is_part.pop("_issueNumber", None)
+                    issue_number = is_part.pop("issueNumber", None)
                     if issue_number:
                         part = part + ":" + issue_number
                         marc_enumeration_and_first_page = (

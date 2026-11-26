@@ -321,7 +321,7 @@ class PublicationMerger:
     @staticmethod
     def _merge_is_part_of(master, candidate):
         """Merge isPartOf if same identifier or
-        (same isPartOf.hasTitle.mainTitle/subtitle/_volumeNumber/_issueNumber)."""
+        (same isPartOf.hasTitle.mainTitle/subtitle/volumeNumber/issueNumber)."""
         master_is_part_ofs = master.is_part_of
         candidate_parts_of = candidate.is_part_of
         for c_p in candidate_parts_of:
