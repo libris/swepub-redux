@@ -1,5 +1,6 @@
 {
   "cth": {
+    "@id": "https://swepub.kb.se/source/cth",
     "code": "cth",
     "name": "Chalmers tekniska högskola",
     "sets": [
@@ -11,6 +12,7 @@
     ]
   },
   "gu": {
+    "@id": "https://swepub.kb.se/source/gu",
     "code": "gu",
     "name": "Göteborgs universitet",
     "sets": [
@@ -29,6 +31,7 @@
     ]
   },
   "kth": {
+    "@id": "https://swepub.kb.se/source/kth",
     "code": "kth",
     "name": "Kungliga Tekniska högskolan",
     "sets": [
@@ -40,6 +43,7 @@
     ]
   },
   "lu": {
+    "@id": "https://swepub.kb.se/source/lu",
     "code": "lu",
     "name": "Lunds universitet",
     "sets": [
@@ -58,6 +62,7 @@
     ]
   },
   "uu": {
+    "@id": "https://swepub.kb.se/source/uu",
     "code": "uu",
     "name": "Uppsala universitet",
     "sets": [
@@ -69,6 +74,7 @@
     ]
   },
   "su": {
+    "@id": "https://swepub.kb.se/source/su",
     "code": "su",
     "name": "Stockholms universitet",
     "sets": [
@@ -80,6 +86,7 @@
     ]
   },
   "oru": {
+    "@id": "https://swepub.kb.se/source/oru",
     "code": "oru",
     "name": "Örebro universitet",
     "sets": [
@@ -91,6 +98,7 @@
     ]
   },
   "umu": {
+    "@id": "https://swepub.kb.se/source/umu",
     "code": "umu",
     "name": "Umeå universitet",
     "sets": [
@@ -102,6 +110,7 @@
     ]
   },
   "sh": {
+    "@id": "https://swepub.kb.se/source/sh",
     "code": "sh",
     "name": "Södertörns högskola",
     "sets": [
@@ -113,6 +122,7 @@
     ]
   },
   "slu": {
+    "@id": "https://swepub.kb.se/source/slu",
     "code": "slu",
     "name": "Sveriges lantbruksuniversitet",
     "sets": [
@@ -131,6 +141,7 @@
     ]
   },
   "uniarts": {
+    "@id": "https://swepub.kb.se/source/uniarts",
     "code": "uniarts",
     "name": "Stockholms konstnärliga högskola",
     "sets": [
@@ -142,6 +153,7 @@
     ]
   },
   "vti": {
+    "@id": "https://swepub.kb.se/source/vti",
     "code": "vti",
     "name": "Statens väg- och transportforskningsinstitut",
     "sets": [
@@ -153,6 +165,7 @@
     ]
   },
   "shh": {
+    "@id": "https://swepub.kb.se/source/shh",
     "code": "shh",
     "name": "Sophiahemmet Högskola",
     "sets": [
@@ -164,6 +177,7 @@
     ]
   },
   "rkh": {
+    "@id": "https://swepub.kb.se/source/rkh",
     "code": "rkh",
     "name": "Röda Korsets Högskola",
     "sets": [
@@ -175,6 +189,7 @@
     ]
   },
   "ri": {
+    "@id": "https://swepub.kb.se/source/ri",
     "code": "ri",
     "name": "RISE Research Institutes of Sweden",
     "sets": [
@@ -186,6 +201,7 @@
     ]
   },
   "raa": {
+    "@id": "https://swepub.kb.se/source/raa",
     "code": "raa",
     "name": "Riksantikvarieämbetet",
     "sets": [
@@ -197,6 +213,7 @@
     ]
   },
   "nai": {
+    "@id": "https://swepub.kb.se/source/nai",
     "code": "nai",
     "name": "Nordiska Afrikainstitutet",
     "sets": [
@@ -208,6 +225,7 @@
     ]
   },
   "naturvardsverket": {
+    "@id": "https://swepub.kb.se/source/naturvardsverket",
     "code": "naturvardsverket",
     "name": "Naturvårdsverket",
     "sets": [
@@ -219,6 +237,7 @@
     ]
   },
   "nrm": {
+    "@id": "https://swepub.kb.se/source/nrm",
     "code": "nrm",
     "name": "Naturhistoriska riksmuseet",
     "sets": [
@@ -230,6 +249,7 @@
     ]
   },
   "nationalmuseum": {
+    "@id": "https://swepub.kb.se/source/nationalmuseum",
     "code": "nationalmuseum",
     "name": "Nationalmuseum",
     "sets": [
@@ -241,6 +261,7 @@
     ]
   },
   "mdh": {
+    "@id": "https://swepub.kb.se/source/mdh",
     "code": "mdh",
     "name": "Mälardalens universitet",
     "sets": [
@@ -252,6 +273,7 @@
     ]
   },
   "miun": {
+    "@id": "https://swepub.kb.se/source/miun",
     "code": "miun",
     "name": "Mittuniversitetet",
     "sets": [
@@ -263,6 +285,7 @@
     ]
   },
   "mau": {
+    "@id": "https://swepub.kb.se/source/mau",
     "code": "mau",
     "name": "Malmö universitet",
     "sets": [
@@ -274,6 +297,7 @@
     ]
   },
   "ltu": {
+    "@id": "https://swepub.kb.se/source/ltu",
     "code": "ltu",
     "name": "Luleå tekniska universitet",
     "sets": [
@@ -285,6 +309,7 @@
     ]
   },
   "lnu": {
+    "@id": "https://swepub.kb.se/source/lnu",
     "code": "lnu",
     "name": "Linnéuniversitetet",
     "sets": [
@@ -296,6 +321,7 @@
     ]
   },
   "liu": {
+    "@id": "https://swepub.kb.se/source/liu",
     "code": "liu",
     "name": "Linköpings universitet",
     "sets": [
@@ -307,6 +333,7 @@
     ]
   },
   "kmh": {
+    "@id": "https://swepub.kb.se/source/kmh",
     "code": "kmh",
     "name": "Kungl. Musikhögskolan",
     "sets": [
@@ -318,6 +345,7 @@
     ]
   },
   "kkh": {
+    "@id": "https://swepub.kb.se/source/kkh",
     "code": "kkh",
     "name": "Kungl. Konsthögskolan",
     "sets": [
@@ -329,6 +357,7 @@
     ]
   },
   "konstfack": {
+    "@id": "https://swepub.kb.se/source/konstfack",
     "code": "konstfack",
     "name": "Konstfack",
     "sets": [
@@ -340,6 +369,7 @@
     ]
   },
   "ki": {
+    "@id": "https://swepub.kb.se/source/ki",
     "code": "ki",
     "name": "Karolinska Institutet",
     "sets": [
@@ -351,6 +381,7 @@
     ]
   },
   "kau": {
+    "@id": "https://swepub.kb.se/source/kau",
     "code": "kau",
     "name": "Karlstads universitet",
     "sets": [
@@ -362,6 +393,7 @@
     ]
   },
   "hj": {
+    "@id": "https://swepub.kb.se/source/hj",
     "code": "hj",
     "name": "Jönköping University",
     "sets": [
@@ -373,6 +405,7 @@
     ]
   },
   "sprakochfolkminnen": {
+    "@id": "https://swepub.kb.se/source/sprakochfolkminnen",
     "code": "sprakochfolkminnen",
     "name": "Institutet för språk och folkminnen",
     "sets": [
@@ -384,6 +417,7 @@
     ]
   },
   "hv": {
+    "@id": "https://swepub.kb.se/source/hv",
     "code": "hv",
     "name": "Högskolan Väst",
     "sets": [
@@ -395,6 +429,7 @@
     ]
   },
   "hkr": {
+    "@id": "https://swepub.kb.se/source/hkr",
     "code": "hkr",
     "name": "Högskolan Kristianstad",
     "sets": [
@@ -406,6 +441,7 @@
     ]
   },
   "his": {
+    "@id": "https://swepub.kb.se/source/his",
     "code": "his",
     "name": "Högskolan i Skövde",
     "sets": [
@@ -417,6 +453,7 @@
     ]
   },
   "hh": {
+    "@id": "https://swepub.kb.se/source/hh",
     "code": "hh",
     "name": "Högskolan i Halmstad",
     "sets": [
@@ -428,6 +465,7 @@
     ]
   },
   "hig": {
+    "@id": "https://swepub.kb.se/source/hig",
     "code": "hig",
     "name": "Högskolan i Gävle",
     "sets": [
@@ -439,6 +477,7 @@
     ]
   },
   "hb": {
+    "@id": "https://swepub.kb.se/source/hb",
     "code": "hb",
     "name": "Högskolan i Borås",
     "sets": [
@@ -450,6 +489,7 @@
     ]
   },
   "du": {
+    "@id": "https://swepub.kb.se/source/du",
     "code": "du",
     "name": "Högskolan Dalarna",
     "sets": [
@@ -461,6 +501,7 @@
     ]
   },
   "gih": {
+    "@id": "https://swepub.kb.se/source/gih",
     "code": "gih",
     "name": "Gymnastik- och idrottshögskolan",
     "sets": [
@@ -472,6 +513,7 @@
     ]
   },
   "fhs": {
+    "@id": "https://swepub.kb.se/source/fhs",
     "code": "fhs",
     "name": "Försvarshögskolan",
     "sets": [
@@ -483,6 +525,7 @@
     ]
   },
   "esh": {
+    "@id": "https://swepub.kb.se/source/esh",
     "code": "esh",
     "name": "Marie Cederschiöld högskola",
     "sets": [
@@ -494,6 +537,7 @@
     ]
   },
   "bth": {
+    "@id": "https://swepub.kb.se/source/bth",
     "code": "bth",
     "name": "Blekinge Tekniska Högskola",
     "sets": [
@@ -505,6 +549,7 @@
     ]
   },
   "ths": {
+    "@id": "https://swepub.kb.se/source/ths",
     "code": "ths",
     "name": "Enskilda Högskolan Stockholm",
     "sets": [
@@ -516,6 +561,7 @@
     ]
   },
   "hhs": {
+    "@id": "https://swepub.kb.se/source/hhs",
     "code": "hhs",
     "name": "Handelshögskolan i Stockholm",
     "sets": [
@@ -527,6 +573,7 @@
     ]
   },
   "havochvatten": {
+    "@id": "https://swepub.kb.se/source/havochvatten",
     "code": "havochvatten",
     "name": "Havs- och vattenmyndigheten",
     "sets": [
@@ -538,6 +585,7 @@
     ]
   },
   "ivl": {
+    "@id": "https://swepub.kb.se/source/ivl",
     "code": "ivl",
     "name": "IVL Svenska Miljöinstitutet",
     "sets": [

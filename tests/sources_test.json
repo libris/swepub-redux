@@ -1,5 +1,6 @@
 {
   "chalmers": {
+    "@id": "https://swepub.kb.se.localhost/source/chalmers",
     "code": "chalmers",
     "name": "TEST - chalmers",
     "sets": [
@@ -11,6 +12,7 @@
     ]
   },
   "diva_kth": {
+    "@id": "https://swepub.kb.se.localhost/source/diva_kth",
     "code": "diva_kth",
     "name": "TEST - diva_kth",
     "sets": [
@@ -22,6 +24,7 @@
     ]
   },
   "dedup": {
+    "@id": "https://swepub.kb.se.localhost/source/dedup",
     "code": "dedup",
     "name": "TEST - dedup",
     "sets": [
@@ -33,6 +36,7 @@
     ]
   },
   "dedup_merge": {
+    "@id": "https://swepub.kb.se.localhost/source/dedup_merge",
     "code": "dedup_merge",
     "name": "TEST - dedup_merge",
     "sets": [
@@ -44,6 +48,7 @@
     ]
   },
   "dedup_malmo": {
+    "@id": "https://swepub.kb.se.localhost/source/dedup_malmo",
     "code": "malmo",
     "name": "TEST - malmo",
     "sets": [
@@ -55,6 +60,7 @@
     ]
   },
   "dedup_ignore_id_qualifier": {
+    "@id": "https://swepub.kb.se.localhost/source/dedup_ignore_id_qualifier",
     "code": "kth",
     "name": "TEST - dedup ignore id qualifier",
     "sets": [
@@ -66,6 +72,7 @@
     ]
   },
   "dedup_ignore_id_qualifier_2": {
+    "@id": "https://swepub.kb.se.localhost/source/dedup_ignore_id_qualifier_2",
     "code": "kth",
     "name": "TEST - dedup ignore id qualifier 2",
     "sets": [
@@ -77,6 +84,7 @@
     ]
   },
   "mau": {
+    "@id": "https://swepub.kb.se.localhost/source/mau",
     "code": "mau",
     "name": "TEST - mau",
     "sets": [
@@ -88,6 +96,7 @@
     ]
   },
   "lund": {
+    "@id": "https://swepub.kb.se.localhost/source/lund",
     "code": "lund",
     "name": "TEST - lund",
     "sets": [
@@ -99,6 +108,7 @@
     ]
   },
   "validatable": {
+    "@id": "https://swepub.kb.se.localhost/source/validatable",
     "code": "validatable",
     "name": "TEST - validatable",
     "sets": [
@@ -110,6 +120,7 @@
     ]
   },
   "shortdoi_test": {
+    "@id": "https://swepub.kb.se.localhost/source/shortdoi_test",
     "code": "shortdoi_test",
     "name": "TEST - shortdoi_test",
     "sets": [
@@ -121,6 +132,7 @@
     ]
   },
   "doi_error": {
+    "@id": "https://swepub.kb.se.localhost/source/doi_error",
     "code": "doi_error",
     "name": "TEST - doi_error",
     "sets": [
@@ -132,6 +144,7 @@
     ]
   },
   "double_issn": {
+    "@id": "https://swepub.kb.se.localhost/source/double_issn",
     "code": "double_issn",
     "name": "TEST - double_issn",
     "sets": [
@@ -143,6 +156,7 @@
     ]
   },
   "invalid_issn": {
+    "@id": "https://swepub.kb.se.localhost/source/invalid_issn",
     "code": "invalid_issn",
     "name": "TEST - invalid_issn",
     "sets": [
@@ -154,6 +168,7 @@
     ]
   },
   "empty_issn": {
+    "@id": "https://swepub.kb.se.localhost/source/empty_issn",
     "code": "empty_issn",
     "name": "TEST - empty_issn",
     "sets": [
@@ -165,6 +180,7 @@
     ]
   },
   "delete_kth_post": {
+    "@id": "https://swepub.kb.se.localhost/source/delete_kth_post",
     "code": "delete_kth_post",
     "name": "TEST - delete_kth_post",
     "sets": [
@@ -176,6 +192,7 @@
     ]
   },
   "incomplete_minimum_level_diva": {
+    "@id": "https://swepub.kb.se.localhost/source/incomplete_minimum_level_diva",
     "code": "incomplete_minimum_level_diva",
     "name": "TEST - incomplete_minimum_level_diva",
     "sets": [
@@ -187,6 +204,7 @@
     ]
   },
   "incomplete_minimum_level": {
+    "@id": "https://swepub.kb.se.localhost/source/incomplete_minimum_level",
     "code": "incomplete_minimum_level",
     "name": "TEST - incomplete_minimum_level",
     "sets": [
@@ -198,6 +216,7 @@
     ]
   },
   "duplicate_person": {
+    "@id": "https://swepub.kb.se.localhost/source/duplicate_person",
     "code": "duplicate_person",
     "name": "TEST - duplicate_person",
     "sets": [
@@ -209,6 +228,7 @@
     ]
   },
   "missing_issn": {
+    "@id": "https://swepub.kb.se.localhost/source/missing_issn",
     "code": "missing_issn",
     "name": "TEST - missing_issn",
     "sets": [
@@ -220,6 +240,7 @@
     ]
   },
   "dedup_org_1": {
+    "@id": "https://swepub.kb.se.localhost/source/dedup_org_1",
     "code": "dedup_org_1",
     "name": "TEST - dedup_org_1",
     "sets": [
@@ -231,6 +252,7 @@
     ]
   },
   "dedup_org_2": {
+    "@id": "https://swepub.kb.se.localhost/source/dedup_org_2",
     "code": "dedup_org_2",
     "name": "TEST - dedup_org_2",
     "sets": [
@@ -242,6 +264,7 @@
     ]
   },
   "konstfack-new-diva": {
+    "@id": "https://swepub.kb.se.localhost/source/konstfack-new-diva",
     "code": "konstfack-new-diva",
     "name": "TEST - konstfack-new-diva",
     "sets": [
@@ -253,6 +276,7 @@
     ]
   },
   "kth-new-diva": {
+    "@id": "https://swepub.kb.se.localhost/source/kth-new-diva",
     "code": "kth-new-diva",
     "name": "TEST - kth-new-diva",
     "sets": [
@@ -264,6 +288,7 @@
     ]
   },
   "rise-new-diva": {
+    "@id": "https://swepub.kb.se.localhost/source/rise-new-diva",
     "code": "rise-new-diva",
     "name": "TEST - rise-new-diva",
     "sets": [
@@ -275,6 +300,7 @@
     ]
   },
   "liu-new-diva": {
+    "@id": "https://swepub.kb.se.localhost/source/liu-new-diva",
     "code": "liu-new-diva",
     "name": "TEST - liu-new-diva",
     "sets": [
@@ -286,6 +312,7 @@
     ]
   },
   "mau-new": {
+    "@id": "https://swepub.kb.se.localhost/source/mau-new",
     "code": "mau-new",
     "name": "TEST - mau-new",
     "sets": [
@@ -297,6 +324,7 @@
     ]
   },
   "kkh-new": {
+    "@id": "https://swepub.kb.se.localhost/source/kkh-new",
     "code": "kkh-new",
     "name": "TEST - kkh-new",
     "sets": [
@@ -308,6 +336,7 @@
     ]
   },
   "ltu-new": {
+    "@id": "https://swepub.kb.se.localhost/source/ltu-new",
     "code": "ltu-new",
     "name": "TEST - ltu-new",
     "sets": [
@@ -319,6 +348,7 @@
     ]
   },
   "nationalmuseum-new": {
+    "@id": "https://swepub.kb.se.localhost/source/nationalmuseum-new",
     "code": "nationalmuseum-new",
     "name": "TEST - nationalmuseum-new",
     "sets": [
@@ -330,6 +360,7 @@
     ]
   },
   "naturvardsverket-new": {
+    "@id": "https://swepub.kb.se.localhost/source/naturvardsverket-new",
     "code": "naturvardsverket-new",
     "name": "TEST - naturvardsverket-new",
     "sets": [
@@ -341,6 +372,7 @@
     ]
   },
   "gih-new": {
+    "@id": "https://swepub.kb.se.localhost/source/gih-new",
     "code": "gih-new",
     "name": "TEST - gih-new",
     "sets": [
@@ -352,6 +384,7 @@
     ]
   },
   "uniarts-new": {
+    "@id": "https://swepub.kb.se.localhost/source/uniarts-new",
     "code": "uniarts-new",
     "name": "TEST - uniarts-new",
     "sets": [
@@ -363,6 +396,7 @@
     ]
   },
   "ths-new": {
+    "@id": "https://swepub.kb.se.localhost/source/ths-new",
     "code": "ths-new",
     "name": "TEST - ths-new",
     "sets": [
@@ -374,6 +408,7 @@
     ]
   },
   "minimum-level-diva": {
+    "@id": "https://swepub.kb.se.localhost/source/minimum-level-diva",
     "code": "minimum-level-diva",
     "name": "TEST - minimum-level-diva",
     "sets": [
@@ -385,6 +420,7 @@
     ]
   },
   "legacy_search": {
+    "@id": "https://swepub.kb.se.localhost/source/legacy_search",
     "code": "legacy_search",
     "name": "TEST - legacy_search",
     "sets": [
@@ -396,6 +432,7 @@
     ]
   },
   "rejected-uu": {
+    "@id": "https://swepub.kb.se.localhost/source/rejected-uu",
     "code": "rejected-uu",
     "name": "TEST - rejected-uu",
     "sets": [
@@ -407,6 +444,7 @@
     ]
   },
   "deduplicate-bug": {
+    "@id": "https://swepub.kb.se.localhost/source/deduplicate-bug",
     "code": "deduplicate-bug",
     "name": "TEST - deduplicate-bug",
     "sets": [
@@ -418,6 +456,7 @@
     ]
   },
   "missing-pubdate": {
+    "@id": "https://swepub.kb.se.localhost/source/missing-pubdate",
     "code": "missing-pubdate",
     "name": "TEST - missing-pubdate",
     "sets": [
@@ -429,6 +468,7 @@
     ]
   },
   "lnu": {
+    "@id": "https://swepub.kb.se.localhost/source/lnu",
     "code": "lnu",
     "name": "TEST - lnu",
     "sets": [
@@ -440,6 +480,7 @@
     ]
   },
   "gih": {
+    "@id": "https://swepub.kb.se.localhost/source/gih",
     "code": "gih",
     "name": "TEST - gih",
     "sets": [
@@ -451,6 +492,7 @@
     ]
   },
   "rejected_kth": {
+    "@id": "https://swepub.kb.se.localhost/source/rejected_kth",
     "code": "rejected_kth",
     "name": "TEST - rejected_kth",
     "sets": [
@@ -462,6 +504,7 @@
     ]
   },
   "doi_validation_enrichment": {
+    "@id": "https://swepub.kb.se.localhost/source/doi_validation_enrichment",
     "code": "doi_validation_enrichment",
     "name": "TEST - doi_validation_enrichment",
     "sets": [
@@ -473,6 +516,7 @@
     ]
   },
   "obsolete-test-listidentifiers": {
+    "@id": "https://swepub.kb.se.localhost/source/obsolete-test-listidentifiers",
     "code": "obsolete-test",
     "name": "TEST - obsolete-test",
     "sets": [
@@ -484,6 +528,7 @@
     ]
   },
   "obsolete-test-listrecords": {
+    "@id": "https://swepub.kb.se.localhost/source/obsolete-test-listrecords",
     "code": "obsolete-test",
     "name": "TEST - obsolete-test",
     "sets": [
@@ -495,6 +540,7 @@
     ]
   },
   "local_personid_from_candidate": {
+    "@id": "https://swepub.kb.se.localhost/source/local_personid_from_candidate",
     "code": "kth",
     "name": "TEST - local_personid_from_candidate",
     "sets": [
@@ -506,6 +552,7 @@
     ]
   },
   "orcid_from_another_record": {
+    "@id": "https://swepub.kb.se.localhost/source/orcid_from_another_record",
     "code": "kth",
     "name": "TEST - orcid_from_another_record",
     "sets": [
