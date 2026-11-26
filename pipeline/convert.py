@@ -99,6 +99,8 @@ class ModsParser(object):
 
 def convert(body):
     doc = ModsParser().parse_mods(body)
-    source_code = doc.get("meta", {}).get("assigner", {}).get("label")
-    doc.setdefault("meta", {})["derivedFrom"] = [make_derived_from(doc["@id"], source_code)]
+    meta = doc.setdefault("meta", {})
+    # The stylesheet gives us publisher as a blank Organization with the recordContentSource code
+    publishers = [d.get("publisher") for d in meta.get("derivedFrom", [])] or [None]
+    meta["derivedFrom"] = [make_derived_from(doc["@id"], p) for p in publishers]
     return doc

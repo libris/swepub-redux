@@ -1,6 +1,6 @@
 import dateutil.parser
 from datetime import datetime
-from pipeline.util import SSIF_SCHEME, derived_from_ids, derived_from_orgs
+from pipeline.util import SSIF_SCHEME, derived_from_ids, derived_from_orgs, source_org
 
 category_publication_mappings = {
     "https://id.kb.se/term/swepub/output/publication/editorial-letter": ["art"],
@@ -107,9 +107,9 @@ class Publication:
         return self._body
 
     @property
-    def meta_assigner_label(self):
-        body = self.body
-        return body.get("meta", {}).get("assigner", {}).get("label")
+    def source_org(self):
+        """The record's own org code (see util.source_org)"""
+        return source_org(self.body)
 
     @property
     def body_with_required_legacy_search_fields(self):
@@ -181,13 +181,13 @@ class Publication:
             body["meta"]["created"] = datetime.today().strftime("%y%m%d")
 
     def add_meta_description_creator_040(self):
-        """Adds meta.descriptionCreator from meta.assigner.label, represents marc field 040"""
+        """Adds meta.descriptionCreator from the record's source org, represents marc field 040"""
         body = self.body
         meta = body.get("meta", {})
         meta["descriptionCreator"] = {
-            "@id": "https://libris.kb.se/library/" + str(self.meta_assigner_label),
+            "@id": "https://libris.kb.se/library/" + str(self.source_org),
             "@type": "Library",
-            "sigel": "(SwePub)" + str(self.meta_assigner_label),
+            "sigel": "(SwePub)" + str(self.source_org),
         }
 
         orgs = derived_from_orgs(body)
@@ -195,7 +195,7 @@ class Publication:
             other_orgs = [
                 org
                 for org in dict.fromkeys(filter(None, orgs))
-                if org != self.meta_assigner_label
+                if org != self.source_org
             ]
             if other_orgs:
                 meta["descriptionUpgrader"] = []

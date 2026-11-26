@@ -3,7 +3,7 @@ from enum import Enum
 from datetime import date, datetime
 from dateutil.parser import parse as dateutil_parse
 
-from pipeline.util import derived_from_ids, derived_from_orgs, Level, SSIF_BASE, is_ssif_classification, is_autoclassified
+from pipeline.util import derived_from_ids, derived_from_orgs, source_org, Level, SSIF_BASE, is_ssif_classification, is_autoclassified
 
 
 CREATOR_FIELDS = [
@@ -201,7 +201,7 @@ class BibframeSource:
     @property
     def source_org_master(self):
         """Returns org code from master publication"""
-        return self._bibframe_master.get("meta", {}).get("assigner", {}).get("label")
+        return source_org(self._bibframe_master)
 
     @property
     def publication_count(self):

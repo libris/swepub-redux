@@ -227,10 +227,16 @@
                 <dict key="meta">
                     <string key="@type">AdminMetadata</string>
                     <xsl:if test="mods:recordInfo/mods:recordContentSource">
-                        <dict key="assigner">
-                            <string key="@type">Agent</string>
-                            <string key="label"><xsl:value-of select="mods:recordInfo/mods:recordContentSource"/></string>
-                        </dict>
+                        <!-- derivedFrom is completed by pipeline/convert.py -->
+                        <array key="derivedFrom">
+                            <dict>
+                                <string key="@type">Record</string>
+                                <dict key="publisher">
+                                    <string key="@type">Organization</string>
+                                    <string key="code"><xsl:value-of select="mods:recordInfo/mods:recordContentSource"/></string>
+                                </dict>
+                            </dict>
+                        </array>
                     </xsl:if>
                     <xsl:if test="mods:recordInfo/mods:recordContentSource/@authority">
                         <dict key="source">

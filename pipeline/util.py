@@ -87,31 +87,40 @@ def derived_from_ids(body):
     ]
 
 
+def derived_from_org(derived_from):
+    """Source org code of a meta.derivedFrom entry"""
+    publisher = derived_from.get("publisher", {})
+    # Known sources are linked by @id; unknown ones are blank nodes with just a code
+    return source_code_by_id(publisher["@id"]) if "@id" in publisher else publisher.get("code")
+
+
 def derived_from_orgs(body):
     """Source org codes (from sources.json) of the source records listed in meta.derivedFrom"""
-    codes = []
-    for record in body.get("meta", {}).get("derivedFrom", []):
-        publisher = record.get("publisher", {})
-        # Known sources are linked by @id; unknown ones are blank nodes with just a code
-        codes.append(source_code_by_id(publisher["@id"]) if "@id" in publisher else publisher.get("code"))
-    return codes
+    return [derived_from_org(d) for d in body.get("meta", {}).get("derivedFrom", [])]
 
 
-def make_derived_from(record_id, source_code):
+def source_org(body):
+    """
+    The record's own org: that of its first meta.derivedFrom entry. For a merged record this is
+    the org of the merge master (the record with the most elements).
+    """
+    derived_from = body.get("meta", {}).get("derivedFrom", [])
+    return derived_from_org(derived_from[0]) if derived_from else None
+
+
+def make_derived_from(record_id, publisher):
     """
     A meta.derivedFrom entry describing the source record a (merged) record is derived from.
-    `source_code` is the record's MODS recordContentSource. If it's not in sources.json, publisher
-    becomes a blank Organization with just the code.
+    `publisher` is a blank Organization with the source code (MODS recordContentSource); it's
+    replaced by a link if the code is in sources.json.
     """
     derived_from = {
         "@type": "Record",
         "identifiedBy": [{"@type": "Identifier", "value": record_id}],
     }
-    source_id = source_id_by_code(source_code)
-    if source_id:
-        derived_from["publisher"] = {"@id": source_id}
-    elif source_code:
-        derived_from["publisher"] = {"@type": "Organization", "code": source_code}
+    if publisher:
+        source_id = source_id_by_code(publisher.get("code"))
+        derived_from["publisher"] = {"@id": source_id} if source_id else publisher
     return derived_from
 
 

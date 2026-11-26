@@ -98,7 +98,7 @@ class Publication:
     @property
     def source_org(self):
         """Returns org code"""
-        return self.body.get("meta", {}).get("assigner", {}).get("label")
+        return source_org(self.body)
 
     @property
     def derived_from(self):
