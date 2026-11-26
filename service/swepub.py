@@ -398,9 +398,6 @@ def bibliometrics_get_record(record_id):
     if request.args.get("_legacy") is not None:
         doc = LegacyPublication(doc).body_with_required_legacy_search_fields
 
-    # TODO: Don't store the following in the actual document
-    doc.pop("_publication_ids", None)
-    doc.pop("_publication_orgs", None)
     return doc
 
 

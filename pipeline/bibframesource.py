@@ -3,7 +3,7 @@ from enum import Enum
 from datetime import date, datetime
 from dateutil.parser import parse as dateutil_parse
 
-from pipeline.util import Level, SSIF_BASE, is_ssif_classification, is_autoclassified
+from pipeline.util import derived_from_ids, derived_from_orgs, Level, SSIF_BASE, is_ssif_classification, is_autoclassified
 
 
 CREATOR_FIELDS = [
@@ -156,8 +156,8 @@ class BibframeSource:
         if bibframe_source is None:
             bibframe_source = {}
         self._bibframe_master = bibframe_source
-        self._bibframe_publication_ids = bibframe_source.get("_publication_ids", [])
-        self._bibframe_publication_orgs = bibframe_source.get("_publication_orgs", [])
+        self._bibframe_publication_ids = derived_from_ids(bibframe_source)
+        self._bibframe_publication_orgs = derived_from_orgs(bibframe_source)
         self._bibframe_publications = [bibframe_source]
         self._chosen_fields = fields
         if len(fields) == 0:

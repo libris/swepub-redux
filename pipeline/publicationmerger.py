@@ -112,13 +112,15 @@ class PublicationMerger:
     def merge(self, publications):
         """Create a master publication by merging a list of publications."""
         master = self._get_master(publications)
-        publication_ids = []
-        publication_orgs = []
+        derived_from = []
         for pub in publications:
-            publication_ids.append(pub.id)
-            publication_orgs.append(pub.source_org)
+            derived_from.extend(pub.derived_from)
             master = self._merge(master, pub)
-        return master, publication_ids, publication_orgs
+        if master is not None:
+            master.body.setdefault("meta", {})["derivedFrom"] = sorted(
+                derived_from, key=lambda d: d["identifiedBy"][0]["value"]
+            )
+        return master
 
     @staticmethod
     def _get_master(publications):

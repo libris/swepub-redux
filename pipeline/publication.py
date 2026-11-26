@@ -101,6 +101,21 @@ class Publication:
         return self.body.get("meta", {}).get("assigner", {}).get("label")
 
     @property
+    def derived_from(self):
+        """Returns meta.derivedFrom: one entry per source record this publication is made from"""
+        return self.body.get("meta", {}).get("derivedFrom", [])
+
+    @property
+    def derived_from_ids(self):
+        """Returns the ids of the source records this publication is made from"""
+        return derived_from_ids(self.body)
+
+    @property
+    def derived_from_orgs(self):
+        """Returns the source org codes of the source records this publication is made from"""
+        return derived_from_orgs(self.body)
+
+    @property
     def body(self):
         """Return raw publication data"""
         return self._body

@@ -2,6 +2,7 @@ import re
 from io import StringIO
 from os import path
 
+from pipeline.util import make_derived_from
 from lxml.etree import parse, XSLT, XMLParser, Resolver, fromstring, LxmlError, XMLSyntaxError
 
 
@@ -97,4 +98,7 @@ class ModsParser(object):
 
 
 def convert(body):
-    return ModsParser().parse_mods(body)
+    doc = ModsParser().parse_mods(body)
+    source_code = doc.get("meta", {}).get("assigner", {}).get("label")
+    doc.setdefault("meta", {})["derivedFrom"] = [make_derived_from(doc["@id"], source_code)]
+    return doc

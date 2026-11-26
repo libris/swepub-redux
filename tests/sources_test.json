@@ -48,7 +48,7 @@
     ]
   },
   "dedup_malmo": {
-    "@id": "https://swepub.kb.se.localhost/source/dedup_malmo",
+    "@id": "https://swepub.kb.se.localhost/source/malmo",
     "code": "malmo",
     "name": "TEST - malmo",
     "sets": [
@@ -60,7 +60,7 @@
     ]
   },
   "dedup_ignore_id_qualifier": {
-    "@id": "https://swepub.kb.se.localhost/source/dedup_ignore_id_qualifier",
+    "@id": "https://swepub.kb.se.localhost/source/kth",
     "code": "kth",
     "name": "TEST - dedup ignore id qualifier",
     "sets": [
@@ -72,7 +72,7 @@
     ]
   },
   "dedup_ignore_id_qualifier_2": {
-    "@id": "https://swepub.kb.se.localhost/source/dedup_ignore_id_qualifier_2",
+    "@id": "https://swepub.kb.se.localhost/source/kth",
     "code": "kth",
     "name": "TEST - dedup ignore id qualifier 2",
     "sets": [
@@ -516,7 +516,7 @@
     ]
   },
   "obsolete-test-listidentifiers": {
-    "@id": "https://swepub.kb.se.localhost/source/obsolete-test-listidentifiers",
+    "@id": "https://swepub.kb.se.localhost/source/obsolete-test",
     "code": "obsolete-test",
     "name": "TEST - obsolete-test",
     "sets": [
@@ -528,7 +528,7 @@
     ]
   },
   "obsolete-test-listrecords": {
-    "@id": "https://swepub.kb.se.localhost/source/obsolete-test-listrecords",
+    "@id": "https://swepub.kb.se.localhost/source/obsolete-test",
     "code": "obsolete-test",
     "name": "TEST - obsolete-test",
     "sets": [
@@ -540,7 +540,7 @@
     ]
   },
   "local_personid_from_candidate": {
-    "@id": "https://swepub.kb.se.localhost/source/local_personid_from_candidate",
+    "@id": "https://swepub.kb.se.localhost/source/kth",
     "code": "kth",
     "name": "TEST - local_personid_from_candidate",
     "sets": [
@@ -552,7 +552,7 @@
     ]
   },
   "orcid_from_another_record": {
-    "@id": "https://swepub.kb.se.localhost/source/orcid_from_another_record",
+    "@id": "https://swepub.kb.se.localhost/source/kth",
     "code": "kth",
     "name": "TEST - orcid_from_another_record",
     "sets": [
