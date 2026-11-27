@@ -1,6 +1,7 @@
 import json
 from os import environ, getenv
 from pipeline.storage import get_connection
+from pipeline.util import SSIF_BASE
 
 DEV_SOURCES = ["kkh", "uniarts", "havochvatten", "rkh", "sh"]
 
@@ -8,7 +9,35 @@ def clean(oai_id, data):
     root = json.loads(data)
     root.pop("@context", None) # Remove explicit context
     root["@id"] = f"https://swepub.kb.se/bib/swepub:{oai_id}"
+    work = root.get("instanceOf")
+    if isinstance(work, dict) and "classification" in work:
+        work["classification"] = _ssif_to_links(work["classification"])
     return json.dumps(root)
+
+
+def _is_ssif(term):
+    return isinstance(term, dict) and term.get("@id", "").startswith(SSIF_BASE)
+
+
+def _ssif_to_links(classifications):
+    """
+    Replace embedded SSIF term definitions with bare links, including every
+    broader level (downstream doesn't fully follow broader). Non-SSIF terms
+    are kept as is. Annotations are dropped for now.
+    """
+    result = []
+    seen = set()
+    for term in classifications:
+        if not _is_ssif(term):
+            result.append(term)
+            continue
+        current = term
+        while _is_ssif(current):
+            if current["@id"] not in seen:
+                seen.add(current["@id"])
+                result.append({"@id": current["@id"]})
+            current = current.get("broader")
+    return result
 
 
 def generate_libris_dataset():
