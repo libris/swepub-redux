@@ -170,7 +170,6 @@ def build_export_result(pub, events, selected_flags, oai_id, mods_url):
 
 def _get_url(publication, pub_type):
     assert (pub_type == "publication") or (pub_type == "output")
-    markings_prefix = "https://id.kb.se/term/swepub/svep"
     swedish_list_prefix = "https://id.kb.se/term/swepub/swedishlist"
     output_type_re = r"^https://id\.kb\.se/term/swepub/[a-zA-Z_\-]+/[a-zA-Z_\-]+$"
     pub_type_re = r"^https://id\.kb\.se/term/swepub/[a-zA-Z_\-]+$"
@@ -179,8 +178,6 @@ def _get_url(publication, pub_type):
         regex = output_type_re
     for gf in publication["instanceOf"]["category"]:
         gf_id = gf["@id"]
-        if gf_id.startswith(markings_prefix):
-            continue
         if gf_id.startswith(swedish_list_prefix):
             continue
         m = re.match(regex, gf_id)

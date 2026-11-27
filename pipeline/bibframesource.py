@@ -232,7 +232,6 @@ class BibframeSource:
     @property
     def output_types(self):
         categories = self.bibframe_master.get("instanceOf", {}).get("category")
-        svep_url = "https://id.kb.se/term/swepub/svep/"
         swedish_list_url = "https://id.kb.se/term/swepub/swedishlist"
         # Example output types: https://id.kb.se/term/swepub/output/publication/journal-article
         # or https://id.kb.se/term/swepub/output/publication
@@ -241,7 +240,7 @@ class BibframeSource:
         if categories:
             for category in categories:
                 gf_id = category.get("@id", "")
-                if gf_id.strip().startswith(svep_url) or gf_id.strip().startswith(swedish_list_url):
+                if gf_id.strip().startswith(swedish_list_url):
                     continue
                 m = re.match(output_type_re, gf_id)
                 if m is None:
@@ -260,13 +259,11 @@ class BibframeSource:
     @property
     def content_marking(self):
         svep_url = "https://id.kb.se/term/swepub/svep/"
-        category = self.bibframe_master.get("instanceOf", {}).get("category", [])
-        for gf in category:
-            gf_id = gf.get("@id", "")
-            if gf_id.strip().startswith(svep_url):
-                prefix_len = len(svep_url)
-                total_len = len(gf_id)
-                return gf_id[prefix_len : total_len + 1]
+        content_types = self.bibframe_master.get("instanceOf", {}).get("swepub:contentType", [])
+        for content_type in content_types:
+            ct_id = content_type.get("@id", "").strip()
+            if ct_id.startswith(svep_url):
+                return ct_id[len(svep_url):]
         return None
 
     @property

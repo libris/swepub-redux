@@ -49,10 +49,10 @@
                 <string key="@type">Monograph</string>
                 <array key="category">
                     <xsl:call-template name="work_type"/>
-                    <xsl:call-template name="content_type"/>
                     <xsl:call-template name="type"/>
                     <xsl:call-template name="type_valueuri"/>
                 </array>
+                <xsl:call-template name="content_type"/>
                 <array key="language">
                     <xsl:for-each select="mods:language/mods:languageTerm[@type = 'code']">
                         <dict>
@@ -846,18 +846,34 @@
         </xsl:choose>
     </xsl:template>
 
+    <!--
+        Content types (svep:ref, svep:vet, svep:pop) go in instanceOf.swepub:contentType.
+        Accepted either as a plain code (<genre authority="svep" type="contentType">ref</genre>)
+        or as a full URI (<genre valueURI="https://id.kb.se/term/swepub/svep/ref">).
+        Each content type is emitted at most once, in the fixed order ref, vet, pop.
+    -->
     <xsl:template name="content_type">
-            <xsl:if test="mods:genre[@type = 'contentType' and @authority = 'svep' and not(@valueURI)]">
-                <xsl:if test="mods:genre[@type = 'contentType' and @authority = 'svep'] = 'ref' or mods:genre[@type = 'contentType' and @authority = 'svep'] = 'vet' or mods:genre[@type = 'contentType' and @authority = 'svep'] = 'pop'">
-                    <dict>
-                        <string key="@id">https://id.kb.se/term/swepub/svep/<xsl:value-of select="mods:genre[@type = 'contentType' and @authority = 'svep' and not(@valueURI)]"/></string>
-                    </dict>
+        <xsl:variable name="svep" select="'https://id.kb.se/term/swepub/svep/'"/>
+        <xsl:variable name="plain" select="mods:genre[@type = 'contentType' and @authority = 'svep' and not(@valueURI)]"/>
+        <xsl:variable name="uris" select="mods:genre[@valueURI]"/>
+        <xsl:if test="$plain[. = 'ref' or . = 'vet' or . = 'pop'] or $uris[normalize-space(@valueURI) = concat($svep, 'ref') or normalize-space(@valueURI) = concat($svep, 'vet') or normalize-space(@valueURI) = concat($svep, 'pop')]">
+            <array key="swepub:contentType">
+                <xsl:if test="$plain[. = 'ref'] or $uris[normalize-space(@valueURI) = concat($svep, 'ref')]">
+                    <dict><string key="@id"><xsl:value-of select="concat($svep, 'ref')"/></string></dict>
                 </xsl:if>
-            </xsl:if>
+                <xsl:if test="$plain[. = 'vet'] or $uris[normalize-space(@valueURI) = concat($svep, 'vet')]">
+                    <dict><string key="@id"><xsl:value-of select="concat($svep, 'vet')"/></string></dict>
+                </xsl:if>
+                <xsl:if test="$plain[. = 'pop'] or $uris[normalize-space(@valueURI) = concat($svep, 'pop')]">
+                    <dict><string key="@id"><xsl:value-of select="concat($svep, 'pop')"/></string></dict>
+                </xsl:if>
+            </array>
+        </xsl:if>
     </xsl:template>
 
+    <!-- svep content type URIs are handled by content_type; unknown svep URIs are dropped. -->
     <xsl:template name="type_valueuri">
-        <xsl:for-each select="mods:genre[@valueURI]">
+        <xsl:for-each select="mods:genre[@valueURI and not(starts-with(normalize-space(@valueURI), 'https://id.kb.se/term/swepub/svep/'))]">
             <dict>
                 <string key="@id"><xsl:value-of select="current()/@valueURI"/></string>
             </dict>

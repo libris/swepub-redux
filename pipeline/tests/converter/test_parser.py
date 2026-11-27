@@ -213,8 +213,10 @@ def test_parser(parser):
             "@type": "Monograph",
             "category": [
                 {'@id': 'https://id.kb.se/term/rda/Text'},
-                {'@id': 'https://id.kb.se/term/swepub/svep/ref'},
                 {'@id': 'https://id.kb.se/term/swepub/output/publication/journal-article'}
+            ],
+            "swepub:contentType": [
+                {'@id': 'https://id.kb.se/term/swepub/svep/ref'},
             ],
             "language": [
                 {
@@ -2284,8 +2286,10 @@ def test_publication_type_with_authority_svep_and_valueuri(parser):
 def test_content_type_with_authority_svep_and_valueuri(parser):
     raw_xml = MODS("""<genre authority="svep" type="contentType" valueURI="https://example.com">ref</genre>""")
     expected = 'https://example.com'
-    actual = _collect_ids(parser.parse_mods(raw_xml)['instanceOf']['category'])
+    instance_of = parser.parse_mods(raw_xml)['instanceOf']
+    actual = _collect_ids(instance_of['category'])
     assert expected in actual
+    assert 'swepub:contentType' not in instance_of
 
 
 @pytest.mark.parametrize("contenttype", [
@@ -2295,9 +2299,63 @@ def test_content_type_with_authority_svep_and_valueuri(parser):
 ])
 def test_content_type_with_authority_svep_and_valid_value(contenttype, parser):
     raw_xml = MODS(f"""<genre authority="svep" type="contentType">{contenttype}</genre>""")
-    expected = f"https://id.kb.se/term/swepub/svep/{contenttype}"
-    actual = _collect_ids(parser.parse_mods(raw_xml)['instanceOf']['category'])
-    assert expected in actual
+    expected = [{'@id': f"https://id.kb.se/term/swepub/svep/{contenttype}"}]
+    instance_of = parser.parse_mods(raw_xml)['instanceOf']
+    assert instance_of['swepub:contentType'] == expected
+    assert not any('/svep/' in i for i in _collect_ids(instance_of['category']))
+
+
+def test_content_type_multiple_valid_values(parser):
+    raw_xml = MODS("""<genre authority="svep" type="contentType">ref</genre>
+                      <genre authority="svep" type="contentType">xyz</genre>
+                      <genre authority="svep" type="contentType">pop</genre>""")
+    expected = [{'@id': "https://id.kb.se/term/swepub/svep/ref"},
+                {'@id': "https://id.kb.se/term/swepub/svep/pop"}]
+    assert parser.parse_mods(raw_xml)['instanceOf']['swepub:contentType'] == expected
+
+
+def test_content_type_only_valid_value_used(parser):
+    # A valid value on a valueURI genre must not make an invalid plain value pass
+    raw_xml = MODS("""<genre authority="svep" type="contentType" valueURI="https://example.com">ref</genre>
+                      <genre authority="svep" type="contentType">xyz</genre>""")
+    assert 'swepub:contentType' not in parser.parse_mods(raw_xml)['instanceOf']
+
+
+@pytest.mark.parametrize("contenttype", ["ref", "vet", "pop"])
+def test_content_type_as_full_uri(contenttype, parser):
+    uri = f"https://id.kb.se/term/swepub/svep/{contenttype}"
+    raw_xml = MODS(f"""<genre authority="svep" type="contentType" valueURI="{uri}">{contenttype}</genre>""")
+    instance_of = parser.parse_mods(raw_xml)['instanceOf']
+    assert instance_of['swepub:contentType'] == [{'@id': uri}]
+    assert not any('/svep/' in i for i in _collect_ids(instance_of['category']))
+
+
+def test_content_type_as_full_uri_without_text_or_attributes(parser):
+    raw_xml = MODS("""<genre valueURI=" https://id.kb.se/term/swepub/svep/vet "/>""")
+    instance_of = parser.parse_mods(raw_xml)['instanceOf']
+    assert instance_of['swepub:contentType'] == [{'@id': "https://id.kb.se/term/swepub/svep/vet"}]
+    assert not any('/svep/' in i for i in _collect_ids(instance_of['category']))
+
+
+def test_content_type_plain_and_full_uri_deduplicated(parser):
+    raw_xml = MODS("""<genre authority="svep" type="contentType">ref</genre>
+                      <genre authority="svep" type="contentType" valueURI="https://id.kb.se/term/swepub/svep/ref">ref</genre>""")
+    assert parser.parse_mods(raw_xml)['instanceOf']['swepub:contentType'] == \
+        [{'@id': "https://id.kb.se/term/swepub/svep/ref"}]
+
+
+def test_content_type_plain_and_full_uri_combined(parser):
+    raw_xml = MODS("""<genre authority="svep" type="contentType" valueURI="https://id.kb.se/term/swepub/svep/pop">pop</genre>
+                      <genre authority="svep" type="contentType">ref</genre>""")
+    assert parser.parse_mods(raw_xml)['instanceOf']['swepub:contentType'] == \
+        [{'@id': "https://id.kb.se/term/swepub/svep/ref"}, {'@id': "https://id.kb.se/term/swepub/svep/pop"}]
+
+
+def test_content_type_unknown_svep_uri_dropped(parser):
+    raw_xml = MODS("""<genre authority="svep" type="contentType" valueURI="https://id.kb.se/term/swepub/svep/xyz">xyz</genre>""")
+    instance_of = parser.parse_mods(raw_xml)['instanceOf']
+    assert 'swepub:contentType' not in instance_of
+    assert not any('/svep/' in i for i in _collect_ids(instance_of['category']))
 
 
 @pytest.mark.parametrize("contenttype", [
@@ -2306,8 +2364,9 @@ def test_content_type_with_authority_svep_and_valid_value(contenttype, parser):
 ])
 def test_content_type_with_authority_svep_and_invalid_value(contenttype, parser):
     raw_xml = MODS(f"""<genre authority="svep" type="contentType">{contenttype}</genre>""")
-    actual = parser.parse_mods(raw_xml)['instanceOf']['category']
-    assert len(actual) == 1
+    instance_of = parser.parse_mods(raw_xml)['instanceOf']
+    assert len(instance_of['category']) == 1
+    assert 'swepub:contentType' not in instance_of
 
 
 @pytest.mark.parametrize("publicationtype, publicationtype_longform, contenttype, outputtype", [
@@ -2329,25 +2388,26 @@ def test_content_type_with_authority_svep_and_invalid_value(contenttype, parser)
     ('ovr', 'OtherPublication', 'vet', 'publication')
 ])
 def test_publication_and_output_type(publicationtype, publicationtype_longform, contenttype, outputtype, parser):
-    expected = [{'@id': 'https://id.kb.se/term/swepub/svep/{}'.format(contenttype)},
-                {'@id': 'https://id.kb.se/term/swepub/output/{}'.format(outputtype)}]
+    expected = [{'@id': 'https://id.kb.se/term/swepub/output/{}'.format(outputtype)}]
+    expected_content_type = [{'@id': 'https://id.kb.se/term/swepub/svep/{}'.format(contenttype)}]
 
     raw_xml_without_outputtype \
         = MODS(f"""<genre authority="svep" type="publicationType">{publicationtype}</genre>
                    <genre authority="svep" type="contentType">{contenttype}</genre>""")
-    _test_publication_and_output_type(raw_xml_without_outputtype, expected, parser)
+    _test_publication_and_output_type(raw_xml_without_outputtype, expected, expected_content_type, parser)
 
     raw_xml_with_outputtype \
         = MODS(f"""<genre authority="svep" type="publicationType">{publicationtype}</genre>
                    <genre authority="svep" type="contentType">{contenttype}</genre>
                    <genre authority="kb.se" type="outputType">{outputtype}</genre>""")
-    _test_publication_and_output_type(raw_xml_with_outputtype, expected, parser)
+    _test_publication_and_output_type(raw_xml_with_outputtype, expected, expected_content_type, parser)
 
 
-def _test_publication_and_output_type(raw_xml, expected, parser):
-    actual = parser.parse_mods(raw_xml)['instanceOf']['category']
+def _test_publication_and_output_type(raw_xml, expected, expected_content_type, parser):
+    instance_of = parser.parse_mods(raw_xml)['instanceOf']
     for e in expected:
-        assert e in actual
+        assert e in instance_of['category']
+    assert instance_of['swepub:contentType'] == expected_content_type
 
 
 def test_invalid_publication_type_is_ignored(parser):
