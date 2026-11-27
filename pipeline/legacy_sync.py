@@ -222,9 +222,6 @@ def _update_records(hours=None):
                 body = orjson.loads(row["finalized_json"])
 
             publication_body = Publication(body).body_with_required_legacy_search_fields
-            # TODO: Don't store the following in the actual document?
-            publication_body.pop("_publication_ids", None)
-            publication_body.pop("_publication_orgs", None)
             updated_json = json.dumps(publication_body, ensure_ascii=False)
 
             xml_data = row["xml"]

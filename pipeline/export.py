@@ -49,9 +49,6 @@ def dump_deduplicated(year=None):
                 continue
 
             finalized = orjson.loads(row["finalized_data"])
-            # TODO: Don't store the following in the actual document
-            finalized.pop("_publication_ids", None)
-            finalized.pop("_publication_orgs", None)
 
             publications = []
             for raw_publication in row["converted_data"].split('\n'):

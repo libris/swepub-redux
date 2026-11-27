@@ -4,25 +4,10 @@ from pipeline.storage import get_connection
 
 DEV_SOURCES = ["kkh", "uniarts", "havochvatten", "rkh", "sh"]
 
-def clean(oai_id, data, source_id_by_code):
+def clean(oai_id, data):
     root = json.loads(data)
     root.pop("@context", None) # Remove explicit context
     root["@id"] = f"https://swepub.kb.se/bib/swepub:{oai_id}"
-
-    orgs = root.pop("_publication_orgs", None)
-    if not orgs:
-        orgs = [root.get("meta", {}).get("assigner", {}).get("label")]
-
-    derived_from = []
-    for org in sorted(set(filter(None, orgs))):
-        source_id = source_id_by_code.get(org)
-        if source_id:
-            derived_from.append({"@type": "Record", "publisher": {"@id": source_id}})
-    if derived_from:
-        root.setdefault("meta", {})["derivedFrom"] = derived_from
-
-    root.pop("_publication_ids", None)
-
     return json.dumps(root)
 
 
@@ -39,9 +24,6 @@ def generate_libris_dataset():
         )"""
 
     sources = _load_sources()
-    source_id_by_code = {
-        source["code"]: source["@id"] for source in sources
-    }
 
     with open("/tmp/swepub.jsonld.lines", "wb") as outFile:
 
@@ -55,7 +37,7 @@ def generate_libris_dataset():
             ):
                 oai_id = cluster_row[0]
                 data = cluster_row[1]
-                outFile.write(clean(oai_id, data, source_id_by_code).encode('utf-8'))
+                outFile.write(clean(oai_id, data).encode('utf-8'))
                 outFile.write("\n".encode('utf-8'))
 
 
@@ -67,7 +49,12 @@ def _load_sources():
 
 
 def _write_sources(sources, out_file):
+    seen = set()
     for source in sources:
+        # in tests/sources_test.json several sources can share a code (and @id)...
+        if source["@id"] in seen:
+            continue
+        seen.add(source["@id"])
         out_file.write(json.dumps({
             "@id": source["@id"],
             "@type": "Organization",

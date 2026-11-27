@@ -25,8 +25,8 @@ def dump_tsv():
                 title = publication.main_title
                 if publication.sub_title:
                     title = f"{title}: {publication.sub_title}"
-                pub_ids = ";".join(finalized["_publication_ids"])
-                org_ids = ";".join(list(set(finalized["_publication_orgs"])))
+                pub_ids = ";".join(publication.derived_from_ids)
+                org_ids = ";".join(set(filter(None, publication.derived_from_orgs)))
                 summary = publication.summary or ""
                 language = publication.language or ""
                 ssifs = ";".join(publication.ssifs())

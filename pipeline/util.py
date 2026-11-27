@@ -7,6 +7,8 @@ import jsonpath_rw
 import re
 import Levenshtein
 import hashlib
+import json
+import os
 from simplemma.langdetect import lang_detector
 from unidecode import unidecode
 
@@ -46,6 +48,80 @@ SWEPUB_CLASSIFIER_ID = "https://id.kb.se/generator/swepub-classifier"
 
 SSIF_SCHEME = etree.parse(Path(__file__).parent / "../resources/ssif_scheme.xml").getroot().text
 SSIF_BASE = f'{SSIF_SCHEME}/'
+
+DEFAULT_SWEPUB_SOURCE_FILE = str(Path(__file__).parent / "../resources/sources.json")
+
+
+@lru_cache(maxsize=1)
+def _source_maps(source_file):
+    """Returns ({code: @id}, {@id: code}) for the sources in source_file"""
+    id_by_code = {}
+    code_by_id = {}
+    with open(source_file) as f:
+        for source in json.load(f).values():
+            id_by_code.setdefault(source["code"], source["@id"])
+            code_by_id.setdefault(source["@id"], source["code"])
+    return id_by_code, code_by_id
+
+
+def _current_source_maps():
+    return _source_maps(str(os.environ.get("SWEPUB_SOURCE_FILE", DEFAULT_SWEPUB_SOURCE_FILE)))
+
+
+def source_code_by_id(source_id):
+    """Map a source @id (as used in meta.derivedFrom[].publisher) to its code in sources.json."""
+    return _current_source_maps()[1].get(source_id)
+
+
+def source_id_by_code(code):
+    """Map a source code (e.g. MODS recordContentSource) to its @id in sources.json."""
+    return _current_source_maps()[0].get(code)
+
+
+def derived_from_ids(body):
+    """Ids of the source records listed in meta.derivedFrom"""
+    return [
+        id_by["value"]
+        for record in body.get("meta", {}).get("derivedFrom", [])
+        for id_by in record.get("identifiedBy", [])[:1]
+    ]
+
+
+def derived_from_org(derived_from):
+    """Source org code of a meta.derivedFrom entry"""
+    publisher = derived_from.get("publisher", {})
+    # Known sources are linked by @id; unknown ones are blank nodes with just a code
+    return source_code_by_id(publisher["@id"]) if "@id" in publisher else publisher.get("code")
+
+
+def derived_from_orgs(body):
+    """Source org codes (from sources.json) of the source records listed in meta.derivedFrom"""
+    return [derived_from_org(d) for d in body.get("meta", {}).get("derivedFrom", [])]
+
+
+def source_org(body):
+    """
+    The record's own org: that of its first meta.derivedFrom entry. For a merged record this is
+    the org of the merge master (the record with the most elements).
+    """
+    derived_from = body.get("meta", {}).get("derivedFrom", [])
+    return derived_from_org(derived_from[0]) if derived_from else None
+
+
+def make_derived_from(record_id, publisher):
+    """
+    A meta.derivedFrom entry describing the source record a (merged) record is derived from.
+    `publisher` is a blank Organization with the source code (MODS recordContentSource); it's
+    replaced by a link if the code is in sources.json.
+    """
+    derived_from = {
+        "@type": "Record",
+        "identifiedBy": [{"@type": "Identifier", "value": record_id}],
+    }
+    if publisher:
+        source_id = source_id_by_code(publisher.get("code"))
+        derived_from["publisher"] = {"@id": source_id} if source_id else publisher
+    return derived_from
 
 
 class Validation(Enum):

@@ -353,7 +353,7 @@ def test_parser(parser):
         ],
         'meta': {
             '@type': 'AdminMetadata',
-            'assigner': {'@type': 'Agent', 'label': 'lnu'},
+            'derivedFrom': [{'@type': 'Record', 'publisher': {'@type': 'Organization', 'code': 'lnu'}}],
             'creationDate': '2017-09-07',
             'changeDate': '2017-09-07'
         },
@@ -3103,7 +3103,7 @@ def test_record_content_source_is_extracted_to_admin_meta_data(parser):
     actual = parser.parse_mods(raw_xml)['meta']
     expected = {
         '@type': 'AdminMetadata',
-        'assigner': {'@type': 'Agent', 'label': 'lu'},
+        'derivedFrom': [{'@type': 'Record', 'publisher': {'@type': 'Organization', 'code': 'lu'}}],
         'source': {'@type': 'Source', 'value': 'my-test-authority'},
     }
 
@@ -3120,7 +3120,7 @@ def test_record_content_source_is_extracted_to_admin_meta_data_when_authority_is
     actual = parser.parse_mods(raw_xml)['meta']
     expected = {
         '@type': 'AdminMetadata',
-        'assigner': {'@type': 'Agent', 'label': 'lu'}
+        'derivedFrom': [{'@type': 'Record', 'publisher': {'@type': 'Organization', 'code': 'lu'}}]
     }
 
     assert actual == expected

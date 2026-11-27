@@ -2,7 +2,7 @@ import re
 from urllib.parse import urlunparse
 
 from service.utils.common import get_base_url
-from pipeline.util import ENRICHING_AUDITORS
+from pipeline.util import ENRICHING_AUDITORS, source_org
 
 DEFAULT_FIELDS = [
     "DOI",
@@ -146,7 +146,7 @@ def _parse_flag_type(flag_string):
 
 
 def build_export_result(pub, events, selected_flags, oai_id, mods_url):
-    source = pub["meta"]["assigner"]["label"]
+    source = source_org(pub)
     try:
         pub_year = pub["publication"][0]["date"]
     except (IndexError, KeyError):

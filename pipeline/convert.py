@@ -2,6 +2,7 @@ import re
 from io import StringIO
 from os import path
 
+from pipeline.util import make_derived_from
 from lxml.etree import parse, XSLT, XMLParser, Resolver, fromstring, LxmlError, XMLSyntaxError
 
 
@@ -97,4 +98,9 @@ class ModsParser(object):
 
 
 def convert(body):
-    return ModsParser().parse_mods(body)
+    doc = ModsParser().parse_mods(body)
+    meta = doc.setdefault("meta", {})
+    # The stylesheet gives us publisher as a blank Organization with the recordContentSource code
+    publishers = [d.get("publisher") for d in meta.get("derivedFrom", [])] or [None]
+    meta["derivedFrom"] = [make_derived_from(doc["@id"], p) for p in publishers]
+    return doc
