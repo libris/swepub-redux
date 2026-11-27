@@ -1161,22 +1161,29 @@
         <xsl:variable name="start" select="normalize-space($host/mods:part/mods:extent[@unit='page' or not(@unit)]/mods:start)"/>
         <xsl:variable name="end"   select="normalize-space($host/mods:part/mods:extent[@unit='page' or not(@unit)]/mods:end)"/>
         <xsl:variable name="text"  select="normalize-space($host/mods:part/mods:text)"/>
-        <xsl:if test="$vol != '' or $text != ''">
+        <xsl:variable name="hasPages" select="$start != '' and $start != '-'"/>
+        <!-- Text, or volume and/or issue: "vol:(issue)", "vol" or "(issue)" -->
+        <xsl:variable name="volIssue">
+            <xsl:choose>
+                <xsl:when test="$text != ''">
+                    <xsl:value-of select="$text"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="$vol"/>
+                    <xsl:if test="$issue != ''">
+                        <xsl:if test="$vol != ''">:</xsl:if>
+                        <xsl:value-of select="concat('(', $issue, ')')"/>
+                    </xsl:if>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+        <xsl:if test="string($volIssue) != '' or $hasPages">
             <array key="part">
                 <string>
-                    <xsl:choose>
-                        <xsl:when test="$text != ''">
-                            <xsl:value-of select="$text"/>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <xsl:value-of select="$vol"/>
-                            <xsl:if test="$issue != ''">
-                                <xsl:value-of select="concat(':(', $issue, ')')"/>
-                            </xsl:if>
-                        </xsl:otherwise>
-                    </xsl:choose>
-                    <xsl:if test="$start != '' and $start != '-'">
-                        <xsl:value-of select="concat(', sidorna ', $start)"/>
+                    <xsl:value-of select="$volIssue"/>
+                    <xsl:if test="$hasPages">
+                        <xsl:if test="string($volIssue) != ''">, </xsl:if>
+                        <xsl:value-of select="concat('sidorna ', $start)"/>
                         <xsl:if test="$end != '' and $end != '-'">
                             <xsl:value-of select="concat('-', $end)"/>
                         </xsl:if>

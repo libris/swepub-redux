@@ -791,6 +791,33 @@ def test_host_issue_number_is_extracted(parser):
     assert '1337' == parser.parse_mods(raw_xml)['isPartOf'][0]['issueNumber']
 
 
+VOLUME = '<detail type="volume"><number>12</number></detail>'
+ISSUE = '<detail type="issue"><number>3</number></detail>'
+PAGES = '<extent unit="page"><start>5</start><end>9</end></extent>'
+TEXT = '<text>Vol. 12, no. 3</text>'
+
+
+@pytest.mark.parametrize("host_part,expected", [
+    (VOLUME + ISSUE + PAGES, ['12:(3), sidorna 5-9']),
+    (VOLUME, ['12']),
+    (ISSUE, ['(3)']),
+    (ISSUE + PAGES, ['(3), sidorna 5-9']),
+    (PAGES, ['sidorna 5-9']),
+    (TEXT, ['Vol. 12, no. 3']),
+    (TEXT + PAGES, ['Vol. 12, no. 3, sidorna 5-9']),
+    ('', None),
+])
+def test_part_is_constructed_from_host_position(host_part, expected, parser):
+    raw_xml = MODS(f"""
+      <relatedItem type="host">
+        <titleInfo><title>.</title></titleInfo>
+        <part>{host_part}</part>
+      </relatedItem>
+    """)
+
+    assert expected == parser.parse_mods(raw_xml).get('part')
+
+
 def test_host_part_number_is_not_extracted(parser):
     raw_xml = MODS("""
       <relatedItem type="host">
