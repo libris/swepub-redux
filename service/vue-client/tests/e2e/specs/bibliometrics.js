@@ -190,22 +190,8 @@ describe('Bibliometrics', () => {
     cy.get('#preview-section').should('be.visible');
   });
 
-  it('sets swedish list url query on search', () => {
-    cy.visit('/bibliometrics');
-    cy.get('#swedish-list').check();
-    cy.get('#submit-btn').click();
-    cy.url().should('include', 'swedishList=true');
-    cy.get('#preview-section').should('be.visible');
-  });
-
-  it('checks swedish list from url query', () => {
-    cy.visit('/bibliometrics?swedishList=true');
-    cy.get('#swedish-list').should('be.checked');
-    cy.get('#preview-section').should('be.visible');
-  });
-
   it('clears the form', () => {
-    cy.visit('/bibliometrics?classification=1&keywords=test&publicationStatus=published&publicationStatus=epub&publicationStatus=submitted&contentMarking=ref&contentMarking=vet&contentMarking=pop&swedishList=true&match-category=intellectual-property&from=1900&to=1900');
+    cy.visit('/bibliometrics?classification=1&keywords=test&publicationStatus=published&publicationStatus=epub&publicationStatus=submitted&contentMarking=ref&contentMarking=vet&contentMarking=pop&match-category=intellectual-property&from=1900&to=1900');
     cy.location().should((loc) => {
       expect(loc.search).to.not.be.empty;
     });

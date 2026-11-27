@@ -116,7 +116,6 @@ CREATE TABLE converted (
     date INTEGER, -- year
     source TEXT, -- source code, e.g. "kth", "ltu"
     is_open_access INTEGER,
-    classification_level INT, -- 0 = https://id.kb.se/term/swepub/swedishlist/non-peer-reviewed, 1 = peer-reviewed (1 also means "is_swedishlist;
     has_ssif_1 INTEGER,
     events TEXT,
     modified INTEGER DEFAULT (strftime('%s', 'now')), -- seconds since epoch
@@ -128,7 +127,6 @@ CREATE INDEX idx_converted_oai_id ON converted(oai_id);
 CREATE INDEX idx_converted_date ON converted(date);
 CREATE INDEX idx_converted_source ON converted(source);
 CREATE INDEX idx_converted_is_open_access ON converted(is_open_access);
-CREATE INDEX idx_converted_classification_level ON converted(classification_level);
 CREATE INDEX idx_converted_has_ssif_1 ON converted(has_ssif_1);
 CREATE INDEX idx_converted_modified ON converted(modified);
 CREATE INDEX idx_converted_deleted ON converted(deleted);
@@ -200,7 +198,6 @@ CREATE TABLE search_single (
     year INTEGER,
     content_marking TEXT,
     publication_status TEXT,
-    swedish_list INTEGER,
     open_access INTEGER,
     autoclassified INTEGER,
     doaj INTEGER,
@@ -211,7 +208,6 @@ CREATE INDEX idx_search_single_finalized_year ON search_single(year);
 CREATE INDEX idx_search_single_finalized_id_year ON search_single(finalized_id, year);
 CREATE INDEX idx_search_single_finalized_content_marking ON search_single(content_marking);
 CREATE INDEX idx_search_single_publication_status ON search_single(publication_status);
-CREATE INDEX idx_search_single_swedish_list ON search_single(swedish_list);
 CREATE INDEX idx_search_single_open_access ON search_single(open_access);
 CREATE INDEX idx_search_single_autoclassified ON search_single(autoclassified);
 CREATE INDEX idx_search_single_doaj ON search_single(doaj);
@@ -310,7 +306,6 @@ CREATE TABLE stats_converted (
     date INT,
     total INT,
     open_access INT DEFAULT 0,
-    swedishlist INT DEFAULT 0,
     has_ssif_1 INT DEFAULT 0
 );
 CREATE INDEX idx_stats_converted ON stats_converted(source);
@@ -336,7 +331,7 @@ BEGIN
     UPDATE
         converted
     SET
-        data = null, original_id = null, events = null, date = null, source = null, is_open_access = null, has_ssif_1 = null, classification_level = null, modified = (strftime('%s', 'now')), deleted = 1
+        data = null, original_id = null, events = null, date = null, source = null, is_open_access = null, has_ssif_1 = null, modified = (strftime('%s', 'now')), deleted = 1
     WHERE
         original_id = OLD.id;
 END;

@@ -40,7 +40,6 @@ AUDIT_LABEL_MAP = {
     "CreatorCountAuditor": "creator_count_check",
     "SSIFAuditor": "SSIF_comprehensive_check",
     "AutoclassifierAuditor": "auto_classify",
-    "SwedishListAuditor": "swedish_list_check",
     "OAAuditor": "add_oa",
     "PublisherAdditionAuditor": "add_publisher",
     "PublisherLocationAdditionAuditor": "add_publisher_location",
@@ -171,6 +170,7 @@ def build_export_result(pub, events, selected_flags, oai_id, mods_url):
 def _get_url(publication, pub_type):
     assert (pub_type == "publication") or (pub_type == "output")
     markings_prefix = "https://id.kb.se/term/swepub/svep"
+    # TODO: remove once the DB is rebuilt and no records carry Swedish list categories
     swedish_list_prefix = "https://id.kb.se/term/swepub/swedishlist"
     output_type_re = r"^https://id\.kb\.se/term/swepub/[a-zA-Z_\-]+/[a-zA-Z_\-]+$"
     pub_type_re = r"^https://id\.kb\.se/term/swepub/[a-zA-Z_\-]+$"
@@ -385,11 +385,6 @@ def _get_audit_flags(auditor, checks, selected_flags):
                 if "invalid" in selected_auditor_flags or choose_all:
                     # and invalid if False
                     result_value = "invalid"
-
-        elif auditor == "SwedishListAuditor":
-            if step["result"] in selected_auditor_flags or choose_all:
-                # SwedishListAuditor result value is a string that we don't translate
-                result_value = step["result"]
 
         else:
             if step["result"]:

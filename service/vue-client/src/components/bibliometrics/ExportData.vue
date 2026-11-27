@@ -286,16 +286,6 @@ export default {
           group: 'channel',
         },
         {
-          key: 'swedishList',
-          label: 'Svenska listan',
-          component: 'TableDataLink',
-          props: {
-            unshift: 'https://id.kb.se/term/swepub/swedishlist/',
-          },
-          selected: false,
-          group: 'channel',
-        },
-        {
           key: 'classifications',
           label: 'SSIF 1-siffrig',
           component: 'TableDataList',

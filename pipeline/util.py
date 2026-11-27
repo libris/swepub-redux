@@ -159,20 +159,6 @@ class Normalization(Enum):
         return self.value
 
 
-class Level(Enum):
-    _init_ = 'value string'
-
-    NONE = None, ""
-    NONPEERREVIEWED = 0, "https://id.kb.se/term/swepub/swedishlist/non-peer-reviewed"
-    PEERREVIEWED = 1, "https://id.kb.se/term/swepub/swedishlist/peer-reviewed"
-
-    def __int__(self):
-        return self.value
-
-    def __str__(self):
-        return self.string
-
-
 class FieldMeta:
     def __init__(self, path="", id_type="", value=None, validation_status=Validation.PENDING, normalization_status=Normalization.UNCHANGED, enrichment_status=Enrichment.UNCHANGED):
         self.id_type = id_type

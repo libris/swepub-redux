@@ -497,54 +497,6 @@ class Publication:
                 break
         return is_report
 
-    @property
-    def level(self):
-        """Return the publication's level according to the Swedish List."""
-        if ('instanceOf' not in self.body
-                or 'category' not in self.body['instanceOf']):
-            return None
-
-        for gform in self.body['instanceOf']['category']:
-            # Peer-reviewed always trumps non-peer-reviewed
-            if '@id' in gform and gform['@id'] == str(Level.PEERREVIEWED):
-                return Level.PEERREVIEWED
-
-            if '@id' in gform and gform['@id'] == str(Level.NONPEERREVIEWED):
-                return Level.NONPEERREVIEWED
-
-        return None
-
-    @level.setter
-    def level(self, level):
-        """Set the publication's level."""
-        # Ensure that the publication is unmarked
-        self._body = self._purge_markings(self.body)
-        if level is Level.NONE:
-            return
-
-        if 'instanceOf' not in self.body:
-            self.body['instanceOf'] = {}
-        if 'category' not in self.body['instanceOf']:
-            self.body['instanceOf']['category'] = []
-        categories = self.body['instanceOf']['category']
-        categories.append({'@id': str(level)})
-        self.body['instanceOf']['category'] = categories
-
-    @staticmethod
-    def _is_unmarked(gform):
-        levels = [str(Level.PEERREVIEWED), str(Level.NONPEERREVIEWED)]
-        return '@id' not in gform or gform['@id'] not in levels
-
-    def _purge_markings(self, publication):
-        if 'instanceOf' not in publication:
-            return publication
-        if 'category' not in publication['instanceOf']:
-            return publication
-        categories = publication['instanceOf']['category']
-        new_gforms = [gform for gform in categories if self._is_unmarked(gform)]
-        publication['instanceOf']['category'] = new_gforms
-        return publication
-
     def ssifs(self, skip_autoclassified=False):
         """Return a unique list of all SSIF codes"""
         codes = set()

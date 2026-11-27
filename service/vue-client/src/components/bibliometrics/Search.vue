@@ -69,7 +69,6 @@ export default {
         keywords: this.query.keywords || '',
         publicationStatus: this.asArr(this.query.publicationStatus) || [],
         contentMarking: this.asArr(this.query.contentMarking) || [],
-        swedishList: this.query.swedishList === 'true' || null,
         openAccess: this.query.openAccess === 'true' || null,
       };
     },
@@ -265,19 +264,6 @@ export default {
                 />
                 <label :for="mark.value" class="Search-sublabel is-inline">{{mark.label}}</label>
               </div>
-            </div>
-          </fieldset>
-
-          <fieldset class="Search-fieldset">
-            <legend>Svenska listan</legend>
-            <help-bubble bubbleKey="swedish_list"/>
-
-            <div class="Search-inputContainer">
-              <input id="swedish-list" type="checkbox" v-model="selected.swedishList" />
-              <label for="swedish-list" class="Search-sublabel is-inline">
-                {{ /* eslint-disable-next-line */ }}
-                Endast output ingående i sakkunniggranskade publiceringskanaler enligt Svenska listan
-              </label>
             </div>
           </fieldset>
 

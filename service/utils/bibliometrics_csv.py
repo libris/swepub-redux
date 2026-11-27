@@ -42,7 +42,6 @@ column_name_label_dict = {
     "publication_channel": "publicationChannel",
     "publisher": "publisher",
     "ISSN": "ISSN",
-    "swedish_list": "swedishList",
     "series": "series",
     "series_title": "seriesTitle",
     "autoclassified": "autoclassified",
