@@ -215,38 +215,40 @@ class Publication:
     def add_category_072(self):
         """
         Adds instanceOf.category[@type=Concept) using category_mapper, represents marc field 072
-        1. Suffix of https://id.kb.se/term/swepub/svep/ is added as swepub-contenttype
+        1. Suffix of instanceOf.swepub:contentType[*].@id (https://id.kb.se/term/swepub/svep/...) is added as swepub-contenttype
         2. publication type determined by get_publication_types and added as swepub-publicationtype
         """
         body = self.body
         if not body.get("instanceOf", {}).get("subject"):
             body["instanceOf"]["subject"] = []
         subjects = body.get("instanceOf", {}).get("subject", [])
+        content_types = body.get("instanceOf", {}).get("swepub:contentType", [])
+        for ct in content_types:
+            id = ct.get("@id")
+            if id and id.startswith("https://id.kb.se/term/swepub/svep"):
+                label = id.split("/")[-1]
+                code = "swepub-contenttype"
+                contenttype = {
+                    "@type": "Concept",
+                    "label": label,
+                    "inScheme": {"@type": "ConceptScheme", "code": code},
+                }
+                if contenttype not in subjects:
+                    subjects.append(contenttype)
         categories = body.get("instanceOf", {}).get("category", [])
         for gf in categories:
-            if gf.get("@id"):
-                id = gf.get("@id")
-                if id and id.startswith("https://id.kb.se/term/swepub/svep"):
-                    label = id.split("/")[-1]
-                    code = "swepub-contenttype"
-                    contenttype = {
+            id = gf.get("@id")
+            if id:
+                for p_t in get_publication_types(id):
+                    label = p_t
+                    code = "swepub-publicationtype"
+                    publicationtype = {
                         "@type": "Concept",
                         "label": label,
                         "inScheme": {"@type": "ConceptScheme", "code": code},
                     }
-                    if contenttype not in subjects:
-                        subjects.append(contenttype)
-                else:
-                    for p_t in get_publication_types(id):
-                        label = p_t
-                        code = "swepub-publicationtype"
-                        publicationtype = {
-                            "@type": "Concept",
-                            "label": label,
-                            "inScheme": {"@type": "ConceptScheme", "code": code},
-                        }
-                        if publicationtype not in subjects:
-                            subjects.append(publicationtype)
+                    if publicationtype not in subjects:
+                        subjects.append(publicationtype)
 
     def add_has_series_490(self):
         """Adds legacy SeriesMembership from seriesMembership.inSeries, represents marc field 490"""
