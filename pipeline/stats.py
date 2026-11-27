@@ -10,7 +10,7 @@ def generate_processing_stats():
         # Add stats about records in converted ("duplicated"), per source and year
         for row in cursor.execute("""
             SELECT
-                source, date, count(distinct id) AS total, sum(is_open_access) AS open_access, sum(classification_level) AS swedishlist, sum(has_ssif_1) AS ssif_1
+                source, date, count(distinct id) AS total, sum(is_open_access) AS open_access, sum(has_ssif_1) AS ssif_1
             FROM
                 converted
             WHERE
@@ -20,11 +20,11 @@ def generate_processing_stats():
             """):
             inner_cursor.execute("""
                 INSERT INTO
-                    stats_converted(source, date, total, open_access, swedishlist, has_ssif_1)
+                    stats_converted(source, date, total, open_access, has_ssif_1)
                 VALUES
-                    (?, ?, ?, ?, ?, ?)
+                    (?, ?, ?, ?, ?)
                 """,
-                [row["source"], row["date"], row["total"], row["open_access"], row["swedishlist"], row["ssif_1"]])
+                [row["source"], row["date"], row["total"], row["open_access"], row["ssif_1"]])
 
         # In the stats above we count how many records have SSIF classification at all; here below we count
         # the number of records  _per SSIF category_ and source and year.

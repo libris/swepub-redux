@@ -42,9 +42,9 @@ def generate_search_tables():
                 third_cursor.execute(
                     """
                     INSERT INTO search_single(
-                    finalized_id, year, content_marking, publication_status, swedish_list, open_access, autoclassified, doaj
+                    finalized_id, year, content_marking, publication_status, open_access, autoclassified, doaj
                     ) VALUES(
-                    ?, ?, ?, ?, ?, ?, ?, ?
+                    ?, ?, ?, ?, ?, ?, ?
                     )
                     """,
                     (
@@ -52,7 +52,6 @@ def generate_search_tables():
                         doc.publication_just_the_year,
                         doc.content_marking,
                         get_publication_status(doc),
-                        doc.is_swedishlist,
                         doc.open_access,
                         doc.autoclassified,
                         doc.DOAJ
@@ -144,10 +143,6 @@ def get_publication_status(doc):
     elif ps == "https://id.kb.se/term/swepub/Retracted":
         return "retracted"
     return None
-
-
-def is_swedish_list(pub):
-    return "https://id.kb.se/term/swepub/swedishlist/peer-reviewed" in pub.category
 
 
 # For debugging

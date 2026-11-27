@@ -147,11 +147,11 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
         cur.execute(
             """
         INSERT INTO
-            converted(data, original_id, oai_id, date, source, is_open_access, has_ssif_1, classification_level, events)
+            converted(data, original_id, oai_id, date, source, is_open_access, has_ssif_1, events)
         VALUES
-            (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(oai_id) DO UPDATE SET
-            data = excluded.data, original_id = excluded.original_id, oai_id = excluded.oai_id, date = excluded.date, source = excluded.source, is_open_access = excluded.is_open_access, has_ssif_1 = excluded.has_ssif_1, classification_level = excluded.classification_level, events = excluded.events, deleted = 0, should_be_reprocessed = 0, modified = (strftime('%s', 'now'))
+            data = excluded.data, original_id = excluded.original_id, oai_id = excluded.oai_id, date = excluded.date, source = excluded.source, is_open_access = excluded.is_open_access, has_ssif_1 = excluded.has_ssif_1, events = excluded.events, deleted = 0, should_be_reprocessed = 0, modified = (strftime('%s', 'now'))
         """,
             (
                 json.dumps(converted),
@@ -161,7 +161,6 @@ def store_converted(original_rowid, converted, audit_events, field_events, recor
                 doc.source_org_master,
                 doc.open_access,
                 (len(doc.ssif_1_codes) > 0),
-                doc.level,
                 json.dumps(converted_events, default=serialize) #default=lambda o: o.__dict__),
             ),
         )

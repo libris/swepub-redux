@@ -70,20 +70,6 @@
           }
         },
         "type": "object"
-      },
-      "SwedishList": {
-        "description": "Number and percentage of publications with Swedish list",
-        "properties": {
-          "percentage": {
-            "description": "Percentage of records with Swedish list",
-            "type": "number"
-          },
-          "total": {
-            "description": "Total number of Swedish list records",
-            "type": "integer"
-          }
-        },
-        "type": "object"
       }
     }
   },
@@ -142,11 +128,6 @@
                     },
                     "ssif": {
                       "description": "Number of ssif classified publications",
-                      "properties": {},
-                      "type": "object"
-                    },
-                    "swedishList": {
-                      "description": "Number of peer-reviewed Swedish list publications",
                       "properties": {},
                       "type": "object"
                     },
@@ -534,11 +515,6 @@
                     },
                     "ssif": {
                       "description": "Number of ssif classified publications",
-                      "properties": {},
-                      "type": "object"
-                    },
-                    "swedishList": {
-                      "description": "Number of peer-reviewed Swedish list publications",
                       "properties": {},
                       "type": "object"
                     },

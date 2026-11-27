@@ -194,7 +194,7 @@
     },
     "content_marking": {
       "title": "Innehållsmärkning",
-      "text": "Nivå av sakkunniggranskning och målgrupp för enstaka output. Tänk på att innehållsmärkning kan skilja sig från bedömningen av sakkunniggranskning i Svenska listan, som utgår från publiceringskanalen i sin helhet."
+      "text": "Nivå av sakkunniggranskning och målgrupp för enstaka output."
     }
   },
   "Datastatus": {
@@ -227,10 +227,6 @@
     "publication_year": {
       "title": "Utgivningsår",
       "text": "Data från och med 2012 är genomgående mer fullständiga än tidigare data."
-    },
-    "swedish_list": {
-      "title": "Svenska listan",
-      "text": "Svenskt register över sakkunniggranskade publiceringskanaler för åren 2012 – 2022. Vetenskapsrådet som tidigare tog fram registret <a href='https://www.vr.se/aktuellt/nyheter/nyhetsarkiv/2025-03-13-svenska-listan-avvecklas.html'>har avvecklat det</a>."
     },
     "open_access": {
       "title": "Öppen tillgång",

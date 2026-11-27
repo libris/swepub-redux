@@ -31,12 +31,6 @@ export default {
           text: 'poster öppet tillgängliga',
           ...this.data.openAccess,
         },
-        {
-          id: 'swedish_list',
-          title: 'Svenska listan',
-          text: 'poster publicerade enligt Svenska listan',
-          ...this.data.swedishList,
-        },
       ];
     },
   },

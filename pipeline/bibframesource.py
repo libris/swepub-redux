@@ -3,7 +3,7 @@ from enum import Enum
 from datetime import date, datetime
 from dateutil.parser import parse as dateutil_parse
 
-from pipeline.util import derived_from_ids, derived_from_orgs, source_org, Level, SSIF_BASE, is_ssif_classification, is_autoclassified
+from pipeline.util import derived_from_ids, derived_from_orgs, source_org, SSIF_BASE, is_ssif_classification, is_autoclassified
 
 
 CREATOR_FIELDS = [
@@ -233,7 +233,6 @@ class BibframeSource:
     def output_types(self):
         categories = self.bibframe_master.get("instanceOf", {}).get("category")
         svep_url = "https://id.kb.se/term/swepub/svep/"
-        swedish_list_url = "https://id.kb.se/term/swepub/swedishlist"
         # Example output types: https://id.kb.se/term/swepub/output/publication/journal-article
         # or https://id.kb.se/term/swepub/output/publication
         output_type_re = r"^https://id\.kb\.se/term/swepub/output/[a-z_\-]+/*[a-z_\-]*$"
@@ -241,7 +240,7 @@ class BibframeSource:
         if categories:
             for category in categories:
                 gf_id = category.get("@id", "")
-                if gf_id.strip().startswith(svep_url) or gf_id.strip().startswith(swedish_list_url):
+                if gf_id.strip().startswith(svep_url):
                     continue
                 m = re.match(output_type_re, gf_id)
                 if m is None:
@@ -622,16 +621,6 @@ class BibframeSource:
         return None
 
     @property
-    def swedish_list(self):
-        swedish_list_url = "https://id.kb.se/term/swepub/swedishlist/"
-        category = self.bibframe_master.get("instanceOf", {}).get("category", [])
-        for gf in category:
-            gf_id = gf.get("@id", "").strip()
-            if gf_id.startswith(swedish_list_url):
-                return gf_id
-        return None
-
-    @property
     def ssif_subjects(self):
         subjects = dict()
         should_include_one_digit_topics = False
@@ -815,32 +804,6 @@ class BibframeSource:
                 _series.append(obj)
 
         return _series or None
-
-    @property
-    def level(self):
-        """Return the publication's level according to the Swedish List."""
-        if (
-            "instanceOf" not in self._bibframe_master
-            or "category" not in self._bibframe_master["instanceOf"]
-        ):
-            return None
-
-        for gform in self._bibframe_master["instanceOf"]["category"]:
-            # Peer-reviewed always trumps non-peer-reviewed
-            if "@id" in gform and gform["@id"] == str(Level.PEERREVIEWED):
-                return Level.PEERREVIEWED.value
-
-            if "@id" in gform and gform["@id"] == str(Level.NONPEERREVIEWED):
-                return Level.NONPEERREVIEWED.value
-        return None
-
-    @property
-    def is_swedishlist(self):
-        # instanceOf.category.@id": "https://id.kb.se/term/swepub/swedishlist/peer-reviewed"
-        for gf in self._bibframe_master.get("instanceOf", {}).get("category", []):
-            if gf.get("@id", "") == "https://id.kb.se/term/swepub/swedishlist/peer-reviewed":
-                return True
-        return False
 
     @property
     def ssif_1_codes(self):

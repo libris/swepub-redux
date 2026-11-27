@@ -197,7 +197,6 @@ def bibliometrics_api():
             if not all(ps in ("published", "epub", "submitted", "retracted") for ps in publication_status):
                 _errors(errors=[f"Invalid value for publication status."], status_code=400)
 
-        swedish_list = query_data.get("swedishList", None)
         open_access = query_data.get("openAccess", None)
         autoclassified = query_data.get("autoclassified", None)
         doaj = query_data.get("DOAJ", None)
@@ -236,8 +235,6 @@ def bibliometrics_api():
     if from_yr and to_yr:
         q = q.where((search_single.year >= Parameter("?")) & (search_single.year <= Parameter("?")))
         values.append([from_yr, to_yr])
-    if swedish_list is not None:
-        q = q.where(search_single.swedish_list == bool(swedish_list))
     if open_access is not None:
         q = q.where(search_single.open_access == bool(open_access))
     if autoclassified is not None:
@@ -503,7 +500,6 @@ def datastatus_source(source):
             fn.Sum(stats_converted.total).as_("total_docs"),
             fn.Sum(stats_converted.open_access).as_("open_access"),
             fn.Sum(stats_converted.has_ssif_1).as_("ssif"),
-            fn.Sum(stats_converted.swedishlist).as_("swedishlist"),
         )
         .from_(stats_converted)
         .groupby(stats_converted.source)
@@ -537,7 +533,6 @@ def datastatus_source(source):
     total_docs = sum(filter(None, [item["total_docs"] for item in rows]))
     total_open_access = sum(filter(None, [item["open_access"] for item in rows]))
     total_ssif = sum(filter(None, [item["ssif"] for item in rows]))
-    total_swedishlist = sum(filter(None, [item["swedishlist"] for item in rows]))
 
     result.update(
         {
@@ -547,10 +542,6 @@ def datastatus_source(source):
                 "total": total_open_access,
             },
             "ssif": {"percentage": get_percentage(total_ssif, total_docs), "total": total_ssif},
-            "swedishList": {
-                "percentage": get_percentage(total_swedishlist, total_docs),
-                "total": total_swedishlist,
-            },
         }
     )
 

@@ -273,10 +273,6 @@
             "example": "A summary",
             "type": "string"
           },
-          "swedishList": {
-            "example": "https://id.kb.se/term/swepub/swedishlist/peer-reviewed",
-            "type": "string"
-          },
           "title": {
             "description": "A string with mainTitle and subTitle delimited by colon",
             "example": "Title: subtitle",
@@ -436,11 +432,6 @@
                       "type": "string"
                     },
                     "type": "array"
-                  },
-                  "swedishList": {
-                    "description": "Peer reviewed publications, true or false",
-                    "example": "false",
-                    "type": "boolean"
                   },
                   "title": {
                     "description": "Title of publication",

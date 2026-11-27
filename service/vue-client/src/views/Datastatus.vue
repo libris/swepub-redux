@@ -193,7 +193,6 @@ export default {
     <transition name="fade">
       <short-stats v-if="data && data.total > 0" :data="{
         openAccess: data.openAccess,
-        swedishList: data.swedishList,
         ssif: data.ssif }"/>
     </transition>
     <transition name="fade">
